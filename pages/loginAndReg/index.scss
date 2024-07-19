@@ -1,0 +1,179 @@
+/*!
+ * Copyright (c) 2013-Now http://jeesite.com All rights reserved.
+ * @author ThinkGem
+ * @version 2020-9-1
+ */
+.wrap {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 100%;
+}
+
+.list {
+	display: flex;
+	flex-direction: column;
+	padding: 40rpx 0;
+	// padding: 40rpx 70rpx 40rpx 70rpx;
+}
+
+.list-call {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding-top: 10rpx;
+	height: 100rpx;
+
+	font-weight: normal; 
+	color: #333333;
+	width: 100%;
+	border-bottom: 0.5px solid #e2e2e2;
+}
+
+.list-call .u-input {
+	flex: 1;
+	font-size: 30rpx;
+	text-align: left;
+	margin-left: 16rpx;
+}
+
+.list-call .u-icon-right {
+	color: #aaaaaa;
+	width: 50rpx;
+	height: 40rpx;
+}
+
+.button {
+	color: #ffffff;
+	font-size: 39rpx;
+	width: 470rpx;
+	height: 100rpx;
+	background: linear-gradient(-90deg, rgba(72, 156, 230, 1), rgba(15, 168, 250, 1));
+	box-shadow: 0rpx 0rpx 13rpx 0rpx rgba(15, 168, 250, 0.4);
+	border-radius: 50rpx;
+	line-height: 100rpx;
+	text-align: center;
+	margin: 50rpx auto 0;
+}
+
+.button-hover {
+	background: linear-gradient(-90deg, rgba(72, 156, 230, 0.8), rgba(15, 168, 250, 0.8));
+}
+
+.img-valid-code img {
+	width: 30rpx;
+	heigth: 50rpx;
+}
+
+.btn-valid-code {
+	color: #da7918;
+	font-size: 40rpx;
+	line-height: 60rpx;
+	padding: 0 35rpx;
+	border: 1rpx solid #da7918;
+	border-radius: 50rpx;
+}
+
+.btn-valid-code-hover {
+	background-color: #f3f3f3;
+}
+
+.btn-valid-codes {
+	color: #999999 !important;
+	border: 1rpx solid #999999;
+}
+
+
+/**
+ * 注册页面样式
+ */
+.register {
+	height: 100vh;
+	background-image: linear-gradient(to bottom left, #d834c2, #2088dd);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	
+	.container {
+		position: relative;
+		background-color: #ffffff;
+		width: 85%;
+		border-radius: 15rpx;
+		min-height: 500rpx;
+		display: flex;
+		justify-content: center;
+		.top-img {
+			position: absolute;
+			height: 150rpx;
+			width: 150rpx;
+			border-radius: 50%;
+			top: -75rpx;
+			background-image: linear-gradient(to left bottom, #d834c2, #2088dd);
+		}
+		.form-area {
+			width: 87%;
+			position: relative;
+			margin-top: 150rpx;
+		}
+	}
+	
+	.bottom_area {
+		width: 75%;
+		padding: 10px 0;
+		text-align: center;
+		color: #ffffff;
+		background-color: #AEB9FE;
+		border-radius: 0 0 30rpx 30rpx;
+		span {
+			opacity: .9;
+			font-size: 30rpx;
+		}
+	}
+	
+}
+
+.retrieve-password {
+	height: 100vh;
+	background-image: linear-gradient(to bottom left, #d834c2, #2088dd);
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	
+	.container {
+		background-color: #ffffff;
+		width: 85%;
+		border-radius: 15rpx;
+		min-height: 500rpx;
+		display: flex;
+		justify-content: center;
+
+		.form-area {
+			width: 87%;
+			margin-top: 40rpx;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			.title {
+				margin-bottom: 50rpx;
+				font-weight: bold;
+			}
+		}
+	}
+	
+	.bottom_area {
+		width: 75%;
+		padding: 10px 0;
+		text-align: center;
+		color: #ffffff;
+		background-color: #AEB9FE;
+		border-radius: 0 0 30rpx 30rpx;
+		span {
+			opacity: .9;
+			font-size: 30rpx;
+		}
+	}
+}
