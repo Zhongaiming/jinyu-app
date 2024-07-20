@@ -6,7 +6,7 @@
 			</view>
 			<view class="xls-options-list-content">
 				<view class="xls-options-list-main" v-for="item in option.dataList" :key="item.id"
-					v-hasPermi="[...item.permissions]">
+					v-hasPermi="[...item.permissions]" @click="goTo(item.route)">
 					<view class="xls-options-list-image">
 						<image class="image" :src="item.imgUrl" mode="widthFix"></image>
 						<span class="status" v-if="item.status">{{item.status}}</span>
@@ -49,7 +49,7 @@
 							id: 13,
 							title: '订单查询',
 							imgUrl: `${this.$baseUrl}homeImages/fristList/three.png`,
-							route: '/orderCenter',
+							route: '/pages/mainPackages/home/order/index',
 							permissions: ['app:order:index'],
 							status: 0
 						},
@@ -57,7 +57,7 @@
 							id: 14,
 							title: '远程启动',
 							imgUrl: `${this.$baseUrl}homeImages/fristList/four.png`,
-							route: '/remoteBoot',
+							route: '',
 							permissions: ['app:remoteboot:index'],
 							status: 0
 						},
@@ -223,6 +223,11 @@
 						},
 					]
 				}]
+			}
+		},
+		methods: {
+			goTo(route) {
+				this.$goTo(route)
 			}
 		}
 	}

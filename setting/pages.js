@@ -1,9 +1,29 @@
-const pages = [
-	{
+const pages = [{
 		"path": "pages/loginAndReg/xlsLogin",
 		"name": "loginIndex",
 		"meta": {
 			"title": "登录2"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/order/index",
+		"name": "order",
+		"meta": {
+			"title": "订单"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/order/orderDetail",
+		"name": "order",
+		"meta": {
+			"title": "订单详情"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/order/refundDetail",
+		"name": "order",
+		"meta": {
+			"title": "退款详情"
 		}
 	},
 	{

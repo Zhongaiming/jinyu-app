@@ -56,7 +56,7 @@
 			},
 			rightIcon: {  // 右边返回图标的名称，只能为uView自带的图标
 				type: String,
-				default: 'home-fill'
+				default: ''
 			},
 			border: {  // 导航栏底部是否显示下边框
 				type: Boolean,

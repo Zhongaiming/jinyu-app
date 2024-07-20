@@ -8,7 +8,6 @@ const subPackages = [
 			}
 		]
 	},
-	
 	{
 		"root": "pages/subpackages/personal",  // 个人中心包
 		"pages": [
