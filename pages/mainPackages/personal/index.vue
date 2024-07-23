@@ -21,7 +21,7 @@
 			<view class="xls-personal-options" v-for="option in dataList" :key="option.id"
 				v-hasPermi="[...option.permissions]">
 				<view class="options-wrapper" v-for="item in option.dataList" :key="item.id"
-					v-hasPermi="[...item.permissions]">
+					v-hasPermi="[...item.permissions]" @click="goTo(item.route)">
 					<image class="image" :src="item.imgUrl" mode="widthFix"></image>
 					<span class="text">{{item.title}}</span>
 					<view class="right-value">{{item.subheading}}</view>
@@ -91,7 +91,7 @@
 							id: 31,
 							title: '商品类型管理',
 							imgUrl: `${this.$baseUrl}appV4/my_img/commodity.png`,
-							route: '/commodityManagement',
+							route: '/pages/mainPackages/personal/commodityType/index',
 							permissions: ['app:shopType:index'],
 							subheading: '',
 						},
@@ -113,7 +113,7 @@
 							id: 41,
 							title: '投放场地',
 							imgUrl: `${this.$baseUrl}appV4/my_img/place.png`,
-							route: '/putPlace',
+							route: '/pages/mainPackages/personal/placeModule/index',
 							permissions: ['app:place:index'],
 							subheading: '',
 						},
@@ -121,7 +121,7 @@
 							id: 42,
 							title: '操作记录',
 							imgUrl: `${this.$baseUrl}appV4/my_img/option.png`,
-							route: '/quickReplenishment',
+							route: '/pages/mainPackages/personal/handleRecord/index',
 							permissions: ['app:records:index'],
 							subheading: '',
 						},
@@ -168,7 +168,9 @@
 			}
 		},
 		methods: {
-
+			goTo(params) {
+				this.$goTo(params)
+			}
 		}
 	}
 </script>

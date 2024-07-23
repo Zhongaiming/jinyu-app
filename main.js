@@ -12,23 +12,25 @@ import Vue from 'vue'
 Vue.config.productionTip = false
 App.mpType = 'app'
 const app = new Vue({
-		i18n,
-		store,
-    ...App
+	i18n,
+	store,
+	...App
 })
 app.$mount()
 // #endif
 
 // #ifdef VUE3
-import { createSSRApp } from 'vue'
+import {
+	createSSRApp
+} from 'vue'
 
 export function createApp() {
-  const app = createSSRApp(App)
+	const app = createSSRApp(App)
 	app.use(i18n)
 	app.use(store)
-  return {
-    app
-  }
+	return {
+		app
+	}
 }
 // #endif
 
@@ -42,15 +44,19 @@ Vue.mixin(commonMixin)
 import jyTabbar from './components/jy-tabbar/jyTabbar.vue'
 import jyNavbar from '@/components/jy-navbar/jyNavbar.vue'
 import jyScroll from '@/components/jy-scroll/jyScroll.vue'
+import xlsEmpty from '@/components/xls-empty/xlsEmpty.vue'
 Vue.component('jyTabbar', jyTabbar)
 Vue.component('jyNavbar', jyNavbar)
 Vue.component('jyScroll', jyScroll)
+Vue.component('xlsEmpty', xlsEmpty)
 
 // directive
-import directive from './directive'; 
+import directive from './directive';
 Vue.use(directive);
+
 // 调用setConfig方法，方法内部会进行对象属性深度合并，可以放心嵌套配置
 // 需要在Vue.use(uView)之后执行
+const fontSize = 24
 uni.$u.setConfig({
 	// 修改$u.config对象的属性
 	config: {
@@ -58,7 +64,17 @@ uni.$u.setConfig({
 		unit: 'rpx'
 	},
 	// 修改$u.props对象的属性
+	// 修改radio组件的size参数的默认值，相当于执行 uni.$u.props.radio.size = 30
 	props: {
-		
+		text: {
+			size: fontSize,
+		},
+		icon: {
+			size: fontSize,
+		},
+		steps: {
+			activeColor: "#5241ff",
+			fontSize: fontSize
+		}
 	}
 })

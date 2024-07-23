@@ -6,7 +6,7 @@ module.exports = {
 
 		// 以下属性，动态菜单中用到
 		backgroundColor: '#ffffff', // 背景色
-		textColor: '#20272d', // 文字默认颜色
+		textColor: '#bbbecd', // 文字默认颜色
 		selectTextColor: '#5241ff', // 选中文字颜色
 		textFontSize: '10px', // 文字大小
 		imgWidth: '25px', // 图片宽度 （不适用icon图标）

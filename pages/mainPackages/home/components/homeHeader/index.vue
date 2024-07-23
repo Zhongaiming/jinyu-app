@@ -5,7 +5,7 @@
 		<view class="xls-header-main">
 			<!-- 收益 -->
 			<view class="xls-header-main-right-wrapper" v-hasPermi="['app:today:index']">
-				<view class="price-wrapper" @click="goTo('/todayEarning')">
+				<view class="price-wrapper" @click="goTo('todayEarning')">
 					<span class="price">{{total.totalIncome || "0.00"}}</span>
 					<span class="unit">元</span>
 				</view>
@@ -19,7 +19,7 @@
 			<!-- 投币 -->
 			<view class="xls-header-main-left-wrapper" v-hasPermi="['app:coin:index', 'app:outPresent:index']">
 
-				<view class="xls-header-right-box" @click="goTo('/insertCoins')" v-hasPermi="['app:coin:index']">
+				<view class="xls-header-right-box" @click="goTo('insertCoins')" v-hasPermi="['app:coin:index']">
 					<view class="right-box-header">
 						<span>合计投币</span>
 						<span class="count-style">{{total.totalInsertCoins || "0"}}</span>
@@ -45,7 +45,7 @@
 
 				<view class="line" v-hasPermi="['app:outPresent:index']"></view>
 
-				<view class="xls-header-right-box" @click="goTo('/comeGift')" v-hasPermi="['app:outPresent:index']">
+				<view class="xls-header-right-box" @click="goTo('comeGift')" v-hasPermi="['app:outPresent:index']">
 					<view class="right-box-header">
 						<span>出礼比例</span>
 						<span class="count-style text-over">
@@ -93,7 +93,7 @@
 		},
 		methods: {
 			goTo(route) {
-
+				this.$goTo(`/pages/mainPackages/home/${route}/index`)
 			},
 			//总收益
 			async getTodayIncome() {

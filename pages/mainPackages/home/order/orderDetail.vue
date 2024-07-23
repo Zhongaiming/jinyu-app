@@ -1,7 +1,7 @@
 <template>
 	<view class="xls-order-detail">
 		<jy-navbar title="订单详情" bgColor="#f5f5f5"></jy-navbar>
-		<view class="xls-box-style">
+		<view class="xls-box-style" @click="goTo()">
 			<view class="device-style">
 				<span>扭蛋机30000028</span>
 				<span class="state arrow">已支付</span>
@@ -238,7 +238,8 @@
 				</view>
 			</view>
 		</view>
-		<u-divider text="已经到底啦~" :dashed="true"></u-divider>
+		
+		<u-divider text="已经到底啦~" :dashed="true" text-size="28"></u-divider>
 		
 		<view class="fixed-box">
 			<view class="fixed-box-wrapper">
@@ -264,7 +265,9 @@
 			console.log("传参", JSON.parse(option.params).id)
 		},
 		methods: {
-
+			goTo(item) {
+				this.$goTo('/pages/mainPackages/home/order/refundDetail', 'navigateTo', {id: 'item.id'})
+			}
 		}
 	}
 </script>

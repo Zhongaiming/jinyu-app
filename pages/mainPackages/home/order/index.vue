@@ -91,6 +91,7 @@
 					</view>
 				</view>
 			</u-list-item>
+			<u-divider text="已经到底啦~" :dashed="true" text-size="28"></u-divider>
 		</u-list>
 	</view>
 </template>
@@ -101,6 +102,9 @@
 			return {
 				dataList: new Array(10),
 			}
+		},
+		onLoad(option) {
+			console.log("传参", JSON.parse(option.params).id)
 		},
 		methods: {
 			scrolltolower() {},
