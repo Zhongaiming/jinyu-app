@@ -233,7 +233,7 @@
 	}
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.xls-options {
 		&-list {
 			&-title {

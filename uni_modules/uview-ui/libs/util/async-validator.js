@@ -430,7 +430,7 @@ function range(rule, value, source, errors, options) {
     }
 
     if (str) {
-        // 处理码点大于U+010000的文字length属性不准确的bug，如"𠮷𠮷𠮷".lenght !== 3
+        // 处理码点大于U+010000的文字length属性不准确的bug，如"??????".lenght !== 3
         val = value.replace(spRegexp, '_').length
     }
 
@@ -996,13 +996,13 @@ function newMessages() {
         },
         number: {
             len: '%s must equal %s',
-            min: '%s cannot be less than %s',
+            min: '%s cannot be scss than %s',
             max: '%s cannot be greater than %s',
             range: '%s must be between %s and %s'
         },
         array: {
             len: '%s must be exactly %s in length',
-            min: '%s cannot be less than %s in length',
+            min: '%s cannot be scss than %s in length',
             max: '%s cannot be greater than %s in length',
             range: '%s must be between %s and %s in length'
         },

@@ -4,7 +4,7 @@ import "./permission.js"
 import "@/common/pageRouter.js"
 import "@/common/message.js"
 import store from '@/store'
-import "@/common/commonUrl.js"
+import "@/common/public.js"
 
 // #ifndef VUE3
 import Vue from 'vue'
@@ -45,10 +45,14 @@ import jyTabbar from './components/jy-tabbar/jyTabbar.vue'
 import jyNavbar from '@/components/jy-navbar/jyNavbar.vue'
 import jyScroll from '@/components/jy-scroll/jyScroll.vue'
 import xlsEmpty from '@/components/xls-empty/xlsEmpty.vue'
+import xlsBottom from '@/components/xls-bottom/xlsBottom.vue'
+import xlsSearchInput from '@/components/xls-searchInput/xlsSearchInput.vue'
 Vue.component('jyTabbar', jyTabbar)
 Vue.component('jyNavbar', jyNavbar)
 Vue.component('jyScroll', jyScroll)
 Vue.component('xlsEmpty', xlsEmpty)
+Vue.component('xlsBottom', xlsBottom)
+Vue.component('xlsSearchInput', xlsSearchInput)
 
 // directive
 import directive from './directive';

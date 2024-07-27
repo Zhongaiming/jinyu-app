@@ -54,7 +54,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.carousel-wrapper {
 		background: #fff3e3;
 		align-items: center;

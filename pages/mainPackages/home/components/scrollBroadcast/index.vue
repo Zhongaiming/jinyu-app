@@ -47,7 +47,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.scrollBroadcast {
 		width: 100%;
 		height: 40px;

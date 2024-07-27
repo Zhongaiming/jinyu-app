@@ -56,7 +56,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.return-top {
 		position: fixed;
 		right: 24rpx;

@@ -241,7 +241,7 @@
 						font-size: 32rpx;
 
 						display: flex;
-						justify-content: start;
+						justify-content: flex-start;
 						align-items: center;
 					}
 
@@ -284,7 +284,7 @@
 						height: 90rpx;
 						display: flex;
 						align-items: center;
-						justify-content: start;
+						justify-content: flex-start;
 					}
 
 					.three-title-wrapper {
@@ -292,7 +292,7 @@
 						height: 90rpx;
 						display: flex;
 						align-items: center;
-						justify-content: start;
+						justify-content: flex-start;
 					}
 				}
 			}
@@ -320,7 +320,7 @@
 						height: 130rpx;
 						display: flex;
 						align-items: center;
-						justify-content: start;
+						justify-content: flex-start;
 						font-size: 30rpx;
 						font-weight: 500;
 					}
@@ -330,7 +330,7 @@
 						height: 130rpx;
 						display: flex;
 						align-items: center;
-						justify-content: start;
+						justify-content: flex-start;
 					}
 				}
 			}

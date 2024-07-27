@@ -56,6 +56,15 @@ const subPackages = [
 				"name": "日志详情"
 			}			
 		]
+	},
+	{
+		"root": "pages/subpackages/merchant",  // 进件包
+		"pages": [
+			{
+				"path": "dailyBill/index",
+				"name": "每日账单"
+			},
+		]
 	}
 ]
 

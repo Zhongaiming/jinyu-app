@@ -23,7 +23,7 @@
 					</u-col>
 				</u-row>
 			</u-list-item>
-			<u-divider text="已经到底啦~" :dashed="true" text-size="28"></u-divider>
+			<xls-bottom v-show="onEarth" />
 		</u-list>
 		<view class="xls-bottom-btn-box" v-hasPermi="['app:shopType:index:add']">
 			<view class="icon-button-style">
@@ -83,7 +83,7 @@
 					"updateId": 1,
 					"updateTime": "2024-02-29 16:57:12"
 				}],
-				variablePopup: true,
+				variablePopup: false,
 				actionItems: {}
 			}
 		},

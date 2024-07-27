@@ -64,6 +64,13 @@ const pages = [{
 		}
 	},
 	{
+		"path": "pages/mainPackages/personal/handleRecord/index",
+		"name": "handleRecord",
+		"meta": {
+			"title": "操作记录"
+		}
+	},
+	{
 		"path": "pages/mainPackages/personal/placeModule/index",
 		"name": "placeModule",
 		"meta": {
@@ -71,18 +78,31 @@ const pages = [{
 		}
 	},
 	{
-		"path": "pages/mainPackages/personal/handleRecord/index",
-		"name": "handleRecord",
+		"path": "pages/mainPackages/personal/placeModule/placeOperate",
+		"name": "placeModule",
+		"meta": {
+			"title": "操作场地"
+		}
+	},
+	{
+		"path": "pages/mainPackages/personal/placeModule/placeOperateRecord",
+		"name": "placeModule",
 		"meta": {
 			"title": "操作记录"
 		}
 	},
-	// 进件 后续分包
 	{
-		"path": "pages/xlsMerchant/merchantStep1/index",
-		"name": "merchantStep1",
+		"path": "pages/mainPackages/personal/placeModule/placeOperateRecordDetail",
+		"name": "placeModule",
 		"meta": {
-			"title": "审核进度"
+			"title": "操作记录详情"
+		}
+	},
+	{
+		"path": "pages/mainPackages/personal/userWallet/index",
+		"name": "userWallet",
+		"meta": {
+			"title": "钱包"
 		}
 	},
 	// 登录、注册

@@ -18,7 +18,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.drag-wrapper {
 		width: 80px;
 		height: 30.64px;

@@ -25,7 +25,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.xls-hometips-tips {
 		width: 610rpx;
 		height: 1060rpx;

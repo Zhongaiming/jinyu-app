@@ -43,9 +43,9 @@
 							id: 11,
 							title: '钱包',
 							imgUrl: `${this.$baseUrl}appV4/my_img/wallet.png`,
-							route: '/moneyBag',
+							route: '/pages/mainPackages/personal/userWallet/index',
 							permissions: ['app:payBag:index'],
-							subheading: '余额 0.00 元',
+							subheading: '', // 余额 0.00 元
 						},
 						{
 							id: 12,
@@ -133,14 +133,14 @@
 							permissions: ['app:system:replenishmentRecord'],
 							subheading: '',
 						},
-						{
-							id: 44,
-							title: 'wifi配网',
-							imgUrl: `${this.$baseUrl}appV4/my_img/wifi-icon.png`,
-							route: '/setMealing',
-							permissions: ['app:wifi:index'],
-							subheading: '',
-						},
+						// {
+						// 	id: 44,
+						// 	title: 'wifi配网',
+						// 	imgUrl: `${this.$baseUrl}appV4/my_img/wifi-icon.png`,
+						// 	route: '/setMealing',
+						// 	permissions: ['app:wifi:index'],
+						// 	subheading: '',
+						// },
 					]
 				}, {
 					id: 5,
@@ -287,6 +287,7 @@
 
 			.image {
 				width: 40rpx;
+				
 				margin-right: 20rpx;
 			}
 

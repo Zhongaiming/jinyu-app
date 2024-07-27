@@ -1,0 +1,556 @@
+<template>
+  <div>
+    <div class="noticeSetting" v-show="$route.meta.showNotice">
+      <nav-bar>通知设置</nav-bar>
+      <div class="notice-content">
+        <div class="message-title">消息通知设置</div>
+        <div class="receive-msg">
+          <span class="main-txt">接收消息的微信</span>
+          <div class="right-set">
+            <span
+              class="sm-text"
+              @click="
+                $router.push({
+                  path: '/noticeSetting/noticeWechat',
+                })
+              "
+              v-html="wechatSet ? '已设置' : '未设置'"
+            ></span>
+            <van-icon name="arrow" color="#999" size="16" class="icons" />
+          </div>
+        </div>
+        <div class="set-list" v-for="(set, index) in setInfolist" :key="index">
+          <div class="message-title">{{ set.classTitle }}</div>
+          <div
+            class="receive-msg"
+            v-for="(det, index) in set.summarizingList"
+            :key="index"
+          >
+            <span class="main-txt">
+              {{ det.title }}
+              <div class="sm-text">
+                <span>{{ det.detail }}</span>
+                <span v-show="det.inventory"
+                  >每台设备库存少于 {{ det.inventory }} 推送消息</span
+                >
+                <span
+                  class="edit-btn"
+                  v-show="det.inventory"
+                  @click="setInvent(det)"
+                  >设置</span
+                >
+              </div>
+            </span>
+            <span class="sm-text"
+              ><van-switch
+                v-model="det.switch"
+                size="26px"
+                active-color="#5241FF"
+                @change="setPushMsg(det.id)"
+            /></span>
+          </div>
+        </div>
+      </div>
+      <!-- 库存设置 -->
+      <van-popup v-model="setInventory" round>
+        <div class="setInventory-con home-family">
+          <div class="title">请输入库存</div>
+          <div class="info">
+            <div class="other-box" v-show="isShowOtherset">
+              <van-radio-group v-model="shjRadio">
+                <div class="mint-radiolist">
+                  <div class="radio-item">
+                    <van-radio :name="1" checked-color="#5241FF"
+                      ><span class="mint-radio-label"
+                        >整机缺货通知</span
+                      ></van-radio
+                    >
+                  </div>
+                  <div class="radio-item label-right">
+                    <van-radio :name="2" checked-color="#5241FF"
+                      ><span class="mint-radio-label"
+                        >单货道缺货通知</span
+                      ></van-radio
+                    >
+                  </div>
+                </div>
+              </van-radio-group>
+              <div class="popup-tips">缺货通知阈值：</div>
+            </div>
+            <van-stepper
+              v-model="inventoryNum"
+              input-width="100px"
+              button-size="40px"
+            />
+          </div>
+          <div class="btn-wrapper">
+            <div class="btn cancel-btn" @click="setInventory = false">取消</div>
+            <div class="btn" @click="setRepertory">确定</div>
+          </div>
+        </div>
+      </van-popup>
+    </div>
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+import {
+  messagePushSet,
+  editMessagePushSet,
+  getWechatInform,
+} from "@/utils/api/service";
+import { debounceFun, throttleFun } from "@/plugins/debounceOrthrottle";
+
+export default {
+  name: "noticeSetting",
+  data() {
+    return {
+      setInventory: false,
+      inventoryNum: 1,
+      isShowOtherset: false,
+      shjRadio: 1, //1：整机缺货通知，2：单货道 默认1
+      setInfolist: [
+        {
+          classTitle: "汇总推送",
+          summarizingList: [
+            {
+              id: 1,
+              title: "每日收益概况",
+              detail: "次日9:00推送",
+              switch: false,
+            },
+            {
+              id: 2,
+              title: "时段收益概况",
+              detail: "9:00 ~ 21:00,每隔3小时推送一次",
+              switch: false,
+            },
+            {
+              id: 3,
+              title: "设备离线汇总",
+              detail: "9:00 ~ 21:00,每隔3小时推送一次",
+              switch: true,
+            },
+            {
+              id: 4,
+              title: "设备故障汇总",
+              detail: "9:00 ~ 21:00,每隔3小时推送一次",
+              switch: false,
+            },
+          ],
+        },
+        {
+          classTitle: "即时推送",
+          summarizingList: [
+            { id: 5, title: "订单消息", detail: "订单相关消息", switch: false },
+            //补
+            {
+              id: 14,
+              title: "订单退款消息",
+              detail: "订单退款相关消息",
+              switch: false,
+            },
+            {
+              id: 6,
+              title: "提现申请消息",
+              detail: "提现申请相关消息",
+              switch: false,
+            },
+            {
+              id: 7,
+              title: "服务消息通知",
+              detail: "服务相关消息",
+              switch: true,
+            },
+          ],
+        },
+        {
+          classTitle: "预警/报警通知",
+          summarizingList: [
+            {
+              id: 8,
+              title: "设备离线消息",
+              detail: "00:00-24:00,设备离线即推送",
+              switch: false,
+            },
+            /**
+             * @description:
+             * @return {*}
+             * @Date: 2023-12-06 09:55:05
+             */
+            {
+              id: 17,
+              title: "设备在线消息",
+              detail: "00:00-24:00,设备离线即推送",
+              switch: false,
+            },
+            {
+              id: 9,
+              title: "设备故障消息",
+              detail: "00:00-24:00,设备故障即推送",
+              switch: false,
+            },
+            {
+              id: 10,
+              title: "设备流控消息",
+              detail: "00:00-24:00,设备流控即推送",
+              switch: true,
+            },
+            {
+              id: 11,
+              title: "娃娃机商品库存通知",
+              inventory: 10,
+              inventType: "wwj",
+              switch: false,
+            },
+            {
+              id: 12,
+              title: "扭蛋机商品库存通知",
+              inventory: 10,
+              inventType: "ndj",
+              switch: false,
+            },
+            {
+              id: 13,
+              title: "售货机商品库存通知",
+              inventory: 10,
+              inventType: "shj",
+              switch: true,
+            },
+            {
+              id: 15,
+              title: "兑币机库存通知",
+              inventory: 10,
+              inventType: "dbj",
+              switch: true,
+            },
+            {
+              id: 16,
+              title: "游戏类库存通知",
+              inventory: 10,
+              inventType: "yxl",
+              switch: true,
+            },
+          ],
+        },
+      ],
+      pushSetObj: {
+        id: "",
+        incomeSituationDay: 0, //每日收益概况;（1：启用，0：停用）默认：0
+        incomeSituationTime: 0, //时段收益概况;（1：启用，0：停用）默认：0
+        deviceOfflineCollect: 0, //设备离线汇总;（1：启用，0：停用）默认：0
+        deviceMalfunctionCollect: 0, //设备故障汇总;（1：启用，0：停用）默认：0
+        orderMsg: 0, //订单消息;（1：启用，0：停用）默认：0
+        orderRefundMsg: 1, //订单退款消息;（1：启用，0：停用）默认：1
+        applicationWithdrawal: 0, //提现申请消息;（1：启用，0：停用）默认：0
+        serveMsg: 1, //服务消息通知;（1：启用，0：停用）默认：1
+        deviceOfflineMsg: 1, //设备离线消息;（1：启用，0：停用）默认：1
+        /**
+         * @description: 设备在线通知 默认 关闭
+         * @return {*}
+         * @Date: 2023-12-06 09:52:32
+         */
+        deviceOnlineMsg: 0, //设备在线消息;（1：启用，0：停用）默认：0
+        deviceMalfunctionMsg: 1, //设备故障消息;（1：启用，0：停用）默认：1
+        deviceFluidControlMsg: 1, //设备流控消息;（1：启用，0：停用）默认：1
+        craneMachineRepertoryMsg: 1, //娃娃机商品库存通知;（1：启用，0：停用）默认：1
+        craneMachineRepertory: 10, //娃娃机商品库存;int，默认10
+        eggRepertoryMsg: 1, //扭蛋机商品库存通知;（1：启用，0：停用）默认：1
+        eggRepertory: 10, //扭蛋机商品库存;int，默认10
+        vendingMachineRepertoryMsg: 1, //售货机商品库存通知;（1：启用，0：停用）默认：1
+        vendingMachineRepertory: 10, //售货机商品库存;int，默认10
+        commercialNumber: "ZTWL_20220617111542006", //商户号
+        updateId: 18, //更新人id
+        updateTime: "2022-07-11 09:59:28", //更新时间
+        coinInventoryWarning: 1, // 兑币机库存通知; (1：启用，0：停用) 默认：1
+        coinInventoryRepertory: 500, // 兑币机商品库存；int，默认500
+        vendingMachineType: 1, //1：整机缺货通知，2：单货道 默认1
+        gamingRepertoryMsg: 1, //游戏类商品库存通知;（1：启用，0：停用）默认：1
+        gamingRepertory: 10, //游戏类商品库存;int，默认10
+      },
+      repertoryType: "",
+      wechatSet: 0,
+    };
+  },
+  async created() {
+    this.getMessagePushSet();
+    this.getWxSet();
+  },
+  methods: {
+    // 微信设置
+    async getWxSet() {
+      let commercialNumber = JSON.parse(
+        localStorage.getItem("commercialNumber")
+      );
+      let res = await getWechatInform({ commercialNumber });
+      this.wechatSet = res.data.data.length;
+    },
+
+    async getMessagePushSet() {
+      let res = await messagePushSet();
+      if (res.data.code == 0 || res.data.msg == "ok") {
+        this.pushSetObj = Object.assign(this.pushSetObj, res.data.data);
+        this.shjRadio = this.pushSetObj.vendingMachineType == 1 ? 1 : 2;
+        this.fristPushSet();
+      }
+    },
+
+    // 赋值
+    fristPushSet() {
+      this.setInfolist.forEach((item) => {
+        item.summarizingList.forEach((params) => {
+          if (params.id == 1) {
+            params.switch = this.pushSetObj.incomeSituationDay == 1;
+          } else if (params.id == 2) {
+            params.switch = this.pushSetObj.incomeSituationTime == 1;
+          } else if (params.id == 3) {
+            params.switch = this.pushSetObj.deviceOfflineCollect == 1;
+          } else if (params.id == 4) {
+            params.switch = this.pushSetObj.deviceMalfunctionCollect == 1;
+          } else if (params.id == 5) {
+            params.switch = this.pushSetObj.orderMsg == 1;
+          } else if (params.id == 14) {
+            params.switch = this.pushSetObj.orderRefundMsg == 1;
+          } else if (params.id == 6) {
+            params.switch = this.pushSetObj.applicationWithdrawal == 1;
+          } else if (params.id == 7) {
+            params.switch = this.pushSetObj.serveMsg == 1;
+          } else if (params.id == 8) {
+            params.switch = this.pushSetObj.deviceOfflineMsg == 1;
+          } else if (params.id == 9) {
+            params.switch = this.pushSetObj.deviceMalfunctionMsg == 1;
+          } else if (params.id == 10) {
+            params.switch = this.pushSetObj.deviceFluidControlMsg == 1;
+          } else if (params.id == 11) {
+            //娃娃机
+            params.switch = this.pushSetObj.craneMachineRepertoryMsg == 1;
+            params.inventory = this.pushSetObj.craneMachineRepertory;
+          } else if (params.id == 12) {
+            //扭蛋机
+            params.switch = this.pushSetObj.eggRepertoryMsg == 1;
+            params.inventory = this.pushSetObj.eggRepertory;
+          } else if (params.id == 13) {
+            //售货机
+            params.switch = this.pushSetObj.vendingMachineRepertoryMsg == 1;
+            params.inventory = this.pushSetObj.vendingMachineRepertory;
+          } else if (params.id == 15) {
+            //兑币机
+            params.switch = this.pushSetObj.coinInventoryWarning == 1;
+            params.inventory = this.pushSetObj.coinInventoryRepertory;
+          } else if (params.id == 16) {
+            //游戏类
+            params.switch = this.pushSetObj.gamingRepertoryMsg == 1;
+            params.inventory = this.pushSetObj.gamingRepertory;
+          } else if (params.id == 17) {
+            //设备在线通知
+            params.switch = this.pushSetObj.deviceOnlineMsg == 1;
+          }
+        });
+      });
+    },
+
+    // 传值
+    setPushMsg(id) {
+      this.setInfolist.forEach((item) => {
+        item.summarizingList.forEach((params) => {
+          if (params.id == 1 && params.id == id) {
+            this.pushSetObj.incomeSituationDay = params.switch ? 1 : 0;
+          } else if (params.id == 2 && params.id == id) {
+            this.pushSetObj.incomeSituationTime = params.switch ? 1 : 0;
+          } else if (params.id == 3 && params.id == id) {
+            this.pushSetObj.deviceOfflineCollect = params.switch ? 1 : 0;
+          } else if (params.id == 4 && params.id == id) {
+            this.pushSetObj.deviceMalfunctionCollect = params.switch ? 1 : 0;
+          } else if (params.id == 5 && params.id == id) {
+            this.pushSetObj.orderMsg = params.switch ? 1 : 0;
+          } else if (params.id == 6 && params.id == id) {
+            this.pushSetObj.applicationWithdrawal = params.switch ? 1 : 0;
+          } else if (params.id == 7 && params.id == id) {
+            this.pushSetObj.serveMsg = params.switch ? 1 : 0;
+          } else if (params.id == 8 && params.id == id) {
+            this.pushSetObj.deviceOfflineMsg = params.switch ? 1 : 0;
+          } else if (params.id == 9 && params.id == id) {
+            this.pushSetObj.deviceMalfunctionMsg = params.switch ? 1 : 0;
+          } else if (params.id == 10 && params.id == id) {
+            this.pushSetObj.deviceFluidControlMsg = params.switch ? 1 : 0;
+          } else if (params.id == 11 && params.id == id) {
+            //娃娃机
+            this.pushSetObj.craneMachineRepertoryMsg = params.switch ? 1 : 0;
+          } else if (params.id == 12 && params.id == id) {
+            //扭蛋机
+            this.pushSetObj.eggRepertoryMsg = params.switch ? 1 : 0;
+          } else if (params.id == 13 && params.id == id) {
+            //售货机
+            this.pushSetObj.vendingMachineRepertoryMsg = params.switch ? 1 : 0;
+          } else if (params.id == 14 && params.id == id) {
+            this.pushSetObj.orderRefundMsg = params.switch ? 1 : 0;
+          } else if (params.id == 15 && params.id == id) {
+            this.pushSetObj.coinInventoryWarning = params.switch ? 1 : 0;
+          } else if (params.id == 16 && params.id == id) {
+            this.pushSetObj.gamingRepertoryMsg = params.switch ? 1 : 0;
+          } else if (params.id == 17) {
+            //设备在线通知
+            this.pushSetObj.deviceOnlineMsg = params.switch ? 1 : 0;
+          }
+        });
+      });
+      this.setMessagePush();
+    },
+
+    setMessagePush: throttleFun(async function () {
+      let res = await editMessagePushSet(this.pushSetObj);
+      if (res.data.code == 0 || res.data.msg == "ok") {
+        this.setInventory = false;
+        this.getMessagePushSet();
+      }
+    }, 1000),
+
+    //设备库存设置
+    setInvent(det) {
+      this.inventoryNum = det.inventory;
+      this.isShowOtherset = false;
+      this.repertoryType = det.inventType;
+      if (det.inventType == "shj") {
+        this.isShowOtherset = true;
+      }
+      this.setInventory = true;
+    },
+
+    setRepertory() {
+      if (this.repertoryType == "wwj") {
+        this.pushSetObj.craneMachineRepertory = this.inventoryNum;
+      } else if (this.repertoryType == "ndj") {
+        this.pushSetObj.eggRepertory = this.inventoryNum;
+      } else if (this.repertoryType == "shj") {
+        this.pushSetObj.vendingMachineRepertory = this.inventoryNum;
+        this.pushSetObj.vendingMachineType = this.shjRadio;
+      } else if (this.repertoryType == "dbj") {
+        this.pushSetObj.coinInventoryRepertory = this.inventoryNum;
+      } else if (this.repertoryType == "yxl") {
+        this.pushSetObj.gamingRepertory = this.inventoryNum;
+      }
+      this.setMessagePush();
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.noticeSetting {
+  width: 100%;
+  background: #f5f5f5;
+  font-family: PingFangSC, PingFangSC-Regular;
+}
+.notice-content {
+  width: 100%;
+  padding-bottom: 30px;
+  .message-title {
+    align-items: center;
+    color: #999;
+    display: flex;
+    font-size: 14px;
+    font-weight: 400;
+    height: 45px;
+    padding-left: 15px;
+  }
+  .receive-msg {
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid hsla(0, 0%, 80%, 0.3);
+    display: flex;
+    height: 60px;
+    justify-content: space-between;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
+  .main-txt {
+    color: #131313;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 24px;
+  }
+  .right-set {
+    display: flex;
+    align-items: center;
+  }
+  .sm-text {
+    color: #999;
+    font-size: 13px;
+    font-weight: 400;
+    display: inline-block;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    line-height: 19px;
+  }
+  .icons {
+    padding-left: 8px;
+  }
+  .edit-btn {
+    color: #5241ff;
+    padding-left: 10px;
+  }
+}
+// popup
+.setInventory-con {
+  min-width: 270px;
+  min-height: 185px;
+  display: flex;
+  flex-direction: column;
+  .title {
+    color: #262626;
+    font-size: 19px;
+    font-weight: 700;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .info {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 16px 20px 20px;
+    .other-box {
+      margin-bottom: 15px;
+      .mint-radiolist {
+        display: flex;
+        height: 50px;
+        align-items: center;
+        .radio-item {
+          flex: 1;
+          font-size: 16px;
+          line-height: 50px;
+          white-space: nowrap;
+        }
+        .label-right {
+          margin-left: 12px;
+        }
+      }
+      .popup-tips {
+        font-size: 16px;
+        color: #8c8c8c;
+      }
+    }
+  }
+  .btn-wrapper {
+    border-top: 1px solid #e6e6e6;
+    display: flex;
+    .btn {
+      flex: 1;
+      color: #5241ff;
+      font-size: 18px;
+      line-height: 50px;
+      text-align: center;
+      user-select: none;
+    }
+    .cancel-btn {
+      border-right: 1px solid #e6e6e6;
+      color: #595959;
+    }
+  }
+}
+</style>

@@ -27,7 +27,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.xls-empty {
 		width: 100%;
 		background: #00000000;

@@ -108,7 +108,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.xls-header {
 		width: 100%;
 		margin-bottom: 40rpx;
