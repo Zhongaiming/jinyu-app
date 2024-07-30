@@ -60,6 +60,7 @@
 	export default {
 		data() {
 			return {
+				onEarth: true,
 				dataList: [{
 					"id": 212,
 					"name": "批量导入",

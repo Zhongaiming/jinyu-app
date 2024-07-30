@@ -64,6 +64,34 @@ const subPackages = [
 				"path": "dailyBill/index",
 				"name": "每日账单"
 			},
+			{
+				"path": "dailyBill/detail",
+				"name": "每日账单详情"
+			},
+			{
+				"path": "walletQuestion/index",
+				"name": "钱包常见问题"
+			},
+			{
+				"path": "bankCard/index",
+				"name": "银行卡"
+			},
+			{
+				"path": "merchantCA/index",
+				"name": "商户认证"
+			},
+			{
+				"path": "authentication/index",
+				"name": "实名认证"
+			},
+			{
+				"path": "authentication/detail",
+				"name": "实名认证详情"
+			},
+			{
+				"path": "frequentlyQuestion/index",
+				"name": "实名认证常见问题"
+			},
 		]
 	}
 ]

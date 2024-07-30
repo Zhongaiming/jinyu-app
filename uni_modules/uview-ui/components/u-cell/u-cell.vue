@@ -30,7 +30,7 @@
 				<slot name="right-icon" v-if="$slots['right-icon']">
 				</slot>
 				<u-icon v-else :name="rightIcon" :custom-style="rightIconStyle" :color="disabled ? '#c8c9cc' : 'info'"
-					:size="size === 'large' ? 18 : 16"></u-icon>
+					:size="size === 'large' ? 36 : 32"></u-icon>
 			</view>
 		</view>
 		<u-line v-if="border"></u-line>

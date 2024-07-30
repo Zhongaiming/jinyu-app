@@ -61,7 +61,7 @@
 							<u-icon
 							    name="close"
 							    color="#ffffff"
-							    size="10"
+							    size="22"
 							></u-icon>
 						</view>
 					</view>

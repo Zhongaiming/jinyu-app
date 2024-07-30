@@ -7,7 +7,8 @@
 					<p class="balance-label">余额(元)</p>
 					<p class="balance-text">
 						{{walletBagInfo.walletBalance || "0.00"}}
-						<image :src="`${$baseUrl}appV4/authentications/money-back.png`" alt="" class="balance-sign" mode="widthFix"/>
+						<image :src="`${$baseUrl}appV4/authentications/money-back.png`" alt="" class="balance-sign"
+							mode="widthFix" />
 					</p>
 				</view>
 				<view class="ad-income-box">
@@ -25,18 +26,20 @@
 			<view class="btn-outside home-family">
 				<view class="btn-bg"></view>
 				<view class="btn-wrapper">
-					<view class="btn-list" v-hasPermi="['app:payBag:index:bill']"
-						@click="goTo('dailyBill')">
-						<image :src="`${$baseUrl}appV4/authentications/bill.png`" alt="" class="btn-icon" mode="widthFix"/>
+					<view class="btn-list" v-hasPermi="['app:payBag:index:bill']" @click="goTo('dailyBill')">
+						<image :src="`${$baseUrl}appV4/authentications/bill.png`" alt="" class="btn-icon"
+							mode="widthFix" />
 						<p class="btn-text">每日账单</p>
 					</view>
 					<view class="btn-list" @click="$toast('敬请期待~')">
-						<image :src="`${$baseUrl}appV4/authentications/subsidy.png`" alt="" class="btn-icon" mode="widthFix"/>
+						<image :src="`${$baseUrl}appV4/authentications/subsidy.png`" alt="" class="btn-icon"
+							mode="widthFix" />
 						<p class="btn-text">平台补贴</p>
 					</view>
 					<view class="btn-list" @click="$toast('敬请期待~')">
 						<!--  @click="$router.push('/moneyBag/withdrawRecord')" -->
-						<image :src="`${$baseUrl}appV4/authentications/record.png`" alt="" class="btn-icon" mode="widthFix"/>
+						<image :src="`${$baseUrl}appV4/authentications/record.png`" alt="" class="btn-icon"
+							mode="widthFix" />
 						<p class="btn-text">提现记录</p>
 					</view>
 				</view>
@@ -45,7 +48,8 @@
 			<view class="card-box" v-if="userType != 5">
 				<!-- 银行卡 -->
 				<view class="card-list" v-hasPermi="['app:payBag:index:bank']">
-					<image :src="`${$baseUrl}appV4/authentications/card.png`" alt="" class="card-icon" mode="widthFix"/>
+					<image :src="`${$baseUrl}appV4/authentications/card.png`" alt="" class="card-icon"
+						mode="widthFix" />
 					<p class="card-text card-con">银行卡</p>
 					<van-popover v-model="showBankcard" trigger="click" placement="top-end" v-if="0">
 						<view class="bank-list">
@@ -79,7 +83,7 @@
 											  : bank.entryStatus === "DOING"
 											  ? "审核中"
 											  : "未知状态"
-												}}		
+												}}
 									</view>
 									<p class="back">&gt;</p>
 								</view>
@@ -98,10 +102,11 @@
 					</p>
 					<p class="right-sign">&gt;</p>
 				</view>
-				<!-- 实名认证 -->
-				<view class="card-list" v-hasPermi="['app:payBag:index:authenticate']" @click="goResigter"
+				<!-- 实名认证 @click="goResigter"-->
+				<view class="card-list" v-hasPermi="['app:payBag:index:authenticate']" @click="goTo('merchantCA')"
 					v-if="!bankList.length">
-					<image :src="`${$baseUrl}appV4/authentications/check.png`" alt="" class="card-icon" mode="widthFix"/>
+					<image :src="`${$baseUrl}appV4/authentications/check.png`" alt="" class="card-icon"
+						mode="widthFix" />
 					<p class="card-text card-con">实名认证</p>
 					<p class="card-text success" v-if="bankList.length">已认证</p>
 					<p class="card-text bad" v-else>未认证</p>
@@ -116,7 +121,8 @@
                   })
                 : $toast('您还未绑卡~')
             ">
-					<image :src="`${$baseUrl}appV4/authentications/card.png`" alt="" class="card-icon" mode="widthFix"/>
+					<image :src="`${$baseUrl}appV4/authentications/card.png`" alt="" class="card-icon"
+						mode="widthFix" />
 					<p class="card-text card-con">认证记录</p>
 					<p class="card-text success" v-if="bankList.length">已认证</p>
 					<p class="card-text bad" v-else>未认证</p>
@@ -124,7 +130,7 @@
 				</view>
 			</view>
 
-			<view class="question-box" @click="$router.push('/proList')">
+			<view class="question-box" @click="goTo('walletQuestion')">
 				<p class="question-text">钱包常见问题</p>
 			</view>
 		</view>
@@ -149,6 +155,11 @@
 				showBankcard: false,
 				bankList: [],
 			};
+		},
+		beforeCreate() {
+			let image = new Image();
+			image.src = `${this.$baseUrl}appV4/example/bing-card.png`;
+			image.onload = () => {};
 		},
 		// async created() {
 		//   this.getHlbEntryList();
