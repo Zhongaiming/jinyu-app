@@ -102,8 +102,8 @@
 					</p>
 					<p class="right-sign">&gt;</p>
 				</view>
-				<!-- 实名认证 @click="goResigter"-->
-				<view class="card-list" v-hasPermi="['app:payBag:index:authenticate']" @click="goTo('merchantCA')"
+				<!-- 实名认证 @click="goResigter" merchantCA-->
+				<view class="card-list" v-hasPermi="['app:payBag:index:authenticate']" @click="goTo('authentication')"
 					v-if="!bankList.length">
 					<image :src="`${$baseUrl}appV4/authentications/check.png`" alt="" class="card-icon"
 						mode="widthFix" />
