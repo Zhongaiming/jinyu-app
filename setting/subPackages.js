@@ -12,6 +12,30 @@ const subPackages = [
 		"root": "pages/subpackages/personal",  // 个人中心包
 		"pages": [
 			{
+				"path": "brandMessage/index",
+				"name": "品牌信息设置"
+			},
+			{
+				"path": "noticeSet/index",
+				"name": "通知设置"
+			},
+			{
+				"path": "noticeSet/detail",
+				"name": "接受消息的微信"
+			},
+			{
+				"path": "placeService/index",
+				"name": "客服设置"
+			},
+			{
+				"path": "placeService/batch",
+				"name": "客服操作"
+			},
+			{
+				"path": "placeService/operate",
+				"name": "场地客服设置"
+			},
+			{
 				"path": "setting/index",
 				"name": "设置"
 			},
@@ -79,6 +103,10 @@ const subPackages = [
 			{
 				"path": "merchantCA/index",
 				"name": "商户认证"
+			},
+			{
+				"path": "documentExample/index",
+				"name": "证件示例"
 			},
 			{
 				"path": "authentication/index",
