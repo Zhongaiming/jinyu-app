@@ -239,12 +239,12 @@
 			}
 
 			.correct-ph:before {
-				background: url(#{$prefix}appV4/image/wallet/correct.png) no-repeat;
+				background: url(#{$baseUrl}appV4/image/wallet/correct.png) no-repeat;
 				background-size: 100% 100%;
 			}
 
 			.correct-bh:before {
-				background: url(#{$prefix}appV4/image/wallet/bad.png) no-repeat;
+				background: url(#{$baseUrl}appV4/image/wallet/bad.png) no-repeat;
 				background-size: 100% 100%;
 			}
 		}

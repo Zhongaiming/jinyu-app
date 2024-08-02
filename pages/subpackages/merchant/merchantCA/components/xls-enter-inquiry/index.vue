@@ -53,7 +53,7 @@
 		background-color: #ff9900;
 		display: flex;
 		z-index: 999;
-		background-image: url(#{$prefix}appV4/example/bing-card.png);
+		background-image: url(#{$baseUrl}appV4/example/bing-card.png);
 		background-repeat: no-repeat;
 		background-size: 100% auto;
 

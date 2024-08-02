@@ -404,7 +404,7 @@
 				width: 100%;
 				box-sizing: border-box;
 				border-radius: 24rpx;
-				background: url(#{$prefix}appV4/authentications/bg-image.png) no-repeat #03bf79;
+				background: url(#{$baseUrl}appV4/authentications/bg-image.png) no-repeat #03bf79;
 				background-size: 100% 100%;
 				margin-bottom: 16rpx;
 

@@ -400,7 +400,7 @@
 		top: 0;
 		right: 0;
 		bottom: 0;
-		background-image: url(#{$prefix}#{$url});
+		background-image: url(#{$baseUrl}#{$url});
 		background-position: 95% 0;
 		background-repeat: no-repeat;
 		background-size: 128rpx 128rpx;

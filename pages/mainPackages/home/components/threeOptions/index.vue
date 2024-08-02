@@ -36,7 +36,7 @@
 						id: 2,
 						title: '会员管理',
 						subheading: '会员消费记录',
-						route: '/memberManagement',
+						route: '/pages/subpackages/home/member/index',
 						imgUrl: `${this.$baseUrl}homeImages/threeOptions/member.png`,
 						permissions: 'app:member:index',
 						class: 'xls-bg-right'
@@ -46,7 +46,7 @@
 		},
 		methods: {
 			goTo(route) {
-
+				this.$goTo(route)
 			}
 		},
 	};

@@ -5,6 +5,22 @@ const subPackages = [
 			{
 				"path": "index",
 				"name": "首页下的分包"
+			},
+			{
+				"path": "member/index",
+				"name": "会员列表"
+			},
+			{
+				"path": "member/search",
+				"name": "会员搜索"
+			},
+			{
+				"path": "member/detail",
+				"name": "会员详情"
+			},
+			{
+				"path": "member/account",
+				"name": "账户余币、余额"
 			}
 		]
 	},

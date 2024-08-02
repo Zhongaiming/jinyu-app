@@ -70,12 +70,12 @@
 			}
 
 			@mixin bg-image($url) {
-				background: url(#{$prefix}#{$url}) no-repeat;
+				background: url(#{$baseUrl}#{$url}) no-repeat;
 				background-size: 100% 100%;
 			}
 			
 			@mixin bg-img-url($url) {
-				background: url(#{$prefix}#{$url}) no-repeat;
+				background: url(#{$baseUrl}#{$url}) no-repeat;
 				background-size: 80% 80%;
 				background-position: center;
 			}
