@@ -55,6 +55,43 @@ const pages = [{
 			"title": "合计投币"
 		}
 	},
+	// 设备模块
+	{
+		"path": "pages/mainPackages/home/deviceModule/index",
+		"name": "deviceModuleList",
+		"meta": {
+			"title": "商户设备"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/deviceModule/deviceFault",
+		"name": "deviceModuleFault",
+		"meta": {
+			"title": "设备故障"
+		}
+	},
+	// 经营统计模块
+	{
+		"path": "pages/mainPackages/home/operateModule/index",
+		"name": "operateModuleList",
+		"meta": {
+			"title": "商户经营统计"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/operateModule/trend",
+		"name": "operateModuleTrend",
+		"meta": {
+			"title": "统计趋势"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/operateModule/detail",
+		"name": "operateModuleDetail",
+		"meta": {
+			"title": "统计详情"
+		}
+	},
 	// 我的
 	{
 		"path": "pages/mainPackages/personal/commodityType/index",
@@ -79,21 +116,21 @@ const pages = [{
 	},
 	{
 		"path": "pages/mainPackages/personal/placeModule/placeOperate",
-		"name": "placeModule",
+		"name": "placeModuleOperate",
 		"meta": {
 			"title": "操作场地"
 		}
 	},
 	{
 		"path": "pages/mainPackages/personal/placeModule/placeOperateRecord",
-		"name": "placeModule",
+		"name": "placeModuleRecord",
 		"meta": {
 			"title": "操作记录"
 		}
 	},
 	{
 		"path": "pages/mainPackages/personal/placeModule/placeOperateRecordDetail",
-		"name": "placeModule",
+		"name": "placeModuleDetail",
 		"meta": {
 			"title": "操作记录详情"
 		}

@@ -1,6 +1,7 @@
 <template>
     <div class="xls-member-detail-page">
       <xls-jy-navbar title="用户详情" bgColor="#5241ff" titleStyle="color: #fff"></xls-jy-navbar>
+	  
       <div class="top-container" v-show="!showRecord">
         <div class="info-container">
           <div class="info-content">
@@ -21,7 +22,7 @@
             <div class="declaration" @click="$refs.notice.showTips(1)">
               <p class="text">数据说明</p>
             </div>
-            <notice-tips ref="notice" />
+            <!-- <notice-tips ref="notice" /> -->
           </div>
           <div class="total-container">
             <div class="total-list">
@@ -81,12 +82,12 @@
       <div class="detail-content" v-show="!showRecord">
         <div class="menu-container">
           <div class="menu-list" @click="partWelfare = true">
-            <van-icon
+            <!-- <van-icon
               name="gold-coin-o"
               color="#5241FF"
               size="24"
               class="icon-tab"
-            />
+            /> -->
             <div class="name">派发福利</div>
           </div>
           <div
@@ -97,7 +98,7 @@
               })
             "
           >
-            <van-icon name="bars" color="#5241FF" size="24" class="icon-tab" />
+            <!-- <van-icon name="bars" color="#5241FF" size="24" class="icon-tab" /> -->
             <div class="name">更多资料</div>
           </div>
         </div>
@@ -122,59 +123,16 @@
         </div>
       </div>
 	  
-      <!-- 派发福利 -->
-      <u-popup :show="partWelfare" round mode="center">
-        <div class="part-welfare">
-          <div class="member-dialog-title">派福利给会员</div>
-          <div class="member-dialog-card-content">
-            <van-field
-              v-model="welfareForm.operationCurrency"
-              label="送游戏币"
-              type="digit"
-              placeholder="请输入数量(选填)"
-              style="padding: 10px 0"
-            >
-              <template #extra>
-                <span>个</span>
-              </template>
-            </van-field>
-            <van-field
-              v-model="welfareForm.operationBalance"
-              label="送会员余额"
-              type="number"
-              placeholder="请输入金额(选填)"
-              style="padding: 10px 0"
-            >
-              <template #extra>
-                <span>元</span>
-              </template>
-            </van-field>
-            <van-field label="备注" style="padding: 10px 0" disabled />
-            <van-field
-              v-model="welfareForm.operationRemark"
-              rows="2"
-              autosize
-              type="textarea"
-              maxlength="20"
-              placeholder="请输入备注信息"
-              show-word-limit
-              style="background: #fafafa; border: 1px solid #ebebeb"
-            />
-          </div>
-          <div class="member-dialog-button-group">
-            <div class="btn" @click="partWelfare = false">取消</div>
-            <div class="btn btn-last-child" @click="confirmWelfare">确定</div>
-          </div>
-        </div>
-      </u-popup>
+      
       <div
         class="record-btn"
         @click="showRecord = !showRecord"
         v-show="!showRecord"
       >
         <span
-          >会员消费记录 <van-icon name="arrow-up" size="18" color="#999"
-        /></span>
+          >会员消费记录 
+		  <!-- <van-icon name="arrow-up" size="18" color="#999"/> -->
+		  </span>
       </div>
       <!-- 会员消费记录 -->
       <div
@@ -183,7 +141,8 @@
       >
         <div class="record-btn" @click="showRecord = !showRecord">
           <span
-            >会员消费记录 <van-icon name="arrow-down" size="18" color="#999"
+            >会员消费记录 
+			<!-- <van-icon name="arrow-down" size="18" color="#999" -->
           /></span>
         </div>
         <div class="record-container">
@@ -209,13 +168,13 @@
               <!-- 搜索 -->
               <div class="search-con">
                 <div class="left">
-                  <van-dropdown-menu active-color="#5241FF">
+                  <!-- <van-dropdown-menu active-color="#5241FF">
                     <van-dropdown-item
                       v-model="value1"
                       :options="option1"
                       @change="beOndutyState"
                     />
-                  </van-dropdown-menu>
+                  </van-dropdown-menu> -->
                 </div>
                 <image
                   :src="`${$baseUrl}appV4/img/icons/search.png`"
@@ -233,7 +192,7 @@
               </div>
               <!-- 条件筛选 -->
               <div class="fliter-condition">
-                <van-dropdown-menu active-color="#5241FF">
+                <!-- <van-dropdown-menu active-color="#5241FF">
                   <van-dropdown-item title="场地名称" ref="itemPlace">
                     <div class="consume-place">
                       <search-input
@@ -372,7 +331,7 @@
                       </div>
                     </div>
                   </van-dropdown-item>
-                </van-dropdown-menu>
+                </van-dropdown-menu> -->
               </div>
               <div class="dateSelector-container">
                 <div
@@ -391,7 +350,7 @@
           <div class="payment-record-container record-module-wrapper" v-else>
             <div class="payment-record-wrapper">
               <div class="fliter-condition">
-                <van-dropdown-menu active-color="#5241FF">
+                <!-- <van-dropdown-menu active-color="#5241FF" v-if="0">
                   <van-dropdown-item title="场地名称" ref="itemPlace">
                     <div class="consume-place">
                       <search-input
@@ -492,7 +451,7 @@
                       </div>
                     </div>
                   </van-dropdown-item>
-                </van-dropdown-menu>
+                </van-dropdown-menu> -->
               </div>
               <div class="dateSelector-container">
                 <div
@@ -656,13 +615,13 @@
                 </span>
               </div>
             </div>
-            <van-icon
+            <!-- <van-icon
               name="arrow"
               size="16"
               color="#969799"
               style="padding: 3px 0 0 6px"
               v-show="payType"
-            />
+            /> -->
           </div>
           <on-earth
             v-if="
@@ -670,7 +629,7 @@
               (onEarth && !payType && memberList.length)
             "
           />
-          <no-data v-if="!memberList.length" />
+          <!-- <no-data v-if="!memberList.length" /> -->
         </div>
       </div>
       <!-- 时间选择器 -->
@@ -1533,44 +1492,5 @@ export default {
   line-height: 48px;
   font-size: 16px;
 }
-// 派发福利
-.part-welfare {
-  padding: 20px;
-  width: 280px;
-  .member-dialog-title {
-    color: #333;
-    font-size: 17px;
-    font-weight: 700;
-    text-align: center;
-  }
-  .member-dialog-button-group {
-    display: flex;
-    align-items: center;
-    .btn {
-      font-size: 16px;
-      font-weight: 400;
-      border-radius: 8px;
-      height: 44px;
-      flex: 1;
-      border: none;
-      background: #f5f5f5;
-      color: #333;
-      line-height: 44px;
-      text-align: center;
-    }
-    .btn-last-child {
-      background: #5241ff;
-      color: #fff;
-      margin-left: 8px;
-    }
-  }
-  .member-dialog-card-content {
-    padding: 12px 0;
-  }
-  ::v-deep .van-field__label {
-    font-weight: 700;
-    color: #333;
-    font-size: 14px;
-  }
-}
+
 </style>

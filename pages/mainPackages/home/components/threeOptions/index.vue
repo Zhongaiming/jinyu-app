@@ -18,7 +18,7 @@
 						id: 0,
 						title: '设备管理',
 						subheading: '在线 0 / 0 台',
-						route: '/deviceManagement',
+						route: '/pages/mainPackages/home/deviceModule/index',
 						imgUrl: `${this.$baseUrl}homeImages/threeOptions/device.png`,
 						permissions: 'app:device:index',
 						class: 'xls-bg-left'
@@ -27,7 +27,7 @@
 						id: 1,
 						title: '经营统计',
 						subheading: '经营数据统计',
-						route: '/earningStat',
+						route: '/pages/mainPackages/home/operateModule/index',
 						imgUrl: `${this.$baseUrl}homeImages/threeOptions/acount.png`,
 						permissions: 'app:operate:index',
 						class: 'xls-bg-center'
@@ -110,10 +110,10 @@
 		.base-bg-style("@{prefix}homeImages/threeOptions/right.png");
 		color: #7f4805;
 	}
-	
+
 	.base-bg-style(@url) {
-	  background-image: url(@url);
-	  background-repeat: no-repeat;
-	  background-size: 102% 100%;
+		background-image: url(@url);
+		background-repeat: no-repeat;
+		background-size: 102% 100%;
 	}
 </style>
