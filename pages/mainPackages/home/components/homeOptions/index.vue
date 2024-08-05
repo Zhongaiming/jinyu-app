@@ -6,7 +6,7 @@
 			</view>
 			<view class="xls-options-list-content">
 				<view class="xls-options-list-main" v-for="item in option.dataList" :key="item.id"
-					v-hasPermi="[...item.permissions]" @click="goTo(item.route)">
+					v-hasPermi="[...item.permissions]" @click="goTo(item)">
 					<view class="xls-options-list-image">
 						<image class="image" :src="item.imgUrl" mode="widthFix"></image>
 						<span class="status" v-if="item.status">{{item.status}}</span>
@@ -33,7 +33,7 @@
 							id: 11,
 							title: '设备绑定',
 							imgUrl: `${this.$baseUrl}homeImages/fristList/one.png`,
-							route: '/aBinding',
+							route: '/pages/mainPackages/home/deviceModule/deviceBinding',
 							permissions: ['app:bing:index'],
 							status: 0
 						},
@@ -41,7 +41,7 @@
 							id: 12,
 							title: '套餐设置',
 							imgUrl: `${this.$baseUrl}homeImages/fristList/two.png`,
-							route: '/setMeal',
+							route: '/pages/mainPackages/home/packageModule/index',
 							permissions: ['app:meal:index'],
 							status: 0
 						},
@@ -57,7 +57,7 @@
 							id: 14,
 							title: '远程启动',
 							imgUrl: `${this.$baseUrl}homeImages/fristList/four.png`,
-							route: '',
+							route: '/pages/mainPackages/home/remote/index',
 							permissions: ['app:remoteboot:index'],
 							status: 0
 						},
@@ -65,7 +65,7 @@
 							id: 15,
 							title: '营销工具',
 							imgUrl: `${this.$baseUrl}homeImages/fristList/five.png`,
-							route: '/marketing/index',
+							route: '/pages/mainPackages/home/marketingModule/index',
 							permissions: ['app:marketing:index'],
 							status: 0
 						}
@@ -80,7 +80,10 @@
 							id: 21,
 							title: '出货统计',
 							imgUrl: `${this.$baseUrl}homeImages/secondList/one.png`,
-							route: '/shjStatis',
+							route: '/pages/mainPackages/home/shipmentStatistics/index',
+							params: {
+								deviceType: 4
+							},
 							permissions: ['app:shj:statistics:read'],
 							status: 0
 						},
@@ -112,7 +115,7 @@
 							id: 25,
 							title: '商品管理',
 							imgUrl: `${this.$baseUrl}homeImages/secondList/five.png`,
-							route: '/shjCommodity',
+							route: '/pages/mainPackages/home/commodity/shjCommodity',
 							permissions: ['app:shj:commodity:read'],
 							status: 0
 						}
@@ -127,7 +130,10 @@
 							id: 31,
 							title: '礼品统计',
 							imgUrl: `${this.$baseUrl}homeImages/threeList/one.png`,
-							route: '/giftStatis',
+							route: '/pages/mainPackages/home/shipmentStatistics/index',
+							params: {
+								deviceType: null
+							},
 							permissions: ['app:gift:index'],
 							status: 0
 						},
@@ -135,7 +141,7 @@
 							id: 32,
 							title: '商品管理',
 							imgUrl: `${this.$baseUrl}homeImages/threeList/five.png`,
-							route: '/commodityMachine',
+							route: '/pages/mainPackages/home/commodity/index',
 							permissions: ['app:shop:index'],
 							status: 0
 						},
@@ -143,7 +149,7 @@
 							id: 33,
 							title: '扭蛋机数据',
 							imgUrl: `${this.$baseUrl}homeImages/threeList/six.png`,
-							route: '/gashaponMachine',
+							route: '/pages/mainPackages/home/ndjData/index',
 							permissions: ['app:ndj:index'],
 							status: 0,
 							result: 0,
@@ -160,7 +166,7 @@
 							id: 35,
 							title: '兑币机数据',
 							imgUrl: `${this.$baseUrl}homeImages/threeList/dbj.png`,
-							route: '/dataDbj',
+							route: '/pages/mainPackages/home/dbjData/index',
 							permissions: ['app:dbj:index:read'],
 							status: 0
 						},
@@ -193,7 +199,7 @@
 							id: 41,
 							title: '自动分账',
 							imgUrl: `${this.$baseUrl}homeImages/fourList/second.png`,
-							route: '/subAccount',
+							route: '/pages/mainPackages/home/separateAccounts/index',
 							permissions: ['app:subaccounts:index'],
 							status: 0
 						},
@@ -201,7 +207,7 @@
 							id: 42,
 							title: '申诉反馈',
 							imgUrl: `${this.$baseUrl}homeImages/fourList/four.png`,
-							route: '/coupleBack',
+							route: '/pages/mainPackages/home/appealFeedback/index',
 							permissions: ['app:couple:index'],
 							status: 0
 						},
@@ -217,7 +223,7 @@
 							id: 44,
 							title: '黑名单管理',
 							imgUrl: `${this.$baseUrl}homeImages/fourList/nine.png`,
-							route: '/blackList',
+							route: '/pages/mainPackages/home/blacklist/index',
 							permissions: ['app:back:index'],
 							status: 0
 						},
@@ -227,7 +233,7 @@
 		},
 		methods: {
 			goTo(route) {
-				this.$goTo(route)
+				this.$goTo(route.route, undefined, route.params)
 			}
 		}
 	}

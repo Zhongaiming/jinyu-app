@@ -104,7 +104,8 @@
 			}
 		},
 		onLoad(option) {
-			console.log("传参", JSON.parse(option.params).id)
+			// JSON.parse(option.params)
+			console.log("传参", option)
 		},
 		methods: {
 			scrolltolower() {},

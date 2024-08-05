@@ -5,7 +5,7 @@ const pages = [{
 			"title": "登录2"
 		}
 	},
-	// 首页
+	// ===== 首页 ======
 	{
 		"path": "pages/mainPackages/home/order/index",
 		"name": "Order",
@@ -70,6 +70,13 @@ const pages = [{
 			"title": "设备故障"
 		}
 	},
+	{
+		"path": "pages/mainPackages/home/deviceModule/deviceBinding",
+		"name": "deviceModuleBinding",
+		"meta": {
+			"title": "设备绑定"
+		}
+	},
 	// 经营统计模块
 	{
 		"path": "pages/mainPackages/home/operateModule/index",
@@ -92,7 +99,136 @@ const pages = [{
 			"title": "统计详情"
 		}
 	},
-	// 我的
+	// 套餐设置
+	{
+		"path": "pages/mainPackages/home/packageModule/index",
+		"name": "packageModule",
+		"meta": {
+			"title": "套餐设置"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/packageModule/packageOperate",
+		"name": "packageOperate",
+		"meta": {
+			"title": "修改充值套餐"
+		}
+	},
+	// 远程启动
+	{
+		"path": "pages/mainPackages/home/remote/index",
+		"name": "remoteDevice",
+		"meta": {
+			"title": "远程启动"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/remote/record",
+		"name": "remoteRecord",
+		"meta": {
+			"title": "远程启动记录"
+		}
+	},
+	// 营销工具
+	{
+		"path": "pages/mainPackages/home/marketingModule/index",
+		"name": "marketingModule",
+		"meta": {
+			"title": "营销工具"
+		}
+	},
+	// 出货统计、出礼统计
+	{
+		"path": "pages/mainPackages/home/shipmentStatistics/index",
+		"name": "shipmentStatistics",
+		"meta": {
+			"title": "出货统计/出礼统计"
+		}
+	},
+	// 商品管理
+	{
+		"path": "pages/mainPackages/home/commodity/shjCommodity",
+		"name": "shjCommodity",
+		"meta": {
+			"title": "商品管理"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/commodity/shjCommodityOperate",
+		"name": "shjCommodityOperate",
+		"meta": {
+			"title": "操作商品"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/commodity/index",
+		"name": "Commodity",
+		"meta": {
+			"title": "商品管理"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/commodity/operate",
+		"name": "CommodityOperate",
+		"meta": {
+			"title": "操作商品"
+		}
+	},
+	// 扭蛋机数据
+	{
+		"path": "pages/mainPackages/home/ndjData/index",
+		"name": "ndjData",
+		"meta": {
+			"title": "扭蛋机数据"
+		}
+	},
+	// 兑币机数据
+	{
+		"path": "pages/mainPackages/home/dbjData/index",
+		"name": "dbjData",
+		"meta": {
+			"title": "兑币机数据"
+		}
+	},
+	// 自动分账
+	{
+		"path": "pages/mainPackages/home/separateAccounts/index",
+		"name": "separateAccounts",
+		"meta": {
+			"title": "自动分账"
+		}
+	},
+	// 申诉反馈
+	{
+		"path": "pages/mainPackages/home/appealFeedback/index",
+		"name": "appealFeedback",
+		"meta": {
+			"title": "申诉反馈"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/appealFeedback/detail",
+		"name": "appealFeedbackDetail",
+		"meta": {
+			"title": "申诉反馈详情"
+		}
+	},
+	// 黑名单管理
+	{
+		"path": "pages/mainPackages/home/blacklist/index",
+		"name": "blacklist",
+		"meta": {
+			"title": "黑名单管理"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/blacklist/record",
+		"name": "blacklistRecord",
+		"meta": {
+			"title": "黑名单管理记录"
+		}
+	},
+	// ======= 我的 =======
 	{
 		"path": "pages/mainPackages/personal/commodityType/index",
 		"name": "commodityType",

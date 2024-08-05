@@ -6,6 +6,7 @@ const subPackages = [
 				"path": "index",
 				"name": "首页下的分包"
 			},
+			// 会员模块
 			{
 				"path": "member/index",
 				"name": "会员列表"

@@ -6,7 +6,7 @@
 			</view>
 		</template>
 		<template v-slot:right>
-			<view class="left-icon-style" @click.stop="rightClick">
+			<view class="left-icon-style" @click.stop="rightClick" v-if="showRight">
 				<u-icon name="home" :color="rightIconColor" :size="rightIconSize"></u-icon>
 			</view>
 		</template>
@@ -43,6 +43,10 @@
 			titleStyle: {  // 标题的样式，对象或字符串形式
 				type: String | Object,
 			},
+			showRight: {
+				type: Boolean,
+				default: true
+			}
 		},
 		methods: {
 			leftClick() {

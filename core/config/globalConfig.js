@@ -1,6 +1,6 @@
 module.exports = {
 	navigatorHeight: 44, // 顶部导航栏高度，为了方便全局修改 jyNavbar 顶部导航栏组件高度 
-	navigatorBgColor: '#ffffff', // 顶部导航栏全局背景色
+	navigatorBgColor: '#f5f6f7', // 顶部导航栏全局背景色
 	tabBar: { // 底部菜单配置
 		tabBarHeight: 49, // 底部菜单高度
 

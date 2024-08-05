@@ -112,7 +112,7 @@
 		data() {
 			return {
 				navigatorHeight: '0px',
-				backgroundColor: '#ffffff'
+				backgroundColor: '#f5f6f7',
 			}
 		},
 		mounted() {
