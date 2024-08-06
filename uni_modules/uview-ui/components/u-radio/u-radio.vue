@@ -68,13 +68,13 @@
 				// 父组件的默认值，因为头条小程序不支持在computed中使用this.parent.shape的形式
 				// 故只能使用如此方法
 				parentData: {
-					iconSize: 12,
+					iconSize: 24,
 					labelDisabled: null,
 					disabled: null,
 					shape: null,
 					activeColor: null,
 					inactiveColor: null,
-					size: 18,
+					size: 36,
 					value: null,
 					iconColor: null,
 					placement: 'row',

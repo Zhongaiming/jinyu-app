@@ -43,7 +43,6 @@ http.interceptors.request.use(config => {
 			config.header = {
 				...config.header,
 				"Authorization": token,
-
 			}
 		}
 	}

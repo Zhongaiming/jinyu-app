@@ -278,6 +278,27 @@ const pages = [{
 			"title": "钱包"
 		}
 	},
+	{
+		"path": "pages/mainPackages/personal/subAccountManagement/index",
+		"name": "subAccountManagement",
+		"meta": {
+			"title": "子账号管理"
+		}
+	},
+	{
+		"path": "pages/mainPackages/personal/subAccountManagement/operate",
+		"name": "subAccountManagementOperate",
+		"meta": {
+			"title": "子账号操作"
+		}
+	},
+	{
+		"path": "pages/mainPackages/personal/subAccountManagement/roleOperate",
+		"name": "roleOperateManagement",
+		"meta": {
+			"title": "子账号角色操作"
+		}
+	},
 	// 登录、注册
 	{
 		"path": "pages/loginAndReg/login",

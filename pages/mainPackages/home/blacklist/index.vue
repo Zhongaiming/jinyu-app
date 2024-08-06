@@ -21,7 +21,7 @@
 					<p class="name text-over">{{ item.nickName }}</p>
 					<p class="info">
 						ID: {{ item.memberId
-              }}<span class="gender" v-html="item.sex == 1 ? '男' : item.sex == 2 ? '女' : '未知'"></span>
+					}}<span class="gender" v-html="item.sex == 1 ? '男' : item.sex == 2 ? '女' : '未知'"></span>
 					</p>
 				</div>
 				<div class="right">
@@ -33,7 +33,7 @@
 					</button>
 				</div>
 			</div>
-			<on-earth v-show="onEarth" />
+			<xls-bottom v-show="onEarth" />
 		</div>
 		<xls-empty v-show="!blackList.length" />
 		<!-- add-black -->

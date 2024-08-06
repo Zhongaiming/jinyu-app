@@ -1,0 +1,65 @@
+.list-content {
+  padding: 0 16px;
+  .list-block {
+    padding: 12px 12px 16px;
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    .block-title {
+      padding-bottom: 14px;
+      position: relative;
+      .main-title {
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .sub-title {
+        color: #81909a;
+        font-family: AppleSystemUIFont;
+        font-size: 12px;
+        line-height: 18px;
+      }
+    }
+    .block-title:after {
+      border-bottom: 1px solid #ebedf0;
+      bottom: -50%;
+      box-sizing: border-box;
+      content: " ";
+      left: -50%;
+      pointer-events: none;
+      position: absolute;
+      right: -50%;
+      top: -50%;
+      transform: scale(0.5);
+    }
+    .block-row-box {
+      .block-row {
+        padding-top: 12px;
+        display: flex;
+        .block-cell {
+          flex: 1;
+          .cell-top {
+            color: #81909a;
+            font-family: AppleSystemUIFont;
+            font-size: 12px;
+            line-height: 16px;
+            display: flex;
+            align-items: center;
+            .icon {
+              margin-left: 4px;
+            }
+          }
+          .cell-bottom {
+            color: #001c2b;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 17px;
+            margin-top: 4px;
+          }
+        }
+      }
+    }
+  }
+}
+.margin10 {
+  margin-top: 10px;
+}

@@ -2,7 +2,9 @@ import api from "./serve.js";
 const baseURL = api.baseURL;
 import Vue from 'vue'
 import reqConfig from '@/core/config/reqConfig.js'
-import {getToken} from '@/common/auth.js'
+import {
+	getToken
+} from '@/common/auth.js'
 
 const request = (url, data, method = 'GET', customHeader, isToken = true) => {
 	return new Promise((resolve, reject) => {
@@ -11,7 +13,7 @@ const request = (url, data, method = 'GET', customHeader, isToken = true) => {
 			'Content-Type': 'application/json',
 			'Access-Control-Allow-Origin': '*'
 		}
-		
+
 		if (customHeader) {
 			header = customHeader
 		}
@@ -19,7 +21,7 @@ const request = (url, data, method = 'GET', customHeader, isToken = true) => {
 		if (isToken) {
 			header['token'] = uni.getStorageSync("at_token")
 		}
-		
+
 		uni.request({
 			url: baseURL + url,
 			data: data,
