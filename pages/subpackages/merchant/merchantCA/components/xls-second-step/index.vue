@@ -152,7 +152,9 @@
 				}).then(res => {
 					if (res.code === 200) {
 						const obj = res.data;
-						this.result.accountNo = obj.bankAccount
+						if (obj.bankAccount) {
+							this.result.accountNo = obj.bankAccount
+						}
 					}
 				})
 				merchantController.recognizeBankCard({
@@ -160,7 +162,9 @@
 				}).then(res => {
 					if (res.code === 200) {
 						const obj = res.data;
-						this.result.accountNo = obj.cardNumber
+						if (obj.cardNumber) {
+							this.result.accountNo = obj.cardNumber
+						}
 					}
 				})
 			},

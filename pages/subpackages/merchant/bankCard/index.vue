@@ -325,18 +325,11 @@
 				images: {},
 			}
 		},
-		async created() {
-			// if(this.$route.query.bankAccountNo){
-			// if (this.$route.query.orderNo) {
-			// let bankAccountNo = this.$route.query.bankAccountNo
-			// let res = await getUserBindingBankCardInfo({bankCardCode:bankAccountNo})
-			// let orderNo = this.$route.query.orderNo;
-			// let res = await getHlbEntry({
-			// 	orderNo
-			// });
-			// if (res.data.code == 0 || res.data.msg == "ok") {
+		async onLoad(option) {
+			const params = JSON.parse(option.params);
 			let res = await merchantController.getHlbEntryAction({
-				orderNo: "ZT_20221209174310775618"
+				orderNo: params.orderNo,
+				placeKey: params.placeKey
 			})
 			this.bankCardInfo = res.data;
 			this.images = res.data.images;
@@ -350,11 +343,7 @@
 				type == "INDIVIDUALBISS" ?
 				(com = "个体工商户") :
 				"未设置";
-			// type=='E' ? com='企业' :type=='N' ? com='自然人':type=='P'? com='个体工商户':'未设置'
 			this.companyType = `${com}`;
-			// com + "(" + this.bankCardInfo.appMerchantCode
-			//   ? this.bankCardInfo.appMerchantCode
-			//   : "---" + ")";
 			//  法人证件类型 ID身份证 PAS护照 PASTW台胞证 PASHK港澳通行证  身份证类型
 			let ID = this.bankCardInfo.lepCardType ?
 				this.bankCardInfo.lepCardType :

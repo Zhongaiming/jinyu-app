@@ -11,7 +11,7 @@
 			</view>
 
 			<view class="tabs-box">
-				<view class="tab" @click="activeItem = 0" :class="{active: activeItem === 0}">
+				<view class="tab" @click="activeItem = 2" :class="{active: activeItem === 2}">
 					<p class="tab-text">待认证</p>
 				</view>
 				<view class="tab" @click="activeItem = 1" :class="{active: activeItem === 1}">
@@ -23,7 +23,8 @@
 		<view class="stay-attestation">
 			<!-- 实名认证 -->
 			<view v-for="(data,index) in dataList" :key="index">
-				<view class="screenshot-contanier" v-for="(item,index) in data.authInfoList" :key="`main${index}`">
+				<view class="screenshot-contanier" v-for="(item,index) in data.authInfoList" :key="`main${index}`"
+					v-show="item.authorizeStatus == activeItem">
 					<view class="logo-index">
 						<image :src="`${$baseUrl}appV4/authentications/svg/${item.url}`" alt="" class="image"
 							mode="heightFix" />
@@ -52,15 +53,14 @@
 						<xls-merchant-state :state="item.authorizeStatus"></xls-merchant-state>
 					</view>
 
-					<view class="button-block-guide" v-if="item.state === 0 && item.type === 'SM'">
+					<view class="button-block-guide" v-if="item.authorizeStatus === 2 && !item.appPayType">
 						<view class="message-index">
 							<span class="status-message">
 								提示：资料审核需要1-3个工作日，请您耐心等待！
 							</span>
 						</view>
 					</view>
-					<!-- v-if="[0, 1].includes(item.state) && item.type !== 'SM'" -->
-					<view class="button-block-guide" >
+					<view class="button-block-guide" v-if="item.appPayType">
 						<view type="info" class="mmoi-button" @click="goTo(item)">
 							<view class="mmoi-button-icon">
 								<svg viewBox="0 0 1024 1024" fill="currentColor" width="100%" height="100%">
@@ -116,44 +116,8 @@
 		},
 		data() {
 			return {
-				activeItem: 0,
-				dataList: [{
-					id: 1,
-					type: 'SM',
-					state: 1,
-					threePartnerNo: '',
-					signName: '商户名称',
-					legalPerson: '法人名称',
-					url: 'pay-icon.png',
-					sort: ''
-				}, {
-					id: 2,
-					type: 'WX',
-					state: 2,
-					threePartnerNo: '123456789',
-					signName: '商户名称',
-					legalPerson: '法人名称',
-					url: 'wx-pay.png',
-					sort: ''
-				}, {
-					id: 3,
-					type: 'ZFB',
-					state: 1,
-					threePartnerNo: '123456789',
-					signName: '商户名称',
-					legalPerson: '法人名称',
-					url: 'zfb-pay.png',
-					sort: '(一)'
-				}, {
-					id: 4,
-					type: 'ZFB',
-					state: 0,
-					threePartnerNo: '123456789',
-					signName: '商户名称',
-					legalPerson: '法人名称',
-					url: 'zfb-pay.png',
-					sort: '(二)'
-				}],
+				activeItem: 2,
+				dataList: [],
 			}
 		},
 		created() {
@@ -169,6 +133,20 @@
 			},
 			getList() {
 				merchantController.authorizeQuery().then(res => {
+					res.data[0].authInfoList.forEach((item, index) => {
+						if (item.appPayType === 'WXPAY') {
+							item['url'] = 'wx-pay.png';
+						} else if (item.appPayType === 'ALIPAY') {
+							item['url'] = 'zfb-pay.png';
+							if (index === 2) {
+								item['sort'] = '(一)';
+							} else {
+								item['sort'] = '(二)';
+							}
+						} else {
+							item['url'] = 'pay-icon.png';
+						}
+					})
 					this.dataList = res.data
 				})
 			}

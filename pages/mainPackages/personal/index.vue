@@ -33,9 +33,13 @@
 </template>
 
 <script>
+	import {
+		getInfo
+	} from '@/common/auth.js'
 	export default {
 		data() {
 			return {
+				loginInfo: {},
 				dataList: [{
 					id: 1,
 					permissions: ['app:bing:index', 'app:brand:index', 'app:inform:index'],
@@ -75,14 +79,14 @@
 							permissions: ['app:account:index', 'app:account:index:read'],
 							subheading: '',
 						},
-						{
-							id: 22,
-							title: '物料管理',
-							imgUrl: `${this.$baseUrl}appV4/my_img/download.png`,
-							route: '/setMealing',
-							permissions: ['app:material:index'],
-							subheading: '生成二维码、下载物料',
-						},
+						// {
+						// 	id: 22,
+						// 	title: '物料管理',
+						// 	imgUrl: `${this.$baseUrl}appV4/my_img/download.png`,
+						// 	route: '/setMealing',
+						// 	permissions: ['app:material:index'],
+						// 	subheading: '生成二维码、下载物料',
+						// },
 					]
 				}, {
 					id: 3,
@@ -95,14 +99,14 @@
 							permissions: ['app:shopType:index'],
 							subheading: '',
 						},
-						{
-							id: 32,
-							title: '快捷补货管理',
-							imgUrl: `${this.$baseUrl}appV4/my_img/replenishment.png`,
-							route: '/quickReplenishment',
-							permissions: ['app:replenishment:index'],
-							subheading: '生成二维码、下载物料',
-						},
+						// {
+						// 	id: 32,
+						// 	title: '快捷补货管理',
+						// 	imgUrl: `${this.$baseUrl}appV4/my_img/replenishment.png`,
+						// 	route: '/quickReplenishment',
+						// 	permissions: ['app:replenishment:index'],
+						// 	subheading: '生成二维码、下载物料',
+						// },
 					]
 				}, {
 					id: 4,
@@ -150,29 +154,31 @@
 						// 	subheading: '',
 						// },
 					]
-				}, {
-					id: 5,
-					permissions: ['app:serviceCharge:index'],
-					dataList: [{
-						id: 51,
-						title: '服务费收费',
-						imgUrl: `${this.$baseUrl}service-charge/service_charge.png`,
-						route: '/service/service-index',
-						permissions: ['app:serviceCharge:index'],
-						subheading: '',
-					}, ]
-				}, {
-					id: 6,
-					permissions: ['app:stockUp:index'],
-					dataList: [{
-						id: 61,
-						title: '我的备货单',
-						imgUrl: `${this.$baseUrl}appV4/my_img/pick.png`,
-						route: '/myPickingList',
-						permissions: ['app:serviceCharge:index'],
-						subheading: '',
-					}, ]
-				}]
+				}, 
+				// {
+				// 	id: 5,
+				// 	permissions: ['app:serviceCharge:index'],
+				// 	dataList: [{
+				// 		id: 51,
+				// 		title: '服务费收费',
+				// 		imgUrl: `${this.$baseUrl}service-charge/service_charge.png`,
+				// 		route: '/service/service-index',
+				// 		permissions: ['app:serviceCharge:index'],
+				// 		subheading: '',
+				// 	}, ]
+				// }, {
+				// 	id: 6,
+				// 	permissions: ['app:stockUp:index'],
+				// 	dataList: [{
+				// 		id: 61,
+				// 		title: '我的备货单',
+				// 		imgUrl: `${this.$baseUrl}appV4/my_img/pick.png`,
+				// 		route: '/myPickingList',
+				// 		permissions: ['app:serviceCharge:index'],
+				// 		subheading: '',
+				// 	}, ]
+				// },
+				]
 			}
 		},
 		methods: {

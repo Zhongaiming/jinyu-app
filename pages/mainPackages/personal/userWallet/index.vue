@@ -112,10 +112,16 @@
 				if(item === 'authentication' && !this.bankList.length) {
 					return this.$toast("您还没有认证记录~")
 				}
+				if(item === 'bankCard' && this.bankList.length) {
+					this.$goTo(`/pages/subpackages/merchant/${item}/index`, 'navigateTo', {
+						orderNo: this.bankList[0].orderNo,
+						placeKey: this.bankList[0].placeKey
+					})
+					return
+				}
 				this.$goTo(`/pages/subpackages/merchant/${item}/index`)
 			},
 			async getHlbEntryList() {
-
 				merchantController.getListHlbEntryAction().then(res => {
 					if (res.code === 200) {
 						this.bankList = res.data;

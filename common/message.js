@@ -4,6 +4,7 @@ import Vue from 'vue'
  * 显示消息提示框
  * @param content 提示的标题
  */
+// uni.$u.toast('校验失败')
 Vue.prototype.$toast = function(content, duration = 1500, position = "top", option = {}) {
 	uni.showToast({
 		icon: 'none',

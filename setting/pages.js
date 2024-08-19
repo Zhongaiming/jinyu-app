@@ -205,6 +205,48 @@ const pages = [{
 			"title": "自动分账"
 		}
 	},
+	{
+		"path": "pages/mainPackages/home/separateAccounts/person/index",
+		"name": "SeparatePerson",
+		"meta": {
+			"title": "分账人员"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/separateAccounts/setup/index",
+		"name": "SeparateSetup",
+		"meta": {
+			"title": "场地分账设置"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/separateAccounts/setup/detail",
+		"name": "SeparateSetupDetail",
+		"meta": {
+			"title": "场地分账设置详情"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/separateAccounts/record/index",
+		"name": "SeparateSetupLog",
+		"meta": {
+			"title": "场地分账设置记录"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/separateAccounts/record/detail",
+		"name": "SeparateSetup",
+		"meta": {
+			"title": "场地分账设置记录详情"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/separateAccounts/income/index",
+		"name": "SeparateIncome",
+		"meta": {
+			"title": "分账统计"
+		}
+	},
 	// 申诉反馈
 	{
 		"path": "pages/mainPackages/home/appealFeedback/index",

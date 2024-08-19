@@ -59,7 +59,7 @@
 						height="224">
 						<view class="uploadBg enterimg">
 							<view class="xls-describe">
-								<p class="title-text">门店招牌照</p>
+								<p class="title-text">门店设备照</p>
 								<view class="camera-icon">
 									<image :src="`${$baseUrl}appV4/image/wallet/camera.png`" alt="" class="camera"
 										mode="widthFix" />
@@ -75,7 +75,7 @@
 						height="224">
 						<view class="uploadBg innerimg">
 							<view class="xls-describe">
-								<p class="title-text">门店招牌照</p>
+								<p class="title-text">设备场景照</p>
 								<view class="camera-icon">
 									<image :src="`${$baseUrl}appV4/image/wallet/camera.png`" alt="" class="camera"
 										mode="widthFix" />

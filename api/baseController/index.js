@@ -6,7 +6,7 @@ export default class baseController {
 	static messagePushSet(data) {
 		return http.request({
 			url: '/member/api/v1/receiptNotificationSet/messagePushSet',
-			method: 'POST',
+			method: 'GET',
 			data
 		})
 	}
@@ -15,7 +15,7 @@ export default class baseController {
 	static editMessagePushSet(data) {
 		return http.request({
 			url: '/member/api/v1/receiptNotificationSet/editMessagePushSet',
-			method: 'POST',
+			method: 'PUT',
 			data
 		})
 	}

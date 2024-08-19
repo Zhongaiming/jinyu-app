@@ -1,7 +1,7 @@
 <template>
 	<view class="xls-merchat-ca">
 		<xls-jy-navbar title="审核进度" bgColor="#5241FF" titleStyle="color: #fff"></xls-jy-navbar>
-		<xls-enter-inquiry></xls-enter-inquiry>
+		<xls-enter-inquiry ref="enterInquiry"></xls-enter-inquiry>
 		<xls-steps :current="current"></xls-steps>
 		<xls-side :current="current"></xls-side>
 		<!-- 商户类型 -->
@@ -107,6 +107,9 @@
 							// 初始化
 							if (type === "step1") {
 								this.$refs.firstStep.updateMethod(this.merchant);
+								if(!res.data.merchantType) {
+									this.$refs.enterInquiry.buttonSwitch = true;
+								}
 							}
 						}
 						resolve('ok')
@@ -155,7 +158,7 @@
 			},
 			async hlbEntryApply() {
 				var dateInfo = this.merchant;
-				const orgNum = dateInfo.merchantType === 'PERSON' ? dateInfo.linkManId : dateInfo.businessLicense;
+				const orgNum = dateInfo.merchantType === 'PERSON' ? dateInfo.legalPersonId : dateInfo.businessLicense;
 				const idCardStartDate = dateInfo.idCardStartDate.replace(/-/g, "");
 				if (dateInfo.idCardEndDate !== "长期有效") {
 					dateInfo.idCardEndDate = dateInfo.idCardEndDate.replace(/-/g, "");
@@ -239,6 +242,9 @@
 					}
 				}
 				let res = await merchantController.hlbEntryApply(newDate);
+				if (res.code == 200) {
+					this.current = 4;
+				}
 			},
 		}
 	}

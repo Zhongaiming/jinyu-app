@@ -8,6 +8,7 @@ import commodityController from './commodityController/index.js'
 import baseController from './baseController/index.js'
 import deviceController from './deviceController/index.js'
 import placeController from './placeController/index.js'
+import separateController from './separateController/index.js'
 
 export {
 	loginAndRegController,
@@ -20,4 +21,5 @@ export {
 	baseController,
 	deviceController,
 	placeController,
+	separateController,
 }

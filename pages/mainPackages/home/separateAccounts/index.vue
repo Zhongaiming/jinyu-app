@@ -1,104 +1,75 @@
 <template>
-	<div class="subAccount">
+	<view class="subAccount">
 		<xls-jy-navbar title="自动分账"></xls-jy-navbar>
-		<div class="hint-panel">
+		<view class="hint-panel">
 			<u-icon name="checkmark-circle-fill" color="#5241FF" /><span class="success">欢迎使用自动分账！</span>
-		</div>
-		<div class="type-wrapper">
-			<a class="type-list" v-hasPermi="['app:subacounts:index:person']" @click="
-            $router.push({
-              path: '/subAccount/separatePerson',
-            })
-          ">
-				<div class="icon">
+		</view>
+		<view class="type-wrapper">
+
+			<view class="type-list" v-hasPermi="['app:subacounts:index:person']" @click="goTo('person')">
+				<view class="icon">
 					<image :src="`${$baseUrl}appV4/my/account_image/ico_member.png`" alt="" class="image"
 						mode="widthFix">
-				</div>
-				<div class="name">分成人员管理</div>
-				<div class="status memberstatus">共{{ billPeopleList.length }}人</div>
-			</a>
-			<a class="type-list isDivided" v-hasPermi="['app:subacounts:index:ratio']"
-				@click="$router.push('/subAccount/separateRatio')">
-				<div class="icon">
+				</view>
+				<view class="name">分成人员管理</view>
+				<view class="status memberstatus">共{{ total }}人</view>
+			</view>
+
+			<view class="type-list isviewided" v-hasPermi="['app:subacounts:index:ratio']" @click="goTo('setup')">
+				<view class="icon">
 					<image :src="`${$baseUrl}appV4/my/account_image/ico_site.png`" alt="" class="image" mode="widthFix">
-				</div>
-				<div class="name">分成比例设置</div>
-				<div class="status"></div>
-			</a>
-			<a class="type-list" v-hasPermi="['app:subaccounts:index:earn']" @click="
-            $router.push({
-              path: '/subAccount/revenueShare',
-              query: { billPeopleList: JSON.stringify(billPeopleList) },
-            })
-          ">
-				<div class="icon">
+				</view>
+				<view class="name">分成比例设置</view>
+				<view class="status"></view>
+			</view>
+
+			<view class="type-list" v-hasPermi="['app:subaccounts:index:earn']" @click="goTo('income')">
+				<view class="icon">
 					<image :src="`${$baseUrl}appV4/my/account_image/ico_search.png`" alt="" class="image"
 						mode="widthFix">
-				</div>
-				<div class="name">收益分成查询</div>
-				<div class="status">分成统计</div>
-			</a>
-			<!-- <a class="type-list J_bindWeixin">    
-        <div class="icon weixin-icon"></div>    
-        <div class="name">微信绑定</div>    
-        <div class="status">商家主账号的<span class="J_bindFlag">（未绑定）</span></div>  
-      </a> -->
-		</div>
-		<div class="foot-wrapper">
-			<div class="foot-tips">
+				</view>
+				<view class="name">收益分成查询</view>
+				<view class="status">分成统计</view>
+			</view>
+		</view>
+		<view class="foot-wrapper">
+			<view class="foot-tips">
 				<p class="J_shj_tips">
 					提示：开启了自动分账的场地，不支持“部分退款”，只支持“全额退款”。
 				</p>
-			</div>
-			<!-- <div class="foot-btn" @click="closeItem"><div class="s-close-btn">关闭自动分账功能</div></div> -->
-		</div>
-	</div>
+			</view>
+		</view>
+	</view>
 
 </template>
 
 <script>
-	// import {
-	// 	getSeparateBillsPeople
-	// } from "@/utils/api/separateBills";
+	import {
+		separateController
+	} from '@/api/index.js';
 	export default {
-		name: "subAccount",
 		data() {
 			return {
-				billPeopleList: [],
+				total: 0,
+				dataList: [],
 			};
 		},
-		// async created() {
-		// 	let res = await getSeparateBillsPeople({});
-		// 	if (res.data.code == 0 || res.data.msg == "ok") {
-		// 		this.billPeopleList = res.data.data;
-		// 	}
-		// },
-		methods: {
-			//弃用
-			closeItem() {
-				this.$dialog
-					.confirm({
-						title: "关闭自动分账功能",
-						message: "关闭后，你的 “自动分账” 将停止使用，建议先将相关数据（比如收益分成数据等）做好备份；确定关闭后，分账功能将于次天失效，失效后才能重新申请开通。",
-						width: "270",
-						confirmButtonText: "确定",
-						confirmButtonColor: "#5241FF",
-					})
-					.then(() => {})
-					.catch(() => {});
-			},
-			//
-			async getPeopleList() {
-				let res = await getSeparateBillsPeople({});
-
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.billPeopleList = res.data.data;
-					this.$refs.children.addBillPeople(res.data.data);
-					// let len = res.data.data.length-1
-					// let list = res.data.data
-					// this.$refs.children.addBillPeople(list[len])
+		async created() {
+			let res = await separateController.getSeparatePerson({
+				pageParam: {
+					pageNum: 1,
+					pageSize: 1
 				}
-			},
+			});
+			if (res.code == 200) {
+				this.total = res.data.totalCount;
+				this.dataList = res.data.dataList;
+			}
+		},
+		methods: {
+			goTo(route) {
+				this.$goTo(`/pages/mainPackages/home/separateAccounts/${route}/index`);
+			}
 		},
 	};
 </script>

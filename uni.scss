@@ -97,5 +97,11 @@ $uni-font-size-paragraph:15px;
   align-items: $align-items;
 }
 
+@mixin text-ellipsis() {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 $baseUrl: 'https://xls-ui-file.oss-cn-hangzhou.aliyuncs.com/appui/';
 

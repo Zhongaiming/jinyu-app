@@ -87,14 +87,14 @@
 							permissions: ['app:shj:statistics:read'],
 							status: 0
 						},
-						{
-							id: 22,
-							title: '缺货备货',
-							imgUrl: `${this.$baseUrl}homeImages/secondList/two.png`,
-							route: '/shjStock',
-							permissions: ['app:shj:stockUp:read'],
-							status: 0
-						},
+						// {
+						// 	id: 22,
+						// 	title: '缺货备货',
+						// 	imgUrl: `${this.$baseUrl}homeImages/secondList/two.png`,
+						// 	route: '/shjStock',
+						// 	permissions: ['app:shj:stockUp:read'],
+						// 	status: 0
+						// },
 						{
 							id: 23,
 							title: '数据分析',
@@ -154,14 +154,14 @@
 							status: 0,
 							result: 0,
 						},
-						{
-							id: 34,
-							title: '付款',
-							imgUrl: `${this.$baseUrl}homeImages/threeList/eight.png`,
-							route: '',
-							permissions: ['app:pay:index'],
-							status: 0
-						},
+						// {
+						// 	id: 34,
+						// 	title: '付款',
+						// 	imgUrl: `${this.$baseUrl}homeImages/threeList/eight.png`,
+						// 	route: '',
+						// 	permissions: ['app:pay:index'],
+						// 	status: 0
+						// },
 						{
 							id: 35,
 							title: '兑币机数据',
@@ -211,14 +211,14 @@
 							permissions: ['app:couple:index'],
 							status: 0
 						},
-						{
-							id: 43,
-							title: '标签管理',
-							imgUrl: `${this.$baseUrl}homeImages/fourList/five.png`,
-							route: '/setMealing',
-							permissions: ['app:tag:index'],
-							status: 0,
-						},
+						// {
+						// 	id: 43,
+						// 	title: '标签管理',
+						// 	imgUrl: `${this.$baseUrl}homeImages/fourList/five.png`,
+						// 	route: '/setMealing',
+						// 	permissions: ['app:tag:index'],
+						// 	status: 0,
+						// },
 						{
 							id: 44,
 							title: '黑名单管理',

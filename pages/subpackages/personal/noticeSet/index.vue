@@ -256,7 +256,7 @@
 		},
 		async created() {
 			this.getMessagePushSet();
-			this.getWxSet();
+			// this.getWxSet();
 		},
 		methods: {
 			goTo() {
@@ -267,16 +267,16 @@
 				let commercialNumber = JSON.parse(
 					localStorage.getItem("commercialNumber")
 				);
-				let res = await getWechatInform({
+				let res = await baseController.getWechatInform({
 					commercialNumber
 				});
 				this.wechatSet = res.data.data.length;
 			},
 
 			async getMessagePushSet() {
-				let res = await messagePushSet();
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.pushSetObj = Object.assign(this.pushSetObj, res.data.data);
+				let res = await baseController.messagePushSet();
+				if (res.code == 200) {
+					this.pushSetObj = Object.assign(this.pushSetObj, res.data);
 					this.shjRadio = this.pushSetObj.vendingMachineType == 1 ? 1 : 2;
 					this.fristPushSet();
 				}
@@ -323,13 +323,18 @@
 				}
 			},
 
-			setMessagePush: throttleFun(async function() {
-				let res = await editMessagePushSet(this.pushSetObj);
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.setInventory = false;
-					this.getMessagePushSet();
-				}
-			}, 1000),
+			setMessagePush() {
+				let _this = this;
+				uni.$u.debounce(async function() {
+					baseController.editMessagePushSet(_this.pushSetObj).then(res => {
+						if (res.code == 200) {
+							_this.setInventory = false;
+							_this.getMessagePushSet();
+						}
+					})
+
+				}, 1000)
+			},
 
 			//设备库存设置
 			setInvent(det) {

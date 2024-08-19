@@ -1,5 +1,5 @@
 <template>
-	<z-paging ref="paging" v-model="dataList" @query="queryList">
+	<z-paging ref="commodityPaging" v-model="dataList" @query="queryList">
 		<view slot="top">
 			<xls-jy-navbar title="商品管理"></xls-jy-navbar>
 			<xls-search placeholder="搜索商品名称" marLeft="-5.0em" bgColor="#f5f6f7" inputColor="#fff"
@@ -62,8 +62,8 @@
 		},
 		onShow() {
 			this.$nextTick(() => {
-				if (this.$refs.paging) {
-					this.$refs.paging.reload();
+				if (this.$refs.commodityPaging) {
+					this.$refs.commodityPaging.reload();
 				}
 			})
 		},
@@ -78,13 +78,13 @@
 						pageSize: pageSize
 					}
 				}).then(res => {
-					this.$refs.paging.complete(res.data.dataList);
+					this.$refs.commodityPaging.complete(res.data.dataList);
 				})
 			},
 
 			searchMethod(value) {
 				this.searchValue = value;
-				this.$refs.paging.reload();
+				this.$refs.commodityPaging.reload();
 			},
 
 			handleUpdate(id) {
@@ -101,7 +101,7 @@
 						id
 					}).then(res => {
 						if (res.code === 200) {
-							this.$refs.paging.reload();
+							this.$refs.commodityPaging.reload();
 						}
 					})
 				})
