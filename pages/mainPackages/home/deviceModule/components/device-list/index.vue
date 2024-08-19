@@ -1,0 +1,329 @@
+<template>
+	<view class="device-list">
+		<view v-for="(item, index) in dataList" :key="index" class="device-list-item">
+
+			<view class="device-list-first-place">
+				<view class="place-name" @click="getRailDetail(item, 'edit')">
+					{{ $placeNameRule(item.placeName, item.placeNumber) }}
+				</view>
+				<view class="place-detail" @click.stop="getRailDetail(item)">
+					<text>离线 {{ item.offlineNum }} / {{ item.deviceNum }} 台</text>
+					<view class="right-icon">
+						<u-icon name="arrow-up" v-show="!item.listSwitch" size="32" />
+						<u-icon name="arrow-down" v-show="item.listSwitch" size="32" />
+					</view>
+				</view>
+				<u-icon name="edit-pen" color="#5241FF" size="36" @click="getRailDetail(item, 'edit')" />
+			</view>
+
+			<!-- 第二层 -->
+			<view class="device-list-second-device">
+				<view v-for="(dev, index) in item.deviceList" :key="index" v-show="item.listSwitch"
+					:class="{'device-style': dev.typeName != '扭蛋机'}">
+					<view class="device" @click="updataDevice(dev)">
+						<view class="left">
+							<view class="name">
+								<text v-show="dev.dollNumber">{{ dev.dollNumber }}号机-</text>
+								{{ dev.typeName }}{{ dev.deviceNumber }}
+							</view>
+							<image :src="`${$baseUrl}appV4/device/bunch.png`" alt="" v-if="dev.typeName" class="image"
+								mode="widthFix" />
+							<image :src="`${$baseUrl}appV4/device/pulse.png`" alt="" v-else class="image"
+								mode="widthFix" />
+						</view>
+						<view class="right">
+							<!-- 信号值组件 -->
+							<signal-svuetrength v-if="dev.onlineState == 1 && dev.deviceSignal > 0"
+								:signalValue="dev.deviceSignal || 0" />
+							<signal-offline v-else />
+							<view class="arrow">
+								<u-icon name="arrow-right" size="32" color="rgb(187, 184, 184)" />
+							</view>
+						</view>
+					</view>
+					<view class="remark">
+						<text v-show="disableMethod(dev)" class="disabled">设备已禁用</text>
+						{{ dev.remark }}
+					</view>
+
+					<!-- 蛋仓统计 -->
+					<view v-show="railMethod(dev)">
+						<view class="group-box-dec">
+							<span @click="closeShow(dev)">共{{ dev.railNum }}个
+								{{dev.typeName == "儿童类" ? "座位" : dev.typeName == "扭蛋机" ? "蛋仓" : "机位"}}
+								(在线:{{dev.onlineState == 1 && dev.deviceSignal > 0? dev.railOnlineNum: 0}}
+								离线:{{dev.onlineState == 1 && dev.deviceSignal > 0? dev.railOfflineNum: dev.railNum}})
+							</span>
+							<span @click="closeShow(dev)">
+								<u-icon name="arrow-down-fill" class="play" size="44" color="#8d8d8d"
+									v-show="dev.closeOrshow" />
+								<u-icon name="arrow-up-fill" class="playChang" size="44" color="#8d8d8d"
+									v-show="!dev.closeOrshow" />
+							</span>
+						</view>
+					</view>
+
+					<!-- 第三层 -->
+					<view class="device-list-three-egg" v-if="dev.deviceRailList">
+						<view class="egg-item" v-for="(gash, index) in dev.deviceRailList" :key="index"
+							v-show="dev.closeOrshow">
+
+							<view class="egg-count">
+								<view>{{ gash.shippingSpace }}/{{ gash.railNumber }}</view>
+								<view>
+									<signal-svuetrength
+										v-if="dev.onlineState == 1 && dev.deviceSignal > 0 && gash.railState == 0"
+										:signalValue="dev.deviceSignal ? dev.deviceSignal : 0" />
+									<signal-offline v-else />
+								</view>
+							</view>
+
+							<view class="egg-gift">
+								<view class="left-box">
+									<view class="image">
+										<image :src="gash.commodityImg" alt="" class="img" v-if="gash.commodityImg"
+											@error="handleError" />
+										<image :src="`${baseUrl}appV4/device/default.png`" alt="" class="img"
+											v-else />
+									</view>
+									<view class="egg-info">
+										<view class="comidity-name">
+											{{ gash.commodityName }}
+										</view>
+										<view class="egg-des">
+											{{ gash.currency }}币/次,{{gash.price}}元/次,库存{{ gash.railRepertory }}
+										</view>
+										<view class="egg-des color" v-show="gash.railEnable == 0">
+											仓位已禁用
+										</view>
+									</view>
+								</view>
+								<view class="egg-edit" v-hasPermi="['app:device:index:edit']"
+									@click="showSetEgg(gash, dev)">
+									编辑
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import signalOffline from "../signal-offline/index.vue";
+	import signalSvuetrength from "../signal-svuetrength/index.vue";
+	export default {
+		components: {
+			signalOffline,
+			signalSvuetrength
+		},
+		props: {
+			dataList: {
+				type: Array,
+				default: []
+			}
+		},
+		methods: {
+			disableMethod(dev) {
+				return ['娃娃机', '兑币机'].includes(dev.typeName) && dev.state === 0;
+			},
+			railMethod(dev) {
+				return ['扭蛋机', '游戏类', '儿童类', '微抓机'].includes(dev.typeName) && dev.railNum;
+			}
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.device-list {
+
+		&-item {
+			margin-bottom: 20rpx;
+			background: #fff;
+		}
+
+		&-first-place {
+			background: #f8fdfe;
+			display: flex;
+			align-items: center;
+			padding: 20rpx 2.5%;
+
+			.place-name {
+				flex: 1;
+				font-size: 34rpx;
+				font-weight: 700;
+				word-break: break-all;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+			}
+
+			.place-detail {
+				padding-left: 24rpx;
+				display: flex;
+				justify-content: flex-end;
+				color: #262626;
+				font-size: 26rpx;
+				font-weight: 400;
+				align-items: center;
+
+				.right-icon {
+					padding: 0 20rpx;
+				}
+			}
+		}
+
+		&-second-device {
+			padding: 0 20rpx;
+
+			.device-style:not(:last-child) {
+				border-bottom: 2rpx solid #f0eff1;
+			}
+
+			.device {
+				height: 90rpx;
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+
+				.left {
+					display: flex;
+					align-items: center;
+
+					.name {
+						text-align: right;
+						font-size: 26rpx;
+					}
+
+					.image {
+						width: 36rpx;
+						margin-left: 16rpx;
+					}
+				}
+
+				.right {
+					display: flex;
+					align-items: center;
+
+					.arrow {
+						margin: 0 0 0 16rpx;
+					}
+				}
+			}
+
+			.remark {
+				font-size: 24rpx;
+				color: #8d8d8d;
+				position: relative;
+				top: -12rpx;
+			}
+
+			.disabled {
+				color: #ff524c;
+				padding-right: 20rpx
+			}
+
+			.line {
+				background: rgb(241, 240, 240);
+				height: 2rpx;
+			}
+
+			//扭蛋机
+			.group-box-dec {
+				align-items: center;
+				border: 2rpx solid #e6e6e6;
+				color: #262626;
+				display: flex;
+				font-size: 28rpx;
+				height: 80rpx;
+				justify-content: space-between;
+				padding: 0 2.5%;
+				box-sizing: border-box;
+			}
+		}
+
+		&-three-egg {
+			margin-bottom: 18rpx;
+
+			.egg-item {
+				border: 2rpx solid #e5e5e5;
+				box-sizing: border-box;
+				color: #262626;
+				padding: 20rpx 2.5%;
+				font-family: PingFangSC-Regular, PingFang SC;
+				border-top: 0;
+
+				.egg-count {
+					font-size: 26rpx;
+					box-sizing: border-box;
+					width: 100%;
+					padding-bottom: 10rpx;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+				}
+
+				.egg-gift {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+
+					.left-box {
+						display: flex;
+						align-items: center;
+						flex: 1;
+					}
+
+					.image {
+						height: 100rpx;
+						margin-right: 20rpx;
+						width: 100rpx;
+
+						.img {
+							width: 100%;
+							height: 100%;
+						}
+					}
+
+					.egg-info {
+						font-size: 28rpx;
+						flex: 1;
+
+						.comidity-name {
+							max-width: 440rpx;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+						}
+
+						.egg-des {
+							color: #8c8c8c;
+							font-size: 24rpx;
+							margin-top: 4rpx;
+						}
+						
+						.color {
+							color: #ff524c
+						}
+					}
+
+					.egg-edit {
+						align-items: center;
+						border: 2rpx solid #979797;
+						border-radius: 8rpx;
+						color: #8c8c8c;
+						display: flex;
+						font-size: 28rpx;
+						height: 56rpx;
+						justify-content: center;
+						width: 108rpx;
+					}
+				}
+			}
+		}
+	}
+</style>

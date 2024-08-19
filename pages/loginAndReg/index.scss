@@ -90,7 +90,7 @@
  */
 .register {
 	height: 100vh;
-	background-image: linear-gradient(to bottom left, #d834c2, #2088dd);
+	background-image: linear-gradient(to bottom left, #9385ff, #d1cdff);
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -111,7 +111,16 @@
 			width: 150rpx;
 			border-radius: 50%;
 			top: -75rpx;
-			background-image: linear-gradient(to left bottom, #d834c2, #2088dd);
+			background-image: linear-gradient(to left bottom, #c6b7ff, #c6b7ff);
+			overflow: hidden;
+			
+			.image {
+				position: absolute;
+				top: 40rpx;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 140rpx;
+			}
 		}
 		.form-area {
 			width: 87%;
@@ -125,7 +134,7 @@
 		padding: 10px 0;
 		text-align: center;
 		color: #ffffff;
-		background-color: #AEB9FE;
+		background-color: #8282fe;
 		border-radius: 0 0 30rpx 30rpx;
 		span {
 			opacity: .9;
@@ -137,7 +146,7 @@
 
 .retrieve-password {
 	height: 100vh;
-	background-image: linear-gradient(to bottom left, #d834c2, #2088dd);
+	background-image: linear-gradient(to bottom left, #5241ff, #5241ff);
 	overflow: hidden;
 	display: flex;
 	justify-content: center;

@@ -89,7 +89,7 @@
 					permissions: ['app:shopType:index', 'app:replenishment:index'],
 					dataList: [{
 							id: 31,
-							title: '商品类型管理',
+							title: '商品配置信息管理',
 							imgUrl: `${this.$baseUrl}appV4/my_img/commodity.png`,
 							route: '/pages/mainPackages/personal/commodityType/index',
 							permissions: ['app:shopType:index'],
@@ -114,6 +114,14 @@
 							title: '投放场地',
 							imgUrl: `${this.$baseUrl}appV4/my_img/place.png`,
 							route: '/pages/mainPackages/personal/placeModule/index',
+							permissions: ['app:place:index'],
+							subheading: '',
+						},
+						{
+							id: 411,
+							title: '场地配置信息管理',
+							imgUrl: `${this.$baseUrl}appV4/my_img/place.png`,
+							route: '/pages/mainPackages/personal/placeConfigure/index',
 							permissions: ['app:place:index'],
 							subheading: '',
 						},
@@ -287,7 +295,7 @@
 
 			.image {
 				width: 40rpx;
-				
+
 				margin-right: 20rpx;
 			}
 

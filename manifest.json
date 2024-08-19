@@ -105,12 +105,12 @@
 			"host": "0.0.0.0",
 			"disableHostCheck": true,
 			"proxy": {
-				"^/xls": {
-					"target": "https://apiv3.ztuwl.com",
+				"^/baseUrl": {
+					"target": "http://www.redorange.top:658",
 					"changeOrigin": true,
 					"secure": true,
 					"pathRewrite": {
-						"^/xls": ""
+						"^/baseUrl": ""
 					}
 				}
 			},

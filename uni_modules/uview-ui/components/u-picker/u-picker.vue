@@ -2,6 +2,7 @@
 	<u-popup
 		:show="show"
 		@close="closeHandler"
+		round="20"
 	>
 		<view class="u-picker">
 			<u-toolbar

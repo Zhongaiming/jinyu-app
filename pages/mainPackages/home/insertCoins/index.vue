@@ -1,48 +1,51 @@
 <template>
-	<view class="xls-today-insert-coins">
-		<jy-navbar title="合计投币"></jy-navbar>
-		<view class="text-place">
-			<span>共{{ allCount.placeNum || 0 }}个场地</span>,
-			<span>{{ allCount.insertedCoinsPlaceNum || 0 }}个产生投币记录</span>
+	<z-paging ref="paging" v-model="dataList" @query="queryList">
+		<view slot="top">
+			<jy-navbar title="合计投币"></jy-navbar>
+			<view class="text-place">
+				<span>共{{ allCount.placeNum || 0 }}个场地</span>,
+				<span>{{ allCount.insertedCoinsPlaceNum || 0 }}个产生投币记录</span>
+			</view>
 		</view>
-		<u-list @scrolltolower="scrolltolower" class="xls-list">
-			<u-list-item v-for="(item, index) in dataList" :key="index" class="xls-list-item">
-				<view class="body-wrapper" @click="closeOrshow">
-					<view class="body-main">
-						<view class="main-place-name">{{ item.placeName }}</view>
-						<view class="main-device-num">{{ item.deviceNum }}台</view>
-						<view class="main-icon">
-							<u-icon name="arrow-right" size="32" color="#5241FF" />
-						</view>
+
+		</view>
+		
+		<view v-for="(item, index) in dataList" :key="index" class="xls-list-item">
+			<view class="body-wrapper" @click="closeOrshow">
+				<view class="body-main">
+					<view class="main-place-name">{{ item.placeName }}</view>
+					<view class="main-device-num">{{ item.deviceNum }}台</view>
+					<view class="main-icon">
+						<u-icon name="arrow-right" size="32" color="#5241FF" />
 					</view>
 				</view>
+			</view>
 
-				<view class="body-bottom">
+			<view class="body-bottom">
+				<view class="coins-num">
+					合计投币
+					<span class="count-txt text-over">{{ item.insertCoinsNum }}</span>
+					个
+				</view>
+				<view class="online-coins">
 					<view class="coins-num">
-						合计投币
-						<span class="count-txt text-over">{{ item.insertCoinsNum }}</span>
-						个
-					</view>
-					<view class="online-coins">
-						<view class="coins-num">
-							<span class="online-txt">线上</span>
-							<span class="count-txt text-over">{{
+						<span class="online-txt">线上</span>
+						<span class="count-txt text-over">{{
 				        item.onlineInsertCoinsNum
 				      }}</span>
-						</view>
-						<view class="line"></view>
-						<view class="coins-num">
-							<span class="online-txt">线下</span>
-							<span class="count-txt text-over">{{
+					</view>
+					<view class="line"></view>
+					<view class="coins-num">
+						<span class="online-txt">线下</span>
+						<span class="count-txt text-over">{{
 				        item.offlineInsertCoinsNum
 				      }}</span>
-						</view>
 					</view>
 				</view>
-			</u-list-item>
-			<u-divider text="已经到底啦~" :dashed="true" text-size="28"></u-divider>
-		</u-list>
-		<xls-empty v-if="!dataList.length" />
+			</view>
+		</view>
+
+		<xls-empty slot="empty" />
 
 		<!-- 弹出层 -->
 		<u-popup :show="detailPopup" mode="bottom">
@@ -83,27 +86,77 @@
 				</view>
 			</view>
 		</u-popup>
-	</view>
+
+	</z-paging>
 </template>
 
 <script>
 	export default {
 		data() {
 			return {
-				dataList: [{
-					payType: 0
-				}, {
-					payType: 1
-				}, {
-					payType: 2
-				}],
+				dataList: [],
 				allCount: {},
 				detailPopup: false,
 				placeInfoDetail: [{}],
 			}
 		},
 		methods: {
-			scrolltolower() {},
+			// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用this.$refs.paging.reload()即可
+			queryList(pageNo, pageSize) {
+				// 此处请求仅为演示，请替换为自己项目中的请求
+				const list = [{
+						placeName: "testtest"
+					},
+					{
+						placeName: "testtest"
+					},
+					{
+						placeName: "testtest"
+					},
+					{
+						placeName: "testtest"
+					},
+					{
+						placeName: "testtest"
+					},
+					{
+						placeName: "testtest"
+					},
+					{
+						placeName: "testtest"
+					},
+					{
+						placeName: "testtest"
+					},
+					{
+						placeName: "testtest"
+					},
+					{
+						placeName: "testtest"
+					}
+				]
+
+
+				setTimeout(() => {
+					this.$refs.paging.complete(list);
+				}, 1500)
+				
+				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+				// this.$refs.paging.reload();
+
+				// this.$request.queryList({
+				// 	pageNo,
+				// 	pageSize
+				// }).then(res => {
+				// 	// 将请求结果通过complete传给z-paging处理，同时也代表请求结束，这一行必须调用
+				// 	this.$refs.paging.complete(res.data.list);
+				// }).catch(res => {
+				// 	// 如果请求失败写this.$refs.paging.complete(false)，会自动展示错误页面
+				// 	// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+				// 	// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+				// 	this.$refs.paging.complete(false);
+				// })
+			},
 			closeOrshow() {
 				this.detailPopup = !this.detailPopup;
 				console.log('==', this.detailPopup)
@@ -113,225 +166,222 @@
 </script>
 
 <style lang="scss" scoped>
-	.xls-today-insert-coins {
-		.text-place {
-			line-height: 40rpx;
-			padding: 24rpx 24rpx 20rpx;
-			font-size: 26rpx;
-			opacity: 0.8;
-		}
+	.text-place {
+		padding: 24rpx 24rpx 20rpx;
+		font-size: 26rpx;
+		opacity: 0.8;
+	}
 
-		.xls-list {
-			.xls-list-item:not(:last-child) {
-				margin-bottom: 24rpx;
-			}
 
-			.xls-list-item {
-				.body-wrapper {
-					width: 100%;
-					height: 100rpx;
-					display: flex;
-					justify-content: center;
-					background: #fff;
-					border-bottom: 2rpx solid rgba(216, 212, 212, 0.5);
+	.xls-list-item:not(:last-child) {
+		margin-bottom: 24rpx;
+	}
 
-					.body-main {
-						width: 95%;
-						height: 100rpx;
-						display: flex;
-						align-items: center;
-
-						.main-place-name {
-							flex: 1;
-							height: 100rpx;
-							font-size: 32rpx;
-							display: flex;
-							align-items: center;
-							padding-right: 16rpx;
-						}
-
-						.main-device-num {
-							height: 100rpx;
-							font-size: 32rpx;
-							color: #5241FF;
-							line-height: 100rpx;
-						}
-
-						.main-icon {
-							margin-left: 12rpx;
-							height: 100rpx;
-							display: flex;
-							justify-content: flex-end;
-							align-items: center;
-
-							img {
-								width: 28rpx;
-								opacity: 0.7;
-							}
-						}
-					}
-				}
-
-				.body-bottom {
-					padding-left: 20rpx;
-					height: 80rpx;
-					display: flex;
-					align-items: center;
-					background: #fff;
-					font-size: 26rpx;
-
-					.online-coins {
-						flex: 1;
-						display: flex;
-						align-items: center;
-						justify-content: flex-end;
-
-						.line {
-							height: 36rpx;
-							width: 2rpx;
-							background: #e6e6e6;
-							margin-right: 10rpx;
-						}
-					}
-
-					.coins-num {
-						line-height: 80rpx;
-						display: flex;
-						align-items: center;
-					}
-
-					.online-txt {
-						color: #8c8c8c;
-						font-size: 26rpx;
-						font-weight: 400;
-					}
-
-					.count-txt {
-						display: inline-block;
-						max-width: 124rpx;
-						padding: 0 12rpx;
-					}
-				}
-			}
-		}
-
-		.detail-content {
+	.xls-list-item {
+		.body-wrapper {
 			width: 100%;
-			height: 100%;
+			height: 100rpx;
 			display: flex;
-			flex-direction: column;
+			justify-content: center;
+			background: #fff;
+			border-bottom: 2rpx solid rgba(216, 212, 212, 0.5);
 
-			.place-coin-wrapper {
+			.body-main {
+				width: 95%;
 				height: 100rpx;
-				width: 100%;
-				border-bottom: 2rpx solid rgba(216, 212, 212, 0.5);
 				display: flex;
-				justify-content: center;
 				align-items: center;
 
-				.main-text-box {
-					height: 50rpx;
-					width: 95%;
+				.main-place-name {
+					flex: 1;
+					height: 100rpx;
+					font-size: 32rpx;
 					display: flex;
+					align-items: center;
+					padding-right: 16rpx;
+				}
 
-					:nth-child(1) {
-						width: 25%;
-						height: 50rpx;
-						color: #5241FF;
-						font-size: 32rpx;
+				.main-device-num {
+					height: 100rpx;
+					font-size: 32rpx;
+					color: #5241FF;
+					line-height: 100rpx;
+				}
 
-						display: flex;
-						justify-content: flex-start;
-						align-items: center;
-					}
+				.main-icon {
+					margin-left: 12rpx;
+					height: 100rpx;
+					display: flex;
+					justify-content: flex-end;
+					align-items: center;
 
-					:nth-child(2) {
-						width: 50%;
-						height: 25%;
-						font-size: 32rpx;
-
-						justify-content: center;
-						align-items: center;
-						text-align: center;
+					img {
+						width: 28rpx;
+						opacity: 0.7;
 					}
 				}
 			}
+		}
 
-			.body-place-name {
-				color: #262626;
-				font-size: 32rpx;
-				font-weight: 700;
-				line-height: 44rpx;
-				padding: 28rpx 24rpx 0;
-				word-break: break-word;
+		.body-bottom {
+			padding-left: 20rpx;
+			height: 80rpx;
+			display: flex;
+			align-items: center;
+			background: #fff;
+			font-size: 26rpx;
+
+			.online-coins {
+				flex: 1;
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+
+				.line {
+					height: 36rpx;
+					width: 2rpx;
+					background: #e6e6e6;
+					margin-right: 10rpx;
+				}
 			}
 
-			.item-text-title {
-				width: 100%;
+			.coins-num {
+				line-height: 80rpx;
+				display: flex;
+				align-items: center;
+			}
+
+			.online-txt {
+				color: #8c8c8c;
+				font-size: 26rpx;
+				font-weight: 400;
+			}
+
+			.count-txt {
+				display: inline-block;
+				max-width: 124rpx;
+				padding: 0 12rpx;
+			}
+		}
+	}
+
+
+	.detail-content {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+
+		.place-coin-wrapper {
+			height: 100rpx;
+			width: 100%;
+			border-bottom: 2rpx solid rgba(216, 212, 212, 0.5);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			.main-text-box {
+				height: 50rpx;
+				width: 95%;
+				display: flex;
+
+				:nth-child(1) {
+					width: 25%;
+					height: 50rpx;
+					color: #5241FF;
+					font-size: 32rpx;
+
+					display: flex;
+					justify-content: flex-start;
+					align-items: center;
+				}
+
+				:nth-child(2) {
+					width: 50%;
+					height: 25%;
+					font-size: 32rpx;
+
+					justify-content: center;
+					align-items: center;
+					text-align: center;
+				}
+			}
+		}
+
+		.body-place-name {
+			color: #262626;
+			font-size: 32rpx;
+			font-weight: 700;
+			line-height: 44rpx;
+			padding: 28rpx 24rpx 0;
+			word-break: break-word;
+		}
+
+		.item-text-title {
+			width: 100%;
+			height: 90rpx;
+			display: flex;
+			justify-content: center;
+			background: #F5F6F7;
+			font-size: 28rpx;
+
+			.item-content-wrapper {
+				width: 95%;
 				height: 90rpx;
 				display: flex;
-				justify-content: center;
-				background: #F5F6F7;
-				font-size: 28rpx;
 
-				.item-content-wrapper {
-					width: 95%;
+				.device-t-w {
+					width: 40%;
 					height: 90rpx;
 					display: flex;
+					align-items: center;
+					justify-content: flex-start;
+				}
 
-					.device-t-w {
-						width: 40%;
-						height: 90rpx;
-						display: flex;
-						align-items: center;
-						justify-content: flex-start;
-					}
-
-					.three-title-wrapper {
-						width: 20%;
-						height: 90rpx;
-						display: flex;
-						align-items: center;
-						justify-content: flex-start;
-					}
+				.three-title-wrapper {
+					width: 20%;
+					height: 90rpx;
+					display: flex;
+					align-items: center;
+					justify-content: flex-start;
 				}
 			}
+		}
 
-			.item-content {
-				flex: 1;
-				overflow-y: auto;
-			}
+		.item-content {
+			flex: 1;
+			overflow-y: auto;
+		}
 
-			.item {
-				width: 100%;
+		.item {
+			width: 100%;
+			height: 130rpx;
+			display: flex;
+			justify-content: center;
+			font-size: 28rpx;
+			border-bottom: 2rpx solid rgba(216, 212, 212, 0.5);
+
+			.item-c-text-w {
+				width: 95%;
 				height: 130rpx;
 				display: flex;
-				justify-content: center;
-				font-size: 28rpx;
-				border-bottom: 2rpx solid rgba(216, 212, 212, 0.5);
 
-				.item-c-text-w {
-					width: 95%;
+				.box-top-text {
+					width: 40%;
 					height: 130rpx;
 					display: flex;
+					align-items: center;
+					justify-content: flex-start;
+					font-size: 30rpx;
+					font-weight: 500;
+				}
 
-					.box-top-text {
-						width: 40%;
-						height: 130rpx;
-						display: flex;
-						align-items: center;
-						justify-content: flex-start;
-						font-size: 30rpx;
-						font-weight: 500;
-					}
-
-					.box-one-style {
-						width: 20%;
-						height: 130rpx;
-						display: flex;
-						align-items: center;
-						justify-content: flex-start;
-					}
+				.box-one-style {
+					width: 20%;
+					height: 130rpx;
+					display: flex;
+					align-items: center;
+					justify-content: flex-start;
 				}
 			}
 		}

@@ -76,7 +76,8 @@
 
 <script>
 	import AnswerQuest from "./answerQuest";
-
+	import { orderController } from "@/api/index.js";
+	import { getDateAll } from "@/plugins/utilityClass.js";
 	export default {
 		name: "homeHeader",
 		components: {
@@ -91,18 +92,28 @@
 				},
 			};
 		},
+		created() {
+			this.getTotalTodayIncome();
+		},
 		methods: {
 			goTo(route) {
 				this.$goTo(`/pages/mainPackages/home/${route}/index`)
 			},
 			//总收益
-			async getTodayIncome() {
+			async getTotalTodayIncome() {
 				let nullLocal = {
 					totalInsertCoins: "",
 					outPresentNum: "",
 					totalInsertCoins: "",
 				};
-				// this.total = local.get("total") || nullLocal;
+				orderController.getTotalTodayIncome({
+					startTime: getDateAll(0),
+					endTime: getDateAll(0)
+				}).then(res => {
+					if(res.data === 200) {
+						this.total = res.data.data
+					}
+				})
 			},
 		},
 	};

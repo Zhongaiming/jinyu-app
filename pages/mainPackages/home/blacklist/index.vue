@@ -1,94 +1,95 @@
 <template>
-	<div class="black-list">
-		<xls-jy-navbar title="黑名单管理"></xls-jy-navbar>
-		<div class="input-content">
-			<div class="input-wapper">
-				<xls-search placeholder="输入用户ID/手机号" marLeft="-6em" @confirm="stratesSearch" />
-			</div>
-			<div class="add-black">
-				<span class="opertation" v-hasPermi="['app:back:index:records']"
-					@click="$router.push('/blackList/operateRecord')">操作记录>>
-				</span>
-				<span class="plus-circle" @click="blackMember = true" v-hasPermi="['app:back:index:add']">
-					<u-icon name="plus-circle" size="40" color="#5241FF" class="icon" />添加黑名单
-				</span>
-			</div>
-		</div>
-		<div class="black-list-panel" v-show="blackList.length">
-			<div class="black-item" v-for="(item, index) in blackList" :key="index">
-				<div class="left"><img :src="item.img" alt="" class="avatar" /></div>
-				<div class="middle">
-					<p class="name text-over">{{ item.nickName }}</p>
+	<z-paging ref="paging" v-model="blackList" @query="queryList">
+		<view slot="top">
+			<xls-jy-navbar title="黑名单管理"></xls-jy-navbar>
+			<view class="input-content">
+				<view class="input-wapper">
+					<xls-search placeholder="输入用户ID/手机号" marLeft="-6em" @confirm="stratesSearch" />
+				</view>
+				<view class="add-black">
+					<span class="opertation" v-hasPermi="['app:back:index:records']" @click="goTo()">操作记录>>
+					</span>
+					<span class="plus-circle" @click="blackMember = true" v-hasPermi="['app:back:index:add']">
+						<u-icon name="plus-circle" size="40" color="#5241FF" class="icon" />添加黑名单
+					</span>
+				</view>
+			</view>
+		</view>
+
+
+		<view class="black-list-panel">
+			<view class="black-item" v-for="(item, index) in blackList" :key="index">
+				<view class="left">
+					<image :src="item.img" alt="" class="avatar" mode="widthFix" />
+				</view>
+				<view class="middle">
+					<p class="name">{{ item.nickName }}</p>
 					<p class="info">
 						ID: {{ item.memberId
-					}}<span class="gender" v-html="item.sex == 1 ? '男' : item.sex == 2 ? '女' : '未知'"></span>
+					}}<span class="gender">
+							{{sexDict[item.sex]}}
+						</span>
 					</p>
-				</div>
-				<div class="right">
-					<button v-hasPermi="['app:back:index:detail']" @click="getMemberDetail(item.memberId)">
+				</view>
+				<view class="right">
+					<view class="button" v-hasPermi="['app:back:index:detail']" @click="getMemberDetail(item.memberId)">
 						详情
-					</button>
-					<button v-hasPermi="['app:back:index:delete']" @click="deleteBlackList(item.memberId)">
+					</view>
+					<view class="button"  v-hasPermi="['app:back:index:delete']" @click="deleteBlackList(item.memberId)">
 						剔除
-					</button>
-				</div>
-			</div>
-			<xls-bottom v-show="onEarth" />
-		</div>
-		<xls-empty v-show="!blackList.length" />
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<xls-empty slot="empty" />
+
 		<!-- add-black -->
-		<u-popup v-model="blackMember" round position="bottom" :style="{ height: '60%' }">
-			<div class="black-member">
-				<div class="title-detail">
+		<u-popup :show="blackMember" round="20" mode="bottom">
+			<view class="black-member">
+				<view class="title-detail">
 					添加黑名单
 					<u-icon name="question-o" size="18" color="#cccccc" class="icon-o" @click="blackListTips" />
-				</div>
+				</view>
+				<xls-search placeholder="输入用户ID/手机号" marLeft="-6em" @confirm="stratesSearch" />
 				<search-input placeholder="输入会员ID" marLeft="-5em" @stratesSearch="stratesSearch" />
-				<div class="black-list-panel black-detail-panel" v-show="memberList.length" @scroll="getMoreMember">
-					<div class="black-item" v-for="(memberDetail, index) in memberList" :key="index">
-						<div class="left">
+				<view class="black-list-panel black-detail-panel" v-show="memberList.length" @scroll="getMoreMember">
+					<view class="black-item" v-for="(memberDetail, index) in memberList" :key="index">
+						<view class="left">
 							<img :src="memberDetail.url" alt="" class="avatar" />
-						</div>
-						<div class="middle">
+						</view>
+						<view class="middle">
 							<p class="name text-over" :class="memberDetail.name ? '' : 'null-name'">
 								{{ memberDetail.name ? memberDetail.name : "用户未提供" }}
 							</p>
 							<p class="info">
 								ID: {{ memberDetail.memberNumber }}
-								<span class="gender" v-html="
-                      memberDetail.sex == 1
-                        ? '男'
-                        : memberDetail.sex == 2
-                        ? '女'
-                        : '未知'
-                    "></span>
+								<span class="gender">{{sexDict[memberDetail.sex]}}</span>
 							</p>
-						</div>
-						<div class="right">
-							<button @click="getMemberDetail(memberDetail.memberNumber)">
+						</view>
+						<view class="right">
+							<view class="button" @click="getMemberDetail(memberDetail.memberNumber)">
 								详情
-							</button>
-							<button @click="
-                    (pickerMember = memberDetail), (blackReason = !blackReason)
-                  ">
+							</view>
+							<view class="button" @click="addBlackMethod(memberDetail)">
 								添加
-							</button>
-						</div>
-					</div>
+							</view>
+						</view>
+					</view>
 					<on-earth v-show="onEarthList" />
-				</div>
+				</view>
 				<no-data v-show="!memberList.length" text="输入会员ID - 查找会员" />
-			</div>
+			</view>
 		</u-popup>
 		<!-- detail -->
-		<u-popup v-model="blackDetail" round>
-			<div class="black-member black-detail">
-				<div class="title-detail">详情</div>
-				<div class="info-wapper">
-					<div class="detail-content">
-						<div class="top-content">
+		<u-popup :show="blackDetail" round="20">
+			<view class="black-member black-detail">
+				<view class="title-detail">详情</view>
+				<view class="info-wapper">
+					<view class="detail-content">
+						<view class="top-content">
 							<img :src="memberDetail.img" alt="" class="img" />
-							<div class="user-info">
+							<view class="user-info">
 								<p class="info-name">{{ memberDetail.nickName }}</p>
 								<p class="info-id">
 									<span>ID:{{ memberDetail.memberNumber }}-</span>
@@ -98,54 +99,54 @@
                           : 'Tel:用户未提供'
                       "></span>
 								</p>
-							</div>
-						</div>
+							</view>
+						</view>
 
-						<div class="center-container">
-							<div class="item title-item">
+						<view class="center-container">
+							<view class="item title-item">
 								<!-- <span>累计消费</span>  -->
 								<span>累计支付</span>
 								<!-- <span>累计余额消费</span> -->
 								<span>累计投币</span>
-							</div>
-							<div class="item value-text">
+							</view>
+							<view class="item value-text">
 								<!-- <span>{{'--'}}元</span>  -->
 								<span>{{ memberDetail.totalPay }}元</span>
 								<span>{{ memberDetail.totalCoins }}个</span>
 								<!-- <span>{{'--'}}元</span> -->
-							</div>
-							<div class="item title-item">
+							</view>
+							<view class="item title-item">
 								<!-- <span>累计投币</span>  -->
 								<span>余币</span>
 								<span>余额</span>
 								<!-- <span>积分</span> -->
-							</div>
-							<div class="item value-text">
+							</view>
+							<view class="item value-text">
 								<span>{{ memberDetail.currency }}个</span>
 								<span>{{ memberDetail.balance }}元</span>
 								<!-- <span>{{'积分'}}</span> -->
-							</div>
-						</div>
+							</view>
+						</view>
 
-						<div class="static-container" v-show="memberDetail.blackReason">
+						<view class="static-container" v-show="memberDetail.blackReason">
 							<p>原因：</p>
 							<p class="reason-value">
 								{{ memberDetail.blackReason }}
 							</p>
-						</div>
-					</div>
-				</div>
-				<div class="btn-wrapper">
-					<div class="btn" @click="blackDetail = !blackDetail">我知道了</div>
-				</div>
-			</div>
+						</view>
+					</view>
+				</view>
+				<view class="btn-wrapper">
+					<view class="btn" @click="blackDetail = !blackDetail">我知道了</view>
+				</view>
+			</view>
 		</u-popup>
 		<!-- reason -->
-		<u-popup v-model="blackReason" round :close-on-click-overlay="true">
-			<div class="black-member black-detail black-reason">
-				<div class="title-detail">加入黑名单</div>
-				<div class="info-wapper">
-					<div>
+		<u-popup :show="blackReason" round="20">
+			<view class="black-member black-detail black-reason">
+				<view class="title-detail">加入黑名单</view>
+				<view class="info-wapper">
+					<view>
 						<u-radio-group v-model="pickerReason" class="reason-group">
 							<u-radio :name="item.id" checked-color="#5241FF" class="reason-radio-item"
 								v-for="(item, index) in reasonList.slice(0, lengthAll)" :key="index"
@@ -155,42 +156,33 @@
 							查看更多&gt;&gt;
 						</p>
 						<textarea placeholder="请输入加入黑名单原因,限30字" v-model="remarks" class="area-content"
-							:disabled="pickerReason == 10 ? false : true"></textarea>
-					</div>
-				</div>
-				<div class="btn-wrapper">
-					<div class="btn" @click="blackReason = !blackReason">取消</div>
-					<div class="btn comfirm-btn" @click="addBlackMember">确定</div>
-				</div>
-			</div>
+							:disabled="pickerReason != 10 "></textarea>
+					</view>
+				</view>
+				<view class="btn-wrapper">
+					<view class="btn" @click="blackReason = false">取消</view>
+					<view class="btn comfirm-btn" @click="addBlackMember">确定</view>
+				</view>
+			</view>
 		</u-popup>
-	</div>
 
+	</z-paging>
 </template>
 
 <script>
-	// import {
-	// 	getBlackPageList,
-	// 	getMemberInfo,
-	// 	addBlackInfo,
-	// 	deleteBlackInfo,
-	// 	getMemberList,
-	// } from "@/utils/api/couple";
 	import {
-		debounceFun,
-		throttleFun
-	} from "@/plugins/debounceOrthrottle";
-	// import {
-	// 	getList
-	// } from "@/utils/api/member";
+		memberController
+	} from '@/api/index.js';
 
 	export default {
 		data() {
 			return {
-				//get
-				page: 0,
-				onEarth: false,
 				blackList: [],
+				sexDict: {
+					1: '男',
+					2: '女',
+					undefined: ''
+				},
 				searchValue: "",
 				blackMember: false,
 				blackDetail: false,
@@ -262,73 +254,44 @@
 				onEarthList: false,
 			};
 		},
-		// created() {
-		// 	this.getBlackList();
-		// 	this.getMemberById();
-		// 	window.addEventListener("scroll", this.getMoretype);
-		// },
-		// beforeDestroy() {
-		// 	window.removeEventListener("scroll", this.getMoretype);
-		// },
+		
 		methods: {
+			queryList(pageNo, pageSize) {
+				memberController.getBlackPageList({
+					page: pageNo,
+					size: pageSize,
+					search: null
+				}).then(res => {
+					if (res.code === 200 || res.code === 0) {
+						console.log(res.data.records)
+						const list = [{
+							"memberId": 10726488,
+							"nickName": "钅·䖝",
+							"img": "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIbmyO6JLFcUtiaGjmuLY5yWIib88z8iacVd3Ric9OAW9MbIX3oENiaLLSaZyQhJ19fzGEUNDdpE9PLKWA/132",
+							"sex": 0
+						}]
+						this.$refs.paging.complete(list);
+					}
+				})
+			},
+			addBlackMethod(memberDetail) {
+				this.pickerMember = memberDetail
+				this.blackReason = !this.blackReason
+			},
+
+			goTo() {
+				this.$goTo("/pages/mainPackages/home/blacklist/record")
+			},
 			//search
 			stratesSearch(search) {
 				this.searchValue = search;
 				if (this.blackMember) {
-					//member-list
-					// if(this.searchValue){
-					this.pageList = 0;
-					this.onEarthList = false;
-					this.getMemberById();
-					// }
+					
 				} else {
-					//list
-					this.page = 0;
-					this.onEarth = false;
-					this.getBlackList();
+					
 				}
 			},
-			//监听滚动
-			getMoretype() {
-				var scrollTop =
-					document.documentElement.scrollTop ||
-					window.pageYOffset ||
-					document.body.scrollTop;
-				var scrollHeight = document.documentElement.scrollHeight;
-				var clientHeight = document.documentElement.clientHeight;
-				if (scrollTop + clientHeight + 50 >= scrollHeight) {
-					if (this.onEarth == false) {
-						this.getBlackList();
-					}
-				}
-			},
-			//获取列表
-			getBlackList: debounceFun(async function() {
-				let res = await getBlackPageList({
-					page: ++this.page,
-					size: 10,
-					search: this.searchValue, //搜索（会员id）
-				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					if (res.data.data.records.length == 0) {
-						this.onEarth = true;
-					} else {
-						this.onEarth = false;
-					}
-					if (res.data.data.records != null) {
-						if (this.page > 1) {
-							this.blackList = [...this.blackList, ...res.data.data.records];
-						} else {
-							this.blackList = res.data.data.records;
-						}
-						if (res.data.data.records.length < 10) {
-							this.onEarth = true;
-						} else {
-							this.onEarth = false;
-						}
-					}
-				}
-			}, 500),
+			
 			//剔除黑名单
 			deleteBlackList(memberId) {
 				this.$dialog
@@ -399,83 +362,43 @@
 					confirmButtonColor: "#5241FF",
 				});
 			},
-			//查会员列表
-			getMemberById: debounceFun(async function() {
-				// let res = await getMemberList({
-				let res = await getList({
-					page: ++this.pageList,
-					size: 20,
-					search: encodeURIComponent(this.searchValue),
-				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					if (res.data.data != null) {
-						if (res.data.data.length < 20) {
-							this.onEarthList = true;
-						} else {
-							this.onEarthList = false;
-						}
-						if (this.pageList > 1) {
-							this.memberList = [...this.memberList, ...res.data.data];
-						} else {
-							this.memberList = res.data.data;
-						}
-					}
-				}
-			}, 500),
-
-			getMoreMember(elm) {
-				var scrollTop = elm.target.scrollTop;
-				var scrollHeight = elm.target.scrollHeight;
-				var clientHeight = elm.target.clientHeight;
-				if (scrollTop + clientHeight + 50 >= scrollHeight) {
-					if (this.onEarthList == false) {
-						this.getMemberById();
-					}
-				}
-			},
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
-	.black-list {
-		width: 100%;
-	}
-
 	.input-content {
-		height: 86px;
+		height: 172rpx;
 
 		.input-wapper {
 			position: fixed;
-			top: 48px;
+			top: 96rpx;
 			left: 0;
 			width: 100%;
 		}
 	}
 
 	.add-black {
-		padding: 8px 12px;
+		padding: 16rpx 24rpx;
 		box-sizing: border-box;
 		display: flex;
 		align-items: center;
-		font-size: 15px;
-		// justify-content: flex-end;
-		// justify-content: space-between;
+		font-size: 30rpx;
 		color: #5241FF;
 		position: fixed;
 		width: 100%;
 		left: 0;
-		top: 98px;
+		top: 196rpx;
 		background: #f5f6f7;
 
 		.icon {
-			margin-right: 6px;
+			margin-right: 12rpx;
 		}
 
 		.opertation {
 			flex: 1;
 		}
-		
+
 		.plus-circle {
 			display: flex;
 			align-items: center;
@@ -486,59 +409,59 @@
 		.black-item {
 			display: flex;
 			align-items: center;
-			padding: 15px 12px;
+			padding: 30rpx 24rpx;
 			background: #fff;
 
 			.left {
 				.avatar {
 					border-radius: 50%;
 					display: block;
-					height: 40px;
-					width: 40px;
+					height: 80rpx;
+					width: 80rpx;
 				}
 			}
 
 			.middle {
 				flex: 1;
 				overflow: hidden;
-				padding: 0 7.5px;
+				padding: 0 15rpx;
 
 				.name {
 					color: #1e2021;
-					font-size: 15px;
-					font-weight: 400;
+					font-size: 30rpx;
 				}
 
 				.null-name {
 					color: #999;
-					font-size: 13px;
+					font-size: 26rpx;
 				}
 
 				.info {
 					color: #999;
-					font-size: 12px;
-					font-weight: 500;
-					line-height: 22px;
+					font-size: 24rpx;
+					line-height: 44rpx;
 
 					.gender {
-						margin-left: 5px;
+						margin-left: 10rpx;
 					}
 				}
 			}
 
 			.right {
-				font-size: 14px;
-
-				button {
-					border: 1px solid #8d8d8d;
-					border-radius: 4px;
+				font-size: 28rpx;
+				@include center-flex();
+				
+				.button {
+					border: 2rpx solid #8d8d8d;
+					border-radius: 8rpx;
 					color: #8d8d8d;
-					font-size: 14px;
-					font-weight: 400;
-					height: 28px;
-					margin: 0 5px;
-					width: 54px;
+					font-size: 28rpx;
+					height: 56rpx;
+					line-height: 56rpx;
+					margin: 0 10rpx;
+					width: 108rpx;
 					background: #fff;
+					text-align: center;
 				}
 			}
 		}
@@ -552,12 +475,12 @@
 
 		.title-detail {
 			text-align: center;
-			padding: 12px 0;
-			font-size: 16px;
+			padding: 24rpx 0;
+			font-size: 32rpx;
 			font-weight: 600;
 
 			.icon-o {
-				margin-left: 6px;
+				margin-left: 12rpx;
 			}
 		}
 
@@ -565,29 +488,29 @@
 			flex: 1;
 			overflow: scroll;
 			box-sizing: border-box;
-			padding: 10px 0;
-			border-top: 1px solid #e6e6e6;
+			padding: 20rpx 0;
+			border-top: 2rpx solid #e6e6e6;
 		}
 	}
 
 	.black-detail {
-		width: 320px;
+		width: 640rpx;
 
 		.info-wapper {
 			color: #262626;
-			font-size: 14px;
-			line-height: 21px;
-			max-height: 355px;
+			font-size: 28rpx;
+			line-height: 42rpx;
+			max-height: 710rpx;
 			overflow-y: auto;
-			padding: 16px 20px 20px;
+			padding: 32rpx 40rpx 40rpx;
 			text-align: justify;
 
 			.detail-content {
-				padding: 0 10px;
+				padding: 0 20rpx;
 
 				.top-content {
-					border-bottom: 1px dashed #bdbdbd;
-					padding-bottom: 5px;
+					border-bottom: 2rpx dashed #bdbdbd;
+					padding-bottom: 10rpx;
 					position: relative;
 					display: flex;
 					align-items: center;
@@ -595,35 +518,35 @@
 					.img {
 						border-radius: 50%;
 						display: inline-block;
-						height: 40px;
-						width: 40px;
+						height: 80rpx;
+						width: 80rpx;
 					}
 
 					.user-info {
-						margin-left: 10px;
+						margin-left: 20rpx;
 						flex: 1;
 
 						.info-id {
 							color: #999;
-							font-size: 12px;
+							font-size: 24rpx;
 						}
 					}
 				}
 
 				.center-container {
-					padding-bottom: 10px;
+					padding-bottom: 20rpx;
 
 					.item {
 						display: flex;
 						flex-direction: row;
 						justify-content: space-between;
-						line-height: 27px;
+						line-height: 54rpx;
 					}
 
 					.title-item {
 						color: #333;
-						font-size: 12px;
-						margin-top: 8px;
+						font-size: 24rpx;
+						margin-top: 16rpx;
 					}
 
 					span {
@@ -633,17 +556,17 @@
 
 					.value-text {
 						color: #5241FF;
-						font-size: 16px;
+						font-size: 32rpx;
 					}
 				}
 
 				.static-container {
-					border-top: 1px dashed #bdbdbd;
-					padding: 10px 0;
+					border-top: 2rpx dashed #bdbdbd;
+					padding: 20rpx 0;
 
 					.reason-value {
 						color: #999;
-						font-size: 13px;
+						font-size: 26rpx;
 					}
 				}
 			}
@@ -656,18 +579,18 @@
 
 		.btn {
 			background: #5241FF;
-			border-radius: 5px;
+			border-radius: 10rpx;
 			color: #fff;
-			margin: 0 24px 16px;
-			font-size: 18px;
-			line-height: 50px;
+			margin: 0 48rpx 32rpx;
+			font-size: 36rpx;
+			line-height: 100rpx;
 			flex: 1;
 			text-align: center;
 		}
 	}
 
 	.black-reason {
-		width: 320px;
+		width: 640rpx;
 
 		.reason-group {
 			display: flex;
@@ -676,24 +599,24 @@
 		}
 
 		.reason-radio-item {
-			margin-bottom: 10px;
+			margin-bottom: 20rpx;
 			width: 46%;
 		}
 
 		.show-more {
 			color: #5241FF;
-			font-size: 12px;
+			font-size: 24rpx;
 		}
 
 		.area-content {
 			background: #fafafa;
-			border: 1px dashed #e6e6e6;
-			border-radius: 9px;
+			border: 2rpx dashed #e6e6e6;
+			border-radius: 18rpx;
 			color: #666;
-			font-size: 13px;
-			height: 80px;
-			margin-top: 10px;
-			padding: 10px;
+			font-size: 26rpx;
+			height: 160rpx;
+			margin-top: 20rpx;
+			padding: 20rpx;
 			width: 100%;
 			box-sizing: border-box;
 			resize: none;
@@ -703,13 +626,13 @@
 			margin: 0;
 			background: #fff;
 			color: #000;
-			border-top: 1px solid #e6e6e6;
+			border-top: 2rpx solid #e6e6e6;
 			border-radius: 0;
 		}
 
 		.comfirm-btn {
 			color: #5241FF;
-			border-left: 1px solid #e6e6e6;
+			border-left: 2rpx solid #e6e6e6;
 		}
 	}
 </style>

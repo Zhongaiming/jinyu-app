@@ -27,11 +27,11 @@
 		<view class="xls-step-bottom">
 			<view class="bottom-fixed">
 				<view class="bottom-divider">
-					<view class="prev-button">
+					<view class="prev-button" @click="lastStep">
 						<u-icon name="arrow-left" size="30" color="#5241ff"></u-icon>
 						<text class="text">上一步</text>
 					</view>
-					<view class="btn-wrapper" :class="{disabled: true}">
+					<view class="btn-wrapper" :class="{disabled: !images.cardPhoto}" @click="nextStepMethod">
 						下一步
 					</view>
 				</view>
@@ -42,6 +42,12 @@
 </template>
 
 <script>
+	import {
+		uploadFilePromise
+	} from "@/common/upload.js";
+	import {
+		merchantController
+	} from "@/api/index.js";
 	export default {
 		props: {
 			current: {
@@ -70,21 +76,65 @@
 					SUBJECT_TYPE_OTHERS: '拍照银行卡号面', //其他组织
 				},
 				cardPhotoList: [],
+				images: {
+					cardPhoto: "" //结算银行卡正面照图片
+				},
+				result: {
+					accountNo: "", //结算银行卡账号 说明(必传
+				}
 			}
 		},
 		methods: {
+			updateList(list, url) {
+				list = [];
+				list.push({
+					status: 'success', // uploading
+					message: '上传成功', // 上传中
+					url
+				});
+				return list;
+			},
+			updateMethod(params) {
+				if (params) {
+					const requiredParams = {
+						accountNo: params.accountNo, //结算银行卡账号 说明(必传
+					}
+					Object.assign(this.result, requiredParams);
+
+					if (params.images) {
+						const requiredImages = {
+							cardPhoto: params.images.cardPhoto,
+						}
+						Object.assign(this.images, requiredImages);
+
+						// 更新 idCardinfo 列表
+						if (this.images.cardPhoto) {
+							this.cardPhotoList = this.updateList(this.cardPhoto, this.images
+								.cardPhoto);
+						}
+					}
+				}
+			},
 			async afterRead(event) {
 				const {
 					file,
 					index,
 					name
 				} = event;
-				console.log('after', typeof file, file, index, name)
 				this[`${name}List`].push({
 					...file,
-					status: 'success', // uploading
-					message: '' // 上传中
+					status: 'uploading', // uploading
+					message: '上传中' // 上传中
 				})
+				let res = await uploadFilePromise(file)
+				this[`${name}List`] = []
+				this[`${name}List`].push({
+					status: 'success', // uploading
+					message: '上传成功', // 上传中
+					url: res.data.downloadUri
+				})
+				this.images[`${name}`] = res.data.downloadUri;
+				this.getFileInfo(name, res.data.downloadUri);
 			},
 			deletePic(event) {
 				const {
@@ -93,6 +143,39 @@
 					name
 				} = event;
 				this[`${name}List`] = [];
+				this.images.cardPhoto = "";
+			},
+			getFileInfo(name, url) {
+				// ENTERPRISE === INDIVIDUALBISS
+				merchantController.recognizeBankAccountLicense({
+					url
+				}).then(res => {
+					if (res.code === 200) {
+						const obj = res.data;
+						this.result.accountNo = obj.bankAccount
+					}
+				})
+				merchantController.recognizeBankCard({
+					url
+				}).then(res => {
+					if (res.code === 200) {
+						const obj = res.data;
+						this.result.accountNo = obj.cardNumber
+					}
+				})
+			},
+			nextStepMethod() {
+				const params = {
+					...this.result,
+					images: this.images
+				}
+				this.$emit('nextStepMethod', {
+					step: 'secondStep',
+					params
+				})
+			},
+			lastStep() {
+				this.$emit('lastStep')
 			},
 		}
 	}

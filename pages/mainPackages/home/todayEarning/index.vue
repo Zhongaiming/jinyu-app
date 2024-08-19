@@ -18,7 +18,6 @@
 			</u-col>
 		</u-row>
 
-
 		<!-- 在线支付 -->
 		<u-row class="xls-today-item-wrapper" @click="goToDetail(1)">
 			<u-col :span="3">
@@ -147,6 +146,9 @@
 </template>
 
 <script>
+	import {
+		orderController
+	} from "@/api/index.js";
 	export default {
 		data() {
 			return {
@@ -160,6 +162,27 @@
 				this.$goTo('/pages/mainPackages/home/todayEarning/earnDetail', 'navigateTo', {
 					params
 				})
+			},
+			getEarnInfo() {
+				orderController.getTodayCashIncome({})
+					.then((res) => {
+						this.cashIncome = res.data.data;
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+				orderController.getTodayOnlineIncome({})
+					.then((res) => {
+						this.onlineIncome = res.data.data;
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+				orderController.subsidyIncomeInfo({})
+					.then((res) => {
+						this.subsidyInfo = res.data.data;
+					})
+					.catch((err) => {});
 			},
 		}
 	}

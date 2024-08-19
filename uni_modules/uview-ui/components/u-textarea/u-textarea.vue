@@ -205,7 +205,7 @@ export default {
     position: relative;
     @include flex;
     flex: 1;
-	padding: 9px;
+	padding: 9px 0;
 
     &--radius {
         border-radius: 4px;

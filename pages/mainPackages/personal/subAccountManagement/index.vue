@@ -1,95 +1,99 @@
 <template>
-	<div class="accountManagement">
+	<view class="accountManagement">
 		<xls-jy-navbar title="子账号管理"></xls-jy-navbar>
-		<div class="tabs-item">
-			<div class="tab-box">
-				<div class="tab" v-hasPermi="['app:account:index']" :class="{active: 1 == activeItem}"
+		<view class="tabs-item">
+			<view class="tab-box">
+				<view class="tab" v-hasPermi="['app:account:index']" :class="{active: 1 == activeItem}"
 					@click="activeItem = 1">
 					子账号
-				</div>
-				<div class="tab" v-hasPermi="['app:account:index:read']" :class="{active: 2 == activeItem}"
+				</view>
+				<view class="tab" v-hasPermi="['app:account:index:read']" :class="{active: 2 == activeItem}"
 					@click="activeItem = 2">
 					岗位角色
-				</div>
-			</div>
-		</div>
-		<xls-search placeholder="输入子账号名称/账号" marLeft="-6.5em" @confirm="stratesSearch" bgColor="#f5f6f7"
-			inputColor="#fff" v-show="activeItem == 1"></xls-search>
+				</view>
+			</view>
+		</view>
+		<xls-search 
+			placeholder="输入子账号名称/账号" 
+			marLeft="-6.5em" 
+			@confirm="stratesSearch" bgColor="#f5f6f7"
+			inputColor="#fff" v-show="activeItem == 1">
+		</xls-search>
 		<!-- 子账号 -->
-		<div class="sub-account box-sizing" v-show="activeItem == 1">
+		<view class="sub-account box-sizing" v-show="activeItem == 1">
 			<u-list v-if="sonAccountList.length">
-				<div class="child-list">
-					<div class="child-item" v-for="(item, index) in sonAccountList" :key="index">
-						<div class="top-info">
-							<div class="role-info">
-								<div class="title">
-									<span class="name">{{ item.nickName }}</span>
-									<span class="post">({{ item.roleName ? item.roleName : "未设置" }})</span>
-								</div>
-								<div class="phone-group">
-									<span class="phone">{{ item.username }}</span>
-									<div class="line"></div>
-									<span class="group-num">管理场地({{
+				<view class="child-list">
+					<view class="child-item" v-for="(item, index) in sonAccountList" :key="index">
+						<view class="top-info">
+							<view class="role-info">
+								<view class="title">
+									<text class="name">{{ item.nickName }}</text>
+									<text class="post">({{ item.roleName ? item.roleName : "未设置" }})</text>
+								</view>
+								<view class="phone-group">
+									<text class="phone">{{ item.username }}</text>
+									<view class="line"></view>
+									<text class="group-num">管理场地({{
                         item.placeIdList || 0
-                      }})个</span>
-								</div>
-							</div>
-							<div class="right-switch">
+                      }})个</text>
+								</view>
+							</view>
+							<view class="right-switch">
 								<u-switch size="50" v-model="item.userState"
 									@change="editState(item.id, item.userState)" active-color="#5241FF" />
-							</div>
-						</div>
-						<div class="handle-btn">
+							</view>
+						</view>
+						<view class="handle-btn">
 							<!-- 新 -->
-							<div v-hasPermi="['app:account:index:deleteson']" @click="deleteItem(item.id)">
+							<view v-hasPermi="['app:account:index:deleteson']" @click="deleteItem(item.id)">
 								删除
-							</div>
-							<div v-hasPermi="['app:account:index:editson']" @click="
+							</view>
+							<view v-hasPermi="['app:account:index:editson']" @click="
                     $router.push({
                       path: '/accountManagement/addAccount',
                       query: { sonAccount: JSON.stringify(item) },
                     })
                   ">
 								编辑
-							</div>
-						</div>
-					</div>
+							</view>
+						</view>
+					</view>
 					<xls-bottom v-show="sonAccountList.length" />
-				</div>
+				</view>
 			</u-list>
 			<xls-empty v-else />
-			<div class="btn-bottom" v-hasPermi="[
+			<view class="btn-bottom" v-hasPermi="[
             'app:subacounts:index:person',
             'app:subaccounts:index:earn',
             'app:subacounts:index:ratio',
             'app:account:index:addson',
           ]">
-				<div class="share-money" v-hasPermi="[
+				<view class="share-money" v-hasPermi="[
               'app:subacounts:index:person',
               'app:subaccounts:index:earn',
               'app:subacounts:index:ratio',
             ]" @click="$router.push('/subAccount')">
 					<!-- <img src="./image/account.png" /> -->
 					<u-icon name="order" size="58" color="#5241ff" />
-					<span class="txt">分账设置</span>
-				</div>
-				<div class="create-btn" v-hasPermi="['app:account:index:addson']" @click="
+					<text class="txt">分账设置</text>
+				</view>
+				<view class="create-btn" v-hasPermi="['app:account:index:addson']" @click="
               roleList.length
                 ? $router.push('/accountManagement/addAccount')
                 : $toast('请先创建角色~')
             ">
 					创建子账号
-				</div>
-			</div>
+				</view>
+			</view>
 			<!-- <no-data v-show="!sonAccountList.length"/> -->
-		</div>
+		</view>
 		<!-- 岗位角色 -->
-		<div class="sub-account box-sizing" v-show="activeItem == 2">
-			<div class="role-list">
-				<div class="role-item" v-for="(role, index) in roleList" :key="index">
+		<view class="sub-account box-sizing" v-show="activeItem == 2">
+			<view class="role-list">
+				<view class="role-item" v-for="(role, index) in roleList" :key="index">
 					<p class="name">{{ role.roleName }}</p>
-					<div class="right">
-						<span class="one" v-hasPermi="['app:account:index:editjob']" @click="
+					<view class="right">
+						<text class="one" v-hasPermi="['app:account:index:editjob']" @click="
                   $router.push({
                     path: '/accountManagement/createJobs',
                     query: {
@@ -97,31 +101,31 @@
                       roleId: role.roleId,
                     },
                   })
-                ">权限查看</span>
-						<!-- <span class="one"
+                ">权限查看</text>
+						<!-- <text class="one"
                         v-hasPermi="['app:account:index:editjob']"
                         @click="$router.push({
                             path:'/accountManagement/createJobs',
                             query:{jobs:JSON.stringify(role)}
-                        })">权限查看</span> -->
-						<span class="one next" @click="
+                        })">权限查看</text> -->
+						<text class="one next" @click="
                   $router.push({
                     path: '/accountManagement/sonAccount',
                     query: {
                       roleName: role.roleName,
                     },
                   })
-                ">子账号查看</span>
-					</div>
-				</div>
-			</div>
-			<div class="btn-bottom" v-hasPermi="['app:account:index:addjob']">
-				<div class="create-btn" @click="$router.push('/accountManagement/createJobs')">
+                ">子账号查看</text>
+					</view>
+				</view>
+			</view>
+			<view class="btn-bottom" v-hasPermi="['app:account:index:addjob']">
+				<view class="create-btn" @click="$router.push('/accountManagement/createJobs')">
 					创建岗位
-				</div>
-			</div>
-		</div>
-	</div>
+				</view>
+			</view>
+		</view>
+	</view>
 
 </template>
 
@@ -633,7 +637,7 @@
 					position: relative;
 					text-align: center;
 
-					div {
+					view {
 						flex: 1;
 						font-size: 14px;
 						font-weight: 400;

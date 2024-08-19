@@ -23,7 +23,7 @@
 				</view>
 			</view>
 
-			<view class="btn-outside home-family">
+			<view class="btn-outside">
 				<view class="btn-bg"></view>
 				<view class="btn-wrapper">
 					<view class="btn-list" v-hasPermi="['app:payBag:index:bill']" @click="goTo('dailyBill')">
@@ -47,64 +47,16 @@
 
 			<view class="card-box" v-if="userType != 5">
 				<!-- 银行卡 -->
-				<view class="card-list" v-hasPermi="['app:payBag:index:bank']">
+				<view class="card-list" v-hasPermi="['app:payBag:index:bank']" v-if="bankList.length" @click="goTo('bankCard')">
 					<image :src="`${$baseUrl}appV4/authentications/card.png`" alt="" class="card-icon"
 						mode="widthFix" />
 					<p class="card-text card-con">银行卡</p>
-					<van-popover v-model="showBankcard" trigger="click" placement="top-end" v-if="0">
-						<view class="bank-list">
-							<view class="title-txt">选择银行卡</view>
-							<view class="list-content">
-								<view class="list-item" v-for="(bank, index) in bankList" :key="index" @click="
-                      (showBankcard = false),
-                        $router.push({
-                          path: '/moneyBag/bankCard',
-                          query: { orderNo: bank.orderNo },
-                        })
-                    ">
-									<view class="bank-name text-over">
-										卡{{ index + 1 }}:{{ bank.bankName }}
-									</view>
-									<!-- INIT:待审核, OVERRULE:申请驳回, AUDITED:审核通过, DOING:审核中 -->
-									<view class="bank-num text-over" :class="
-                        bank.entryStatus === 'AUDITED'
-                          ? 'success'
-                          : bank.entryStatus === 'OVERRULE'
-                          ? 'bad'
-                          : 'info'
-                      ">
-										{{
-											bank.entryStatus === "INIT"
-											  ? "待审核"
-											  : bank.entryStatus === "OVERRULE"
-											  ? "申请驳回"
-											  : bank.entryStatus === "AUDITED"
-											  ? "审核通过"
-											  : bank.entryStatus === "DOING"
-											  ? "审核中"
-											  : "未知状态"
-												}}
-									</view>
-									<p class="back">&gt;</p>
-								</view>
-								<view class="earth">到底了~</view>
-							</view>
-						</view>
-						<template #reference>
-							<p class="card-text bank-card bank-info" v-show="bankList.length">
-								{{ bankList.length }}张
-							</p>
-						</template>
-					</van-popover>
-
-					<p class="card-text bank-card bad bank-info" v-show="!bankList.length" @click="$toast('您还未绑卡~')">
-						未绑卡
-					</p>
+					<p class="card-text bank-card bad bank-info">{{bankList.length}} 张</p>
 					<p class="right-sign">&gt;</p>
 				</view>
-				<!-- 实名认证 @click="goResigter" merchantCA-->
-				<view class="card-list" v-hasPermi="['app:payBag:index:authenticate']" @click="goTo('authentication')"
-					v-if="!bankList.length">
+				<!-- 实名认证 -->
+				<view class="card-list" v-hasPermi="['app:payBag:index:authenticate']" @click="goTo('merchantCA')"
+					v-else>
 					<image :src="`${$baseUrl}appV4/authentications/check.png`" alt="" class="card-icon"
 						mode="widthFix" />
 					<p class="card-text card-con">实名认证</p>
@@ -113,14 +65,7 @@
 					<p class="right-sign">&gt;</p>
 				</view>
 				<!-- 认证记录 -->
-				<view class="card-list" @click="
-              bankList.length
-                ? $router.push({
-                    path: '/realNameattesta',
-                    query: { five: 5 },
-                  })
-                : $toast('您还未绑卡~')
-            ">
+				<view class="card-list" @click="goTo('authentication')">
 					<image :src="`${$baseUrl}appV4/authentications/card.png`" alt="" class="card-icon"
 						mode="widthFix" />
 					<p class="card-text card-con">认证记录</p>
@@ -140,20 +85,18 @@
 </template>
 
 <script>
-	// import { getWalletIncome } from "@/utils/api/wallet";
-	// import { getListHlbEntry } from "@/utils/otherRequest/modules";
-	// import local from "@/plugins/storage";
-	// import { getDateAll } from "@/plugins/utilityClass";
+	import {
+		merchantController
+	} from '@/api/index.js';
 
 	export default {
 		name: "moneyBag",
 		data() {
 			return {
 				userType: 0,
-				walletBagInfo: [],
-				merberInfo: [],
-				showBankcard: false,
 				bankList: [],
+				walletBagInfo: [],
+
 			};
 		},
 		beforeCreate() {
@@ -161,77 +104,28 @@
 			image.src = `${this.$baseUrl}appV4/example/bing-card.png`;
 			image.onload = () => {};
 		},
-		// async created() {
-		//   this.getHlbEntryList();
-		// },
+		async created() {
+			this.getHlbEntryList();
+		},
 		methods: {
 			goTo(item) {
+				if(item === 'authentication' && !this.bankList.length) {
+					return this.$toast("您还没有认证记录~")
+				}
 				this.$goTo(`/pages/subpackages/merchant/${item}/index`)
 			},
 			async getHlbEntryList() {
-				this.loading();
-				let res = await getListHlbEntry();
+
+				merchantController.getListHlbEntryAction().then(res => {
+					if (res.code === 200) {
+						this.bankList = res.data;
+					}
+				})
 				// 查询钱包余额和收益信息
-				var wallet = await getWalletIncome();
-				this.clearing();
-				if (wallet.data.code == 0 || wallet.data.msg == "ok") {
-					this.walletBagInfo = wallet.data.data;
-				}
-				this.userType = local.get("userType");
-				if (res.data.data) {
-					this.bankList = res.data.data;
-				} else {
-					this.bankList = [];
-				}
-				local.setSion("bankList", this.bankList);
-			},
-			goResigter() {
-				//最多五次
-				if (this.bankList.length >= 5) {
-					return this.$dialog.alert({
-						title: "温馨提示",
-						message: "每个账户仅支持最多5次认证~",
-						confirmButtonText: "我知道了",
-						width: "270",
-					});
-				}
-				let passOrForbidden = true;
-				this.bankList.forEach((item) => {
-					if (item.entryStatus != "AUDITED") {
-						passOrForbidden = false;
-					}
-				});
-				if (!passOrForbidden) {
-					return this.$dialog.alert({
-						title: "温馨提示",
-						message: "检测到您的账号存在认证不通过记录，请您联系管理员解决后再进行认证~",
-						confirmButtonText: "我知道了",
-						width: "270",
-					});
-				}
-				let today = getDateAll(0); //今天
-				local.set("todayCreated", false);
-				this.bankList.forEach((element) => {
-					if (element.hlbOpenThePublicRecord) {
-						let pickerDate =
-							element.hlbOpenThePublicRecord.createTime.split("T")[0];
-						if (today == pickerDate) {
-							local.set("todayCreated", true);
-						}
-					}
-				});
-				//每天一次
-				let isToday = local.get("todayCreated");
-				if (isToday) {
-					return this.$dialog.alert({
-						title: "温馨提示",
-						message: "检测到您的账号今天已存在注册记录，如果您仍需注册请于明天进行~",
-						confirmButtonText: "我知道了",
-						width: "270",
-					});
-				} else {
-					this.$router.push("/realNameattesta");
-				}
+				// var wallet = await getWalletIncome();
+				// if (wallet.data.code == 0 || wallet.data.msg == "ok") {
+				// 	this.walletBagInfo = wallet.data.data;
+				// }
 			},
 		},
 	};

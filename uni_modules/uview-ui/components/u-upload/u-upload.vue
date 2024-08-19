@@ -24,7 +24,7 @@
 					>
 						<u-icon
 						    color="#80CBF9"
-						    size="26"
+						    size="52"
 						    :name="item.isVideo || (item.type && item.type === 'video') ? 'movie' : 'folder'"
 						></u-icon>
 						<text class="u-upload__wrap__preview__other__text">{{item.isVideo || (item.type && item.type === 'video') ? '视频' : '文件'}}</text>
@@ -38,10 +38,10 @@
 							    v-if="item.status === 'failed'"
 							    name="close-circle"
 							    color="#ffffff"
-							    size="25"
+							    size="50"
 							/>
 							<u-loading-icon
-							    size="22"
+							    size="44"
 							    mode="circle"
 							    color="#ffffff"
 							    v-else
@@ -110,7 +110,7 @@
 				>
 					<u-icon
 					    :name="uploadIcon"
-					    size="26"
+					    size="52"
 					    :color="uploadIconColor"
 					></u-icon>
 					<text

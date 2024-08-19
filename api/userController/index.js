@@ -2,6 +2,25 @@ import http from '../../core/http/index.js'
 
 export default class userController {
 	
+	// 获取用户信息
+	static getInfo(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/login/getInfo',
+			method: 'GET', 
+			data
+		})
+	}
+	
+	// 获取用户路由
+	static getRouters(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/login/getRouters',
+			method: 'GET', 
+			data
+		})
+	}
+	
+	// ====== xls ======
 	// 修改用户信息
 	static updateUser(data) {
 		return http.request({

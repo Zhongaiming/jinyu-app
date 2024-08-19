@@ -8,7 +8,7 @@ import reqConfig from '@/core/config/reqConfig.js'
  * nameKey: 文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容
  */
 export function upload(url, asImage = true, count = 1, sizeType = [], sourceType = [], nameKey = 'uploadFile') {
-	if(!url) {
+	if (!url) {
 		url = reqConfig.uploadUrl
 	}
 	return new Promise((resolve, reject) => {
@@ -24,7 +24,7 @@ export function upload(url, asImage = true, count = 1, sizeType = [], sourceType
 					file: res.tempFiles[0],
 					name: nameKey,
 				}).then(res => {
-					if(res.code === 200) {
+					if (res.code === 200) {
 						resolve(res.data)
 					}
 				})
@@ -39,11 +39,11 @@ export function upload(url, asImage = true, count = 1, sizeType = [], sourceType
  * @param url 文件url
  */
 export function getFileName(url) {
-  const num = url.lastIndexOf('/') + 1;
-  let fileName = url.substring(num);
-  //把参数和文件名分割开
-  fileName = decodeURI(fileName.split('?')[0]);
-  return fileName;
+	const num = url.lastIndexOf('/') + 1;
+	let fileName = url.substring(num);
+	//把参数和文件名分割开
+	fileName = decodeURI(fileName.split('?')[0]);
+	return fileName;
 }
 
 
@@ -52,4 +52,51 @@ export function getFileName(url) {
  */
 export function getPreviewUrl(url) {
 	return reqConfig.baseUrl + url
+}
+
+import {
+	getToken
+} from '@/common/auth.js'
+import {
+	commonController
+} from "@/api/index.js"
+export function uploadFilePromise(file) {
+	return new Promise((resolve, reject) => {
+		const blobUrl = file.url
+		const fileName = file.name
+		fetch(blobUrl)
+			.then(response => response.blob())
+			.then(blob => {
+				// 创建一个 File 对象
+				const file = new File([blob], fileName, {
+					type: blob.type
+				});
+				// 你可以使用 File 对象，例如上传到服务器或保存到本地
+				uni.uploadFile({
+					url: reqConfig.proxyUrl + '/upms/api/v1/common/upload/upload',
+					header: {
+						"Authorization": getToken(),
+					},
+					file: file,
+					name: "uploadFile",
+					formData: {
+						asImage: true
+					},
+					success: (res) => {
+						if (res.statusCode === 200) {
+							const result = JSON.parse(res.data)
+
+							if (result.code === 200) {
+								resolve(result)
+							}
+						}
+					},
+					fail: (err) => {
+						console.log("失败", err)
+					}
+				});
+			})
+			.catch(error => console.error('Error:', error));
+
+	})
 }

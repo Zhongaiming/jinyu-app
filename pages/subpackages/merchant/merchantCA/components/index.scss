@@ -173,6 +173,7 @@
 		right: 0;
 		background-color: #fff;
 		padding: 16rpx 24rpx;
+		z-index: 99;
 	}
 	
 	.padding {
@@ -192,6 +193,7 @@
 		background: rgb(255, 247, 230);
 		font-size: 26rpx;
 		padding: 0rpx 24rpx;
+		z-index: 99;
 
 		.text {
 			margin-left: 16rpx;

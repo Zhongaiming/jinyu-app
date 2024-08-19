@@ -3,7 +3,7 @@ const getDefaultState = () => {
 		windowWidth: uni.getSystemInfoSync().windowWidth || 0, // 可使用窗口宽度
 		windowHeight: uni.getSystemInfoSync().windowHeight || 0, // 可使用窗口高度
 		screenHeight: uni.getSystemInfoSync().screenHeight || 0, // 屏幕高度
-		statusBarHeight: uni.getSystemInfoSync().statusBarHeight || 0, // app/小程序， 顶部状态栏高度
+		JinYuStatusBarHeight: uni.getSystemInfoSync().JinYuStatusBarHeight || 0, // app/小程序， 顶部状态栏高度
 		
 	}
 }

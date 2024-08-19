@@ -1,5 +1,5 @@
 <template>
-	<view class="xls-p-botn" v-hasPermi="['app:place:index:add']">
+	<view class="xls-p-botn">
 		<view class="xls-p-botn-main" @click="goTo">
 			<view class="btn">
 				<text>{{ text }}</text>
@@ -20,7 +20,7 @@
 		methods: {
 			//去添加
 			goTo() {
-				this.$emit("goTo", "add", null)
+				this.$emit("goTo")
 			},
 		}
 	};

@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view :style="{'height': navigatorHeight}">
 		<u-navbar
 			@rightClick="rightClick"
 			@leftClick="leftClick"
@@ -127,7 +127,6 @@
 				this.$emit("leftClick")
 			}
 		}
-		
 	}
 </script>
 

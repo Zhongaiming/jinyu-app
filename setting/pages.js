@@ -2,7 +2,14 @@ const pages = [{
 		"path": "pages/loginAndReg/xlsLogin",
 		"name": "loginIndex",
 		"meta": {
-			"title": "登录2"
+			"title": "xls登录"
+		}
+	},
+	{
+		"path": "pages/loginAndReg/xlsRegister",
+		"name": "registerIndex",
+		"meta": {
+			"title": "xls注册"
 		}
 	},
 	// ===== 首页 ======
@@ -255,6 +262,13 @@ const pages = [{
 		"name": "placeModuleOperate",
 		"meta": {
 			"title": "操作场地"
+		}
+	},
+	{
+		"path": "pages/mainPackages/personal/placeConfigure/index",
+		"name": "placeConfigure",
+		"meta": {
+			"title": "场地配置信息"
 		}
 	},
 	{

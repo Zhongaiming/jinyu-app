@@ -60,18 +60,10 @@
 </template>
 
 <script>
-	// import {
-	// 	messagePushSet,
-	// 	editMessagePushSet,
-	// 	getWechatInform,
-	// } from "@/utils/api/service";
 	import {
-		debounceFun,
-		throttleFun
-	} from "@/plugins/debounceOrthrottle";
-
+		baseController
+	} from "@/api/index.js";
 	export default {
-		name: "noticeSetting",
 		data() {
 			return {
 				setInventory: false,
@@ -262,10 +254,10 @@
 				},
 			};
 		},
-		// async created() {
-		// 	this.getMessagePushSet();
-		// 	this.getWxSet();
-		// },
+		async created() {
+			this.getMessagePushSet();
+			this.getWxSet();
+		},
 		methods: {
 			goTo() {
 				this.$goTo('/pages/subpackages/personal/noticeSet/detail');

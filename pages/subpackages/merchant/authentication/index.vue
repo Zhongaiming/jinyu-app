@@ -22,53 +22,56 @@
 		<!-- 认证记录 -->
 		<view class="stay-attestation">
 			<!-- 实名认证 -->
-			<view class="screenshot-contanier" v-for="item in dataList" :key="item.id">
-				<view class="logo-index">
-					<image :src="`${$baseUrl}appV4/authentications/svg/${item.url}`" alt="" class="image"
-						mode="heightFix" />
-				</view>
-				<view class="main-wrapper">
-					<view class="content-text">
-						<view class="title" v-if="item.state">
-							待{{ item.legalPerson }}实名认证{{ item.sort }}
+			<view v-for="(data,index) in dataList" :key="index">
+				<view class="screenshot-contanier" v-for="(item,index) in data.authInfoList" :key="`main${index}`">
+					<view class="logo-index">
+						<image :src="`${$baseUrl}appV4/authentications/svg/${item.url}`" alt="" class="image"
+							mode="heightFix" />
+					</view>
+					<view class="main-wrapper">
+						<view class="content-text">
+							<view class="title" v-if="item.authorizeStatus == 2">
+								待{{ item.legalPerson }}实名认证{{ item.sort }}
+							</view>
+							<view class="title" v-else>已完成实名认证{{ item.sort }}</view>
+							<view class="content-block-guide">
+								<view class="info" v-if="item.threePartnerNo">
+									<span class="label">渠道商户号：</span>
+									<span class="value"> {{ item.threePartnerNo }} </span>
+								</view>
+								<view class="info">
+									<span class="label">商户名称：</span>
+									<span class="value"> {{ item.merchantName }} </span>
+								</view>
+								<view class="info">
+									<span class="label">法人名称：</span>
+									<span class="value">{{ item.legalPerson }}</span>
+								</view>
+							</view>
 						</view>
-						<view class="title" v-else>已完成实名认证{{ item.sort }}</view>
-						<view class="content-block-guide">
-							<view class="info" v-if="item.threePartnerNo">
-								<span class="label">渠道商户号：</span>
-								<span class="value"> {{ item.threePartnerNo }} </span>
-							</view>
-							<view class="info">
-								<span class="label">商户名称：</span>
-								<span class="value"> {{ item.signName }} </span>
-							</view>
-							<view class="info">
-								<span class="label">法人名称：</span>
-								<span class="value">{{ item.legalPerson }}</span>
-							</view>
+						<xls-merchant-state :state="item.authorizeStatus"></xls-merchant-state>
+					</view>
+
+					<view class="button-block-guide" v-if="item.state === 0 && item.type === 'SM'">
+						<view class="message-index">
+							<span class="status-message">
+								提示：资料审核需要1-3个工作日，请您耐心等待！
+							</span>
 						</view>
 					</view>
-					<xls-merchant-state :state="item.state"></xls-merchant-state>
-				</view>
-
-				<view class="button-block-guide" v-if="item.state === 0 && item.type === 'SM'">
-					<view class="message-index">
-						<span class="status-message">
-							提示：资料审核需要1-3个工作日，请您耐心等待！
-						</span>
-					</view>
-				</view>
-
-				<view class="button-block-guide" v-if="[0, 1].includes(item.state) && item.type !== 'SM'">
-					<view type="info" class="mmoi-button" @click="goTo(item)">
-						<view class="mmoi-button-icon">
-							<svg viewBox="0 0 1024 1024" fill="currentColor" width="100%" height="100%">
-								<path
-									d="M512 68.032a443.968 443.968 0 1 1 0 887.936 443.968 443.968 0 0 1 0-887.936zm0 72a372.032 372.032 0 1 0 0 744 372.032 372.032 0 0 0 0-744.064zm156.416 235.84a36.032 36.032 0 0 1 51.456 50.368L492.8 658.112a36.032 36.032 0 0 1-50.88.64l-115.84-112.96a36.032 36.032 0 1 1 50.24-51.584l90.176 87.872 201.92-206.208z">
-								</path>
-							</svg>
+					<!-- v-if="[0, 1].includes(item.state) && item.type !== 'SM'" -->
+					<view class="button-block-guide" >
+						<view type="info" class="mmoi-button" @click="goTo(item)">
+							<view class="mmoi-button-icon">
+								<svg viewBox="0 0 1024 1024" fill="currentColor" width="100%" height="100%">
+									<path
+										d="M512 68.032a443.968 443.968 0 1 1 0 887.936 443.968 443.968 0 0 1 0-887.936zm0 72a372.032 372.032 0 1 0 0 744 372.032 372.032 0 0 0 0-744.064zm156.416 235.84a36.032 36.032 0 0 1 51.456 50.368L492.8 658.112a36.032 36.032 0 0 1-50.88.64l-115.84-112.96a36.032 36.032 0 1 1 50.24-51.584l90.176 87.872 201.92-206.208z">
+									</path>
+								</svg>
+							</view>
+							<!-- 1 认证  2否 -->
+							{{item.authorizeStatus == 1 ? "认证详情" : "立即认证"}}
 						</view>
-						{{"认证详情" || "立即认证"}}
 					</view>
 				</view>
 			</view>
@@ -91,7 +94,7 @@
 				</view>
 			</view>
 			<xls-new-hand></xls-new-hand>
-			<xls-data-nul></xls-data-nul>
+			<!-- <xls-data-nul></xls-data-nul> -->
 		</view>
 	</view>
 </template>
@@ -101,7 +104,9 @@
 	import xlsMerchantState from "./components/xls-merchant-state.vue";
 	import xlsNewHand from "./components/xls-new-hand.vue";
 	import xlsDataNul from "./components/xls-data-null.vue";
-	
+	import {
+		merchantController
+	} from '@/api/index.js';
 	export default {
 		components: {
 			xlsSteps,
@@ -151,19 +156,29 @@
 				}],
 			}
 		},
+		created() {
+			this.getList();
+		},
 		methods: {
 			goTo(params, type) {
 				let route = '/pages/subpackages/merchant/authentication/detail';
-				if(type === 1) route = '/pages/subpackages/merchant/frequentlyQuestion/index';
-				this.$goTo(route, 'navigateTo', {params})
+				if (type === 1) route = '/pages/subpackages/merchant/frequentlyQuestion/index';
+				this.$goTo(route, 'navigateTo', {
+					params
+				})
 			},
+			getList() {
+				merchantController.authorizeQuery().then(res => {
+					this.dataList = res.data
+				})
+			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	@import 'index.scss';
-	
+
 	.xls-merchat-auth {
 		display: flex;
 		flex-direction: column;
@@ -220,6 +235,6 @@
 			.box-color {
 				background: #fff;
 			}
-		}	
+		}
 	}
 </style>

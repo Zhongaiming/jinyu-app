@@ -32,7 +32,7 @@
 		},
 		computed: {
 			...mapGetters([
-				'statusBarHeight'
+				'JinYuStatusBarHeight'
 			])
 		},
 		methods: {

@@ -1,5 +1,5 @@
 <template>
-	<view class="jy-lang" :style="{top: statusBarHeight + 'px'}">
+	<view class="jy-lang" :style="{top: JinYuStatusBarHeight + 'px'}">
 		<picker @change="bindPickerChange" :value="selectItemIndex" :range="langData" mode="selector" range-key="label">
 			<slot></slot>
 			<view style="position: absolute;"  v-if="isShowBtn" :style="{right: platForm == 'MP' ? '' : '30rpx', left: platForm == 'MP' ? '20rpx' : ''}">
@@ -32,7 +32,7 @@
 			};
 		},
 		computed: {
-			...mapGetters(['statusBarHeight'])
+			...mapGetters(['JinYuStatusBarHeight'])
 		},
 		methods: {
 			bindPickerChange(e) {

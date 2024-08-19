@@ -1,439 +1,294 @@
 <template>
 	<view class="xls-place-operate">
-		<jy-navbar :title="`${operateValue}场地`" bgColor="#f5f6f7"></jy-navbar>
-		<view class="xls-place-operate-content">
-			<view class="name">
-				<view class="left"><span>*</span>场地名称</view>
-				<view class="right">
-					<input type="text" placeholder="例如:广州万达店(字数低于18个最优)" v-model="placeInfo.placeName" />
-				</view>
-			</view>
-
-			<view class="name" @click="showPopup = !showPopup">
-				<view class="left"><span>*</span>&nbsp;所在地区</view>
-				<view class="right">
-					<view class="txt" :style="placeInfo.city == '' ? { color: '#999' } : ''">
-						{{ placeInfo.province }}{{placeInfo.city}}{{ placeInfo.region }}
-					</view>
-					<u-icon name="map-fill" size="42" color="#5241FF" />
-				</view>
-			</view>
-
-			<view class="detail">
-				<view class="left"><span>*</span>&nbsp;详细地址</view>
-				<view class="right">
-					<textarea rows="3" type="text" maxlength="50" placeholder="街道、楼牌号等"
-						v-model="placeInfo.placeDetails"></textarea>
-				</view>
-			</view>
-
-			<view class="name" @click="showPlaceType = !showPlaceType">
-				<view class="left"><span>*</span>&nbsp;场地类型</view>
-				<view class="right">
-					<view class="txt" :style="placeInfo.placeTypeName == '例如:商场' ? { color: '#999' } : ''">
-						{{ placeInfo.placeTypeName }}
-					</view>
-					<u-icon name="arrow-right" size="36" color="rgb(153, 153, 153)" />
-				</view>
-			</view>
-
-			<view class="name">
-				<view class="left">&nbsp;场地编码</view>
-				<view class="right">
-					<input type="text" placeholder="请输入(选填)" v-model="placeInfo.placeNumber" />
-				</view>
-			</view>
-
-			<view class="name">
-				<view class="left">&nbsp;区域</view>
-				<view class="right">
-					<input type="text" placeholder="请输入(选填)" v-model="placeInfo.area" />
-				</view>
-			</view>
-
-			<view style="height: 8rpx; background: #f5f6f7"></view>
-
-			<view class="name de-switch" style="border: 0">
-				<view class="left">设置默认场地</view>
-				<view>
-					<u-switch v-model="defaultPlace" active-color="#5241FF" size="50" />
-				</view>
-			</view>
-			<view class="notice">提醒：每次注册会默认推荐使用该场地</view>
-		</view>
-
-
-
-		<xls-p-botn @goTo="changeMethods" :text="`保存${operateValue}`"></xls-p-botn>
-		<!-- placeTypeList -->
-		<u-popup :show="showPlaceType" :round="20" mode="bottom">
-			<view class="place-type">
-				<view class="top-warpper">
-					<view class="cancel" @click="showPlaceType = !showPlaceType">
-						<u-icon name="close-circle-fill" size="40" color="#999" />
-					</view>
-					<view class="title">请选择场地类型</view>
-					<view class="makeSure" @click="showPlaceType = !showPlaceType">
-						确定
-					</view>
-				</view>
-				<view class="typeCon">
-					<view class="itemCon">
-						<view class="typeItem" v-for="(item, index) in placeTypeList" :key="item.id" :style="item.id == placeInfo.placeTypeId
-      ? { color: '#fff', background: '#5241FF' }
-      : ''
-      " :class="index == placeTypeList.length - 2
-      ? 'btn'
-      : '' || index == placeTypeList.length - 1
-        ? 'btn'
-        : ''
-      " @click="
-      (placeInfo.placeTypeId = item.id),
-      (placeInfo.placeTypeName = item.name)
-      ">
-							{{ item.name }}
+		<xls-jy-navbar :title="`${place.id ? '编辑':'添加'}场地`"></xls-jy-navbar>
+		<view class="xls-place-operate-form">
+			<u--form :model="place" labelWidth="200" ref="placeForm" :rules="rules">
+				<view class="place-modul">
+					<view class="form-title">
+						<view class="left">基础信息配置</view>
+						<view class="right">
+							<!-- <u-icon name="trash" size="36" /> -->
+							<!-- <span> 清空信息</span> -->
 						</view>
 					</view>
+					<u-form-item label="场地名称" prop="placeName" borderBottom required>
+						<u--input placeholder="请输入" v-model="place.placeName" border="none"
+							:placeholderStyle="placeholderStyle" :prefixIconStyle="prefixIconStyle"></u--input>
+					</u-form-item>
+					<u-form-item label="场地类型" prop="placeTypeName" borderBottom required rightIcon="map-fill"
+						@click="pickerPlaceType">
+						<u--input placeholder="请输入" v-model="place.placeTypeName" border="none"
+							:placeholderStyle="placeholderStyle" :prefixIconStyle="prefixIconStyle"
+							@focus="stopKeyborad"></u--input>
+					</u-form-item>
+					<u-form-item label="所在地区" prop="proCityRegion" borderBottom required @click="pickerAddressItem">
+						<u--input placeholder="请输入" v-model="place.proCityRegion" border="none"
+							:placeholderStyle="placeholderStyle" :prefixIconStyle="prefixIconStyle"
+							@focus="stopKeyborad"></u--input>
+					</u-form-item>
+					<u-form-item label="详细地址" prop="placeDetails" borderBottom required>
+						<u--textarea v-model="place.placeDetails" placeholder="请输入内容" border="none"
+							:placeholderStyle="placeholderStyle" :prefixIconStyle="prefixIconStyle"
+							autoHeight></u--textarea>
+					</u-form-item>
+					<u-form-item label="设置默认场地" borderBottom>
+						<u-switch v-model="place.wightState" active-color="#5241FF" size="50" />
+					</u-form-item>
+					<u-form-item label="场地图片" borderBottom>
+						<u-upload :previewFullImage="true" :fileList="image.placeImgList" name="placeImg"
+							@afterRead="afterRead" @delete="deletePic" :maxCount="1" width="160"
+							height="160"></u-upload>
+					</u-form-item>
 				</view>
-			</view>
-		</u-popup>
 
-		<!-- address -->
-		<!-- <u-popup v-model="showPopup" round position="bottom">
-			<van-area title="请选择地区" :area-list="areaList" :columns-placeholder="['请选择', '请选择', '请选择']" @confirm="sure"
-				@cancel="showPopup = !showPopup" value="110101" />
-		</u-popup> -->
+				<view class="place-modul" v-if="detail">
+					<view class="form-title">
+						<view class="left">详细信息配置</view>
+						<view class="right"></view>
+					</view>
+					<u-form-item label="场地编码" prop="placeNumber" borderBottom required>
+						<u--input placeholder="请输入" v-model="place.placeNumber" border="none"
+							:placeholderStyle="placeholderStyle" :prefixIconStyle="prefixIconStyle"></u--input>
+					</u-form-item>
+					<u-form-item label="场地区域" prop="placeAreaId" borderBottom required>
+						<xls-select v-model="place.placeAreaId" ref="AreaSelect"
+							:value="place.placeAreaId"></xls-select>
+					</u-form-item>
+					<u-form-item label="场地分类" prop="placeClassifyId" borderBottom required>
+						<xls-select v-model="place.placeClassifyId" ref="ClassifySelect"
+							:value="place.placeClassifyId"></xls-select>
+					</u-form-item>
+					<u-form-item label="场地组别" prop="placeGroupId" borderBottom required>
+						<xls-select v-model="place.placeGroupId" ref="GroupSelect"
+							:value="place.placeGroupId"></xls-select>
+					</u-form-item>
+				</view>
+			</u--form>
+		</view>
+		<xls-p-botn @goTo="confirmMethod" text="保存"></xls-p-botn>
+		<xls-drag-button @clickBtn="clickBtn">{{ detail ? '精简':'详情' }}</xls-drag-button>
+		<xls-area-picker @getAreaMethod="getAreaMethod" ref="xlsArea"></xls-area-picker>
+		<xls-place-type-vue @confirm="getPlaceTypeMethod" :value="place.placeTypeId"
+			ref="placeType"></xls-place-type-vue>
 	</view>
 </template>
 
 <script>
-	// import BottomBtn from "../putPlaceComps/bottomBtn";
-	// import {
-	// 	areaList
-	// } from "@vant/area-data";
-	// import {
-	// 	addPlace,
-	// 	editPlace,
-	// 	getPlacetype,
-	// 	getPlace,
-	// 	getPlaceById,
-	// } from "@/utils/api/place";
-	// import {
-	// 	entered
-	// } from "../order/index";
+	import {
+		placeController
+	} from "@/api/index.js";
+	import {
+		uploadFilePromise
+	} from "@/common/upload.js";
 	import xlsPBotn from "./components/xls-pBotn";
+	import xlsPlaceTypeVue from "./components/xls-place-type.vue";
 	export default {
-		// name: "addPlace",
 		components: {
-			xlsPBotn
+			xlsPBotn,
+			xlsPlaceTypeVue,
 		},
-		// directives: {
-		// 	entered
-		// },
-		// inject: ["reload"],
 		data() {
 			return {
-				//add or edit
-				operateValue: "添加",
-				//place
-				placeInfo: {
-					id: "",
+				//场地信息
+				place: {
+					id: null,
 					placeName: "",
-					province: "省市区县、乡镇等",
+					placeTypeId: 0,
+					placeTypeName: "",
+					province: "",
 					city: "",
 					region: "",
+					proCityRegion: "",
 					placeDetails: "",
-					placeTypeName: "例如:商场",
-					placeTypeId: "",
 					wight: 0,
+					wightState: false,
+					placeImg: "",
+					// 详细版
 					placeNumber: "",
-					store: "",
-					area: "",
-					remark: "place",
+					placeAreaId: 0,
+					placeClassifyId: 0,
+					placeGroupId: 0,
 				},
-				//改默认
-				placeEditInfo: {},
-				//地区
-				showPopup: false,
-				// areaList,
-				//类型
-				showPlaceType: false,
-				placeTypeList: [{
-						"id": 9,
-						"name": "餐饮店",
-						"remark": ""
+				placeholderStyle: "fontSize: 28rpx;opacity: .7",
+				prefixIconStyle: {
+					fontSize: '35rpx',
+					padding: '0'
+				},
+				rules: {
+					'placeName': {
+						type: 'string',
+						required: true,
+						message: '请填写',
+						trigger: ['blur']
 					},
-					{
-						"id": 13,
-						"name": "网吧"
+					'placeTypeName': {
+						type: 'string',
+						required: true,
+						message: '请填写',
+						trigger: ['change', 'blur']
 					},
-					{
-						"id": 14,
-						"name": "酒吧"
+					'proCityRegion': {
+						type: 'string',
+						required: true,
+						message: '请填写',
+						trigger: ['change']
 					},
-					{
-						"id": 15,
-						"name": "会所"
+					'placeDetails': {
+						type: 'string',
+						required: true,
+						message: '请填写',
+						trigger: ['blur']
 					},
-					{
-						"id": 16,
-						"name": "咖啡馆"
+					// 详情
+					'placeNumber': {
+						type: 'string',
+						required: true,
+						message: '请填写',
+						trigger: ['blur']
 					},
-					{
-						"id": 17,
-						"name": "奶茶店"
+					'placeAreaId': {
+						type: 'number',
+						required: true,
+						message: '请填写',
+						trigger: ['blur', 'change']
 					},
-					{
-						"id": 18,
-						"name": "夜总会"
+					'placeClassifyId': {
+						type: 'number',
+						required: true,
+						message: '请填写',
+						trigger: ['blur', 'change']
 					},
-					{
-						"id": 19,
-						"name": "书报亭"
+					'placeGroupId': {
+						type: 'number',
+						required: true,
+						message: '请填写',
+						trigger: ['blur', 'change']
 					},
-					{
-						"id": 20,
-						"name": "商场"
-					},
-					{
-						"id": 21,
-						"name": "电影院"
-					},
-					{
-						"id": 22,
-						"name": "KTV"
-					},
-					{
-						"id": 23,
-						"name": "游艺厅"
-					},
-					{
-						"id": 24,
-						"name": "酒店"
-					},
-					{
-						"id": 25,
-						"name": "步行街"
-					},
-					{
-						"id": 26,
-						"name": "4S店"
-					},
-					{
-						"id": 27,
-						"name": "旅游景点"
-					},
-					{
-						"id": 28,
-						"name": "机场"
-					},
-					{
-						"id": 29,
-						"name": "火车站"
-					},
-					{
-						"id": 30,
-						"name": "汽车站"
-					},
-					{
-						"id": 31,
-						"name": "地铁站"
-					},
-					{
-						"id": 32,
-						"name": "工厂"
-					},
-					{
-						"id": 33,
-						"name": "社区"
-					},
-					{
-						"id": 34,
-						"name": "办公楼"
-					},
-					{
-						"id": 35,
-						"name": "医院"
-					},
-					{
-						"id": 36,
-						"name": "政府机构"
-					},
-					{
-						"id": 37,
-						"name": "大学"
-					},
-					{
-						"id": 38,
-						"name": "初中"
-					},
-					{
-						"id": 39,
-						"name": "小学"
-					},
-					{
-						"id": 40,
-						"name": "幼儿园"
-					},
-					{
-						"id": 43,
-						"name": "培训机构"
-					},
-					{
-						"id": 44,
-						"name": "高中&职业技术学院"
-					},
-					{
-						"id": 45,
-						"name": "商超"
-					},
-					{
-						"id": 47,
-						"name": "儿童乐园"
-					},
-					{
-						"id": 100,
-						"name": "其他"
-					}
-				],
-				//默认
-				defaultPlace: false,
+				},
+				image: {
+					placeImgList: [],
+				},
+				detail: false,
 			};
 		},
-		// created() {
-		// 	this.addOredit();
-		// 	this.chooseType();
-		// },
-		// watch: {
-		// 	defaultPlace(newV) {
-		// 		this.placeInfo.wight = newV ? 1 : 0;
-		// 	},
-		// },
 		onLoad(option) {
-			const params = JSON.parse(option.params);
-			console.log("传参", params)
-			this.operateValue = params.type === "add" ? "添加" : "编辑";
+			if (option.params != undefined) {
+				const id = JSON.parse(option.params).placeId;
+				if (id) this.getplaceView(id)
+			}
+		},
+		onReady() {
+			// #ifdef MP
+			this.$refs.placeForm.setRules(this.rules)
+			// #endif
 		},
 		methods: {
-			addOredit() {
-				if (!this.$route.query.placeId) {
-					this.operateValue = "添加";
-				} else {
-					this.operateValue = "编辑";
-					let placeId = this.$route.query.placeId;
-					this.setDefaultplace(placeId);
-				}
+			stopKeyborad() {
+				uni.hideKeyboard();
 			},
-			//查一个场地 设为默认值
-			setDefaultplace(placeId) {
-				getPlaceById({
-						placeId
-					})
-					.then((res) => {
-						this.placeInfo = res.data.data;
-						/*
-						if (this.placeInfo.placeNumber != null) {
-						  this.placeInfo.placeName = this.placeInfo.placeName
-						    .split(this.placeInfo.placeNumber)
-						    .join("");
-						}
-						*/
-						this.defaultPlace = this.placeInfo.wight === 1;
-					})
-					.catch((res) => {});
+			clickBtn() {
+				this.detail = !this.detail;
+				this.initialMethod();
 			},
-			//改权重
-			changWight(wig) {
-				let params = JSON.parse(JSON.stringify(this.placeEditInfo));
-				params = Object.assign(params, {
-					wight: wig
+			initialMethod() {
+				placeController.getAllArea().then(res => {
+					this.$refs.AreaSelect.initialData(res.data);
+				})
+				placeController.getAllClassify().then(res => {
+					this.$refs.ClassifySelect.initialData(res.data);
+				})
+				placeController.getAllGroup().then(res => {
+					this.$refs.GroupSelect.initialData(res.data);
+				})
+			},
+			getplaceView(id) {
+				placeController.getPlaceDeviceList({
+					placeId: id
+				}).then(res => {
+					Object.assign(this.place, res.data);
+					const place = this.place;
+					this.place.wightState = place.wight == 1;
+					this.place.proCityRegion = `${place.province} ${place.city} ${place.region}`
+					if (place.placeImg) {
+						this.image.placeImgList = this.updateList(this.image.placeImgList, place.placeImg);
+					}
+				})
+			},
+			updateList(list, url) {
+				list = [];
+				list.push({
+					status: 'success', // uploading
+					message: '上传成功', // 上传中
+					url
 				});
-				editPlace(params)
-					.then((res) => {})
-					.catch((err) => {});
+				return list;
 			},
-			//添加与编辑
-			async changeMethods() {
-				if (this.placeInfo.placeName == "") {
-					return this.$toast("请填写场地名称");
-				}
-				if (this.placeInfo.province == "") {
-					return this.$toast("请选择所在地区");
-				}
-				if (this.placeInfo.placeDetails == "") {
-					return this.$toast("请填写详细地址");
-				}
-				if (this.placeInfo.placeTypeId == "") {
-					return this.$toast("请选择场地类型");
-				}
-				if (this.placeInfo.wight) {
-					//取消原默认场地
-					let res = await getPlace({
-						page: 1,
-						size: 1
-					});
-					if (res.data.data.records[0]) {
-						this.placeEditInfo = res.data.data.records[0];
-						this.changWight(0);
-					}
-				}
-				if (this.$route.query.placeId) {
-					/*
-       if (this.placeInfo.placeNumber != null) {
-         this.placeInfo.placeName = this.placeInfo.placeName
-           .split(this.placeInfo.placeNumber)
-           .join("");
-       }
-       */
-					//编辑
-					await editPlace(this.placeInfo)
-						.then((res) => {
-							if (res.data.code == 0 || res.data.msg == "ok") {
-								this.$toast("编辑成功");
-							}
-						})
-						.catch((err) => {});
-				} else {
-					await addPlace(this.placeInfo)
-						.then((res) => {
-							if (res.data.code == 0 || res.data.msg == "ok") {
-								this.$toast("添加成功");
-							}
-						})
-						.catch((res) => {});
-				}
-				setTimeout(() => {
-					this.reload();
-					this.$nextTick(() => {
-						this.$router.back();
-					});
-				}, 1000);
+			async afterRead(event) {
+				const {
+					file,
+					index,
+					name
+				} = event;
+				this.image[`${name}List`].push({
+					...file,
+					status: 'uploading',
+					message: '上传中'
+				})
+				let res = await uploadFilePromise(file)
+				this.image[`${name}List`] = []
+				this.image[`${name}List`].push({
+					status: 'success',
+					message: '上传成功',
+					url: res.data.downloadUri
+				})
+				this.place[`${name}`] = res.data.downloadUri;
+
 			},
-			//省市区
-			sure(params) {
-				if (params[0].name == "") {
-					this.$toast("请选择完整的省市区");
-				}
-				if (params[0].name != "") {
-					if (params[1].name == "") {
-						this.$toast("请选择完整的省市区");
-					} else if (params[2].name == "") {
-						this.$toast("请选择具体到区");
-					} else {
-						this.placeInfo.province = params[0].name;
-						this.placeInfo.city = params[1].name;
-						this.placeInfo.region = params[2].name;
-						this.showPopup = false;
-					}
-				}
+			deletePic(event) {
+				const {
+					file,
+					index,
+					name
+				} = event;
+				this.image[`${name}List`].splice(index, 1);
+				this.place[`${name}`] = "";
 			},
-			//场地类型列表
-			chooseType() {
-				getPlacetype()
-					.then((res) => {
-						this.placeTypeList = res.data.data;
+			confirmMethod() {
+				let params = JSON.parse(JSON.stringify(this.place));
+				params.wight = params.wightState ? 1 : 0;
+				this.$refs.placeForm.validate().then(() => {
+					placeController[`${params.id ? 'edit':'add'}Place`](params).then(res => {
+						if(res.code === 200) {
+							this.$toast('校验通过')
+							this.$goBack();
+						}
 					})
-					.catch(() => {});
+				}).catch(errors => {
+					this.$toast('请补全信息~')
+				})
+			},
+			getAreaMethod(params) {
+				const {
+					columnIndex,
+					value,
+					values
+				} = params
+				this.place.proCityRegion = value
+					.map((option) => option.addressNames)
+					.join(" ");
+				this.place.province = value[0].addressNames;
+				this.place.city = value[1].addressNames;
+				this.place.region = value[2].addressNames;
+			},
+			pickerAddressItem() {
+				this.$refs.xlsArea.pickerAddressItem();
+			},
+			pickerPlaceType() {
+				this.$refs.placeType.showPlaceType = true;
+			},
+			getPlaceTypeMethod(params) {
+				this.place.placeTypeId = params.id;
+				this.place.placeTypeName = params.name;
 			},
 		},
 	};
@@ -441,190 +296,30 @@
 
 <style lang="scss" scoped>
 	.xls-place-operate {
-		background: #f5f6f7;
-		font-family: PingFangSC, PingFangSC-Regular;
-
-		&-content {
-			background: #fff;
+		&-form {
 			padding: 0 24rpx;
 
-			.name {
-				height: 100rpx;
-				width: 100%;
-				display: flex;
-				border-bottom: 2rpx solid #e5e5e5;
-				display: flex;
-				align-items: center;
-
-				.left {
-					width: 30%;
-					height: 100rpx;
-					line-height: 100rpx;
-					color: #333;
-					font-size: 28rpx;
-					font-weight: 400;
-					text-align: left;
-				}
-
-				.right {
-					width: 70%;
-					display: flex;
-
-					.txt {
-						flex: 1;
-						font-size: 28rpx;
-						font-weight: 400;
-						color: #333;
-					}
-				}
-
-				.sides {
-					display: flex;
-					justify-content: flex-end;
-				}
-			}
-
-			span {
-				color: red;
-				margin-right: 8rpx;
-			}
-
-			input {
-				height: 60rpx;
-				width: 100%;
-				border: 0;
-				padding: 0;
-				outline: none;
-				font-size: 28rpx;
-				background: none;
-				appearance: none;
-				color: #191919;
-				font-weight: 400;
-				line-height: 60rpx;
-			}
-
-			::-webkit-input-placeholder {
-				color: #999;
-				font-size: 28rpx;
-				font-weight: 400;
-			}
-
-
-			.de-switch {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-			}
-
-			.notice {
-				color: #999;
-				font-size: 24rpx;
-				font-weight: 400;
-				margin-top: -21rpx;
-				padding-bottom: 20rpx;
-			}
-
-			.detail {
-				height: 140rpx;
-				width: 100%;
-				display: flex;
-				border-bottom: 2rpx solid #e5e5e5;
-
-				.left {
-					height: 100rpx;
-					width: 30%;
-					line-height: 100rpx;
-					color: #333;
-					font-size: 28rpx;
-					font-weight: 400;
-				}
-
-				.right {
-					width: 70%;
-					height: 140rpx;
-					display: flex;
-
-					textarea {
-						border: 0;
-						flex: 1;
-						font-size: 28rpx;
-						height: 80rpx;
-						line-height: 40rpx;
-						margin: 30rpx 0;
-						text-align: left;
-						resize: none;
-					}
-				}
+			.place-modul {
+				padding: 24rpx;
+				background-color: #fff;
+				border-radius: 12rpx;
+				margin-bottom: 24rpx;
 			}
 		}
-	}
 
-	.place-type {
-		height: 100%;
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-
-		.top-warpper {
-			height: 100rpx;
-			width: 100%;
+		.form-title {
 			display: flex;
-			align-items: center;
-			text-align: center;
+			justify-content: space-between;
+			margin-bottom: 24rpx;
 
-			.cancel {
-				width: 120rpx;
-				line-height: 100rpx;
-				@include center-flex();
+			.left {
+				font-weight: 700;
 			}
 
-			.title {
-				color: #333;
-				font-size: 32rpx;
-				font-weight: 600;
-				flex: 1;
-			}
-
-			.makeSure {
-				font-size: 28rpx;
+			.right {
 				color: #5241ff;
-				line-height: 100rpx;
-				width: 120rpx;
-			}
-		}
-
-		.typeCon {
-			width: 100%;
-			overflow: scroll;
-			flex: 1;
-			padding-bottom: 32rpx;
-
-			.itemCon {
-				width: 92%;
-				margin: 0 auto;
 				display: flex;
 				align-items: center;
-				justify-content: space-between;
-				flex-wrap: wrap;
-			}
-
-			.typeItem {
-				width: 30%;
-				height: 64rpx;
-				background: #f4f4f4;
-				border-radius: 16rpx;
-				color: #666;
-				font-size: 26rpx;
-				font-weight: 400;
-				overflow: hidden;
-				margin-top: 20rpx;
-				text-align: center;
-				line-height: 64rpx;
-			}
-
-			.btn {
-				width: 45%;
-				height: 64rpx;
 			}
 		}
 	}

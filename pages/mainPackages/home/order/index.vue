@@ -5,22 +5,23 @@
 			<u-list-item v-for="(item, index) in dataList" :key="index" class="xls-order-list-item">
 				<view class="xls-order-place">
 					<u-icon name="map" color="#5241ff" size="24"></u-icon>
-					<span class="place">L2013-1DN聊城民生壹号48聂</span>
+					<span class="place">{{item.placeName}}</span>
 					<span>|</span>
-					<span class="time">2024-07-19 15:27:03</span>
+					<span class="time">{{item.createTime}}</span>
 				</view>
 
 				<view class="xls-order-style">
 					<view class="xls-order-style-header">
-						<image class="icon-image" :src="`${$baseUrl}appV4/common/${index%2 ? 'wechat':'pay'}.png`"
-							mode="widthFix"></image>
+						<image class="icon-image"
+							:src="`${$baseUrl}appV4/common/${item.payType == 0 ? 'wechat':'pay'}.png`" mode="widthFix">
+						</image>
 						<view class="right-wrapper">
 							<view class="device-style">
-								<span>扭蛋机30000028</span>
+								<span> {{ item.deviceTypeName }}{{ item.deviceNumber }}</span>
 								<span class="state">已支付</span>
 							</view>
 							<view class="order-number">
-								<span>PA101324071915270300648041691332</span>
+								<span>{{ item.orderNo }}</span>
 								<view class="base-copy">
 									<svg viewBox="0 0 1024 1024" fill="currentColor" width="1em" height="1em">
 										<path
@@ -31,14 +32,14 @@
 							</view>
 							<view class="label-style">
 								<view class="label">
+									{{typeDict[item.type]}}
+								</view>
+								<!-- <view class="label">
 									设备启动
 								</view>
 								<view class="label">
 									设备启动
-								</view>
-								<view class="label">
-									设备启动
-								</view>
+								</view> -->
 							</view>
 						</view>
 					</view>
@@ -46,8 +47,8 @@
 
 					<view class="xls-order-style-member">
 						<image class="icon-image" :src="`${$baseUrl}appV4/common/wechat.png`" mode="widthFix"></image>
-						<span class="member-name">会员名称会员名称会员名称会员名称会员名称会员名称会员名称会员名称</span>
-						<span class="member-number">ID:64804169</span>
+						<span class="member-name">{{ item.memberName || "***" }}</span>
+						<span class="member-number">ID:{{ item.memberNumber }}</span>
 						<view class="base-copy">
 							<svg viewBox="0 0 1024 1024" fill="currentColor" width="1em" height="1em">
 								<path
@@ -58,12 +59,14 @@
 					</view>
 
 					<view class="xls-order-style-price" @click="goTo()">
-						<image class="icon-image" src="https://asset.leyaoyao.com/merchant-order-center/static/d0da3593648b2c25b3ca.png" mode="widthFix"></image>
+						<image class="icon-image"
+							src="https://asset.leyaoyao.com/merchant-order-center/static/d0da3593648b2c25b3ca.png"
+							mode="widthFix"></image>
 						<view class="price-center">
-							16.8元1局
+							{{ item.shopPrice }}元1局
 						</view>
 						<view class="price-right">
-							¥16.80
+							¥{{ item.shopPrice }}
 						</view>
 					</view>
 
@@ -72,12 +75,12 @@
 							共1件商品
 						</view>
 						<view class="accout">
-							实收款：¥16.80
+							实收款：¥{{ item.bankCardAmount }}
 						</view>
 					</view>
-					
+
 					<u-line hairline></u-line>
-					
+
 					<view class="xls-order-style-button">
 						<view class="button">
 							退款
@@ -97,20 +100,47 @@
 </template>
 
 <script>
+	import {
+		orderController
+	} from '@/api/index.js';
 	export default {
 		data() {
 			return {
-				dataList: new Array(10),
+				typeDict: {
+					1: "充值余币",
+					2: "设备启动",
+					3: "余币购买",
+					4: "余额购买",
+					5: "充值余额",
+					null: "其他类型"
+				},
+				dataList: [],
 			}
 		},
 		onLoad(option) {
 			// JSON.parse(option.params)
 			console.log("传参", option)
+			this.getList();
 		},
 		methods: {
+			async getList() {
+				let res = await orderController.getOrderList({
+					pageParam: {
+						pageNum: 1,
+						pageSize: 10
+					},
+					orderFormDtoFilter: {
+
+					},
+					orderParam: []
+				})
+				this.dataList = res.data.dataList;
+			},
 			scrolltolower() {},
 			goTo(item) {
-				this.$goTo('/pages/mainPackages/home/order/orderDetail', 'navigateTo', {id: 'item.id'})
+				this.$goTo('/pages/mainPackages/home/order/orderDetail', 'navigateTo', {
+					id: 'item.id'
+				})
 			}
 		}
 	}
@@ -118,7 +148,7 @@
 
 <style lang="scss" scoped>
 	@import 'index.scss';
-	
+
 	.xls-order {
 
 		&-list {

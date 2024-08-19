@@ -40,13 +40,14 @@ http.interceptors.request.use(config => {
 			console.log("token跳转111")
 			// Vue.prototype.$goTo('/pages/loginAndReg/login', 'reLaunch')
 		} else {
-			config.header = {
-				...config.header,
-				"Authorization": token,
+			if (!config.custom.isToken) {
+				config.header = {
+					...config.header,
+					"Authorization": token,
+				}
 			}
 		}
 	}
-
 
 	if (loading) {
 		console.log('进来了没')
@@ -56,7 +57,6 @@ http.interceptors.request.use(config => {
 			mask: true
 		})
 	}
-
 
 	return config
 
@@ -72,7 +72,9 @@ http.interceptors.response.use(response => {
 	} = response.data
 	if (code != STATUS.SUCCESS) {
 		// 返回错误处理
-		Vue.prototype.$toast(message)
+		if (message) {
+			Vue.prototype.$toast(message)
+		}
 	}
 
 
@@ -90,14 +92,14 @@ http.interceptors.response.use(response => {
 		code,
 		message
 	} = error.data
+	console.log('返回错误处理 返回错误处理 123')
 	Vue.prototype.$toast(message)
-	if (code === STATUS.TIMEOUT) {
+	if (code === STATUS.TIMEOUT || (message === '用户登录已过期或尚未登录，请重新登录！' || message === '用户会话已失效，请重新登录！')) {
 		cache.clearCache()
 		setTimeout(() => {
 			console.log("token跳转222")
-			Vue.prototype.$goTo('/pages/loginAndReg/login', 'reLaunch')
+			Vue.prototype.$goTo('/pages/loginAndReg/xlsLogin', 'reLaunch')
 		}, 1000)
-
 	}
 
 	return Promise.resolve(error.data)

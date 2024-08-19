@@ -84,20 +84,33 @@
 </template>
 
 <script>
+	import {
+		memberController
+	} from '@/api/index.js';
 	export default {
 		data() {
 			return {
 				accountMsg: {
-					"totalMemberNum": 118,
-					"totalPay": 1471.1,
-					"totalBalance": 95.91,
-					"totalCurrency": 6060
+					"totalMemberNum": 0,
+					"totalPay": 0,
+					"totalBalance": 0,
+					"totalCurrency": 0
 				},
 				showNotice: false,
 				nextTips: false,
 			}
 		},
+		created() {
+			this.getList();
+		},
 		methods: {
+			getList() {
+				memberController.getTotalInfo().then(res => {
+					if(res.code == 200) {
+						Object.assign(this.accountMsg, res.data);
+					}
+				})
+			},
 			keepFixed(params) {
 				return params > 10000 ? (params / 10000).toFixed(2) + "万" : params;
 			},

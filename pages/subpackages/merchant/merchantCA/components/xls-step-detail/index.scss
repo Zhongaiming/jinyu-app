@@ -1,0 +1,163 @@
+.xls-person-content {
+	width: 100%;
+	max-height: 78vh;
+	overflow-y: auto;
+	padding-bottom: 220rpx;
+
+	.title-text {
+		background-color: #fff7e6;
+		color: #ff9d47;
+		font-size: 30rpx;
+		font-weight: 700;
+		height: 68rpx;
+		border-radius: 20rpx 20rpx 0 0;
+		line-height: 40rpx;
+		padding-top: 14rpx;
+		box-sizing: border-box;
+		text-align: center;
+		position: sticky;
+		top: 0;
+		z-index: 50;
+
+		.close-icon {
+			position: absolute;
+			right: 20rpx;
+			top: 12rpx;
+		}
+	}
+
+	.left-style {
+		align-items: center;
+		display: flex;
+		padding: 32rpx 24rpx 16rpx 0;
+
+		.block {
+			background-color: #5241ff;
+			flex-grow: 0;
+			height: 28rpx;
+			margin-right: 16rpx;
+			width: 6rpx;
+		}
+
+		.title {
+			color: #3e3e40;
+			display: inline-block;
+			font-size: 32rpx;
+			font-weight: 700;
+		}
+	}
+
+	.xls-form-wrapper {
+		padding: 0 24rpx;
+
+		.value {
+			align-items: center;
+			color: #3e3e40;
+			display: flex;
+			flex: 1;
+			width: 0;
+			font-size: 28rpx;
+
+			.field {
+				padding-left: 0 !important;
+			}
+
+			.value-item {
+				font-weight: 400;
+				min-width: 120rpx;
+			}
+
+			.viewider {
+				flex-grow: 0;
+				font-weight: 500;
+				margin: 0 24rpx;
+				text-align: center;
+				width: 28rpx;
+			}
+
+			.arrow-right-outside {
+				align-items: center;
+				display: flex;
+				justify-content: flex-end;
+				min-width: 32rpx;
+				position: relative;
+
+				.arrow-right {
+					opacity: 0.6;
+					transform: rotateY(180deg);
+					width: 32rpx;
+				}
+
+				.viewider-line {
+					background-color: #d7d8d9;
+					height: 32rpx;
+					margin: 0 24rpx;
+					width: 1rpx;
+				}
+
+				.position {
+					width: 26rpx;
+				}
+			}
+		}
+
+		.icon-tips {
+			display: flex;
+			align-items: center;
+			align-items: center;
+			color: #999;
+			display: flex;
+			padding: 20rpx 0rpx 0;
+			font-size: 26rpx;
+		}
+
+		.bottom-btn-box {
+			bottom: 0;
+			left: 0;
+			position: fixed;
+			width: 100%;
+			padding: 16rpx 24rpx;
+			box-sizing: border-box;
+			display: flex;
+			align-items: center;
+			background: #fff;
+			z-index: 99;
+
+			.notice-bar {
+				position: absolute;
+				top: -64rpx;
+				left: 0;
+				right: 0;
+				overflow: hidden;
+				width: 100%;
+				color: #ff8d1a;
+				background: rgb(255, 247, 230);
+				padding: 0 24rpx;
+				font-size: 24rpx;
+				line-height: 68rpx;
+				white-space: nowrap;
+				display: flex;
+				align-items: center;
+			}
+
+			.btn-wrapper {
+				flex: 1;
+				width: 0;
+				background-color: #5241ff;
+				border-radius: 16rpx;
+				height: 88rpx;
+				line-height: 88rpx;
+				color: #fff;
+				font-size: 32rpx;
+				font-weight: 700;
+				text-align: center;
+			}
+
+			.btn-shade {
+				background: #e6e4fe;
+				opacity: 0.65;
+				pointer-events: none;
+			}
+		}
+	}
+}

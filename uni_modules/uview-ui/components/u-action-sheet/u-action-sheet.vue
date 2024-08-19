@@ -19,7 +19,7 @@
 				>
 					<u-icon
 					    name="close"
-					    size="17"
+					    size="34"
 					    color="#c8c9cc"
 					    bold
 					></u-icon>
