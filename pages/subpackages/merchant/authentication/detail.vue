@@ -12,8 +12,8 @@
 				</view>
 				<view class="main-wrapper">
 					<view class="content-text">
-						<view class="title" v-if="parsms.state">
-							待{{ parsms.legalPerson }}实名认证{{ parsms.sort }}
+						<view class="title" v-if="parsms.authorizeStatus == 2">
+							待{{ parsms.merchantName }}实名认证{{ parsms.sort }}
 						</view>
 						<view class="title" v-else>已完成实名认证</view>
 						<view class="content-block-guide">
@@ -32,7 +32,7 @@
 							</view>
 							<view class="info">
 								<span class="label">商户名称：</span>
-								<span class="value"> {{ parsms.signName }} </span>
+								<span class="value"> {{ parsms.merchantName }} </span>
 							</view>
 							<view class="info">
 								<span class="label">法人姓名：</span>
@@ -44,7 +44,7 @@
 					<!-- 图片 -->
 					<view class="picture__qrCode" v-else>
 						<image
-							:src="`${$baseUrl}appV4/authentications/svg/${parsms.type==='ZFB' ? 'zfb-channel.png' : 'wx-channel.jpg'}`"
+							:src="`${$baseUrl}appV4/authentications/svg/${parsms.appPayType==='ALIPAY' ? 'zfb-channel.png' : 'wx-channel.jpg'}`"
 							alt="" />
 					</view>
 				</view>
@@ -52,7 +52,7 @@
 
 			<!-- 操作指南 -->
 			<view class="tip-message">
-				<view class="tip-message-inner" v-if="parsms.type === 'WX'">
+				<view class="tip-message-inner" v-if="parsms.appPayType === 'WXPAY'">
 					<view class="title">操作指南</view>
 					<ul class="content">
 						<li>
@@ -67,7 +67,7 @@
 						</li>
 					</ul>
 				</view>
-				<view class="tip-message-inner" v-if="parsms.type === 'ZFB'">
+				<view class="tip-message-inner" v-if="parsms.appPayType === 'ALIPAY'">
 					<view class="title">操作指南</view>
 					<ul class="content">
 						<li>
@@ -106,7 +106,7 @@
 			return {
 				parsms: {
 					id: 3,
-					type: 'ZFB',
+					appPayType: 'ZFB',
 					state: 1,
 					threePartnerNo: '123456789',
 					signName: '商户名称',

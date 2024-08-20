@@ -33,7 +33,7 @@
 							id: 11,
 							title: '设备绑定',
 							imgUrl: `${this.$baseUrl}homeImages/fristList/one.png`,
-							route: '/pages/mainPackages/home/deviceModule/deviceBinding',
+							route: '/pages/mainPackages/home/deviceModule/deviceBind',
 							permissions: ['app:bing:index'],
 							status: 0
 						},

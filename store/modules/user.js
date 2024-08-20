@@ -56,7 +56,6 @@ const actions = {
 						commit('SET_TOKEN', data)
 						userController.getInfo().then(res => {
 							const { data, code } = res
-							console.log("用户信息", code, data)
 							if(code == 200) {
 								commit('SET_INFO', data)
 								commit('SET_PERMISSIONS', data.permissions)

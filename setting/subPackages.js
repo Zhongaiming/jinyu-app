@@ -52,6 +52,7 @@ const subPackages = [
 				"path": "placeService/operate",
 				"name": "场地客服设置"
 			},
+			// ===== 自带 =====
 			{
 				"path": "setting/index",
 				"name": "设置"

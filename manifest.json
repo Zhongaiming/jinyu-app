@@ -106,7 +106,7 @@
 			"disableHostCheck": true,
 			"proxy": {
 				"^/baseUrl": {
-					"target": "http://www.redorange.top:658",
+					"target": "http://8.138.24.164:659",
 					"changeOrigin": true,
 					"secure": true,
 					"pathRewrite": {

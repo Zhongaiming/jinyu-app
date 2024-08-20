@@ -10,8 +10,8 @@
 					</view>
 				</view>
 				<view class="xls-personal-main-header-info">
-					<view class="user-name">{{'商户_18144999904'}}</view>
-					<view class="user-phone">{{'18144999904'}}</view>
+					<view class="user-name">{{loginInfo.nickName}}</view>
+					<view class="user-phone">{{loginInfo.username}}</view>
 				</view>
 				<view class="xls-personal-main-header-btn">
 					账号设置、切换
@@ -27,6 +27,9 @@
 					<view class="right-value">{{item.subheading}}</view>
 				</view>
 			</view>
+			<view class="version-style">
+				version：{{version_number}}
+			</view>
 		</view>
 		<jy-tabbar :selected="1"></jy-tabbar>
 	</view>
@@ -40,146 +43,164 @@
 		data() {
 			return {
 				loginInfo: {},
+				version_number: "",
 				dataList: [{
-					id: 1,
-					permissions: ['app:bing:index', 'app:brand:index', 'app:inform:index'],
-					dataList: [{
-							id: 11,
-							title: '钱包',
-							imgUrl: `${this.$baseUrl}appV4/my_img/wallet.png`,
-							route: '/pages/mainPackages/personal/userWallet/index',
-							permissions: ['app:payBag:index'],
-							subheading: '', // 余额 0.00 元
-						},
-						{
-							id: 12,
-							title: '品牌信息设置',
-							imgUrl: `${this.$baseUrl}appV4/my_img/info-inform.png`,
-							route: '/pages/subpackages/personal/brandMessage/index',
-							permissions: ['app:brand:index'],
-							subheading: '',
-						},
-						{
-							id: 13,
-							title: '通知设置',
-							imgUrl: `${this.$baseUrl}appV4/my_img/ic_notice.png`,
-							route: '/pages/subpackages/personal/noticeSet/index',
-							permissions: ['app:inform:index'],
-							subheading: '离线、故障、流控、库存通知',
-						}
-					]
-				}, {
-					id: 2,
-					permissions: ['app:account:index', 'app:account:index:read', 'app:material:index'],
-					dataList: [{
-							id: 21,
-							title: '子账号管理',
-							imgUrl: `${this.$baseUrl}appV4/my_img/sub-account.png`,
-							route: '/pages/mainPackages/personal/subAccountManagement/index',
-							permissions: ['app:account:index', 'app:account:index:read'],
-							subheading: '',
-						},
-						// {
-						// 	id: 22,
-						// 	title: '物料管理',
-						// 	imgUrl: `${this.$baseUrl}appV4/my_img/download.png`,
-						// 	route: '/setMealing',
-						// 	permissions: ['app:material:index'],
-						// 	subheading: '生成二维码、下载物料',
-						// },
-					]
-				}, {
-					id: 3,
-					permissions: ['app:shopType:index', 'app:replenishment:index'],
-					dataList: [{
-							id: 31,
-							title: '商品配置信息管理',
-							imgUrl: `${this.$baseUrl}appV4/my_img/commodity.png`,
-							route: '/pages/mainPackages/personal/commodityType/index',
-							permissions: ['app:shopType:index'],
-							subheading: '',
-						},
-						// {
-						// 	id: 32,
-						// 	title: '快捷补货管理',
-						// 	imgUrl: `${this.$baseUrl}appV4/my_img/replenishment.png`,
-						// 	route: '/quickReplenishment',
-						// 	permissions: ['app:replenishment:index'],
-						// 	subheading: '生成二维码、下载物料',
-						// },
-					]
-				}, {
-					id: 4,
-					permissions: ['app:place:index', 'app:records:index', 'app:system:replenishmentRecord',
-						'app:wifi:index'
-					],
-					dataList: [{
-							id: 41,
-							title: '投放场地',
-							imgUrl: `${this.$baseUrl}appV4/my_img/place.png`,
-							route: '/pages/mainPackages/personal/placeModule/index',
-							permissions: ['app:place:index'],
-							subheading: '',
-						},
-						{
-							id: 411,
-							title: '场地配置信息管理',
-							imgUrl: `${this.$baseUrl}appV4/my_img/place.png`,
-							route: '/pages/mainPackages/personal/placeConfigure/index',
-							permissions: ['app:place:index'],
-							subheading: '',
-						},
-						{
-							id: 42,
-							title: '操作记录',
-							imgUrl: `${this.$baseUrl}appV4/my_img/option.png`,
-							route: '/pages/mainPackages/personal/handleRecord/index',
-							permissions: ['app:records:index'],
-							subheading: '',
-						},
-						{
-							id: 43,
-							title: '补货记录',
-							imgUrl: `${this.$baseUrl}appV4/my_img/record.png`,
-							route: '/replenishmentRecord',
-							permissions: ['app:system:replenishmentRecord'],
-							subheading: '',
-						},
-						// {
-						// 	id: 44,
-						// 	title: 'wifi配网',
-						// 	imgUrl: `${this.$baseUrl}appV4/my_img/wifi-icon.png`,
-						// 	route: '/setMealing',
-						// 	permissions: ['app:wifi:index'],
-						// 	subheading: '',
-						// },
-					]
-				}, 
-				// {
-				// 	id: 5,
-				// 	permissions: ['app:serviceCharge:index'],
-				// 	dataList: [{
-				// 		id: 51,
-				// 		title: '服务费收费',
-				// 		imgUrl: `${this.$baseUrl}service-charge/service_charge.png`,
-				// 		route: '/service/service-index',
-				// 		permissions: ['app:serviceCharge:index'],
-				// 		subheading: '',
-				// 	}, ]
-				// }, {
-				// 	id: 6,
-				// 	permissions: ['app:stockUp:index'],
-				// 	dataList: [{
-				// 		id: 61,
-				// 		title: '我的备货单',
-				// 		imgUrl: `${this.$baseUrl}appV4/my_img/pick.png`,
-				// 		route: '/myPickingList',
-				// 		permissions: ['app:serviceCharge:index'],
-				// 		subheading: '',
-				// 	}, ]
-				// },
+						id: 1,
+						permissions: ['app:bing:index', 'app:brand:index', 'app:inform:index'],
+						dataList: [{
+								id: 11,
+								title: '钱包',
+								imgUrl: `${this.$baseUrl}appV4/my_img/wallet.png`,
+								route: '/pages/mainPackages/personal/userWallet/index',
+								permissions: ['app:payBag:index'],
+								subheading: '', // 余额 0.00 元
+							},
+							{
+								id: 12,
+								title: '品牌信息设置',
+								imgUrl: `${this.$baseUrl}appV4/my_img/info-inform.png`,
+								route: '/pages/subpackages/personal/brandMessage/index',
+								permissions: ['app:brand:index'],
+								subheading: '',
+							},
+							{
+								id: 13,
+								title: '通知设置',
+								imgUrl: `${this.$baseUrl}appV4/my_img/ic_notice.png`,
+								route: '/pages/subpackages/personal/noticeSet/index',
+								permissions: ['app:inform:index'],
+								subheading: '离线、故障、流控、库存通知',
+							}
+						]
+					}, {
+						id: 2,
+						permissions: ['app:account:index', 'app:account:index:read', 'app:material:index'],
+						dataList: [{
+								id: 21,
+								title: '子账号管理',
+								imgUrl: `${this.$baseUrl}appV4/my_img/sub-account.png`,
+								route: '/pages/mainPackages/personal/subAccountManagement/index',
+								permissions: ['app:account:index', 'app:account:index:read'],
+								subheading: '',
+							},
+							// {
+							// 	id: 22,
+							// 	title: '物料管理',
+							// 	imgUrl: `${this.$baseUrl}appV4/my_img/download.png`,
+							// 	route: '/setMealing',
+							// 	permissions: ['app:material:index'],
+							// 	subheading: '生成二维码、下载物料',
+							// },
+						]
+					}, {
+						id: 3,
+						permissions: ['app:shopType:index', 'app:replenishment:index'],
+						dataList: [{
+								id: 31,
+								title: '商品配置信息管理',
+								imgUrl: `${this.$baseUrl}appV4/my_img/commodity.png`,
+								route: '/pages/mainPackages/personal/commodityType/index',
+								permissions: ['app:shopType:index'],
+								subheading: '',
+							},
+							// {
+							// 	id: 32,
+							// 	title: '快捷补货管理',
+							// 	imgUrl: `${this.$baseUrl}appV4/my_img/replenishment.png`,
+							// 	route: '/quickReplenishment',
+							// 	permissions: ['app:replenishment:index'],
+							// 	subheading: '生成二维码、下载物料',
+							// },
+						]
+					}, {
+						id: 4,
+						permissions: ['app:place:index', 'app:records:index', 'app:system:replenishmentRecord',
+							'app:wifi:index'
+						],
+						dataList: [{
+								id: 41,
+								title: '投放场地',
+								imgUrl: `${this.$baseUrl}appV4/my_img/place.png`,
+								route: '/pages/mainPackages/personal/placeModule/index',
+								permissions: ['app:place:index'],
+								subheading: '',
+							},
+							{
+								id: 411,
+								title: '场地配置信息管理',
+								imgUrl: `${this.$baseUrl}appV4/my_img/place.png`,
+								route: '/pages/mainPackages/personal/placeConfigure/index',
+								permissions: ['app:place:index'],
+								subheading: '',
+							},
+							{
+								id: 42,
+								title: '操作记录',
+								imgUrl: `${this.$baseUrl}appV4/my_img/option.png`,
+								route: '/pages/mainPackages/personal/handleRecord/index',
+								permissions: ['app:records:index'],
+								subheading: '',
+							},
+							{
+								id: 43,
+								title: '补货记录',
+								imgUrl: `${this.$baseUrl}appV4/my_img/record.png`,
+								route: '/replenishmentRecord',
+								permissions: ['app:system:replenishmentRecord'],
+								subheading: '',
+							},
+							// {
+							// 	id: 44,
+							// 	title: 'wifi配网',
+							// 	imgUrl: `${this.$baseUrl}appV4/my_img/wifi-icon.png`,
+							// 	route: '/setMealing',
+							// 	permissions: ['app:wifi:index'],
+							// 	subheading: '',
+							// },
+						]
+					},
+					// {
+					// 	id: 5,
+					// 	permissions: ['app:serviceCharge:index'],
+					// 	dataList: [{
+					// 		id: 51,
+					// 		title: '服务费收费',
+					// 		imgUrl: `${this.$baseUrl}service-charge/service_charge.png`,
+					// 		route: '/service/service-index',
+					// 		permissions: ['app:serviceCharge:index'],
+					// 		subheading: '',
+					// 	}, ]
+					// }, {
+					// 	id: 6,
+					// 	permissions: ['app:stockUp:index'],
+					// 	dataList: [{
+					// 		id: 61,
+					// 		title: '我的备货单',
+					// 		imgUrl: `${this.$baseUrl}appV4/my_img/pick.png`,
+					// 		route: '/myPickingList',
+					// 		permissions: ['app:serviceCharge:index'],
+					// 		subheading: '',
+					// 	}, ]
+					// },
 				]
 			}
+		},
+		created() {
+			this.loginInfo = getInfo();
+			// 获取当前app的版本
+			const systemInfo = uni.getSystemInfoSync();
+			// #ifdef H5
+			this.version_number = systemInfo.appVersion;
+			// #endif
+			// #ifdef APP
+			this.version_number = systemInfo.appWgtVersion;
+			// #endif
+			// 条件编辑只在微信小程序显示
+			// #ifdef MP-WEIXIN
+			const accountInfo = wx.getAccountInfoSync();
+			this.version_number = accountInfo.miniProgram.version // 小程序 版本号
+			console.log(accountInfo.miniProgram.version, '小程序版本号')
+			// #endif
 		},
 		methods: {
 			goTo(params) {
@@ -328,6 +349,12 @@
 			border-top: 2rpx solid #7f7d7d;
 			width: 18rpx;
 			height: 18rpx;
+		}
+		
+		.version-style {
+			color: #cacaca;
+			font-size: 24rpx;
+			text-align: center;
 		}
 	}
 </style>

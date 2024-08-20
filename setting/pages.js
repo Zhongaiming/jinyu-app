@@ -78,10 +78,24 @@ const pages = [{
 		}
 	},
 	{
-		"path": "pages/mainPackages/home/deviceModule/deviceBinding",
+		"path": "pages/mainPackages/home/deviceModule/deviceBind",
 		"name": "deviceModuleBinding",
 		"meta": {
 			"title": "设备绑定"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/deviceModule/deviceBinded",
+		"name": "deviceModuleBinding",
+		"meta": {
+			"title": "设备已绑定"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/deviceModule/deviceBinding",
+		"name": "deviceModuleBinding",
+		"meta": {
+			"title": "设备未绑定"
 		}
 	},
 	// 经营统计模块

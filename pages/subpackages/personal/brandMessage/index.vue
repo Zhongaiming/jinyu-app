@@ -4,7 +4,8 @@
 		<div class="center-warp">
 			<div class="txt">基础设置</div>
 			<u-cell-group>
-				<u-cell v-hasPermi="['app:brand:index:service']" title="场地客服" url="/blrandInfo/serviceWeChat" isLink />
+				<u-cell v-hasPermi="['app:brand:index:service']" title="场地客服"
+					url="/pages/subpackages/personal/placeService/index" isLink />
 				<u-cell title="首页标题" isLink url="/blrandInfo/titleSet" v-hasPermi="['app:brand:title:read']" />
 			</u-cell-group>
 			<div class="txt block">个性化设置</div>

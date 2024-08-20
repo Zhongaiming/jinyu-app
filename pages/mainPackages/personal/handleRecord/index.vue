@@ -21,13 +21,11 @@
 </template>
 
 <script>
-	// import { getDeviceLogList } from "@/utils/api/device";
 	import {
 		debounceFun,
 		throttleFun
 	} from "@/plugins/debounceOrthrottle";
 	export default {
-		name: "handleRecord",
 		data() {
 			return {
 				inputFocus: false,

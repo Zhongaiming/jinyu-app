@@ -19,7 +19,7 @@ export default class deviceController {
 		})
 	}
 	// 查询设备注册信息
-	static bindingDevice(data) {
+	static getDeviceRegisterInfo(data) {
 		return http.request({
 			url: '/device/api/v1/admin/device/device/getDeviceRegisterInfo',
 			method: 'GET',
@@ -48,9 +48,20 @@ export default class deviceController {
 	// 设备类型
 	static getDeviceTypeList(data) {
 		return http.request({
-			url: '/device/api/v1/admin/device/iotClassify/list',
+			url: '/device/api/v1/admin/device/deviceType/list',
 			method: 'POST',
 			data
 		})
 	}
+	
+	// 设备套餐模块
+	// 订单服务
+	static addDefaultSetMeal(data) {
+		return http.request({
+			url: '/order/api/v1/admin/setMeal/addDefaultSetMeal',
+			method: 'POST',
+			data
+		})
+	}
+	
 }

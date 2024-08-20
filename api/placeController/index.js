@@ -43,7 +43,7 @@ export default class placeController {
 		})
 	}
 	// 通过id获取场地
-	static getPlaceDeviceList(data) {
+	static getPlaceById(data) {
 		return http.request({
 			url: '/merchant/api/v1/admin/merchant/place/get',
 			method: 'GET',
@@ -178,7 +178,7 @@ export default class placeController {
 			data
 		})
 	}
-	
+
 	// 场地类型
 	static getPlaceType(data) {
 		return http.request({
@@ -187,12 +187,70 @@ export default class placeController {
 			data
 		})
 	}
-	
+
 	// 修改权重
 	static setWeight(data) {
 		return http.request({
 			url: '/merchant/api/v1/admin/merchant/place/setWeight',
 			method: 'PUT',
+			data
+		})
+	}
+
+	// 场地客服
+	// 场地客服数量列表
+	static getPlaceStaffCount(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaffPlace/getPlaceStaffCount',
+			method: 'GET',
+			data
+		})
+	}
+
+	// 场地客服信息列表
+	static getPlaceStaffInfoList(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaffPlace/getPlaceStaffInfoList',
+			method: 'GET',
+			data
+		})
+	}
+
+	// 修改权重
+	static updatePlaceStaffList(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaffPlace/updatePlaceStaffList',
+			method: 'PUT',
+			data
+		})
+	}
+
+	// 客服
+	static getStaffList(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaff/getStaffList',
+			method: 'GET',
+			data
+		})
+	}
+	static deleteStaff(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaff/deleteStaff',
+			method: 'DELETE',
+			data
+		})
+	}
+	static editStaff(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaff/editStaff',
+			method: 'PUT',
+			data
+		})
+	}
+	static addStaff(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaff/addStaff',
+			method: 'POST',
 			data
 		})
 	}

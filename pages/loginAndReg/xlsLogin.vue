@@ -73,7 +73,6 @@
 				}
 				this.$store.dispatch('user/login', params).then(res => {
 					this.$toast(this.$t('login.loginSuccess'), 2000)
-					console.log("登录==>", res)
 					setTimeout(() => {
 						// this.setInfo();
 						this.$goTo('/pages/mainPackages/home/index', 'switchTab')

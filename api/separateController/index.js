@@ -2,6 +2,14 @@ import http from '../../core/http/index.js'
 
 export default class separateController {
 	// 分账人员
+	// 通过手机查询商户信息
+	static getUserInfoByPhone(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/merchantUser/getUserInfoByPhone',
+			method: 'GET',
+			data
+		})
+	}
 	static getSeparatePerson(data) {
 		return http.request({
 			url: '/order/api/v1/admin/order/separateBills/list',

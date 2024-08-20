@@ -7,7 +7,7 @@
 				<view class="title-name">
 					分成人员管理<u-icon name="question-circle" size="36" color="#797979" class="icon" @click="questionTips" />
 				</view>
-				<view class="add-person-btn" @click="pickerPerson = true">
+				<view class="add-person-btn" @click="openPopup">
 					+ 添加人员
 				</view>
 			</view>
@@ -58,15 +58,13 @@
 					</view>
 				</view>
 				<view class="person-info" v-show="person.nickName">
-					<p>* 温馨提示：</p>
-					<p class="txt">
-						确定添加姓名为：
-						<span style="color: #5241ff">{{ person.nickName }}</span>
+					<text>* 温馨提示：</text>
+					<text class="txt">确定添加姓名为：<span style="color: #5241ff">{{ person.nickName }}</span>
 						手机号码为：<span style="color: #5241ff">{{
 		          person.userPhone
 		        }}</span>
 						的用户为分账人吗？
-					</p>
+					</text>
 				</view>
 				<view class="bom-btn-panel">
 					<view class="btn cancel-btn" @click="pickerPerson = false">
@@ -147,13 +145,23 @@
 				let res = await separateController.getUserInfoByPhone({
 					phone: this.personPhone
 				});
-				if (res.data == 0) {
+				if (res.code == 200) {
 					if (res.data != "UN_AUTH_MERCHANT_TO_REG" && res.data != "") {
-						this.person = res.data.data;
+						this.person = res.data;
 					}
 				} else {
 					return this.$toast("查无此人");
 				}
+			},
+			openPopup() {
+				this.personPhone = ""
+				this.person = {
+					appMerchantCode: "",
+					nickName: "",
+					userPhone: "",
+					username: "",
+				}
+				this.pickerPerson = true
 			},
 			async addPerson() {
 				if (
@@ -163,7 +171,7 @@
 				) {
 					return this.$toast("请确保信息完整后再添加~");
 				}
-				let res = await addSeparateBillsPerson({
+				let res = await separateController.addSeparatePerson({
 					dto: {
 						username: this.person.username, //分账人登录用户名
 						nickName: this.person.nickName, //名称
@@ -355,7 +363,6 @@
 
 			.txt {
 				padding-left: 40rpx;
-				line-height: 48px;
 				text-align: center;
 			}
 		}

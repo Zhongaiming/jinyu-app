@@ -1,69 +1,78 @@
 <template>
 	<view class="xls-device-binging">
-		<view class="xls-device-binging-content">
-			<image :src="`${$baseUrl}appV4/remoteBoot/scan-icon.png`" alt="" mode="widthFix" class="image" />
-			<view v-if="operatetype">
-				<view class="btn-box primary" @click="launchScan()">扫码注册</view>
-				<view class="btn-box primary" @click="headerEnter()">手动注册</view>
-			</view>
-			<view v-else>
-				<view class="btn-box primary" @click="launchScan()">扫码绑定</view>
-				<view class="btn-box primary" @click="headerEnter()">手动绑定</view>
+		<view class="info-content">
+			<view class="item-cell">
+				<view>设备唯一码</view>
+				<view class="right-value">{{ deviceInfo.deviceNumber }}</view>
 			</view>
 
-			<view class="btn-box default" @click="goTo">
-				返回首页
+			<view class="item-cell">
+				<view>设备类型</view>
+				<view class="right-value">{{ deviceInfo.typeName }}</view>
+			</view>
+			<!-- 1娃娃机 6儿童类 2扭蛋机-->
+			<view class="item-cell item-cell-other" v-if="![1, 6].includes(deviceInfo.deviceType)">
+				<view>投放场地</view>
+				<view class="right-value" @click="$refs.placeList.showPlacePopup(bingDeviceInfo.placeId)">
+					{{bingDeviceInfo.placeName || '未设置'}}
+				</view>
+				<view class="arrow-icon"><u-icon name="arrow-right" size="36" /></view>
+			</view>
+
+			<view class="item-cell item-cell-other" v-if="deviceInfo.deviceType == 2">
+				<view>机台编号<span class="choose">(选填)</span></view>
+				<view class="right-value" @click="serialNumber = !serialNumber">
+					{{deviceNo || '未设置'}}
+				</view>
+				<view class="arrow-icon"><u-icon name="arrow-right" size="36" /></view>
+			</view>
+
+			<view class="item-cell item-cell-other-price" v-if="[1, 6].includes(deviceInfo.deviceType)">
+				<view>单价(币/次)</view>
+				<view class="right-value">
+					<u-number-box v-model="bingDeviceInfo.price" integer inputWidth="116" buttonSize="66" />
+				</view>
+			</view>
+			<view class="item-cell item-cell-other wwj" v-if="[1, 6].includes(deviceInfo.deviceType)">
+				<view>投放场地</view>
+				<view class="right-value" @click="$refs.placeList.showPlacePopup(bingDeviceInfo.placeId)">
+					{{ bingDeviceInfo.placeName || '未设置'}}
+				</view>
+				<view class="arrow-icon"><u-icon name="arrow-right" size="36" /></view>
 			</view>
 		</view>
 
-		<!-- 手动 注册、绑定 -->
-		<u-popup :show="operatePopup" round="20" mode="center">
-			<view class="operate-popup">
-				<view class="operate-popup-body">
-					<view class="title">设备注册</view>
-					<view>
-						<u--input v-model="device.deviceUuid" placeholder="请输入设备编码/设备唯一码"></u--input>
-					</view>
+
+		<view class="btn-content">
+			<view class="btn primary" @click="bingDevice">提交注册</view>
+		</view>
+
+		<!-- <crane-machine @getRailNumber="getRailNumber"
+			v-if="deviceInfo.typeName == '娃娃机' || deviceInfo.typeName == '儿童类'" ref="number" /> -->
+		<xls-place-radio ref="placeList" @pickerPlace="pickerPlace"></xls-place-radio>
+
+		<!-- 输入机台编号 -->
+		<u-popup v-model="serialNumber" round>
+			<view class="device-number-wrapper">
+				<view class="top-con">
+					<view class="title">机台编号</view>
 					<view class="enter">
-						<u-radio-group v-model="device.deviceType" @change="pickerType">
-							<u-radio :customStyle="{marginBottom: '8rpx'}" v-for="(item, index) in deviceTypeList"
-								:key="index" :label="item.iotClassifyTitle" :name="item.iotClassifyId" size="40"
-								iconSize="32" activeColor="#5241FF" labelSize="28">
-							</u-radio>
-						</u-radio-group>
+						<input v-model="deviceEnterNo" placeholder="请输入机台编码" />
 					</view>
 				</view>
 				<view class="bottom-btn">
-					<view class="btn cancel" @click="operatePopup = false">
+					<view class="btn cancel" @click="serialNumber = !serialNumber">
 						取消
 					</view>
-					<view class="btn confirm" @click="headerBinding">确定</view>
+					<view class="btn confirm" @click="(serialNumber = !serialNumber), (deviceNo = deviceEnterNo)">
+						确定
+					</view>
 				</view>
 			</view>
 		</u-popup>
-		<!-- 注册或重置 结果-->
-		<u-popup :show="resultPopup" round="20">
-			<view class="result-popup">
-				<p class="title">{{ result.type }}成功</p>
-				<view class="main-content" v-if="result.type == '注册'">
-					恭喜！类型为<span class="text">{{ result.typeName }}</span>的设备注册成功，设备编码为<span class="text">{{
-              result.deviceNumber
-            }}</span>~
-				</view>
-				<view class="main-content" v-if="result.type == '重置'">
-					恭喜！当前设备重置成功，设备编码为<span class="text">{{
-              result.deviceNumber
-            }}</span>~
-				</view>
-				<view class="bottom-btn-comfirm" @click="resultPopup = false">
-					我知道了
-				</view>
-			</view>
-		</u-popup>
-		<!-- 合法规范 -->
-		<!-- <LegalNorm ref="legal" @getDeviceInfoTwo="getDeviceInfoTwo" /> -->
-	</view>
 
+
+	</view>
 </template>
 
 <script>
@@ -71,223 +80,81 @@
 		deviceController
 	} from "@/api/index.js";
 	export default {
-		components: {
-			// LegalNorm
-		},
 		data() {
 			return {
-				operatetype: 0, // 0 普通  1 ztwl
-				operateDict: {
-					0: "注册",
-					1: "绑定"
+				bingDeviceInfo: {
+					placeName: "",
+					placeId: "",
+					railNumber: "",
+					price: "",
 				},
-				operatePopup: false, //手动
-				device: {
+				serialNumber: false,
+				deviceEnterNo: "",
+				deviceNo: "",
+				deviceInfo: {
+					bindingState: 0,
+					uuid: "869734050203177",
+					deviceNumber: "30000020",
 					deviceType: 2,
-					deviceUuid: "",
+					typeName: "扭蛋机",
 				},
-				deviceTypeList: [],
-
-
-				deviceUuidStr: "",
-				operatetype: false, //是否ztwl登录
-				ztwlBingDevice: false, // true 绑定 false 注册仅ztwl拥有
-				resultPopup: false, //注册结果提示
-				result: {},
-
-				deviceInfo: {},
+				disableList: [],
+				havePlace: true,
 			};
 		},
-		async created() {
-			this.getTypeList();
+		onLoad(option) {
+			if (option.params) {
+				this.deviceInfo = JSON.parse(option.params).deviceInfo;
+			}
 		},
 		methods: {
-			goTo() {
-				this.$goBack();
+			pickerPlace(place) {
+				Object.assign(this.bingDeviceInfo, place);
 			},
-			getTypeList() {
-				deviceController.getDeviceTypeList().then(res => {
-					this.deviceTypeList = res.data.dataList
-				})
-			},
-			//查询设备信息
-			async getDeviceInfo() {
-			  this.showDeviceNum = false;
-			  let info = await getDeviceRegisterInfo({ inputInfo: this.deviceUuid });
-			  if (info.data.code == 0 || info.data.msg == "ok") {
-			    let deviceInfo = info.data.data;
-			    this.deviceInfo = info.data.data;
-			    if (deviceInfo.bindingState == 1) {
-			      this.$router.push({
-			        //已绑定
-			        path: "/aBinding/tipsError",
-			        query: { deviceInfo: JSON.stringify(deviceInfo) },
-			      });
-			    } else if (deviceInfo.bindingState == 0) {
-			      this.$nextTick(() => {
-			        this.$refs.legal.downloadNorm = true;
-			      });
-			    }
-			  } else {
-			    this.errorTips(info.data.msg);
-			  }
-			},
-			
-			async getDeviceInfoTwo() {
-				this.$nextTick(() => {
-					this.$refs.legal.downloadNorm = false;
-				});
-				this.$router.push({
-					//未绑定
-					path: "/aBinding/deviceRegister",
-					query: {
-						deviceInfo: JSON.stringify(this.deviceInfo)
-					},
-				});
-			},
-
-			//注册设备--不做限制
-			async resultPopupByuuid() {
-				if (!this.deviceUuid) {
-					return this.$toast("设备uuid结果为空,请重试~");
+			//绑定设备
+			async bingDevice() {
+				if (!this.bingDeviceInfo.placeId) {
+					this.$toast("请选择绑定场地！！");
+					return;
 				}
-				let res = await addDevice({
-					uuid: this.deviceUuid,
-					deviceType: this.deviceType,
-				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.operatePopup = false;
-					this.resultPopup = true;
-					let result = res.data.data;
-					//res.data.data.indexOf('DEVICE_EXISTS_DATA_RESET' > 0 )
-					if (typeof result == "string" || typeof result == "String") {
-						this.result["type"] = "重置";
-						this.result["deviceNumber"] = result.split("：")[1];
-					} else {
-						this.result = result;
-						this.result["type"] = "注册";
+				let params = {
+					uuid: this.deviceInfo.uuid,
+					deviceNumber: this.deviceInfo.deviceNumber,
+					placeId: this.bingDeviceInfo.placeId,
+					remark: "ztwl_appV4",
+				};
+				if ([1, 6].includes(this.deviceInfo.deviceType)) {
+					if (!this.bingDeviceInfo.railNumber) {
+						return this.$toast("请选择设备机台编号~");
 					}
-				} else if (res.data.msg) {
-					this.$dialog.alert({
-						title: "注册失败",
-						message: `${res.data.msg}`,
-						confirmButtonText: "我知道了",
-					});
+					params["railNumber"] = this.bingDeviceInfo.railNumber; //娃娃机 设备货道号
+					params["price"] = this.bingDeviceInfo.price; //币数
+				}
+				let res = await deviceController.bindingDevice(params);
+				if (res.code == 200) {
+					this.$toast("绑定成功~");
+					this.$goBack();
 				}
 			},
-			
-			//选择注册设备类型
-			pickerType(picker, value, index) {
-				this.deviceType = value.id;
+			//机台编号
+			getRailNumber(params) {
+				this.bingDeviceInfo.railNumber = params ? params : "";
 			},
-			//手动
-			headerEnter(ztwl) {
-				if (ztwl == 1) {
-					this.ztwlBingDevice = true; //绑定
-				} else {
-					this.ztwlBingDevice = false; //注册
-				}
-				this.deviceUuid = "";
-				this.operatePopup = !this.operatePopup;
-			},
-			//手动
-			headerBinding() {
-				if (!this.deviceUuid) {
-					return this.$toast("请输入设备编号~");
-				}
-				if (this.ztwlBingDevice) {
-					this.getDeviceInfo(this.deviceUuid);
-				} else {
-					if (this.operatetype) {
-						//注册
-						// this.addDeviceByuuid();
-						this.resultPopupByuuid();
-					} else {
-						//绑定
-						this.getDeviceInfo(this.deviceUuid);
-					}
-				}
-			},
-			//错误提示
-			errorTips(msg) {
-				this.$dialog
-					.alert({
-						title: "温馨提示",
-						message: msg,
-						width: "270",
-						confirmButtonText: "我知道了",
-						confirmButtonColor: "#5241FF",
-					})
-					.then(() => {});
-			},
-			
-			// 扫一扫
-			launchScan(force) {
+			//已注册机台编号
+			wwjByPlace() {
 				if (
-					!/MicroMessenger/.test(window.navigator.userAgent) &&
-					!/AlipayClient/.test(window.navigator.userAgent)
+					this.deviceInfo.typeName == "娃娃机" ||
+					this.deviceInfo.typeName == "儿童类"
 				) {
-					//支付宝或微信
-					return this.$dialog.alert({
-						title: "温馨提示",
-						message: "请使用微信/支付宝或在应用内浏览器打开程序",
-						confirmButtonText: "我知道了",
-						confirmButtonColor: "#5241FF",
-						width: "270",
-					});
-				}
-				let that = this;
-				if (/MicroMessenger/.test(window.navigator.userAgent)) {
-					wx.ready(() => {
-						wx.scanQRCode({
-							needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-							scanType: ["qrCode"], // 可以指定扫二维码还是一维码，默认二者都有
-							success: function(res) {
-								//IMEI:869298053964870
-								//https://mv3.ztuwl.com/g/?key=30000023-1-1
-								//https://mv3.ztuwl.com/g/?key=30000026
-								let data = res.resultStr;
-								that.deviceUuidStr = data;
-								if (data.indexOf("key=") > -1) {
-									that.deviceUuid = data.split("key=")[1].split("-")[0];
-								} else if (data.indexOf("IMEI:") > -1) {
-									//IMEI:863488051068487,MAC:C8C2C640B9E3
-									let imei = data.split(",")[0].split(":")[1];
-									that.deviceUuid = imei;
-								} else {
-									that.deviceUuid = data;
-								}
-								if (force == 1) {
-									//查询信息
-									that.getDeviceInfo(that.deviceUuid);
-								} else {
-									if (that.operatetype) {
-										// 注册
-										// that.addDeviceByuuid();--uuid有限制
-										// that.resultPopupByuuid();
-										that.ztwlBingDevice = false;
-										that.operatePopup = true;
-									} else {
-										//查询
-										that.getDeviceInfo(that.deviceUuid);
-									}
-								}
-							},
-							fail: function(res) {},
-						});
-					});
-				} else {
-					ap.scan({
-							type: "qr",
-						},
-						function(res) {
-							if (res.error === 10) {
-								// 用户取消扫码
-							} else if (res.error === 11) {
-								// 错误码为11：扫码失败
-								that.$toast("网络开小差了...");
-							} else {
-								let data = res.code;
+					getMachineNumber({
+						placeId: this.bingDeviceInfo.placeId
+					}).then(
+						(res) => {
+							if (res.data.code == 0 || res.data.msg == "ok") {
+								this.disableList = [];
+								res.data.data.map((item) => {
+									this.disableList.push(item * 1);
+								});
 							}
 						}
 					);
@@ -300,64 +167,95 @@
 <style lang="scss" scoped>
 	.xls-device-binging {
 
-		&-content {
-			padding: 100rpx 24rpx 24rpx;
-			text-align: center;
+		.info-content {
+			border-bottom: 1rpx solid #e1e0e6;
 
-			.image {
-				width: 35%;
-				margin-bottom: 40rpx;
+			.item-cell {
+				display: flex;
+				align-items: center;
+				padding: 24rpx;
+				background-color: #fff;
+
+				.choose {
+					color: rgb(185, 183, 183);
+					font-size: 26rpx;
+				}
+
+				.right-value {
+					flex: 1;
+					text-align: right;
+					color: rgba(0, 0, 0, 0.4);
+					font-size: 28rpx;
+				}
+
+				.arrow-icon {
+					height: 100%;
+					display: flex;
+					align-items: center;
+					padding: 0 10rpx;
+					color: rgb(185, 183, 183);
+					font-size: 36rpx;
+				}
 			}
 
-			.btn-box {
-				margin: 36rpx auto 0;
+			.item-cell:not(:last-child) {
+				border-bottom: 1rpx solid #e1e0e6;
+			}
+
+			.item-cell-other {
+				padding-right: 0;
+			}
+
+			.item-cell-other-price {
+				padding: 12rpx 24px;
+			}
+
+			.wwj {
+				margin-top: 24rpx;
+			}
+		}
+
+		.btn-content {
+			padding: 40rpx 30rpx;
+			position: fixed;
+			width: 100%;
+			box-sizing: border-box;
+			bottom: 0;
+			right: 0;
+			background-color: #efeff4;
+
+			.btn {
 				padding-top: 22rpx;
 				padding-bottom: 22rpx;
 				text-align: center;
 				border-radius: 10rpx;
-				font-size: 32rpx;
-			}
-
-			.btn-box:active {
-				opacity: 0.5;
 			}
 
 			.primary {
 				color: #fff;
-				background-color: #04be02;
-			}
-
-			.default {
-				color: #000;
-				background-color: #fff;
+				background-color: #5241ff;
 			}
 		}
 	}
 
-	.operate-popup {
-		width: 320px;
+	.device-number-wrapper {
+		width: 540rpx;
 
-		&-body {
-			padding: 16px;
+		.top-con {
+			padding: 32px;
 			box-sizing: border-box;
 
 			.title {
 				width: 100%;
 				text-align: center;
-				font-size: 18px;
-				font-weight: 700;
-				padding-bottom: 12px;
+				font-size: 32rpx;
+				padding-bottom: 24rpx;
 			}
-
-			.enter {
-				padding: 20rpx 0;
-			}
-
 		}
 
 		.bottom-btn {
 			height: 100rpx;
-			border-top: 2rpx solid #ddd;
+			border-top: 1rpx solid #ddd;
 			display: flex;
 
 			.btn {
@@ -369,40 +267,18 @@
 
 			.confirm {
 				color: #5241ff;
-				border-left: 2rpx solid #ddd;
-			}
-		}
-	}
-
-	.result-popup {
-		width: 540rpx;
-		background: #fff;
-
-		.title {
-			font-size: 40rpx;
-			font-weight: 700;
-			padding: 40rpx 0 40rpx 0;
-			text-align: center;
-		}
-
-		.main-content {
-			padding: 32rpx;
-			font-size: 28rpx;
-			text-align: center;
-			line-height: 44rpx;
-
-			.text {
-				color: #5241ff;
+				border-left: 1rpx solid #ddd;
 			}
 		}
 
-		.bottom-btn-comfirm {
-			margin-top: 30rpx;
-			line-height: 50rpx;
-			text-align: center;
-			font-size: 36rpx;
-			color: #5241ff;
-			border-top: 2rpx solid #ddd;
+		.enter {
+			border: 1rpx solid #ddd;
+			border-radius: 8rpx;
+			overflow: hidden;
+		}
+
+		.enter:not(:last-child) {
+			margin-bottom: 30rpx;
 		}
 	}
 </style>
