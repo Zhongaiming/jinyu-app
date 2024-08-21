@@ -1,6 +1,6 @@
 import Vue from "vue";
 import {isEmptyObject} from './index'
-
+// switchTab tabbar
 Vue.prototype.$goTo = function(path, openType = 'navigateTo', params = {},  animationType = 'pop-in', animationDuration = 300) {
 	if(!isEmptyObject(params)) {
 		uni[openType]({

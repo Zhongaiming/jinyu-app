@@ -14,7 +14,7 @@
 					<view class="info s-divide-user">{{ personName }}</view>
 					<u-icon name="arrow-right" size="36" color="#999" />
 				</view>
-				<view class="site-wrapper" @click="$refs.placelist.showPlacePopup()" v-show="accountType == 3">
+				<view class="site-wrapper" @click="openPopup" v-show="accountType == 3">
 					<view class="title">场地</view>
 					<view class="info s-divide-user">{{ pickerPlace }}</view>
 					<u-icon name="arrow-right" size="36" color="#999" />
@@ -46,8 +46,7 @@
 					{{ item.separateMoney }}
 				</view>
 				<view class="title-cell" v-show="accountType == 1" v-html="'查看'" style="color: #5241FF"
-					@click="goDetail(item)"></view>
-				<!-- <view class="title-cell" v-show="accountType==1" v-html="item.arrivalState?'已到账':'未到账'"></view> -->
+					@click="goToDetail(item)"></view>
 			</view>
 		</view>
 		<view class="all-wrapper">
@@ -63,48 +62,36 @@
 					<view class="center-main">请选择分账人</view>
 					<view class="side"></view>
 				</view>
-				<search-input placeholder="请输入场地名称" marLeft="-5.5em" @stratesSearch="stratesSearch"></search-input>
+				<xls-search placeholder="请输入场地名称" marLeft="-5.5em" @confirm="stratesSearch"></xls-search>
 				<view class="person-content">
 					<view class="person-item" v-for="(item, index) in billPeopleList" :key="index"
 						v-show="billPeopleList.length" @click="selectPerson(item)">
 						<view class="person-name">
-							{{ item.nickName
-                }}<span class="phone">({{ item.username }})</span>
+							{{ item.nickName}}
+							<span class="phone">({{ item.username }})</span>
 						</view>
-						<u-icon name="success" size="20" color="#5241FF" v-show="personName == item.nickName" />
+						<u-icon name="checkbox-mark" size="40" color="#5241FF" v-show="personName == item.nickName" />
 					</view>
 				</view>
 			</view>
 		</u-popup>
 		<!-- place -->
-		<!-- <placeid-list ref="placelist" @getPlaceId="getPlaceId"></placeid-list> -->
-		<!-- <CustomList ref="placelist" @getPlaceId="getPlaceId" /> -->
-		<!-- :defaultAll="false" -->
+		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
 		<!-- time -->
-		<!-- <u-calendar v-model="pickerTime" type="range" allow-same-day @confirm="onConfirm" :max-range="60"
-			range-prompt="只能查询60天的数据" :min-date="minDate" :max-date="maxDate" :round="false" color="#5241FF" /> -->
+		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="getCalender"></xls-calendar>
 	</view>
 </template>
 
 <script>
-	// import PlaceidList from "@/components/commonComps/placeidList";
-	// import CustomList from "@/components/commonComps/customList.vue";
 	import {
 		getTime,
 		getDateAll
 	} from "@/plugins/utilityClass";
-	// import {
-	// 	getSeparateByPerson,
-	// 	getSeparateByPlace,
-	// 	getSeparateByTime,
-	// 	getSeparateBillsPeople,
-	// } from "@/utils/api/separateBills";
-	// import api from "@/plugins/floastCalculate";
+	import {
+		separateController
+	} from '@/api/index.js';
+	import suan from "@/plugins/floastCalculate";
 	export default {
-		// components: {
-		// 	PlaceidList,
-		// 	CustomList
-		// },
 		data() {
 			return {
 				//查询类型
@@ -134,17 +121,6 @@
 				placeIdList: "",
 				//time
 				pickerTime: false,
-				minDate: new Date(
-					new Date().getFullYear() - 1,
-					new Date().getMonth(),
-					new Date().getDate()
-				),
-				// maxDate: new Date(getDateAll(0)),
-				maxDate: new Date(
-					new Date().getFullYear(),
-					new Date().getMonth(),
-					new Date().getDate() - 1
-				), //今天的未到账
 				date: new Date().getFullYear() +
 					"-" +
 					(new Date().getMonth() + 1 < 10 ?
@@ -167,46 +143,45 @@
 				searchValue: "",
 			};
 		},
-		// created() {
-		// 	if (this.$route.query.billPeopleList) {
-		// 		this.billPeopleList = JSON.parse(this.$route.query.billPeopleList);
-		// 		// console.log(this.billPeopleList)
-		// 		if (this.billPeopleList.length) {
-		// 			this.accountNumber = this.billPeopleList[0].accountNumber;
-		// 			this.personName = this.billPeopleList[0].nickName;
-		// 			this.getBillsByPerson();
-		// 		}
-		// 	}
-		// },
+		created() {
+			this.getList();
+
+		},
 		methods: {
+			//选择日期
+			getCalender(date) {
+				const [startTime, endTime] = date;
+				this.pickerTime = false;
+				this.date = `${startTime} 至 ${endTime}`;
+				this.startTime = startTime;
+				this.endTime = endTime;
+				this.getBillsByType();
+			},
+			async getList() {
+				let res = await separateController.getSeparatePerson();
+				if (res.code == 200) {
+					this.billPeopleList = res.data;
+					if (this.billPeopleList.length) {
+						this.accountNumber = this.billPeopleList[0].accountNumber;
+						this.personName = this.billPeopleList[0].nickName;
+						this.getBillsByPerson();
+					}
+				}
+			},
 			stratesSearch(search) {
 				this.searchValue = search;
 				this.getBillPeople();
 			},
 			async getBillPeople() {
-				let res = await getSeparateBillsPeople({
+				let res = await separateController.getSeparateBillsPeople({
 					search: encodeURIComponent(this.searchValue),
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.billPeopleList = res.data.data;
+				if (res.code == 200) {
+					this.billPeopleList = res.data;
 				}
 			},
-			//选择日期
-			formatDate(date) {
-				return `${date.getFullYear()}-${
-        date.getMonth() + 1 < 10
-          ? "0" + (date.getMonth() + 1)
-          : date.getMonth() + 1
-      }-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`;
-			},
-			//选择日期
-			onConfirm(date) {
-				const [start, end] = date;
-				this.pickerTime = false;
-				this.date = `${this.formatDate(start)} 至 ${this.formatDate(end)}`;
-				this.startTime = this.formatDate(start);
-				this.endTime = this.formatDate(end);
-				this.getBillsByType();
+			openPopup() {
+				this.$refs.placelist.showPlacePopup()
 			},
 			//选择场地
 			getPlaceId(place) {
@@ -264,64 +239,56 @@
 			},
 			//person
 			async getBillsByPerson() {
-				let res = await getSeparateByPerson({
+				let res = await separateController.getSeparateByPerson({
 					accountNumber: this.accountNumber, //分账人趣付码
 					startTime: this.startTime,
 					endTime: this.endTime,
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.billsList = res.data.data;
+				if (res.code == 200) {
+					this.billsList = res.data;
 					this.allCount = 0;
 					this.billsList.forEach((element) => {
-						this.allCount = api.add(element.separateAmount * 1, this.allCount);
+						this.allCount = suan.add(element.separateAmount * 1, this.allCount);
 					});
 				}
 			},
 			//time
 			async getBillsByTime() {
-				// let res = await getSeparateByPlace({
-				//     placeIdList:'',//场地id列表（字符串类型）
-				//     startTime:this.startTime,
-				//     endTime:this.endTime
-				// })
-				let res = await getSeparateByTime({
+				let res = await separateController.getSeparateByTime({
 					startTime: this.startTime,
 					endTime: this.endTime,
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.billsList = res.data.data;
+				if (res.code == 200) {
+					this.billsList = res.data;
 					this.allCount = 0;
 					this.billsList.forEach((element) => {
-						this.allCount = api.add(element.separateAmount * 1, this.allCount);
+						this.allCount = suan.add(element.separateAmount * 1, this.allCount);
 					});
 				}
 			},
 			//place
 			async getBillsByPlace() {
-				let res = await getSeparateByPlace({
+				let res = await separateController.getSeparateByPlace({
 					placeIdList: this.placeIdList, //场地id列表（字符串类型）
 					startTime: this.startTime,
 					endTime: this.endTime,
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.billsList = res.data.data;
+				if (res.code == 200) {
+					this.billsList = res.data;
 					this.allCount = 0;
 					this.billsList.forEach((element) => {
-						this.allCount = api.add(element.separateMoney * 1, this.allCount);
+						this.allCount = suan.add(element.separateMoney * 1, this.allCount);
 					});
 				}
 			},
 			//分成明细
-			goDetail(item) {
+			goToDetail(item) {
 				let date = item.date;
 				let appMerchantCode = this.accountNumber;
-				this.$router.push({
-					name: "subDetail",
-					query: {
-						date,
-						appMerchantCode,
-					},
-				});
+				this.$goTo("/pages/mainPackages/home/separateAccounts/income/detail", "navigateTo", {
+					date,
+					appMerchantCode
+				})
 			},
 		},
 	};
@@ -331,21 +298,21 @@
 	.revenue-share {
 		width: 100%;
 		height: 100vh;
-		font-size: 14px;
+		font-size: 28rpx;
 		font-family: "PingFangSC", "Microsoft JhengHei", "Microsoft YaHei";
 		overflow: scroll;
 	}
 
 	.classify-wrapper {
-		width: 250px;
-		height: 30px;
+		width: 500rpx;
+		height: 60rpx;
 		text-align: center;
 		display: flex;
-		border: 1px solid #5241FF;
-		border-radius: 5px;
-		line-height: 30px;
-		margin: 15px auto;
-		font-size: 14px;
+		border: 1rpx solid #5241FF;
+		border-radius: 10rpx;
+		line-height: 50rpx;
+		margin: 30rpx auto;
+		font-size: 28rpx;
 		overflow: hidden;
 		box-sizing: border-box;
 
@@ -355,7 +322,7 @@
 		}
 
 		.classify-list:not(:last-child) {
-			border-right: 1px solid #5241FF;
+			border-right: 1rpx solid #5241FF;
 		}
 
 		.active-item {
@@ -366,21 +333,21 @@
 
 	.container {
 		width: 100%;
-		padding-bottom: 44px;
+		padding-bottom: 88rpx;
 
 		.detail-header {
-			padding: 0 10px;
+			padding: 0 20rpx;
 			background: #fff;
-			margin-bottom: 10px;
+			margin-bottom: 20rpx;
 
 			.site-wrapper {
 				display: flex;
-				height: 44px;
-				line-height: 44px;
+				height: 88rpx;
+				line-height: 88rpx;
 				display: flex;
-				font-size: 15px;
+				font-size: 30rpx;
 				align-items: center;
-				border-bottom: 1px solid #e5e5e5;
+				border-bottom: 1rpx solid #e5e5e5;
 
 				.title {
 					color: #7a7a7a;
@@ -392,7 +359,7 @@
 					flex: 1;
 					text-align: right;
 					position: relative;
-					padding: 0 8px;
+					padding: 0 16rpx;
 				}
 			}
 
@@ -404,12 +371,12 @@
 		.detail-title {
 			text-align: center;
 			color: #4f607c;
-			font-size: 14px;
+			font-size: 28rpx;
 			display: flex;
 			align-items: center;
-			height: 44px;
+			height: 88rpx;
 			background: #F5F6F7;
-			padding: 0 10px;
+			padding: 0 20rpx;
 
 			.title-cell {
 				flex: 1;
@@ -424,7 +391,7 @@
 		}
 
 		.detail-title-main {
-			border-top: 1px solid #e5e5e5;
+			border-top: 1rpx solid #e5e5e5;
 			background: #fff;
 			color: #000;
 		}
@@ -432,18 +399,19 @@
 
 	.picker-person {
 		width: 100%;
-		height: 100%;
+		height: 60vh;
+		max-height: 1000rrpx;
 		display: flex;
 		flex-direction: column;
 
 		.title-wrapper {
-			padding: 0 10px;
-			height: 44px;
+			padding: 0 20rpx;
+			height: 88rpx;
 			background: #f5f6f7;
 			display: flex;
 			align-items: center;
 			text-align: center;
-			font-size: 15px;
+			font-size: 30rpx;
 
 			.side {
 				flex: 1;
@@ -458,24 +426,24 @@
 		}
 
 		.person-content {
-			padding: 0 10px;
+			padding: 0 20rpx;
 			flex: 1;
 			overflow: scroll;
 
 			.person-item {
-				height: 44px;
+				height: 88rpx;
 				display: flex;
 				align-items: center;
-				border-bottom: 1px solid #e5e5e5;
+				border-bottom: 1rpx solid #e5e5e5;
 
 				.person-name {
 					flex: 1;
-					font-size: 15px;
+					font-size: 30rpx;
 
 					.phone {
-						font-size: 12px;
+						font-size: 24rpx;
 						color: #999;
-						margin-left: 6px;
+						margin-left: 12rpx;
 					}
 				}
 			}
@@ -485,16 +453,16 @@
 	.all-wrapper {
 		position: fixed;
 		bottom: 0;
-		height: 44px;
-		padding: 0 10px;
+		height: 44rpx;
+		padding: 0 10rpx;
 		width: 100%;
 		box-sizing: border-box;
-		line-height: 44px;
+		line-height: 44rpx;
 		background: #F5F6F7;
 		font-weight: 700;
-		border-top: 1px solid #e5e5e5;
+		border-top: 1rpx solid #e5e5e5;
 		display: flex;
-		font-size: 14px;
+		font-size: 14rpx;
 		text-align: center;
 
 		.cell {

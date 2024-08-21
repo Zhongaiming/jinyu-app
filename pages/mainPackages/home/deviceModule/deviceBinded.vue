@@ -1,7 +1,7 @@
 <template>
 	<view class="tips-error">
 		<view class="mui-ellipsis">
-			<image :src="`${$baseUrl}appV4/remoteBoot/tips-error.png`" alt="" mode="widthFix" class="img"/>
+			<image :src="`${$baseUrl}appV4/remoteBoot/tips-error.png`" alt="" mode="widthFix" class="img" />
 			<span>该设备已注册！</span>
 		</view>
 		<view class="info-content">
@@ -35,8 +35,8 @@
 			</view>
 		</view>
 		<view class="btn-content">
-			<view class="btn primary" @click="$router.back()">添加注册设备</view>
-			<view class="btn default" @click="$router.replace('/home')">返回首页</view>
+			<view class="btn primary" @click="goBack()">添加注册设备</view>
+			<view class="btn default" @click="goTo">返回首页</view>
 		</view>
 	</view>
 </template>
@@ -53,6 +53,14 @@
 				this.deviceInfo = JSON.parse(option.params).deviceInfo;
 			}
 		},
+		methods: {
+			goTo() {
+				this.$goTo("/pages/mainPackages/home/index", "switchTab");
+			},
+			goBack() {
+				this.$goBack();
+			},
+		}
 	};
 </script>
 

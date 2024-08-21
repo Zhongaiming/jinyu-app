@@ -1,5 +1,5 @@
 <template>
-	<u-popup :show="showPopup">
+	<u-popup :show="showPopup" mode="center" round="20">
 		<view class="showPopup">
 			<view class="close-btn-panel" @click="showPopup = !showPopup">
 				x
@@ -58,7 +58,7 @@
 		.hint-info {
 			text-align: justify;
 			margin: 30rpx 0 100rpx;
-			font-size: 28px;
+			font-size: 28rpx;
 		}
 
 		.bom-btn-panel {

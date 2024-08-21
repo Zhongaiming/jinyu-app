@@ -12,8 +12,8 @@ export default class separateController {
 	}
 	static getSeparatePerson(data) {
 		return http.request({
-			url: '/order/api/v1/admin/order/separateBills/list',
-			method: 'POST',
+			url: '/order/api/v1/admin/order/separateBills/getSeparateBillsPeople',
+			method: 'GET',
 			data
 		})
 	}
@@ -45,26 +45,34 @@ export default class separateController {
 			data
 		})
 	}
-	// 分成设置操作日志
-	static getSeparateSetupLog(data) {
+	// 分成人场地
+	static getBilsPlaceList(data) {
 		return http.request({
-			url: '/order/api/v1/admin/order/separateBillsLog/list',
-			method: 'POST',
-			data
-		})
-	}
-	static getViewSeparateSetupLog(data) {
-		return http.request({
-			url: '/order/api/v1/admin/order/separateBillsLog/view',
+			url: '/order/api/v1/admin/order/separateBillsPlace/getBilsPlaceList',
 			method: 'GET',
 			data
 		})
 	}
-	// 场地分账设置
+	// 分成设置操作日志
+	static getSeparateBillsLogPage(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/separateBillsLog/getSeparateBillsLogPage',
+			method: 'POST',
+			data
+		})
+	}
+	static getSeparateBillsLogDetail(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/separateBillsLog/getSeparateBillsLogDetail',
+			method: 'GET',
+			data
+		})
+	}
+	// 场地分账设置 
 	static getSeparateSetup(data) {
 		return http.request({
-			url: '/order/api/v1/admin/order/separateBillsPlace/list',
-			method: 'POST',
+			url: '/merchant/api/v1/admin/merchant/place/getPlaceDeviceNum',
+			method: 'GET',
 			data
 		})
 	}
@@ -96,4 +104,63 @@ export default class separateController {
 			data
 		})
 	}
+	// 场地业务
+	static getDividePersonList(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/separateBillsPlace/getDividePersonList',
+			method: 'GET',
+			data
+		})
+	}
+	static addSeparateBillsInfo(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/separateBillsPlace/addSeparateBillsInfo',
+			method: 'POST',
+			data
+		})
+	}
+	static editSeparateBillsInfo(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/separateBillsPlace/editSeparateBillsInfo',
+			method: 'POST',
+			data
+		})
+	}
+	static deleteSeparateBillsInfo(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/separateBillsPlace/deleteSeparateBillsInfo',
+			method: 'POST',
+			data
+		})
+	}
+	// 收益
+	static getPlaceMoney(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderSeparate/getPlaceMoney',
+			method: 'GET',
+			data
+		})
+	}
+	static getSeparateByPerson(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderSeparate/getSeparateByPerson',
+			method: 'GET',
+			data
+		})
+	}
+	static getSeparateByPlace(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderSeparate/getSeparateByPlace',
+			method: 'GET',
+			data
+		})
+	}
+	static getSeparateByTime(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderSeparate/getSeparateByTime',
+			method: 'GET',
+			data
+		})
+	}
+	
 }

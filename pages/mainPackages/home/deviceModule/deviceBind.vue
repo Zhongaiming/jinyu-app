@@ -96,7 +96,7 @@
 		},
 		methods: {
 			goTo() {
-				this.$goBack();
+				this.$goTo("/pages/mainPackages/home/index", "switchTab");
 			},
 			getTypeList() {
 				deviceController.getDeviceTypeList({

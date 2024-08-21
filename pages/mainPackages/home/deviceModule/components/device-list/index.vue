@@ -55,9 +55,9 @@
 								离线:{{dev.onlineState == 1 && dev.deviceSignal > 0? dev.railOfflineNum: dev.railNum}})
 							</span>
 							<span @click="closeShow(dev)">
-								<u-icon name="arrow-down-fill" class="play" size="44" color="#8d8d8d"
+								<u-icon name="arrow-down-fill" class="play" size="32" color="#8d8d8d"
 									v-show="dev.closeOrshow" />
-								<u-icon name="arrow-up-fill" class="playChang" size="44" color="#8d8d8d"
+								<u-icon name="arrow-up-fill" class="playChang" size="32" color="#8d8d8d"
 									v-show="!dev.closeOrshow" />
 							</span>
 						</view>
@@ -83,8 +83,7 @@
 									<view class="image">
 										<image :src="gash.commodityImg" alt="" class="img" v-if="gash.commodityImg"
 											@error="handleError" />
-										<image :src="`${baseUrl}appV4/device/default.png`" alt="" class="img"
-											v-else />
+										<image :src="`${baseUrl}appV4/device/default.png`" alt="" class="img" v-else />
 									</view>
 									<view class="egg-info">
 										<view class="comidity-name">
@@ -114,6 +113,9 @@
 <script>
 	import signalOffline from "../signal-offline/index.vue";
 	import signalSvuetrength from "../signal-svuetrength/index.vue";
+	import {
+		deviceController
+	} from "@/api/index.js";
 	export default {
 		components: {
 			signalOffline,
@@ -131,7 +133,102 @@
 			},
 			railMethod(dev) {
 				return ['扭蛋机', '游戏类', '儿童类', '微抓机'].includes(dev.typeName) && dev.railNum;
-			}
+			},
+
+			//设备详情
+			async getRailDetail(item, type) {
+				if (!item.deviceList || (item.deviceNum && !item.deviceList.length)) {
+					let res = await deviceController.getListDetails({
+						placeId: item.placeId,
+						// onlineState: this.screenList.onlineState,
+						// deviceType: this.screenList.deviceType
+						//   ? this.screenList.deviceType
+						//   : null,
+					});
+					if (res.code == 200) {
+						// 仓位排序
+						res.data = this.descListMethod(res.data);
+						this.$set(item, "deviceList", res.data);
+						item["listSwitch"] = false;
+						if (type == "edit") {
+							// this.$refs.placePopup.callPlace(item);
+						} else {
+							item.listSwitch = !item.listSwitch;
+						}
+					}
+				} else {
+					if (type == "edit") {
+						// this.$refs.placePopup.callPlace(item);
+					} else {
+						item.listSwitch = !item.listSwitch;
+					}
+				}
+			},
+			descListMethod(List) {
+				var arr = [];
+				var nullArr = [];
+				List.forEach((list) => {
+					if (list.dollNumber != null && list.dollNumber != "") {
+						arr.push(list);
+					} else {
+						nullArr.push(list);
+					}
+				});
+				List = this.quickSort(arr);
+				List = [...List, ...nullArr];
+				return List;
+			},
+			quickSort(arr) {
+				if (arr.length <= 1) {
+					return arr;
+				}
+				var pivot = arr[0];
+				var left = [];
+				var right = [];
+
+				for (var i = 1; i < arr.length; i++) {
+					if (arr[i].dollNumber * 1 < pivot.dollNumber * 1) {
+						left.push(arr[i]);
+					} else {
+						right.push(arr[i]);
+					}
+				}
+				return this.quickSort(left).concat(pivot, this.quickSort(right));
+			},
+			//货仓详情
+			async closeShow(dev) {
+				if (dev.closeOrshow) {
+					this.$set(dev, "closeOrshow", false);
+				} else {
+					this.$set(dev, "closeOrshow", true);
+				}
+				if (!dev.deviceRailList) {
+					let res = await deviceController.getDeviceRailList({
+						deviceNumber: dev.deviceNumber
+					});
+					if (res.code == 200) {
+						res.data = this.quickSortDesc(res.data);
+						this.$set(dev, "deviceRailList", res.data);
+					}
+				}
+			},
+			quickSortDesc(arr) {
+				if (arr.length <= 1) {
+					return arr;
+				}
+				var pivot = arr[0];
+				var left = [];
+				var right = [];
+
+				for (var i = 1; i < arr.length; i++) {
+					if (arr[i].railNumber * 1 < pivot.railNumber * 1) {
+						left.push(arr[i]);
+					} else {
+						right.push(arr[i]);
+					}
+				}
+				return this.quickSortDesc(left).concat(pivot, this.quickSortDesc(right));
+			},
 		}
 	}
 </script>
@@ -305,7 +402,7 @@
 							font-size: 24rpx;
 							margin-top: 4rpx;
 						}
-						
+
 						.color {
 							color: #ff524c
 						}

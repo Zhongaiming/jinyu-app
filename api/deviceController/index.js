@@ -14,7 +14,7 @@ export default class deviceController {
 	static bindingDevice(data) {
 		return http.request({
 			url: '/device/api/v1/admin/device/device/bindingDevice',
-			method: 'PUT',
+			method: 'POST',
 			data
 		})
 	}
@@ -32,6 +32,22 @@ export default class deviceController {
 	static getListTwo(data) {
 		return http.request({
 			url: '/device/api/v1/admin/device/device/getListTwo',
+			method: 'GET',
+			data
+		})
+	}
+	// 设备详情
+	static getListDetails(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/getListDetails',
+			method: 'GET',
+			data
+		})
+	}
+	// 查找设备货道
+	static getDeviceRailList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/getDeviceRailList',
 			method: 'GET',
 			data
 		})

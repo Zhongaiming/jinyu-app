@@ -23,10 +23,10 @@
 					<span class="place-name">{{ item.placeName }}</span>
 					<span class="device-num">{{ item.deviceNum || 0 }}台</span>
 				</view>
-				<view class="detail" v-show="item.viewideSetting == 0">
+				<view class="detail" v-show="item.divideSetting == 0">
 					<span @click="goTo(item.placeId)">未设置分成</span>
 				</view>
-				<view class="detail" style="color: #5241FF" v-show="item.viewideSetting > 0">
+				<view class="detail" style="color: #5241FF" v-show="item.divideSetting > 0">
 					<span @click="goTo(item.placeId)">已设置分成>></span>
 				</view>
 			</view>
@@ -70,12 +70,11 @@
 			},
 			queryList(pageNo, pageSize) {
 				separateController.getSeparateSetup({
-					pageParam: {
-						pageNum: pageNo,
-						pageSize: pageSize
-					}
+					page: pageNo,
+					size: pageSize,
+					placeName: this.searchValue
 				}).then(res => {
-					this.$refs.setupPaging.complete(res.data.dataList);
+					this.$refs.setupPaging.complete(res.data);
 				})
 			},
 			nextStep() {
@@ -90,13 +89,13 @@
 			},
 			searchMethod(search) {
 				this.searchValue = search;
+				this.$refs.setupPaging.reload();
 			},
 			placeGroupChange(item) {
-				console.log("item==>", item)
-				console.log("checkboxGroup==>", this.checkboxGroup)
+				
 			},
 			allGroupChange(item) {
-				if(item.length) {
+				if (item.length) {
 					this.checkboxGroup = this.dataList.map(place => place.placeId)
 				} else {
 					this.checkboxGroup = [];

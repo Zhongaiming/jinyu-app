@@ -1,6 +1,7 @@
 <template>
-	<z-paging ref="sPersonPaging" v-model="dataList" @query="queryList">
-		<view slot="top">
+	<!-- <z-paging ref="sPersonPaging" v-model="dataList" @query="queryList"> -->
+	<view>
+		<view>
 			<xls-jy-navbar title="分成人员管理"></xls-jy-navbar>
 			<xls-search placeholder="输入名字/电话搜索" marLeft="-6.5em" @confirm="searchMethod"></xls-search>
 			<view class="top-wrapper">
@@ -39,12 +40,13 @@
 				<view class="flex-left">
 					<span class="name">分成场地</span>
 				</view>
-				<view class="right-txt" @click="readPersonPlace(people.id)">
+				<view class="right-txt" @click="lookMethod(people.id)">
 					{{ people.placeNum || 0}}个<u-icon name="arrow-right" size="36" color="#999" />
 				</view>
 			</view>
 		</view>
-		<xls-empty slot="empty"></xls-empty>
+		<xls-empty v-if="!dataList.length"></xls-empty>
+		<xls-bottom v-else></xls-bottom>
 
 		<!-- 查找分账人 -->
 		<u-popup :show="pickerPerson" round="20" mode="center">
@@ -75,14 +77,20 @@
 			</view>
 		</u-popup>
 
-	</z-paging>
+		<xls-person-place-vue ref="personPlace"></xls-person-place-vue>
+	</view>
+	<!-- </z-paging> -->
 </template>
 
 <script>
 	import {
 		separateController
 	} from '@/api/index.js';
+	import xlsPersonPlaceVue from './xls-person-place.vue';
 	export default {
+		components: {
+			xlsPersonPlaceVue
+		},
 		data() {
 			return {
 				pickerPerson: false,
@@ -94,25 +102,29 @@
 					username: "",
 				},
 				dataList: [],
+				searchValue: "",
 			}
 		},
+		created() {
+			this.queryList();
+		},
 		methods: {
-			searchMethod() {
-
+			searchMethod(value) {
+				this.searchValue = value
+				this.queryList();
 			},
-			queryList(pageNo, pageSize) {
+			queryList() {
 				separateController.getSeparatePerson({
-					pageParam: {
-						pageNum: pageNo,
-						pageSize: pageSize
-					}
+					search: this.searchValue
 				}).then(res => {
-					this.$refs.sPersonPaging.complete(res.data.dataList);
+					// this.$refs.sPersonPaging.complete(res.data);
+					this.dataList = res.data;
 				})
 			},
 			questionTips() {
-				this.$model("添加分成人员后，需绑定银行卡。银行卡绑定成功以后，才能给该分成人员设置分成场地和分成比例。", {
+				this.$modal("添加分成人员后，需绑定银行卡。银行卡绑定成功以后，才能给该分成人员设置分成场地和分成比例。", {
 						confirmText: "我知道了",
+						showCancel: false
 					})
 					.then(() => {});
 			},
@@ -129,7 +141,8 @@
 							.then((res) => {
 								if (res.code == 200) {
 									this.$toast("删除成功");
-									this.$refs.sPersonPaging.reload();
+									this.queryList();
+									// this.$refs.sPersonPaging.reload();
 								}
 							})
 							.catch(() => {});
@@ -182,9 +195,13 @@
 				if (res.code == 200) {
 					this.pickerPerson = false;
 					this.$toast("添加成功");
-					this.$refs.sPersonPaging.reload();
+					// this.$refs.sPersonPaging.reload();
+					this.queryList();
 				}
-			}
+			},
+			lookMethod(id) {
+				this.$refs.personPlace.openPopup(id);
+			},
 		}
 	}
 </script>

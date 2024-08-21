@@ -55,15 +55,10 @@
 			};
 		},
 		async created() {
-			let res = await separateController.getSeparatePerson({
-				pageParam: {
-					pageNum: 1,
-					pageSize: 1
-				}
-			});
+			let res = await separateController.getSeparatePerson();
 			if (res.code == 200) {
-				this.total = res.data.totalCount;
-				this.dataList = res.data.dataList;
+				this.total = res.data.length;
+				this.dataList = res.data;
 			}
 		},
 		methods: {

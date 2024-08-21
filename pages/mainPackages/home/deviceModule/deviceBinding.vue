@@ -186,6 +186,9 @@
 					text-align: right;
 					color: rgba(0, 0, 0, 0.4);
 					font-size: 28rpx;
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
 				}
 
 				.arrow-icon {
@@ -207,7 +210,7 @@
 			}
 
 			.item-cell-other-price {
-				padding: 12rpx 24px;
+				padding: 12rpx 24rpx;
 			}
 
 			.wwj {
@@ -242,7 +245,7 @@
 		width: 540rpx;
 
 		.top-con {
-			padding: 32px;
+			padding: 32rpx;
 			box-sizing: border-box;
 
 			.title {

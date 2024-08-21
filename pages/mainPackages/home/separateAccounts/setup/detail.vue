@@ -22,10 +22,10 @@
 		<view class="list-wrapper" v-for="(item, index) in dataList" :key="index">
 			<view class="person-item">
 				<view class="name">
-					<text class="text">
+					<span class="text">
 						{{ item.nickName}}
 						<view class="tips-icon" v-show="item.masterNo == 1">主</view>
-					</text>
+					</span>
 				</view>
 				<view class="phone">{{item.username ? '(' + item.username + ')' : ''}}</view>
 				<view class="right" v-show="acountPlaceNum(placeId) <= 1">
@@ -35,7 +35,7 @@
 
 			<view class="right-box">
 				<view class="btn" @click="estimateEdit(item)">编辑</view>
-				<view class="btn" @click="deletePersonItem(item)">删除</view>
+				<view class="btn" @click="deletePersonItem(item.separateBillsId, item.masterNo)">删除</view>
 			</view>
 		</view>
 
@@ -59,7 +59,66 @@
 			<view class="footer-next-step">返回分账首页</view>
 		</view>
 
+		<u-popup :show="havePersontips" mode="center" round="20">
+			<view class="noPersontips havePersontips">
+				<view class="title-name title-name-have">分成设置</view>
+				<view class="content-person">
+					<view class="items">
+						<view class="title">分成人员：</view>
+						<view class="item-con" :style="editOradd ? { 'pointer-events': 'none' } : ''"
+							@click="showPeople = true">
+							<span class="main-text" :style="billsPeople == '请选择分成人员' ? { color: '#c8c9cc' } : ''">
+								{{ billsPeople }}
+								<span v-show="editOradd" style="color: #c8c9cc; font-size: 10rpx">(不可编辑)</span>
+							</span>
+							<u-icon name="arrow-down" class="icon" size="20" color="#c8c9cc" />
+						</view>
+					</view>
+					<view class="items">
+						<view class="title">分成比例：</view>
+						<view class="item-con">
+							<input type="number" v-model="proportion" placeholder="请输入给合作方的分成比例" maxlength="5"
+								clearable />
+							<span class="icon">%</span>
+						</view>
+					</view>
+					<view class="items" v-show="editOradd">
+						<view class="title">是否主分账人员：</view>
+						<view class="right">
+							<u-switch v-model="checked" size="24rpx" active-color="#5241FF" />
+						</view>
+					</view>
+					<view class="items">
+						<view class="title">合作方银行卡号：</view>
+						<span class="next-txt">自动读取</span>
+					</view>
+				</view>
+				<view class="bottom-btn">
+					<view class="btn" @click="havePersontips = !havePersontips">取消</view>
+					<view class="btn" @click="addOreditPeople">确定</view>
+				</view>
+			</view>
+		</u-popup>
+
+		<u-popup :show="showPeople" mode="bottom" round="20" @close="() => {
+			showPeople = false
+		}" closeable>
+			<view class="person-list">
+				<span class="title">请选择分成人员</span>
+				<xls-search placeholder="请输入场地名称" marLeft="-5.5em" @confirm="stratesSearch"></xls-search>
+				<view class="list-content">
+					<view class="item" v-for="(item, index) in searchBillList" :key="index" @click="pickerPerson(item)">
+						<span class="person-name">{{ item.nickName}}
+							<span class="person-phone">&nbsp;&nbsp;({{ item.username }})</span></span>
+						<span>&gt;</span>
+					</view>
+					<view class="on-earth">到底了~</view>
+				</view>
+			</view>
+		</u-popup>
+
 		<xls-setup-protocol-vue ref="protocol"></xls-setup-protocol-vue>
+		<xls-setup-no-person-vue ref="person"></xls-setup-no-person-vue>
 	</view>
 </template>
 
@@ -68,41 +127,15 @@
 		separateController
 	} from '@/api/index.js';
 	import xlsSetupProtocolVue from './xls-setup-protocol.vue';
-
+	import xlsSetupNoPersonVue from './xls-setup-no-person.vue';
 	export default {
 		components: {
-			xlsSetupProtocolVue
+			xlsSetupProtocolVue,
+			xlsSetupNoPersonVue,
 		},
 		data() {
 			return {
-				dataList: [{
-						"username": "18144999904",
-						"nickName": "商户_18144999904",
-						"separateBillsId": 142,
-						"masterNo": 1,
-						"proportion": 75,
-						"accountNumber": "E1807612600",
-						"id": 1292
-					},
-					{
-						"username": "18402059455",
-						"nickName": "前端",
-						"separateBillsId": 883,
-						"masterNo": 0,
-						"proportion": 10,
-						"accountNumber": "E1807517363",
-						"id": 2795
-					},
-					{
-						"username": "18126642646",
-						"nickName": "张捷02",
-						"separateBillsId": 885,
-						"masterNo": 0,
-						"proportion": 15,
-						"accountNumber": "E1807550146",
-						"id": 2797
-					}
-				],
+				dataList: [],
 
 				checked: false,
 				noPersontips: false,
@@ -136,18 +169,18 @@
 		},
 		async onLoad(option) {
 			const params = JSON.parse(option.params);
-			console.log(params)
-			// if (this.$route.query.placeId) {
-			// 	this.placeId = this.$route.query.placeId;
-			// 	this.getPeopleList();
-			// }
+			this.placeId = params.placeId;
+			if (params.type !== "checkbox") {
+				this.getPeopleList();
+			}
+			this.getBillPerson();
 		},
 		methods: {
+			goBack() {
+				this.$goTo("/pages/mainPackages/home/index", "switchTab");
+			},
 			protocolMask(type) {
 				this.$refs.protocol.openPupop(type);
-			},
-			goBack() {
-
 			},
 			acountPlaceNum(place) {
 				let placeNum = 0;
@@ -158,25 +191,54 @@
 				}
 				return placeNum + 1;
 			},
-
+			async stratesSearch(search) {
+				let res = await separateController.getSeparatePerson({
+					search: encodeURIComponent(search),
+				});
+				if (res.code == 200) {
+					this.searchBillList = res.data;
+				}
+			},
+			async getBillPerson() {
+				let res = await separateController.getSeparatePerson();
+				if (res.code == 200) {
+					this.separateBillsList = res.data;
+					this.searchBillList = res.data;
+				}
+			},
+			//选择分成人员
+			pickerPerson(item) {
+				this.showPeople = false;
+				this.billsPeople = item.nickName;
+				this.separateBillsId = item.id;
+			},
+			//获取
+			async getPeopleList() {
+				let res = await separateController.getDividePersonList({
+					placeId: String(this.placeId)
+				});
+				if (res.code == 200) {
+					this.dataList = res.data;
+				}
+			},
 			//删除
 			async deletePersonItem(separateBillsId, masterNo) {
 				if (masterNo == 1) {
 					this.$toast("主分账人不可删除！！");
 					return
 				}
-				this.$model("确定要删除该合作人分成比例设置吗？", {
+				this.$modal("确定要删除该合作人分成比例设置吗？", {
 						confirmText: "删除",
 						confirmColor: "#f73e3e",
 					})
 					.then(() => {
-						deleteSeparateBillsInfo({
+						separateController.deleteSeparateBillsInfo({
 								separateBillsId,
-								placeIdList: this.placeId,
+								placeIdList: String(this.placeId),
 							})
 							.then((res) => {
-								if (res.data.code == 0 || res.data.msg == "ok") {
-									this.$toast.success("删除成功");
+								if (res.code == 200) {
+									this.$toast("删除成功");
 									this.getPeopleList();
 								}
 							})
@@ -184,16 +246,6 @@
 					})
 					.catch(() => {});
 			},
-			//获取
-			async getPeopleList() {
-				let res = await getviewidePersonList({
-					placeId: String(this.placeId)
-				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.dataList = res.data.data;
-				}
-			},
-
 			//添加
 			estimateAdd(type) {
 				if (type == "add") {
@@ -203,7 +255,7 @@
 				}
 				if (!this.separateBillsList.length) {
 					//无分成人
-					this.noPersontips = !this.noPersontips;
+					this.$refs.person.showPopup = true;
 				} else {
 					this.havePersontips = !this.havePersontips;
 					this.editOradd = false;
@@ -216,20 +268,19 @@
 				if (this.proportion > 100) {
 					return this.$toast("比例不能大于100~");
 				}
-				let res = await addSeparateBillsInfo({
+				let res = await separateController.addSeparateBillsInfo({
 					separateBillsId: this.separateBillsId, //分账人员ID
 					masterNo: this.checked ? 1 : 0, //是否主分账人员;（1：是，0：否）
 					proportion: this.proportion, //分账比例;100% = 100
 					placeIdList: this.placeId, //场地ID
 				});
-				console.log("加", res);
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200) {
 					this.getPeopleList();
 					this.havePersontips = !this.havePersontips;
 					this.billsPeople = "请选择分成人员";
 					this.separateBillsId = "";
 					this.proportion = "";
-					this.$toast.success("添加成功");
+					this.$toast("添加成功");
 				} else {
 					return;
 				}
@@ -238,15 +289,10 @@
 			async estimateEdit(item) {
 				// console.log('bianj',item)
 				if (item.masterNo == 1) {
-					return this.$dialog
-						.alert({
-							title: "温馨提示",
-							message: "注意！！主分账人不可编辑~",
-							width: "270",
+					return this.$modal("注意！！主分账人不可编辑~", {
+							showCancel: false
 						})
-						.then(() => {
-							this.element.target.scrollLeft = 0;
-						});
+						.then(() => {});
 				}
 				this.havePersontips = !this.havePersontips;
 				this.editOradd = true;
@@ -262,18 +308,17 @@
 				if (this.proportion > 100) {
 					return this.$toast("比例不能大于100~");
 				}
-				let res = await editSeparateBillsInfo({
+				let res = await separateController.editSeparateBillsInfo({
 					separateBillsId: this.editInfo.separateBillsId,
 					masterNo: this.checked ? 1 : 0, //是否主分账人员;（1：是，0：否）
 					proportion: this.proportion, //分账比例;100% = 100
 					placeIdList: this.placeId, //场地ID
 				});
-				console.log("改", res);
-				if (res.data.code == 0 || res.data.msg == "ok") {
+
+				if (res.code == 200) {
 					this.havePersontips = !this.havePersontips;
 					this.getPeopleList();
-					this.element.target.scrollLeft = 0;
-					this.$toast.success("修改成功");
+					this.$toast("修改成功");
 				}
 			},
 			//确定--添加或编辑
@@ -464,11 +509,147 @@
 				.btn {
 					margin-left: 24rpx;
 					padding: 6rpx 20rpx;
-					font-size: 20rpx;
+					font-size: 24rpx;
 					border: 1px solid #e6e6e6;
 					border-radius: 12rpx;
 				}
 			}
+		}
+	}
+
+
+	.havePersontips {
+		width: 710rpx;
+		position: relative;
+		box-sizing: border-box;
+		background: #fff;
+
+		.title-name-have {
+			padding: 24rpx;
+			text-align: center;
+		}
+
+		.bottom-btn {
+			display: flex;
+			border-top: 1rpx solid rgba(229, 229, 229, 1);
+
+			.btn {
+				flex: 1;
+				text-align: center;
+				line-height: 100rpx;
+				font-size: 32rpx;
+				color: #5241ff;
+			}
+
+			.btn:not(:first-child) {
+				border-left: 1rpx solid rgba(229, 229, 229, 1);
+			}
+		}
+
+		.content-person {
+			padding: 24rpx;
+
+			.items {
+				display: flex;
+				align-items: center;
+				font-size: 30rpx;
+				margin-bottom: 24rpx;
+
+				.next-txt {
+					font-size: 24rpx;
+					color: #999;
+				}
+
+				.right {
+					flex: 1;
+					display: flex;
+					justify-content: flex-end;
+				}
+
+				.item-con {
+					flex: 1;
+					margin-left: 24rpx;
+					padding: 0 20rpx;
+					line-height: 88rpx;
+					height: 88rpx;
+					border: 1rpx solid #d0d0d0;
+					border-radius: 12rpx;
+					display: flex;
+					align-items: center;
+					position: relative;
+
+					.input {
+						font-size: 30rpx;
+						flex: 1;
+						padding: 0;
+						margin: 0;
+						box-sizing: border-box;
+						border: 0;
+						margin-bottom: 0;
+						line-height: 88rpx;
+						outline: 0;
+						background-color: #fff;
+						appearance: none;
+					}
+
+					.icon {
+						font-size: 32rpx;
+						padding-left: 16rpx;
+					}
+
+					.main-text {
+						flex: 1;
+						width: 100%;
+					}
+				}
+			}
+		}
+	}
+
+	.person-list {
+		height: 70vh;
+		max-height: 1000rpx;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+
+		.title {
+			text-align: center;
+			border-bottom: 1rpx solid #e6e2e2;
+			line-height: 100rpx;
+			font-size: 32rpx;
+		}
+
+		.list-content {
+			flex: 1;
+			overflow-y: auto;
+			padding-bottom: 20rpx;
+			box-sizing: border-box;
+			font-size: 30rpx;
+			padding: 0 24rpx;
+
+			.item {
+				display: flex;
+				line-height: 80rpx;
+				border-bottom: 1rpx solid #f5f5f5;
+
+				.person-name {
+					display: inline-block;
+					flex: 1;
+				}
+
+				.person-phone {
+					font-size: 24rpx;
+					color: #999;
+				}
+			}
+		}
+
+		.on-earth {
+			text-align: center;
+			color: #999;
+			font-size: 24rpx;
+			padding: 10rpx 0;
 		}
 	}
 </style>

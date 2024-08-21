@@ -37,6 +37,7 @@ Vue.prototype.$modal = function(content, option = {}) {
 			cancelText: '取消',
 			confirmText: '确定',
 			confirmColor: "#5241ff",
+			showCancel: true,
 			...option,
 			success: function(res) {
 				if (res.confirm && res.confirm == true) {

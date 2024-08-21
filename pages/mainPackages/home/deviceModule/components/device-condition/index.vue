@@ -77,11 +77,12 @@
 						</view>
 					</view>
 					<u-list v-model="loading" :finished="onEarth" finished-text="没有更多了" @load="getList">
+						<!-- :style="!item.deviceNum ? { opacity: ' 0.5' } : ''" -->
 						<view class="place-style" v-for="item in placeList" :key="item.placeId"
-							:style="!item.deviceNum ? { opacity: ' 0.5' } : ''" @click="checkPlace(item)">
+							@click="checkPlace(item)">
 							<view>{{ item.placeName }}</view>
 							<view class="right">
-								<view>{{ item.deviceNum }}台</view>
+								<!-- <view>{{ item.deviceNum }}台</view> -->
 								<view class="success">
 									<u-icon name="success" color="#5241FF" size="18" v-show="placeId == item.placeId" />
 								</view>
@@ -163,13 +164,9 @@
 	// } from "@/utils/api/device";
 	export default {
 		props: {
-			deviceNum: {
-				type: Number | String,
-				default: 0
-			},
-			onlineNum: {
-				type: Number | String,
-				default: 0
+			count: {
+				type: Object,
+				require: true
 			},
 		},
 		data() {
@@ -217,11 +214,16 @@
 				uni.navigateBack();
 			},
 			getStateCount(state) {
-				return state.id == null ?
-					this.deviceNum :
-					state.id == 0 ?
-					this.deviceNum - this.onlineNum :
-					this.onlineNum;
+				const num = this.count.online + this.count.offline;
+				const online = this.count.online;
+				const offline = this.count.offline;
+				if (state.id == null) {
+					return num
+				} else if (state.id == 0) {
+					return offline
+				} else {
+					return online
+				}
 			},
 			focusSearch() {
 				this.searchType = true;
@@ -604,59 +606,59 @@
 	.u-search {
 		padding: 0;
 	}
-	
-	
+
+
 	//场地弹出
 	.placeContent {
 		height: 100%;
 		width: 100%;
 		display: flex;
 		flex-direction: column;
-	
+
 		.place-content {
 			flex: 1;
 			overflow-y: scroll;
 		}
-	
+
 		.top {
 			height: 48px;
 			padding: 0 2.5%;
 			display: flex;
 			line-height: 48px;
 			border-bottom: 1px solid #f0eff1;
-	
+
 			view {
 				width: 33%;
 				height: 48px;
 			}
-	
+
 			.back {
 				color: #5241ff;
 				font-size: 16px;
 				font-weight: 400;
 			}
-	
+
 			.title {
 				color: #262626;
 				font-size: 16px;
 				text-align: center;
 			}
 		}
-	
+
 		.positionTop {
 			position: sticky;
 			top: 0px;
 			background: #fff;
 			z-index: 6666;
 		}
-	
+
 		.position {
 			position: sticky;
 			top: 50px;
 			background: #fff;
 			z-index: 6666;
 		}
-	
+
 		.placeList {
 			min-height: 50px;
 			border-bottom: 1px solid #f0eff1;
@@ -667,19 +669,19 @@
 			font-size: 16px;
 			font-weight: 400;
 			align-items: center;
-	
+
 			.right {
 				display: flex;
 				align-items: center;
 				text-align: right;
 				white-space: nowrap;
 			}
-	
+
 			.success {
 				width: 30px;
 			}
 		}
-	
+
 		span {
 			margin: 0 8px;
 		}

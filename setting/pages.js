@@ -261,6 +261,13 @@ const pages = [{
 			"title": "分账统计"
 		}
 	},
+	{
+		"path": "pages/mainPackages/home/separateAccounts/income/detail",
+		"name": "SeparateIncomeDetail",
+		"meta": {
+			"title": "分账统计详情"
+		}
+	},
 	// 申诉反馈
 	{
 		"path": "pages/mainPackages/home/appealFeedback/index",

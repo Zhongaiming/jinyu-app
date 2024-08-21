@@ -312,7 +312,6 @@ export default {
 					year: dayjs(minDate).add(i, 'month').year()
 				})
 			}
-
 		},
 		// 滚动到默认设置的月份
 		scrollIntoDefaultMonth(selected) {

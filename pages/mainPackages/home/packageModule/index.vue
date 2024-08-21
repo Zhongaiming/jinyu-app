@@ -1,207 +1,173 @@
 <template>
-	<div class="setMeal">
-		<jy-navbar title="套餐设置"></jy-navbar>
-		<div class="headerBox">
-			<div class="header-item" @click.stop="showRecomList" v-hasPermi="['app:meal:recommendMoney:read']">
-				<div class="image-box">
-					<image :src="`${$baseUrl}appV4/setImage/top-up.png`" alt="" class="image" mode="widthFix"/>
-				</div>
-				<p class="header-title">
-					<span>推荐充值金额</span>
-					<span class="question" @click.stop="(mealNotice = !mealNotice), (noticeItem = 1)">
-						<div class="introduce">?</div>
-					</span>
-				</p>
-				<p class="header-tips">{{ recommendPrice }}元</p>
-			</div>
+	<z-paging ref="mealPaging" v-model="dataList" @query="queryList">
+		<view slot="top">
+			<jy-navbar title="套餐设置"></jy-navbar>
+			<view class="headerBox">
+				<view class="header-item" @click.stop="showRecomList" v-hasPermi="['app:meal:recommendMoney:read']">
+					<view class="image-box">
+						<image :src="`${$baseUrl}appV4/setImage/top-up.png`" alt="" class="image" mode="widthFix" />
+					</view>
+					<p class="header-title">
+						<span>推荐充值金额</span>
+						<span class="question" @click.stop="(mealNotice = !mealNotice), (noticeItem = 1)">
+							<view class="introduce">?</view>
+						</span>
+					</p>
+					<p class="header-tips">{{ recommendPrice }}元</p>
+				</view>
 
-			<div class="header-item" @click="
-            $router.push({
-              path: '/setMeal/moreMoney',
-              query: { opition: '余币' },
-            })
-          " v-hasPermi="['app:meal:currency:read']">
-				<!-- <div class="header-item" @click="$refs.development.inDevelopment()"> -->
-				<div class="image-box">
-					<image :src="`${$baseUrl}appV4/setImage/currency.png`" alt="" class="image" mode="widthFix"/>
-				</div>
-				<p class="header-title">
-					<span>游戏币通用</span>
-					<span class="question" @click.stop="(mealNotice = !mealNotice), (noticeItem = 2)">
-						<div class="introduce">?</div>
-					</span>
-				</p>
-				<p class="header-tips">已设置{{ groupNum }}组场地</p>
-			</div>
-			<div class="header-item" @click="
-            $router.push({
-              path: '/setMeal/moreMoney',
-              query: { opition: '余额' },
-            })
-          " v-hasPermi="['app:meal:balance:read']">
-				<!-- <div class="header-item" @click="$refs.development.inDevelopment()"> -->
-				<div class="image-box">
-					<image :src="`${$baseUrl}appV4/setImage/balance.png`" alt="" class="image" mode="widthFix"/>
-				</div>
-				<p class="header-title">
-					<span>余额通用</span>
-					<span class="question" @click.stop="(mealNotice = !mealNotice), (noticeItem = 3)">
-						<div class="introduce">?</div>
-					</span>
-				</p>
-				<p class="header-tips">已设置{{ balanceNum }}组场地</p>
-			</div>
-		</div>
+				<view class="header-item" @click="goTo('currency')" v-hasPermi="['app:meal:currency:read']">
+					<view class="image-box">
+						<image :src="`${$baseUrl}appV4/setImage/currency.png`" alt="" class="image" mode="widthFix" />
+					</view>
+					<p class="header-title">
+						<span>游戏币通用</span>
+						<span class="question" @click.stop="(mealNotice = !mealNotice), (noticeItem = 2)">
+							<view class="introduce">?</view>
+						</span>
+					</p>
+					<p class="header-tips">已设置{{ groupNum }}组场地</p>
+				</view>
+				<view class="header-item" @click="goTo('balance')" v-hasPermi="['app:meal:balance:read']">
+					<view class="image-box">
+						<image :src="`${$baseUrl}appV4/setImage/balance.png`" alt="" class="image" mode="widthFix" />
+					</view>
+					<p class="header-title">
+						<span>余额通用</span>
+						<span class="question" @click.stop="(mealNotice = !mealNotice), (noticeItem = 3)">
+							<view class="introduce">?</view>
+						</span>
+					</p>
+					<p class="header-tips">已设置{{ balanceNum }}组场地</p>
+				</view>
+			</view>
+		</view>
 
 		<!-- 场地 -->
-		<div class="body-box">
+		<view class="body-box">
 			<transition name="transitionUp" mode="out-in">
-				<div class="title-box" v-show="!searchShow">
+				<view class="title-box" v-show="!searchShow">
 					<span class="text">服务/充值套餐</span>
-					<div class="right-box">
-						<span class="btn" @click="searchShow = !searchShow"><u-icon name="search" class="icon"
-								size="36" />搜索</span>
-						<span class="btn btn-batchSet">
-							<!-- @click="$router.push('/setMeal/editSetmeal')" @click="$refs.develop.inDevelopment()"-->
-							<span class="svg-icon">|</span>
-							<span v-show="!showAllCheck" @click="
-                    (showAllCheck = true),
-                      (allCheck = false),
-                      (checkPlaceGroup = [])
-                  "><u-icon name="list-dot" size="36" class="icon" />批量设置</span>
-							<span v-show="showAllCheck" @click="
-                    (showAllCheck = false),
-                      (allCheck = false),
-                      (checkPlaceGroup = [])
-                  "><u-icon name="close-circle" size="36" class="icon" />取消设置</span>
+					<view class="right-box">
+						<span class="btn" @click="searchShow = !searchShow">
+							<u-icon name="search" class="icon" size="36" />搜索
 						</span>
-					</div>
-				</div>
+						<span class="btn btn-batchSet">
+							<span class="svg-icon">|</span>
+							<span v-show="!showAllCheck" class="icon-style" @click="clickCheck()">
+								<u-icon name="list-dot" size="36" class="icon" />
+								批量设置
+							</span>
+
+							<span v-show="showAllCheck" class="icon-style" @click="clickCheck()">
+								<u-icon name="close-circle" size="36" class="icon" />
+								取消设置
+							</span>
+						</span>
+					</view>
+				</view>
 			</transition>
 
 			<transition name="transition" mode="out-in">
-				<div class="search-box" v-show="searchShow">
-					<div class="search-icon">
+				<view class="search-box" v-show="searchShow">
+					<view class="search-icon">
 						<i class="iconfont icon-sousuo1" style="font-size: 15px"></i>
-					</div>
-					<!-- <form action="javascript:void 0" style="flex:1"> -->
-					<input type="text" v-model="searchEnter" placeholder="输入搜索场地名称" @blur="confirmSearch"
+					</view>
+					<input type="text" v-model="searchValue" placeholder="输入搜索场地名称" @blur="confirmSearch"
 						@keyup.13="confirmSearch" />
-					<!-- </form> -->
-					<div class="cancel" @click="cancelSearch">取消</div>
-				</div>
+					<view class="cancel" @click="cancelSearch">取消</view>
+				</view>
 			</transition>
-		</div>
-		<div class="place-content" :class="showAllCheck ? 'place-all' : ''" v-if="placeList.length"
-			@scroll="scorllEvent">
-			<u-checkbox-group v-model="checkPlaceGroup" direction="horizontal" ref="checkboxGroup">
-				<div class="place-list" v-for="(place, index) in placeList" :key="index">
-					<u-checkbox :name="place.placeId" shape="square" v-show="showAllCheck" checked-color="#5241FF"
-						@click="checkPlace"></u-checkbox>
+		</view>
+
+		<view class="place-content" :class="{'place-all': showAllCheck}">
+			<u-checkbox-group v-model="checkPlaceGroup" placement="column">
+				<view class="place-list" v-for="(place, index) in dataList" :key="index">
+					<u-checkbox :name="place.placeId" activeColor="#5241FF" v-show="showAllCheck" shape="circle"
+						iconSize="32" labelSize="36" size="38"></u-checkbox>
 					<span class="name text-over">{{ place.placeName }}</span>
-					<div class="count" @click="
-                $router.push({
-                  path: '/setMeal/editSetmeal',
-                  query: { id: place.placeId, deviceNum: place.deviceNum },
-                })
-              ">
+					<view class="count" @click="goToEdit(place)">
 						<span class="deviceNum">{{ place.deviceNum }}台</span>
-						<u-icon name="arrow" color="#a2a2a6" size="16" />
-					</div>
-				</div>
-				<!-- <on-earth v-show="onEarth" /> -->
+						<u-icon name="arrow-right" color="#a2a2a6" size="32" />
+					</view>
+				</view>
 			</u-checkbox-group>
-		</div>
-		<xls-empty v-else />
-		<div class="all-check" v-show="showAllCheck">
-			<!-- <u-checkbox v-model="allCheck" checked-color="#5241FF" shape="square"
-				@click="$refs.checkboxGroup.toggleAll(allCheck)"> -->
-				<!-- 全选&nbsp;({{ `${checkPlaceGroup.length}/${placeTotal}` }}) -->
-			<!-- </u-checkbox> -->
-			<div class="btn-comfrin" @click="goGroupPlace">确定</div>
-		</div>
+		</view>
+		<xls-empty slot="empty" />
+		<view class="all-check" v-show="showAllCheck" slot="bottom">
+			<u-checkbox-group v-model="allCheckGroup" @change="allGroupChange">
+				<u-checkbox activeColor="#5241FF" name="1" shape="circle" iconSize="32" labelSize="36" size="38">
+					全选&nbsp;({{ `${checkPlaceGroup.length} 个` }})
+				</u-checkbox>
+			</u-checkbox-group>
+			<view class="btn-comfrin" @click="goToEditMeal">确定</view>
+		</view>
 		<!-- 推荐金额 -->
-		<u-popup v-model="recommendMeal" position="bottom" v-hasPermi="['app:meal:recommendMoney:read']">
-			<div class="recommend-meal">
-				<div class="header-box">
+		<u-popup :show="recommendMeal" mode="bottom" v-hasPermi="['app:meal:recommendMoney:read']">
+			<view class="recommend-meal">
+				<view class="header-box">
 					<span @click="recommendMeal = !recommendMeal">取消</span>
 					<span @click="setRecommendMeal" v-hasPermi="['app:meal:recommendMoney:edit']">确定</span>
-				</div>
-				<div class="picker">
-					<div class="picker-items">
-						<div class="picker-slot picker-slot-center" style="flex: 1 1 0%; -webkit-box-flex: 1">
-							<div class="picker-slot-wrapper" style="height: 180px; transform: translateZ(0px)">
-								<div class="picker-item" style="height: 36px; line-height: 36px"
+				</view>
+				<view class="picker">
+					<view class="picker-items">
+						<view class="picker-slot picker-slot-center" style="flex: 1 1 0%; -webkit-box-flex: 1">
+							<view class="picker-slot-wrapper" style="height: 180px; transform: translateZ(0px)">
+								<view class="picker-item" style="height: 36px; line-height: 36px"
 									v-for="(item, index) in recommendMealList" :key="index"
 									:class="pickerSelect == item ? 'picker-selected' : ''" @click="pickerSelect = item">
 									{{ item }}
-								</div>
-							</div>
-						</div>
-						<div class="picker-center-highlight" style="height: 36px; margin-top: -18px"></div>
-					</div>
-				</div>
-			</div>
+								</view>
+							</view>
+						</view>
+						<view class="picker-center-highlight" style="height: 36px; margin-top: -18px"></view>
+					</view>
+				</view>
+			</view>
 		</u-popup>
 		<!-- 提示 -->
-		<u-popup v-model="mealNotice" round>
-			<div class="meal-notice home-family">
-				<div class="title">温馨提示</div>
-				<div class="dialog-content" v-show="noticeItem == 1">
-					<div class="tips-bg">
-						<image :src="`${$baseUrl}appV4/setImage/suggest.png`" alt="" />
-					</div>
+		<u-popup :show="mealNotice" round="20" mode="center">
+			<view class="meal-notice">
+				<view class="title">温馨提示</view>
+				<view class="dialog-content" v-show="noticeItem == 1">
+					<view class="tips-bg">
+						<image :src="`${$baseUrl}appV4/setImage/suggest.png`" alt="" mode="widthFix" class="image" />
+					</view>
 					<p class="tips-text">
 						用户充值时,推荐金额会出现标识,引导用户消费行为。10元和20元是充值高峰。
 					</p>
-				</div>
-				<div class="dialog-content" v-show="noticeItem == 2">
-					<div class="tips-texts">
+				</view>
+				<view class="dialog-content" v-show="noticeItem == 2">
+					<view class="tips-texts">
 						开启了“游戏币场地通用”的场地之间游戏币余币可以通用，用户的游戏币余币等于已开启的各场地余币之和。
 						<span style="color: red">为了避免给用户造成困扰，请勿频繁开启/关闭场地通用。</span>
-					</div>
-				</div>
-				<div class="dialog-content" v-show="noticeItem == 3">
-					<div class="tips-texts">
+					</view>
+				</view>
+				<view class="dialog-content" v-show="noticeItem == 3">
+					<view class="tips-texts">
 						开启了“余额场地通用”的场地之间余额可以通用，用户的余额等于已开启的各场地余额之和。
 						<span style="color: red">为了避免给用户造成困扰，请勿频繁开启/关闭场地通用。</span>
-					</div>
-				</div>
-				<div class="btn-wrapper" @click="mealNotice = !mealNotice">
+					</view>
+				</view>
+				<view class="btn-wrapper" @click="mealNotice = !mealNotice">
 					我知道了
-				</div>
-			</div>
+				</view>
+			</view>
 		</u-popup>
-	</div>
+	</z-paging>
 </template>
 
 <script>
-	// import {
-	// 	getPlaceDeviceNum,
-	// 	getPlaceDeviceList
-	// } from "@/utils/api/place";
-	// import {
-	// 	getComboAmount,
-	// 	editRecommendAmount,
-	// 	getRecommendAmount,
-	// } from "@/utils/api/setMeal/udated";
-	// import TopTab from "./setmealComps/topTab";
 	import {
-		debounceFun,
-		throttleFun
-	} from "@/plugins/debounceOrthrottle";
-	// import local from "@/plugins/storage";
+		packageController
+	} from '@/api/index.js';
 
 	export default {
-		name: "setMeal",
-		components: {
-			// TopTab
-		},
 		data() {
 			return {
 				searchShow: false,
-				searchEnter: "",
-				placeList: [],
+				searchValue: "",
+				dataList: [],
 				//组数
 				groupNum: 0,
 				balanceNum: 0,
@@ -214,165 +180,113 @@
 				//提示
 				mealNotice: false,
 				noticeItem: 1,
-				//
-				page: 0,
-				onEarth: false,
 				//全选
 				showAllCheck: false,
 				checkPlaceGroup: [],
 				allCheck: false,
 				placeTotal: 0,
+				// 
+				allCheckGroup: [],
 			};
 		},
-		// async created() {
-		// 	//推荐金额表
-		// 	let res = await getComboAmount({});
-		// 	if (res.data.data) {
-		// 		this.recommendMealList = res.data.data;
-		// 	}
-		// 	this.getRecommendMeal();
-
-		// 	getPlaceDeviceList().then((res) => {
-		// 		this.placeTotal = res.data.data.length;
-		// 	});
-		// 	this.getPlacelist();
-		// 	// this.groupNum = res.data.data.comboNum;
-		// 	// this.balanceNum = res.data.data.comboNum;
-		// },
+		async created() {
+			this.getList();
+		},
 		methods: {
-			scorllEvent(event) {
-				var scrollTop = event.target.scrollTop;
-				var scrollHeight = event.target.scrollHeight;
-				var clientHeight = event.target.clientHeight;
-				if (scrollTop + clientHeight + 50 >= scrollHeight) {
-					if (this.onEarth == false) {
-						this.getPlacelist();
-					}
+			goTo(type) {
+				return this.$toast("期待中~")
+			},
+			clickCheck() {
+				this.showAllCheck = !this.showAllCheck
+				this.allCheck = !this.allCheck
+				this.checkPlaceGroup = []
+			},
+			
+			async getList() {
+				//推荐金额表
+				let res = await packageController.getComboAmount();
+				if (res.code == 200) {
+					this.recommendMealList = res.data;
 				}
+				this.getRecommendMeal();
 			},
-			getPlacelist: debounceFun(async function() {
-				let res = await getPlaceDeviceNum({
-					page: ++this.page,
-					size: 50,
-					placeName: this.searchEnter ? encodeURIComponent(this.searchEnter) : "",
-				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					if (res.data.data != null) {
-						if (res.data.data.length < 50) {
-							this.onEarth = true;
-						} else {
-							this.onEarth = false;
-						}
-						if (this.page > 1) {
-							this.placeList = [...this.placeList, ...res.data.data];
-						} else {
-							this.placeList = res.data.data;
-						}
-						if (this.allCheck) {
-							this.checkPlaceGroup = [];
-							this.placeList.forEach((item) => {
-								this.checkPlaceGroup.push(item.placeId);
-							});
-						}
-					}
-				}
-			}, 500),
-
-			//场地搜索
-			cancelSearch() {
-				this.searchShow = !this.searchShow;
-				this.searchEnter = "";
-				this.page = 0;
-				this.onEarth = false;
-				this.getPlacelist();
-			},
-			confirmSearch() {
-				this.page = 0;
-				this.onEarth = false;
-				this.getPlacelist();
-			},
-
-			goGroupPlace() {
-				if (this.checkPlaceGroup.length) {
-					let deviceNum = 0;
-					if (this.allCheck) {
-						let device = local.get("device");
-						deviceNum = device.deviceNum;
-					} else {
-						this.placeList.forEach((item) => {
-							this.checkPlaceGroup.forEach((placeId) => {
-								if (item.placeId == placeId) {
-									deviceNum += item.deviceNum;
-								}
-							});
-						});
-					}
-					this.$router.push({
-						path: "/setMeal/editSetmeal",
-						query: {
-							placeId: this.allCheck && this.checkPlaceGroup.length == this.placeTotal ?
-								"All" : String(this.checkPlaceGroup), //选中场地ID
-							total: this.allCheck ?
-								this.placeTotal : this.checkPlaceGroup.length, //场地数量
-							deviceNum: deviceNum, //选中设备数量
-						},
-					});
-				} else {
-					this.$toast("请至少选中一个场地~");
-				}
-			},
-			checkPlace() {
-				if (this.checkPlaceGroup.length >= this.placeTotal) {
-					this.allCheck = true;
-				} else {
-					this.allCheck = false;
-				}
-			},
-
 			//推荐金额
 			async getRecommendMeal() {
-				let res = await getRecommendAmount({});
-				if (res.data.code == 0 || res.data.msg) {
-					this.recommendPrice = res.data.data.recommendMoney;
+				let res = await packageController.getRecommendAmount();
+				if (res.code == 200) {
+					this.recommendPrice = res.data.recommendMoney;
 				}
 			},
 			//设置推荐金额
 			async setRecommendMeal() {
-				let res = await editRecommendAmount({
+				let res = await packageController.editRecommendAmount({
 					editAmount: Math.round(this.pickerSelect * 100), //推荐金额 单位角
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200) {
 					this.recommendPrice = this.pickerSelect;
 					this.recommendMeal = !this.recommendMeal;
-					this.$toast.success("设置成功");
+					this.$toast("设置成功");
 				}
 			},
 			showRecomList() {
 				if (this.recommendMealList.length) {
 					this.recommendMeal = !this.recommendMeal;
 				} else {
-					this.$dialog.alert({
-						title: "温馨提示",
-						width: "270",
-						message: "您还没有设置套餐，请设置后再设置推荐金额",
-						confirmButtonText: "我知道了",
-						confirmButtonColor: "1a87ff",
+					this.$modal("您还没有设置套餐，请设置后再设置推荐金额", {
+						confirmText: "我知道了",
+						showCancel: false
 					});
 				}
+			},
+			
+			queryList(pageNo, pageSize) {
+				packageController.getPlaceDeviceNum({
+					page: pageNo,
+					size: pageSize,
+					placeName: this.searchValue ? encodeURIComponent(this.searchValue) : "",
+				}).then(res => {
+					this.$refs.mealPaging.complete(res.data);
+				})
+			},
+			//场地搜索
+			cancelSearch() {
+				this.searchShow = !this.searchShow;
+				this.searchValue = "";
+				this.$refs.mealPaging.reload();
+			},
+			confirmSearch() {
+				this.getdataList();
+				this.$refs.mealPaging.reload();
+			},
+			allGroupChange(item) {
+				if (item.length) {
+					this.checkPlaceGroup = this.dataList.map(place => place.placeId)
+				} else {
+					this.checkPlaceGroup = [];
+				}
+			},
+			goToEditMeal() {
+				if (this.checkPlaceGroup.length) {
+					this.$goTo("/pages/mainPackages/home/packageModule/packageOperate", "navigateTo", {
+						placeId: String(this.checkPlaceGroup), //选中场地ID
+						total: this.checkPlaceGroup.length, //场地数量
+						deviceNum: this.checkPlaceGroup.length, //选中设备数量
+					})
+				} else {
+					this.$toast("请至少选中一个场地~");
+				}
+			},
+			goToEdit(place) {
+				this.$goTo("/pages/mainPackages/home/packageModule/packageOperate", "navigateTo", {
+					id: place.placeId,
+					deviceNum: place.deviceNum
+				})
 			},
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
-	.setMeal {
-		width: 100%;
-		height: 100vh;
-		background: #f5f6f7;
-		display: flex;
-		flex-direction: column;
-	}
-
 	.headerBox {
 		display: flex;
 		justify-content: space-around;
@@ -482,6 +396,11 @@
 						color: #8c8c8f;
 						font-weight: 700;
 						margin-right: 12px;
+					}
+
+					.icon-style {
+						display: flex;
+						align-items: center;
 					}
 				}
 			}
@@ -655,17 +574,6 @@
 				width: 100%;
 			}
 
-			// .picker-center-highlight{
-			//     box-sizing: border-box;
-			//     left: 0;
-			//     pointer-events: none;
-			//     position: absolute;
-			//     top: 50%;
-			//     width: 100%;
-			//     color: #000;
-			//     border-top: 1px solid #eaeaea;
-			//     border-bottom: 1px solid #eaeaea;
-			// }
 			.picker-item.picker-selected {
 				color: #5241ff;
 				font-weight: 700;

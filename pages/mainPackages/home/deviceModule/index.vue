@@ -1,6 +1,6 @@
 <template>
 	<z-paging ref="paging" v-model="dataList" @query="queryList">
-		<device-condition :deviceNum="deviceNum" :onlineNum="onlineNum"></device-condition>
+		<device-condition :count="count"></device-condition>
 		<device-list :dataList="dataList"></device-list>
 
 		<!-- <no-data v-show="!dataList.length" /> -->
@@ -28,19 +28,19 @@
 		},
 		data() {
 			return {
-				//设备列表
 				dataList: [],
 				//筛选条件
-				screenList: {
-					onlineState: "",
-					placeId: "",
-					deviceType: "",
-					search: "",
+				screen: {
+					onlineState: null,
+					placeId: null,
+					deviceType: null,
+					search: null,
 				},
-				//设备总数
-				deviceNum: 0,
-				//在线总数
-				onlineNum: 0,
+				//设备数
+				count: {
+					online: 0,
+					offline: 0
+				},
 				//egg-updata
 				editEggMsg: "",
 				deviceMsg: {},
@@ -53,12 +53,15 @@
 				deviceController.getListTwo({
 					page: pageNo,
 					size: pageSize,
-					// search: this.searchValue
+					// ...this.screen
 				}).then(res => {
 					this.$refs.paging.complete(res.data.List);
+					this.count = {
+						online: res.data.online.onlineNums,
+						offline: res.data.offline.offlineNums
+					}
 				})
 			},
 		},
 	}
 </script>
-

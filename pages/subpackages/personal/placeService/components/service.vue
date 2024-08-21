@@ -24,7 +24,7 @@
 					</view>
 					<view class="right">
 						<image :src="`${$baseUrl}appV4/service/edit.png`" alt="" class="img-icon" mode="widthFix"
-							@click="goEdit(item)" />
+							@click="goToEdit(item)" />
 						<view class="work-status">
 							<view class="delete-btn" @click="deleteService(item.id)">
 								删除
@@ -44,31 +44,7 @@
 	export default {
 		data() {
 			return {
-				dataList: [{
-						"id": 29,
-						"name": "中土客服1",
-						"phone": "18126642666",
-						"qrCode": "http://xls-app-file.oss-cn-shanghai.aliyuncs.com/user/user_service/2022-12-16_eHiqOPBlw_NpWpTYG-GXF.jpg",
-						"weight": 0,
-						"defaultCustomerService": 1,
-						"commercialNumber": "ZTWL_20220617111542006",
-						"createId": 426,
-						"createTime": "2022-12-16 15:58:43"
-					},
-					{
-						"id": 46,
-						"name": "步行街兑币机客服",
-						"phone": "18939797990",
-						"qrCode": "https://xls-app-file.oss-cn-shanghai.aliyuncs.com/user/user_service/2023-06-15_dt5mQeYjYoU5y_y5BcADg.jpg",
-						"weight": 0,
-						"defaultCustomerService": 0,
-						"commercialNumber": "ZTWL_20220617111542006",
-						"createId": 661,
-						"createTime": "2023-06-15 10:59:13"
-					}
-				],
-				editMsg: {},
-				placedataList: [],
+				dataList: [],
 			}
 		},
 		created() {
@@ -78,10 +54,12 @@
 			//客服 list
 			async getService() {
 				let res = await placeController.getStaffList({
-					name: encodeURIComponent(this.searchValue),
+					page: 1,
+					size: 1
+					// name: encodeURIComponent(this.searchValue),
 				});
 				if (res.code == 200) {
-					this.dataList = res.data.data;
+					this.dataList = res.data;
 				}
 			},
 			searchMethod() {
@@ -89,43 +67,28 @@
 			},
 			//delete
 			deleteService(id) {
-				this.$dialog
-					.confirm({
-						title: "温馨提示",
-						message: "确定要删除该场地客服吗？",
-						width: "270",
-						confirmButtonText: "删除",
-						confirmButtonColor: "#f73e3e",
+				this.$modal("确定要删除该场地客服吗？", {
+						confirmText: "删除",
+						confirmColor: "#f73e3e",
 					})
 					.then(() => {
-						deleteStaff({
+						placeController.deleteStaff({
 								id
 							})
 							.then((res) => {
-								if (res.data.code == 0 || res.data.msg == "ok") {
-									this.$toast.success("删除成功");
-									this.dataList = this.dataList.filter((item) => {
-										return item.id != id;
-									});
+								if (res.code == 200) {
+									this.$toast("删除成功");
 								}
 							})
 							.catch((err) => {});
 					})
 					.catch(() => {});
 			},
-			//edit
-			goEdit(item) {
-				this.editMsg = item;
-				this.$router.push({
-					name: "setServiceDetail",
-					query: {
-						operTypeName: "编辑",
-						serviceMsg: JSON.stringify(item)
-					},
+			//navigateTo
+			goToEdit(item) {
+				this.$goTo("/pages/subpackages/personal/placeService/operate", "navigateTo", {
+					...item
 				});
-			},
-			editItemService(item) {
-				this.editMsg = Object.assign(this.editMsg, item);
 			},
 		}
 	}
