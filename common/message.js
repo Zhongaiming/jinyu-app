@@ -25,6 +25,9 @@ Vue.prototype.$loading = function() {
 	})
 }
 
+Vue.prototype.$hideLoading = function() {
+	uni.hideLoading();
+}
 /**
  * 显示模态弹窗
  * @param content 提示的标题

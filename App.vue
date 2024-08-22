@@ -136,7 +136,12 @@
 		margin: 0;
 		// direction: rtl;
 	}
-
+	
+	.Center {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
 	@import '@/uni_modules/uview-ui/index.scss';
 	@import './static/styles/index.scss';

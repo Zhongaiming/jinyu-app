@@ -21,89 +21,51 @@
 		<!-- 1: 娃娃机；2：扭蛋机；3：游乐车；4：售货机；5：兑币机； -->
 		<view class="type-con" v-show="placeDeviceTypeList.length">
 			<view class="type-con_ul">
-				<view class="item" v-for="(dev, index) in placeDeviceTypeList" :key="index" :style="
-            activeDeviceTypeId == dev.deviceTypeId ? { color: '#5241FF' } : ''
-          " @click="pickerDiffType(dev.deviceTypeId)">
-					<image mode="widthFix" :src="getImage(dev.deviceTypeId)" alt="" class="type-img" />
-
-
+				<view class="item" v-for="(dev, index) in placeDeviceTypeList" :key="index"
+					:style="{ color:activeDeviceTypeId == dev.deviceTypeId ? '#5241FF':'' }"
+					@click="pickerDiffType(dev.deviceTypeId)">
+					<image mode="heightFix" :src="getImage(dev.deviceTypeId)" alt="" class="type-img" />
 					<p class="item-text" v-html="dev.deviceTypeName"></p>
-					<p class="num-color" :class="activeDeviceTypeId == dev.deviceTypeId ? 'active' : ''">
-
+					<p class="num-color" :class="{'active': activeDeviceTypeId == dev.deviceTypeId}">
 						{{ `${dev.deviceNum}台` }}
 					</p>
 				</view>
 			</view>
 		</view>
 		<!-- 场地无设备 -->
-		<view class="null home-family" v-show="placeDeviceNum == 0">
+		<view class="null" v-show="placeDeviceNum == 0">
 			<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/null.png`" alt="" />
 			<p class="font-size_30">该场地暂无设备</p>
 			<p class="font-size_30">请扫描设备二维码注册</p>
-			<view class="mint-button" @click="$router.push('/aBinding')">
+			<view class="mint-button" @click="goTo('deviceBind')">
 				立即注册设备
 			</view>
 		</view>
 		<!-- 售货机 -->
 		<view class="shjMeal gashapon" v-show="activeDeviceTypeId == 4">
-			<view class="header-mode" v-if="0">
-				<view class="list-name">开启公众号免费领取</view>
-				<view class="switch-box">
-					<view class="switch">
-						<u-switch v-model="shjSwitch" size="20px" active-color="#5241FF" />
-					</view>
-					<span v-html="shjSwitch ? '开' : '关'"></span>
-				</view>
-			</view>
-			<view class="service-name" @click="shjMeal = !shjMeal" v-if="0">
-				<u-icon name="play" class="play-off" size="22" color="#7f7f7f" v-show="!shjMeal" />
-				<u-icon name="play" class="play-on" size="22" color="#7f7f7f" v-show="shjMeal" />
-				<span class="trangle">充电线</span>
-			</view>
-			<view v-show="shjMeal" v-if="0">
-				<view class="service-name content-header">
-					<span>服务套餐</span>
-					<span class="addBtn" @click="addShjMeal('add')" v-hasPermi="['app:meal:index:add']">添加</span>
-				</view>
-				<view class="service-name content-header" v-for="(meal, index) in basicMeal" :key="index">
-					<view class="left-con">
-						<p>
-							<span class="time">时长:{{ meal.gameTime }}分钟</span>
-						</p>
-						<p>价格:{{ meal.price }}元</p>
-					</view>
-					<view class="right-con">
-						<span class="handle-btn upgrade" @click="addShjMeal(meal)"
-							v-hasPermi="['app:meal:index:edit']">编辑</span>
-						<span class="handle-btn" @click="deleteMealItem(meal.id)"
-							v-hasPermi="['app:meal:index:delete']">删除</span>
-					</view>
-				</view>
-			</view>
-
 			<!-- 20230626  -->
 			<!-- 充值入口 -->
 			<view class="recharge-management" v-hasPermi="['app:meal:index:ylcset']">
 				<view class="recharge-entry">
 					<span class="text" @click="(gashaponNotice = !gashaponNotice), (noticeNum = 0)">充值入口
-						<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" />
+						<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" />
 					</span>
 					<view class="switch-box">
 						<view class="switch">
-							<u-switch v-model="gasArguments.rechargeEntrance" size="20px" @change="setEggMsg"
-								active-color="#5241FF" />
+							<u-switch v-model="gasArguments.rechargeEntrance" @change="setEggMsg" active-color="#5241FF"
+								size="50" />
 						</view>
 						<span v-html="gasArguments.rechargeEntrance ? '开' : '关'"></span>
 					</view>
 				</view>
 				<view class="recharge-entry children">
 					<span class="text" @click="(gashaponNotice = !gashaponNotice), (noticeNum = 1)">先充值后消费
-						<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" />
+						<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" />
 					</span>
 					<view class="switch-box">
 						<view class="switch">
-							<u-switch v-model="gasArguments.rechargeConsume" size="20px" @change="setEggMsg"
-								active-color="#5241FF" />
+							<u-switch v-model="gasArguments.rechargeConsume" @change="setEggMsg" active-color="#5241FF"
+								size="50" />
 						</view>
 						<span v-html="gasArguments.rechargeConsume ? '开' : '关'"></span>
 					</view>
@@ -146,8 +108,8 @@
 				<view class="tab-header-box">
 					<span class="discount">套餐</span>
 					<span class="status Center">套餐类型 | 套餐状态
-						<u-icon name="question" color="#5241FF" size="17" @click="$refs.coinNotice.showNotice()"
-							style="margin-left: 8px" /></span>
+						<u-icon name="question-circle" color="#5241FF" size="34" @click="$refs.coinNotice.showNotice()"
+							style="margin-left: 16rpx" /></span>
 					<span class="operate">操作</span>
 				</view>
 				<view class="list-item">
@@ -174,7 +136,7 @@
 					</view>
 					<!-- add -->
 					<view class="add-btn" @click="editOrAddMeal('add', 'dbj')">
-						<u-icon name="add" color="#5241FF" size="24" v-hasPermi="['app:meal:index:add']" />
+						<u-icon name="plus-circle" color="#5241FF" size="48" v-hasPermi="['app:meal:index:add']" />
 						<span style="margin-left: 6px" v-hasPermi="['app:meal:index:add']">添加自定义套餐</span>
 					</view>
 				</view>
@@ -189,7 +151,7 @@
 				<view class="tab-header-box">
 					<span class="discount">套餐</span>
 					<span class="status Center">套餐类型 | 套餐状态
-						<u-icon name="question" color="#5241FF" size="17" @click="$refs.coinNotice.showNotice()"
+						<u-icon name="question" color="#5241FF" size="34" @click="$refs.coinNotice.showNotice()"
 							style="margin-left: 8px" /></span>
 					<span class="operate">操作</span>
 				</view>
@@ -220,7 +182,7 @@
 					</view>
 					<!-- add -->
 					<view class="add-btn" @click="editOrAddMeal('add')">
-						<u-icon name="add" color="#5241FF" size="24" v-hasPermi="['app:meal:index:add']" />
+						<u-icon name="plus-circle" color="#5241FF" size="48" v-hasPermi="['app:meal:index:add']" />
 						<span style="margin-left: 6px" v-hasPermi="['app:meal:index:add']">添加自定义套餐</span>
 					</view>
 				</view>
@@ -236,75 +198,64 @@
 				</view>
 			</view>
 			<view class="add-btn" @click="defaultMealSet" v-hasPermi="['app:meal:index:reset']">
-				<u-icon name="replay" color="#5241FF" size="24" />
+				<u-icon name="reload" color="#5241FF" size="48" />
 				<span style="margin-left: 6px">恢复默认设置</span>
 			</view>
 		</view>
 		<!-- 扭蛋机-娃娃机-儿童类-游戏类-微抓机 -->
-		<view class="gashapon" v-show="
-        activeDeviceTypeId == 2 ||
-        activeDeviceTypeId == 1 ||
-        activeDeviceTypeId == 6 ||
-        activeDeviceTypeId == 7 ||
-        activeDeviceTypeId == 8
-      ">
-			<view v-show="
-          activeDeviceTypeId == 2 ||
-          activeDeviceTypeId == 6 ||
-          activeDeviceTypeId == 7 ||
-          activeDeviceTypeId == 8
-        " v-hasPermi="['app:meal:index:ndjset']">
+		<view class="gashapon" v-show="[1, 2, 6, 7, 8].includes(activeDeviceTypeId)">
+			<view v-show="[2, 6, 7, 8].includes(activeDeviceTypeId)" v-hasPermi="['app:meal:index:ndjset']">
 				<view class="recharge-management">
 					<view class="recharge-entry">
 						<span class="text" @click="(gashaponNotice = !gashaponNotice), (noticeNum = 0)">充值入口
-							<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" />
+							<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" />
 						</span>
 						<view class="switch-box">
 							<view class="switch">
-								<u-switch v-model="gasArguments.rechargeEntrance" size="20px" @change="setEggMsg"
-									active-color="#5241FF" />
+								<u-switch v-model="gasArguments.rechargeEntrance" @change="setEggMsg"
+									active-color="#5241FF" size="50" />
 							</view>
-							<span v-html="gasArguments.rechargeEntrance ? '开' : '关'"></span>
+							<span>{{gasArguments.rechargeEntrance ? '开' : '关'}}</span>
 						</view>
 					</view>
 					<view class="recharge-entry children">
 						<span class="text" @click="(gashaponNotice = !gashaponNotice), (noticeNum = 1)">先充值后消费
-							<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" />
+							<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" />
 						</span>
 						<view class="switch-box">
 							<view class="switch">
-								<u-switch v-model="gasArguments.rechargeConsume" size="20px" @change="setEggMsg"
-									active-color="#5241FF" />
+								<u-switch v-model="gasArguments.rechargeConsume" @change="setEggMsg"
+									active-color="#5241FF" size="50" />
 							</view>
-							<span v-html="gasArguments.rechargeConsume ? '开' : '关'"></span>
+							<span>{{gasArguments.rechargeConsume ? '开' : '关'}}</span>
 						</view>
 					</view>
 					<view class="recharge-entry children">
 						<span class="text" @click="
                 (gashaponNoticeEnd = !gashaponNoticeEnd), (noticeNumTwo = 0)
               ">充值引导绑定手机
-							<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" />
+							<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" />
 						</span>
 						<view class="switch-box">
 							<view class="switch">
-								<u-switch v-model="gasArguments.guideBindingPhone" size="20px" @change="setEggMsg"
-									active-color="#5241FF" />
+								<u-switch v-model="gasArguments.guideBindingPhone" @change="setEggMsg"
+									active-color="#5241FF" size="50" />
 							</view>
-							<span v-html="gasArguments.guideBindingPhone ? '开' : '关'"></span>
+							<span>{{gasArguments.guideBindingPhone ? '开' : '关'}}</span>
 						</view>
 					</view>
 					<view class="recharge-entry children">
 						<span class="text" @click="
                 (gashaponNoticeEnd = !gashaponNoticeEnd), (noticeNumTwo = 1)
               ">充值强制绑定手机
-							<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" />
+							<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" />
 						</span>
 						<view class="switch-box">
 							<view class="switch">
-								<u-switch v-model="gasArguments.constraintBindingPhone" size="20px" @change="setEggMsg"
-									active-color="#5241FF" />
+								<u-switch v-model="gasArguments.constraintBindingPhone" @change="setEggMsg"
+									active-color="#5241FF" size="50" />
 							</view>
-							<span v-html="gasArguments.constraintBindingPhone ? '开' : '关'"></span>
+							<span>{{gasArguments.constraintBindingPhone ? '开' : '关'}}</span>
 						</view>
 					</view>
 				</view>
@@ -316,8 +267,8 @@
 					</view>
 					<view class="switch-box">
 						<view class="switch">
-							<u-switch v-model="gasArguments.automaticRefund" size="20px" @change="setEggMsg"
-								active-color="#5241FF" />
+							<u-switch v-model="gasArguments.automaticRefund" @change="setEggMsg" active-color="#5241FF"
+								size="50" />
 						</view>
 						<span v-html="gasArguments.automaticRefund ? '开' : '关'"></span>
 					</view>
@@ -326,12 +277,13 @@
 				<view class="refund bg home-family">
 					<view class="list-name">
 						库存&lt;购买数量时限制交易
-						<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" @click="noticeEnd" />
+						<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" @click="noticeEnd"
+							class="image" />
 					</view>
 					<view class="switch-box">
 						<view class="switch">
-							<u-switch v-model="gasArguments.understockAstrict" size="20px" @change="setEggMsg"
-								active-color="#5241FF" />
+							<u-switch v-model="gasArguments.understockAstrict" @change="setEggMsg"
+								active-color="#5241FF" size="50" />
 						</view>
 						<span v-html="gasArguments.understockAstrict ? '开' : '关'"></span>
 					</view>
@@ -347,7 +299,7 @@
                 gasArguments.insertCoinsType ? '线下投游戏币' : '线下投硬币'
               "></view>
 						<!-- 线下投币类型;(1.线下投游戏币，2.线下投硬币) -->
-						<u-icon name="arrow" size="16" color="#4c4c4c" />
+						<u-icon name="arrow-right" size="32" color="#4c4c4c" />
 					</view>
 				</view>
 			</view>
@@ -375,11 +327,11 @@
 						:style="index == basicMeal.length - 1 ? { border: 0 } : ''">
 						<span>{{ meal.price }}元={{ meal.currencyQuantity }}币</span>
 						<view class="handle-list">
-							<u-icon name="upgrade" class="close-right" color="rgba(65,65,65,.6)" size="22"
+							<u-icon name="arrow-upward" class="close-right" color="rgba(65,65,65,.6)" size="44"
 								:class="index == 0 ? 'disableShit' : ''"
 								@click="shiftUp(meal, basicMeal[index - 1].weight)"
 								v-hasPermi="['app:meal:index:edit']" />
-							<u-icon name="upgrade" class="grade" color="rgba(65,65,65,.6)" size="22"
+							<u-icon name="arrow-upward" class="grade" color="rgba(65,65,65,.6)" size="44"
 								:class="index == basicMeal.length - 1 ? 'disableShit' : ''"
 								@click="shiftDown(meal, basicMeal[index + 1].weight)"
 								v-hasPermi="['app:meal:index:edit']" />
@@ -412,39 +364,38 @@
 			<view class="recharge-management" v-hasPermi="['app:meal:index:ylcset']">
 				<view class="recharge-entry">
 					<span class="text" @click="(gashaponNotice = !gashaponNotice), (noticeNum = 0)">充值入口
-						<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" />
+						<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" />
 					</span>
 					<view class="switch-box">
 						<view class="switch">
-							<u-switch v-model="gasArguments.rechargeEntrance" size="20px" @change="setEggMsg"
-								active-color="#5241FF" />
+							<u-switch v-model="gasArguments.rechargeEntrance" @change="setEggMsg" active-color="#5241FF"
+								size="50" />
 						</view>
 						<span v-html="gasArguments.rechargeEntrance ? '开' : '关'"></span>
 					</view>
 				</view>
 				<view class="recharge-entry children">
 					<span class="text" @click="(gashaponNotice = !gashaponNotice), (noticeNum = 1)">先充值后消费
-						<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" />
+						<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" />
 					</span>
 					<view class="switch-box">
 						<view class="switch">
-							<u-switch v-model="gasArguments.rechargeConsume" size="20px" @change="setEggMsg"
-								active-color="#5241FF" />
+							<u-switch v-model="gasArguments.rechargeConsume" @change="setEggMsg" active-color="#5241FF"
+								size="50" />
 						</view>
 						<span v-html="gasArguments.rechargeConsume ? '开' : '关'"></span>
 					</view>
 				</view>
 			</view>
 			<!-- 投币类型 -->
-			<view class="refund bg home-family" @click="
-          (gashaponMachine = !gashaponMachine),
-            (middleValue = gasArguments.insertCoinsType)
-        " v-hasPermi="['app:meal:index:ylcset']">
+			<view class="refund bg home-family"
+				@click="(gashaponMachine = !gashaponMachine),(middleValue = gasArguments.insertCoinsType)"
+				v-hasPermi="['app:meal:index:ylcset']">
 				<view class="list-name">线下启动类型</view>
 				<view class="switch-box offline">
 					<view class="switch" v-html="gasArguments.insertCoinsType ? '启动次数' : '现金收益'"></view>
 					<!-- 线下投币类型;(1.启动次数，2.现金收益) -->
-					<u-icon name="arrow" size="16" color="#4c4c4c" />
+					<u-icon name="arrow-right" size="32" color="#4c4c4c" />
 				</view>
 			</view>
 			<!-- 充值套餐 -->
@@ -471,7 +422,7 @@
 				</view>
 			</view>
 			<!-- 服务套餐 -->
-			<view class="batchSetting home-family">
+			<view class="batchSetting">
 				<view class="content-header box-sizing" v-if="params.id">
 					<p class="name">服务套餐</p>
 					<view class="right Center">
@@ -516,8 +467,8 @@
 				</view>
 			</view>
 		</view>
-		<!-- 游乐车 -->
-		<edit-popup ref="ylcMeal" :confirmOper="confirmOper">
+		<!-- 游乐车 充值套餐-->
+		<edit-popup ref="ylcMealPopup" :confirmOper="confirmOper">
 			<view class="edit-info">
 				<view class="input-row" style="margin: 0">
 					<span><span style="color: red">*</span>&nbsp;价格</span>
@@ -595,15 +546,15 @@
 					<span><span style="color: red">*</span>&nbsp;兑币数量</span>
 					<view class="input-wrap stepper">
 						<view class="btn sub Center" @click="mealInfo.currencyQuantity--"
-							:class="mealInfo.currencyQuantity == 0 ? 'disableShit' : ''">
-							<u-icon name="minus" color="#333" size="16" />
+							:class="{'disableShit':mealInfo.currencyQuantity == 0}">
+							<u-icon name="minus" color="#333" size="32" />
 						</view>
 						<view class="field">
 							<input v-model="mealInfo.currencyQuantity" clearable placeholder="输入币数" input-align="center"
 								type="digit"></input>
 						</view>
 						<view class="btn add Center" @click="mealInfo.currencyQuantity++">
-							<u-icon name="plus" color="#333" size="16" />
+							<u-icon name="plus" color="#333" size="32" />
 						</view>
 					</view>
 				</view>
@@ -641,8 +592,8 @@
 			</view>
 		</edit-popup>
 		<!-- 扭蛋机、游乐车 + 线下投币类型、线下启动类型 -->
-		<u-popup v-model="gashaponMachine" position="bottom" :style="{ height: '60%' }" :close-on-click-overlay="false">
-			<view class="gashaponMachine home-family">
+		<u-popup :show="gashaponMachine" mode="bottom">
+			<view class="gashapon-machine">
 				<view class="title-box box-sizing">
 					<view class="btn cancel" @click="
               (gashaponMachine = !gashaponMachine),
@@ -657,8 +608,10 @@
 				</view>
 				<view class="radio-item" @click="gasArguments.insertCoinsType = !gasArguments.insertCoinsType">
 					<view class="left-icon">
-						<u-icon name="circle" color="#dcdcdc" size="22" v-show="!gasArguments.insertCoinsType" />
-						<u-icon name="checked" color="#5241FF" size="22" v-show="gasArguments.insertCoinsType" />
+						<u-icon name="checkmark-circle" color="#dcdcdc" size="44"
+							v-show="!gasArguments.insertCoinsType" />
+						<u-icon name="checkmark-circle-fill" color="#5241FF" size="44"
+							v-show="gasArguments.insertCoinsType" />
 					</view>
 					<view class="right-text">
 						<view class="radio-title">
@@ -679,8 +632,8 @@
 				</view>
 				<view class="radio-item" @click="gasArguments.insertCoinsType = !gasArguments.insertCoinsType">
 					<view class="left-icon">
-						<u-icon name="circle" color="#dcdcdc" size="22" v-show="gasArguments.insertCoinsType" />
-						<u-icon name="checked" color="#5241FF" size="22" v-show="!gasArguments.insertCoinsType" />
+						<u-icon name="checkmark-circle" color="#dcdcdc" size="44" v-show="gasArguments.insertCoinsType" />
+						<u-icon name="checkmark-circle-fill" color="#5241FF" size="44" v-show="!gasArguments.insertCoinsType" />
 					</view>
 					<view class="right-text">
 						<view class="radio-title">
@@ -702,7 +655,7 @@
 			</view>
 		</u-popup>
 		<!-- 说明 -->
-		<u-popup v-model="gashaponNotice" round>
+		<u-popup :show="gashaponNotice" round="20" mode="center">
 			<view class="gashaponNotice home-family">
 				<view v-show="noticeNum == 0">
 					<view>
@@ -730,7 +683,7 @@
 			</view>
 		</u-popup>
 		<!-- 说明 -->
-		<u-popup v-model="gashaponNoticeEnd" round>
+		<u-popup :show="gashaponNoticeEnd" round="20" mode="center">
 			<view class="gashaponNoticeEnd">
 				<view v-show="noticeNumTwo == 0">
 					<view class="title">
@@ -763,7 +716,7 @@
 			</view>
 		</u-popup>
 		<!-- 其他设备 --游乐车-->
-		<u-popup v-model="otherDevice" position="bottom" :style="{ height: '70%' }">
+		<u-popup :show="otherDevice" mode="bottom">
 			<view class="otherDevice home-family">
 				<view class="popup-title">选择设备类型</view>
 				<view class="universal-list">
@@ -783,7 +736,7 @@
 		<!-- 下一步--批量设置 -->
 		<view class="wrapper" v-show="0">
 			<view class="step-wrapper box-sizing">
-				<view class="btn" @click="$router.push('/setMeal/nextSetmeal')">
+				<view class="btn" @click="goTo('nextStep')">
 					下一步
 				</view>
 			</view>
@@ -798,12 +751,10 @@
 
 <script>
 	import {
-		packageController
+		packageController,
+		placeController,
+		deviceController
 	} from '@/api/index.js';
-	import {
-		placeController
-	} from '@/api/index.js';
-
 	import EditPopup from "./components/editPopup";
 	import CoinNotice from "./components/coinNotice";
 	import CoinState from "./components/coinState";
@@ -906,7 +857,7 @@
 					})
 
 					//场地设备类型
-					packageController.getPlaceDeviceTypeList({
+					deviceController.getPlaceDeviceTypeList({
 						placeId: params.id,
 					}).then(res => {
 						if (res.code == 200) {
@@ -949,21 +900,22 @@
 			getImage(id) {
 				let image;
 				if (id) {
+					const url = id == this.activeDeviceTypeId ? "A" : "";
 					try {
-						image = require(`${this.$baseUrl}appV4/type/type${
-            id == this.activeDeviceTypeId ? "A" : ""
-          }${id}.png`);
+						image = `${this.$baseUrl}appV4/type/type${url}${id}.png`;
 					} catch (error) {
-						image = require(`${this.$baseUrl}appV4/type/default${
-            id == this.activeDeviceTypeId ? "A" : ""
-          }.png`);
+						image = `${this.$baseUrl}appV4/type/default${url}.png`;
 					}
 				} else {
-					image = require(`${this.$baseUrl}appV4/type/type${
-			id == this.activeDeviceTypeId ? "A" : ""}.png`);
+					image = `${this.$baseUrl}appV4/type/type${url}.png`;
 				}
 				return image;
 			},
+			goTo(type) {
+				// this.$router.push('/setMeal/nextSetmeal')
+				this.$goTo("/pages/mainPackages/home/deviceModule/deviceBind")
+			},
+
 			//兑币套餐列表
 			getConverList: throttleFun(async function() {
 				let res = await packageController.conversionExchangeList({
@@ -1039,7 +991,7 @@
 			}, 500),
 			//库存购买数量扭蛋机说明
 			noticeEnd() {
-				this.$modal("开启后，库存<购买数量时，用户将无法启动设备。有光眼异常等影响库存统计的设备请谨慎开启",{
+				this.$modal("开启后，库存<购买数量时，用户将无法启动设备。有光眼异常等影响库存统计的设备请谨慎开启", {
 						title: "库存<购买数量时限制交易",
 						confirmText: "确定",
 						showCancel: false,
@@ -1058,10 +1010,8 @@
 				this.basicMealAll.splice(index, 1);
 			},
 			clearMeal() {
-				this.$dialog
-					.confirm({
+				this.$modal("确定清空当前套餐设置吗？这不会影响您场地的套餐设置~", {
 						title: "温馨提示",
-						message: "确定清空当前套餐设置吗？这不会影响您场地的套餐设置~",
 					})
 					.then(() => {
 						this.basicMealAll = [];
@@ -1077,10 +1027,8 @@
 			},
 			//批量设置套餐
 			async allSetMeal() {
-				this.$dialog
-					.confirm({
+				this.$modal("确定将当前套餐设置为所选场地的所有设备的套餐吗？", {
 						title: "温馨提示",
-						message: "确定将当前套餐设置为所选场地的所有设备的套餐吗？",
 					})
 					.then(() => {
 						//批量扭蛋机信息
@@ -1120,7 +1068,7 @@
 									.then((res) => {
 										if (res.code == 200) {
 											this.$refs.editOrAdd.hiddenPopup();
-											this.$toast.success("批量设置成功");
+											this.$toast("批量设置成功");
 											this.$router.back();
 										}
 									})
@@ -1147,7 +1095,7 @@
 					} else if (this.moneyType == 1) {
 						this.getConverList();
 					}
-					this.$toast.success("添加成功");
+					this.$toast("添加成功");
 				}
 			},
 			//编辑自定套餐
@@ -1168,7 +1116,7 @@
 					}
 					if (shit) {
 						setTimeout(() => {
-							this.$toast.success("编辑成功");
+							this.$toast("编辑成功");
 						}, 300);
 					}
 				}
@@ -1188,13 +1136,9 @@
 
 			//恢复默认设置
 			defaultMealSet(type) {
-				this.$dialog
-					.confirm({
+				this.$modal("确定要恢复所有默认设置？", {
 						title: "温馨提示",
-						message: "确定要恢复所有默认设置？",
-						confirmButtonColor: "#5241FF",
-						confirmButtonText: "确定",
-						width: "270",
+						confirmText: "确定",
 					})
 					.then(() => {
 						if (this.activeDeviceTypeId == 3 || this.activeDeviceTypeId == 4) {
@@ -1232,16 +1176,12 @@
 			},
 			//删除自定套餐
 			async deleteMealItem(id) {
-				this.$dialog
-					.confirm({
+				this.$modal("确定要删除充值套餐?", {
 						title: "温馨提示",
-						message: "确定要删除充值套餐?",
-						confirmButtonColor: "#5241FF",
-						confirmButtonText: "删除",
-						width: "270",
+						confirmText: "删除",
 					})
 					.then(() => {
-						deleteSetMeal({
+						packageController.deleteSetMeal({
 							id
 						}).then((res) => {
 							if (res.code == 200) {
@@ -1254,7 +1194,7 @@
 										this.getConverList();
 									}
 								}
-								this.$toast.success("删除成功");
+								this.$toast("删除成功");
 							}
 						});
 					});
@@ -1391,7 +1331,7 @@
 				if (res.code == 200) {
 					this.$refs.ylc.hiddenPopup();
 					this.getComboMealList();
-					this.$toast.success("添加成功");
+					this.$toast("添加成功");
 				}
 			},
 			//编辑ylc 时间套餐
@@ -1407,7 +1347,7 @@
 				if (res.code == 200) {
 					this.$refs.ylc.hiddenPopup();
 					this.getComboMealList();
-					this.$toast.success("编辑成功");
+					this.$toast("编辑成功");
 				}
 			},
 			//游乐车 充值优惠套餐
@@ -1422,21 +1362,17 @@
 			},
 			//删除
 			deleteYlc(id) {
-				this.$dialog
-					.confirm({
+				this.$modal("确定要删除充值套餐?", {
 						title: "温馨提示",
-						message: "确定要删除充值套餐?",
-						confirmButtonColor: "#5241FF",
-						confirmButtonText: "删除",
-						width: "270",
+						confirmText: "删除",
 					})
 					.then(() => {
-						deleteCart({
+						packageController.deleteCart({
 							id
 						}).then((res) => {
 							if (res.code == 200) {
 								this.getMealByYlc();
-								this.$toast.success("删除成功");
+								this.$toast("删除成功");
 							}
 						});
 					});
@@ -1451,9 +1387,9 @@
 					deviceType: this.activeDeviceTypeId,
 				});
 				if (res.code == 200) {
-					this.$refs.ylcMeal.hiddenPopup();
+					this.$refs.ylcMealPopup.hiddenPopup();
 					this.getMealByYlc();
-					this.$toast.success("添加成功");
+					this.$toast("添加成功");
 				}
 			},
 			//编辑
@@ -1465,19 +1401,19 @@
 					give: this.mealInfo.give * 1,
 				});
 				if (res.code == 200) {
-					this.$refs.ylcMeal.hiddenPopup();
+					this.$refs.ylcMealPopup.hiddenPopup();
 					this.getMealByYlc();
-					this.$toast.success("编辑成功");
+					this.$toast("编辑成功");
 				}
 			},
 			openMealYlc(type) {
 				if (type == "addMeal") {
-					this.$refs.ylcMeal.showYlc("add");
+					this.$refs.ylcMealPopup.showYlc("add");
 					this.operByEdit = "addMeal";
-					this.mealInfo.price = null;
-					this.mealInfo.give = null;
+					this.mealInfo.price = "";
+					this.mealInfo.give = "";
 				} else {
-					this.$refs.ylcMeal.showYlc("edit");
+					this.$refs.ylcMealPopup.showYlc("edit");
 					this.operByEdit = "editMeal";
 					this.mealInfo.id = type.id;
 					this.mealInfo.price = type.price;
@@ -1733,6 +1669,7 @@
 				line-height: 35px;
 				display: flex;
 				align-items: center;
+				text-align: center;
 
 				.num {
 					width: 35%;
@@ -2018,11 +1955,11 @@
 					font-size: 15px;
 					display: flex;
 					align-items: center;
+				}
 
-					.image {
-						width: 17px;
-						margin-left: 5px;
-					}
+				.image {
+					width: 17px;
+					margin-left: 5px;
 				}
 			}
 		}
@@ -2144,8 +2081,11 @@
 		}
 	}
 
-	//
-	.gashaponMachine {
+	.gashapon-machine {
+		width: 100%;
+		height: 60vh;
+		max-height: 1000rpx;
+
 		.title-box {
 			border-bottom: 1px solid #e5e5e5;
 			font-size: 14px;
@@ -2228,6 +2168,7 @@
 	.gashaponNotice {
 		color: #262626;
 		font-size: 14px;
+		width: 345px;
 		line-height: 21px;
 
 		.img-one {
@@ -2268,7 +2209,6 @@
 
 	.disableShit {
 		opacity: 0.5;
-		display: block;
 		pointer-events: none !important;
 	}
 </style>

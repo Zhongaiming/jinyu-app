@@ -453,16 +453,15 @@
 	.all-wrapper {
 		position: fixed;
 		bottom: 0;
-		height: 44rpx;
-		padding: 0 10rpx;
+		height: 88rpx;
+		padding: 0 20rpx;
 		width: 100%;
 		box-sizing: border-box;
-		line-height: 44rpx;
+		line-height: 88rpx;
 		background: #F5F6F7;
-		font-weight: 700;
 		border-top: 1rpx solid #e5e5e5;
 		display: flex;
-		font-size: 14rpx;
+		font-size: 28rpx;
 		text-align: center;
 
 		.cell {

@@ -13,7 +13,7 @@
 			<view class="cs-name padding-top">
 				<span class="name"><span style="color: rgb(255, 71, 71); margin-right: 0.08rem">*</span>客服手机号</span>
 				<view class="input-wrapper">
-					<input type="text" placeholder="请输入客服手机号" maxlength="8" v-model="serviceMsg.phone" class="input" />
+					<input type="text" placeholder="请输入客服手机号" v-model="serviceMsg.phone" class="input" />
 				</view>
 			</view>
 			<view class="cs-name padding-top">

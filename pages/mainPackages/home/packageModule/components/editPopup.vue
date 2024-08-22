@@ -1,5 +1,5 @@
 <template>
-	<u-popup :show="editPopup" round="20" mode="center">
+	<u-popup :show="editPopup" :round="20" mode="center">
 		<div class="edit-content home-family">
 			<div class="popup-title">套餐{{ operType }}</div>
 			<slot></slot>

@@ -80,4 +80,13 @@ export default class deviceController {
 		})
 	}
 	
+	// 场地设备类型 === 套餐
+	static getPlaceDeviceTypeList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceType/getPlaceDeviceTypeList',
+			method: 'GET',
+			data
+		})
+	}
+	
 }

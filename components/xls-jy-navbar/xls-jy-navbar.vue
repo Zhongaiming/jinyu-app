@@ -53,9 +53,7 @@
 				uni.navigateBack();
 			},
 			rightClick() {
-				uni.switchTab({
-					url: '/pages/mainPackages/home/index'
-				});
+				this.$goTab();
 			},
 		}
 	}

@@ -17,11 +17,19 @@ export default class packageController {
 			data
 		})
 	}
+	//游乐车 shj 专用恢复套餐默认设置
+	static defaultSettingYlc(data) {
+		return http.request({
+			url: '/order/api/v1/admin/setMeal/defaultSettings',
+			method: 'POST',
+			data
+		})
+	}
 	// 删除套餐
 	static deleteSetMeal(data) {
 		return http.request({
 			url: '/order/api/v1/admin/setMeal/deleteSetMeal',
-			method: 'DELETE',
+			method: 'POST',
 			data
 		})
 	}
@@ -29,7 +37,7 @@ export default class packageController {
 	static editSetMeal(data) {
 		return http.request({
 			url: '/order/api/v1/admin/setMeal/editSetMeal',
-			method: 'PUT',
+			method: 'POST',
 			data
 		})
 	}
@@ -37,7 +45,7 @@ export default class packageController {
 	static editSetMeals(data) {
 		return http.request({
 			url: '/order/api/v1/admin/setMeal/editSetMeals',
-			method: 'PUT',
+			method: 'POST',
 			data
 		})
 	}
@@ -78,7 +86,7 @@ export default class packageController {
 	static editRecommendAmount(data) {
 		return http.request({
 			url: '/order/api/v1/recommendRechargeMoney/editRecommendAmount',
-			method: 'PUT',
+			method: 'POST',
 			data
 		})
 	}
@@ -87,7 +95,7 @@ export default class packageController {
 	static editEggSet(data) {
 		return http.request({
 			url: '/order/api/v1/eggSet/editEggSet',
-			method: 'PUT',
+			method: 'POST',
 			data
 		})
 	}
@@ -95,6 +103,54 @@ export default class packageController {
 	static getEggSet(data) {
 		return http.request({
 			url: '/order/api/v1/eggSet/getEggSet',
+			method: 'GET',
+			data
+		})
+	}
+	// 兑币套餐列表
+	static conversionExchangeList(data) {
+		return http.request({
+			url: '/order/api/v1/admin/setMeal/conversionExchangeList',
+			method: 'GET',
+			data
+		})
+	}
+	
+	// 游乐车
+	static getCart(data) {
+		return http.request({
+			url: '/order/api/v1/admin/setMeal/amusementCartPackage',
+			method: 'GET',
+			data
+		})
+	}
+	
+	static addCart(data) {
+		return http.request({
+			url: '/order/api/v1/admin/setMeal/rechargeBenefits',
+			method: 'POST',
+			data
+		})
+	}
+	static editCart(data) {
+		return http.request({
+			url: '/order/api/v1/admin/setMeal/updateRechargeBenefits',
+			method: 'POST',
+			data
+		})
+	}
+	static deleteCart(data) {
+		return http.request({
+			url: '/order/api/v1/admin/setMeal/delRechargeBenefits',
+			method: 'POST',
+			data
+		})
+	}
+	
+	// shj
+	static getShjByPlace(data) {
+		return http.request({
+			url: '/order/api/v1/admin/setMeal/getPlaceMeal',
 			method: 'GET',
 			data
 		})

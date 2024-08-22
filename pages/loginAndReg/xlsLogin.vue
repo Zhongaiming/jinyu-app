@@ -75,7 +75,7 @@
 					this.$toast(this.$t('login.loginSuccess'), 2000)
 					setTimeout(() => {
 						// this.setInfo();
-						this.$goTo('/pages/mainPackages/home/index', 'switchTab')
+						this.$goTab();
 					}, 2000)
 				})
 			},

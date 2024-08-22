@@ -96,7 +96,21 @@
 		},
 		methods: {
 			goTo() {
-				this.$goTo("/pages/mainPackages/home/index", "switchTab");
+				this.$goTab();
+			},
+			getImage(id) {
+				let image;
+				if (id) {
+					const url = id == this.activeDeviceTypeId ? "A" : "";
+					try {
+						image = `${this.$baseUrl}appV4/type/type${url}${id}.png`;
+					} catch (error) {
+						image = `${this.$baseUrl}appV4/type/default${url}.png`;
+					}
+				} else {
+					image = `${this.$baseUrl}appV4/type/type${url}.png`;
+				}
+				return image;
 			},
 			getTypeList() {
 				deviceController.getDeviceTypeList({

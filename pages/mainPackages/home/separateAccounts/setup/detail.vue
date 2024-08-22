@@ -177,7 +177,7 @@
 		},
 		methods: {
 			goBack() {
-				this.$goTo("/pages/mainPackages/home/index", "switchTab");
+				this.$goTab();
 			},
 			protocolMask(type) {
 				this.$refs.protocol.openPupop(type);

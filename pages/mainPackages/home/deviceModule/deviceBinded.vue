@@ -55,7 +55,7 @@
 		},
 		methods: {
 			goTo() {
-				this.$goTo("/pages/mainPackages/home/index", "switchTab");
+				this.$goTab();
 			},
 			goBack() {
 				this.$goBack();

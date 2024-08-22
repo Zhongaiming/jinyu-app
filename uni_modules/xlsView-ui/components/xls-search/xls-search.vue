@@ -5,7 +5,7 @@
 				<form action="javascript:void 0">
 					<input type="search" :placeholder="placeholder" v-model="inputEnter" class="input"
 						:class="{'input-focus': inputFocus}" @focus="inputFocus = true" @input="userInputing"
-						@blur="inputBlur" @keyup.13="tapToSearch" :style="{ background: inputColor }" />
+						@blur="inputBlur" @keyup.13="tapToSearch" @confirm="tapToSearch" :style="{ background: inputColor }" />
 				</form>
 				<view class="clear-btn" v-show="showClear" @click="inputEnter = ''">
 					<u-icon name="close-circle-fill" color="#c6c7cb" size="38"></u-icon>
@@ -90,7 +90,7 @@
 			},
 			tapToSearch() {
 				this.$emit("confirm", this.inputEnter);
-				document.activeElement.blur();
+				uni.hideKeyboard();
 			},
 		},
 	};

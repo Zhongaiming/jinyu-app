@@ -202,7 +202,6 @@
 				if(type === 'register') {
 					this.$goTo('/pages/loginAndReg/register', 'redirectTo')
 				} else {
-				
 					this.$goTo('/pages/loginAndReg/retrievePassword')
 				}
 				
@@ -219,7 +218,7 @@
 						this.$store.dispatch('user/login', params).then(res => {
 							this.$toast(this.$t('login.loginSuccess'), 2000)
 							setTimeout(() => {
-								this.$goTo('/pages/mainPackages/home/index', 'switchTab')
+								this.$goTab();
 							}, 2000)
 						})
 					})

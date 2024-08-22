@@ -48,9 +48,7 @@
 		},
 		methods: {
 			goTo() {
-				uni.switchTab({
-					url: '/pages/mainPackages/home/index'
-				});
+				this.$goTab();
 			},
 		}
 	};

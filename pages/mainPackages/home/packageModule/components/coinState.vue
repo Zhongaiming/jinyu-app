@@ -35,9 +35,9 @@
 </template>
 
 <script>
-	// import {
-	// 	editSetMeal
-	// } from "@/utils/api/setMeal/udated"; //setMeal
+	import {
+		packageController
+	} from '@/api/index.js';
 
 	export default {
 		data() {
@@ -80,15 +80,14 @@
 				this.setMealState = item.id;
 			},
 			async confirmOper() {
-				let res = await editSetMeal({
+				let res = await packageController.editSetMeal({
 					id: this.mealInfo.id,
 					price: Math.round(this.mealInfo.price * 100), //价格 单位：角
 					currencyQuantity: this.mealInfo.currencyQuantity, //兑币数量
 					setMealState: this.setMealState, //套餐状态;（1：启用，2：停用）
 					weight: this.mealInfo.weight, //权重
 				});
-				// console.log(res)
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200) {
 					this.coinState = !this.coinState;
 					if (this.mealInfo.moneyType == 2) {
 						this.$emit("getComboMealList");
@@ -96,7 +95,7 @@
 						this.$emit("getConverList");
 					}
 					setTimeout(() => {
-						this.$toast.success("编辑成功");
+						this.$toast("编辑成功");
 					}, 300);
 				}
 			},

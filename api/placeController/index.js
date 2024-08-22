@@ -236,14 +236,14 @@ export default class placeController {
 	static deleteStaff(data) {
 		return http.request({
 			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaff/deleteStaff',
-			method: 'DELETE',
+			method: 'POST',
 			data
 		})
 	}
 	static editStaff(data) {
 		return http.request({
 			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaff/editStaff',
-			method: 'PUT',
+			method: 'POST',
 			data
 		})
 	}

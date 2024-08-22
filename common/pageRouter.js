@@ -1,8 +1,11 @@
 import Vue from "vue";
-import {isEmptyObject} from './index'
+import {
+	isEmptyObject
+} from './index'
 // switchTab tabbar
-Vue.prototype.$goTo = function(path, openType = 'navigateTo', params = {},  animationType = 'pop-in', animationDuration = 300) {
-	if(!isEmptyObject(params)) {
+Vue.prototype.$goTo = function(path, openType = 'navigateTo', params = {}, animationType = 'pop-in', animationDuration =
+	300) {
+	if (!isEmptyObject(params)) {
 		uni[openType]({
 			url: path + "?params=" + encodeURIComponent(JSON.stringify(params)),
 			animationType: animationType,
@@ -15,11 +18,18 @@ Vue.prototype.$goTo = function(path, openType = 'navigateTo', params = {},  anim
 			animationDuration: animationDuration
 		})
 	}
-	
+
 }
 
 Vue.prototype.$goBack = function() {
 	uni.navigateBack({
 		delta: 1
 	})
+}
+
+Vue.prototype.$goTab = function(route = 'home') {
+	// personal
+	uni.switchTab({
+		url: `/pages/mainPackages/${route}/index`
+	});
 }
