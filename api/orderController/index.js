@@ -5,8 +5,18 @@ export default class orderController {
 	// 获取订单列表
 	static getOrderList(data) {
 		return http.request({
-			url: '/order/api/v1/admin/order/orderForm/list',
-			method: 'POST',
+			// url: '/order/api/v1/admin/order/orderForm/list',
+			// method: 'POST',
+			url: '/order/api/v1/admin/order/orderForm/getOrderFormInfoList',
+			method: 'GET',
+			data
+		})
+	}
+	// 获取订单详情
+	static getOrderView(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/view',
+			method: 'GET',
 			data
 		})
 	}
@@ -82,6 +92,49 @@ export default class orderController {
 	static getInsertCoinsPlaceNum(data) {
 		return http.request({
 			url: '/order/api/v1/admin/commodity/outPresentWater/presentConsume',
+			method: 'GET',
+			data
+		})
+	}
+	
+	
+	// 经营统计
+	// 查询场地收益
+	static getPlaceIncome(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getPlaceIncome',
+			method: 'GET',
+			data
+		})
+	}
+	// 查询场地收益详情
+	static getPlaceIncomeDetail(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getPlaceIncomeDetail',
+			method: 'GET',
+			data
+		})
+	}
+	// 收益分类统计
+	static benefitNew(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/benefitNew',
+			method: 'GET',
+			data
+		})
+	}
+	// 收益趋势
+	static isExistGDX(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/isExistGDX',
+			method: 'GET',
+			data
+		})
+	}
+	// 货道收益详情
+	static getPlaceDeviceByTypeInfo(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getPlaceDeviceByTypeInfo',
 			method: 'GET',
 			data
 		})

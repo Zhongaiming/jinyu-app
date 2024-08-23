@@ -1,36 +1,37 @@
 <template>
 	<view class="xls-order-detail">
 		<jy-navbar title="订单详情" bgColor="#f5f5f5"></jy-navbar>
-		<view class="xls-box-style" @click="goTo()">
+
+		<view class="xls-box-style" @click="goTo()" v-if="order.amountRefund && order.refundState == 1">
 			<view class="device-style">
-				<span>扭蛋机30000028</span>
-				<span class="state arrow">已支付</span>
+				<span>已退 ¥{{order.amountRefund}}</span>
+				<span class="state arrow">退款成功</span>
 			</view>
 			<view class="text-style">
-				2024-07-20 11:49:54
+				{{order.refundTime}}
 			</view>
 		</view>
 
 		<view class="xls-box-style">
 			<view class="xls-order-detail-text">
-				L2141-1N德州大学路银座三楼东电梯口8聂
+				{{order.placeName}}
 			</view>
-			<view class="xls-order-detail-addressDetail">
+			<!-- <view class="xls-order-detail-addressDetail">
 				6064-山东德州大学路银座三楼东电梯口
-			</view>
+			</view> -->
 			<view class="label-style">
 				<view class="label-device-type">
-					扭蛋机
+					{{ deviceTypeDict[order.deviceType] }}
 				</view>
 				<view class="label border-left-none">
-					54069639
+					{{ order.deviceNumber }}
 				</view>
 				<view class="label">
-					设备启动
+					{{typeDict[order.type]}}
 				</view>
-				<view class="label">
+				<!-- <view class="label">
 					主板ID编号:01
-				</view>
+				</view> -->
 			</view>
 
 			<view class="xls-order-style-price xls-pay-detail">
@@ -39,7 +40,7 @@
 					mode="widthFix"></image>
 				<view class="price-center">
 					<view class="">
-						16.8元1局
+						{{ order.shopPrice }}元1局
 					</view>
 					<view class="">
 						x1
@@ -47,10 +48,10 @@
 				</view>
 				<view class="price-right">
 					<view class="backColor">
-						¥16.80
+						¥{{ order.amount }}
 					</view>
 					<view class="redColor">
-						实付：¥16.80
+						实付：¥{{ order.amountTotal }}
 					</view>
 				</view>
 			</view>
@@ -60,19 +61,19 @@
 			<view class="price-list">
 				<view class="list">
 					<span>需付款：</span>
-					<span class="text">¥16.80</span>
+					<span class="text">¥{{ order.amount }}</span>
 				</view>
 				<view class="list">
 					<span>实付款：</span>
-					<span class="text">¥16.80</span>
+					<span class="text">¥{{ order.amountTotal }}</span>
 				</view>
 				<view class="list">
 					<span>商户实收款：</span>
-					<span class="main-text">¥16.80</span>
+					<span class="main-text">¥{{ order.bankCardAmount }}</span>
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="xls-box-style">
 			<view class="record-detail-list">
 				<view class="title">
@@ -80,7 +81,7 @@
 				</view>
 				<view class="value">
 					<view class="">
-						PA101324072011424904074047881661
+						{{ order.orderNo }}
 					</view>
 				</view>
 				<view class="copy">
@@ -88,87 +89,98 @@
 				</view>
 			</view>
 			
+			<view class="record-detail-list" v-if="order.amountCoupon">
+				<view class="title">
+					营销活动
+				</view>
+				<view class="value">
+					<view class="">
+						-{{ order.amountCoupon }}元({{ order.couponName|| "优惠券" }})
+					</view>
+				</view>
+			</view>
+
 			<view class="record-detail-list">
 				<view class="title">
 					创建时间
 				</view>
 				<view class="value">
 					<view class="">
-						2024-07-20 11:42:49
+						{{order.createTime}}
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="order_line margin10"></view>
-			
+
 			<view class="record-detail-list">
 				<view class="title">
 					支付方式
 				</view>
 				<view class="value">
 					<view class="">
-						微信正扫
+						{{ payTypeDict[order.payType] }}
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="record-detail-list">
 				<view class="title">
 					支付金额
 				</view>
 				<view class="value">
 					<view class="">
-						¥16.80
+						¥{{ order.amount }}
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="record-detail-list">
 				<view class="title">
 					支付时间
 				</view>
 				<view class="value">
 					<view class="">
-						2024-07-20 11:42:49
+						{{order.updateTime}}
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="record-detail-list">
 				<view class="title">
 					交易单号
 				</view>
 				<view class="value">
 					<view class="">
-						PA101324072011424904074047881661
+						{{ order.transactionId }}
 					</view>
 				</view>
 				<view class="copy">
 					复制
 				</view>
 			</view>
-			
+
 			<view class="record-detail-list">
 				<view class="title">
 					平台单号
 				</view>
 				<view class="value">
 					<view class="">
-						PA101324072011424904074047881661
+						{{ order.orderNo }}
 					</view>
 				</view>
 				<view class="copy">
 					复制
 				</view>
 			</view>
-			
+
 			<view class="record-detail-list">
 				<view class="title">
 					商户单号
 				</view>
 				<view class="value">
 					<view class="">
-						PA101324072011424904074047881661
+						{{ order.transactionNo }}
 					</view>
 				</view>
 				<view class="copy">
@@ -176,32 +188,32 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="xls-box-style">
 			<view class="record-detail-list">
 				<view class="title-text">
 					会员信息
 				</view>
 			</view>
-			
+
 			<view class="record-detail-list">
 				<view class="title">
 					会员昵称
 				</view>
 				<view class="value">
 					<view class="">
-						冯宇
+						{{order.memberName}}
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="record-detail-list">
 				<view class="title">
 					会员id
 				</view>
 				<view class="value">
 					<view class="">
-						11111
+						{{order.memberNumber}}
 					</view>
 				</view>
 				<view class="copy">
@@ -209,38 +221,39 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="xls-box-style">
-			<view class="record-detail-list">
+			<!-- <view class="record-detail-list">
 				<view class="title">
 					主板ID编号
 				</view>
 				<view class="value-text">
 					001
 				</view>
-			</view>
-			
+			</view> -->
+
 			<view class="record-detail-list">
 				<view class="title">
 					蛋仓号
 				</view>
 				<view class="value-text">
-					1-1
+					{{ order.shippingSpace }}/{{ order.railNumber }}
 				</view>
 			</view>
-			
+
 			<view class="record-detail-list">
 				<view class="title">
 					出礼名称
 				</view>
 				<view class="value-text">
-					商品
+					<span v-if="order.barCode">{{ order.barCode }}-</span>
+					{{ order.commodityName }}
 				</view>
 			</view>
 		</view>
-		
-		<u-divider text="已经到底啦~" :dashed="true" text-size="28"></u-divider>
-		
+
+		<xls-bottom></xls-bottom>
+
 		<view class="fixed-box">
 			<view class="fixed-box-wrapper">
 				<view class="button">
@@ -255,18 +268,83 @@
 </template>
 
 <script>
+	import {
+		orderController
+	} from '@/api/index.js';
+	import {
+		mapGetters
+	} from 'vuex'
 	export default {
 		data() {
 			return {
-
+				order: {},
+				typeDict: {
+					1: "充值余币",
+					2: "设备启动",
+					3: "余币购买",
+					4: "余额购买",
+					5: "充值余额",
+					null: "其他类型"
+				},
+				stateDict: {
+					'-1': "已退款",
+					0: "待支付",
+					1: "已完成",
+					2: "退款中",
+					3: "退款成功",
+					4: "退款失败",
+					5: "已取消",
+					6: "已关闭",
+					7: "待结算",
+					null: "其他"
+				},
+				refundDict: {
+					0: '(出货失败退款)',
+					1: '(出货失败部分退款)',
+					2: '(人工退款)',
+					3: '(通讯失败退款)',
+					4: '(人工部分退款)',
+					null: "其他"
+				},
+				payTypeDict: {
+					0: '微信支付',
+					1: '支付宝支付',
+					2: '余额支付',
+					null: "其他"
+				},
 			}
 		},
+		computed: {
+			...mapGetters([
+				'deviceTypeList',
+				'deviceTypeDict'
+			])
+		},
 		onLoad(option) {
-			console.log("传参", JSON.parse(option.params).id)
+			this.$store.dispatch('config/getList');
+			if (option.params) {
+				const params = JSON.parse(option.params);
+				this.getView(params.orderId)
+			}
 		},
 		methods: {
-			goTo(item) {
-				this.$goTo('/pages/mainPackages/home/order/refundDetail', 'navigateTo', {id: 'item.id'})
+			getView(id) {
+				orderController.getOrderView({
+					id
+				}).then(res => {
+					if (res.code = 200) {
+						if(res.data.rails) {
+							res.data.rails = JSON.parse(res.data.rails)
+						}
+						this.order = res.data
+						console.log(this.order)
+					}
+				})
+			},
+			goTo(order) {
+				this.$goTo('/pages/mainPackages/home/order/refundDetail', 'navigateTo', {
+					id: 'order.id'
+				})
 			}
 		}
 	}
@@ -371,25 +449,25 @@
 			}
 		}
 	}
-	
+
 	.record-detail-list {
 		display: flex;
 		font-size: 26rpx;
 		margin-bottom: 20rpx;
-		
+
 		.title {
 			width: 156rpx;
 			color: rgba(0, 0, 0, .45);
 			white-space: nowrap;
 		}
-		
+
 		.title-text {
 			color: rgba(0, 0, 0, .85);
 			white-space: nowrap;
 			position: relative;
 			padding-right: 30rpx;
 		}
-		
+
 		.title-text::after {
 			content: "";
 			position: absolute;
@@ -401,7 +479,7 @@
 			width: 12rpx;
 			height: 12rpx;
 		}
-		
+
 		.value {
 			color: rgba(0, 0, 0, .85);
 			flex: 1;
@@ -410,7 +488,7 @@
 			word-break: break-all;
 			margin-left: 40rpx;
 		}
-		
+
 		.value-text {
 			color: rgba(0, 0, 0, .85);
 			flex: 1;
@@ -418,14 +496,14 @@
 			word-break: break-all;
 			margin-left: 40rpx;
 		}
-		
+
 		.copy {
 			width: 80rpx;
 			padding-left: 20rpx;
 			position: relative;
 			color: #5241ff;
 		}
-		
+
 		.copy::before {
 			content: "";
 			position: absolute;
@@ -436,11 +514,11 @@
 			background-color: rgba(0, 0, 0, .2);
 		}
 	}
-	
+
 	.fixed-box {
 		height: 104rpx;
 		width: 100%;
-		
+
 		&-wrapper {
 			padding: 20rpx 24rpx;
 			position: fixed;

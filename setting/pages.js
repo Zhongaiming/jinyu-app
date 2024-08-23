@@ -28,12 +28,20 @@ const pages = [{
 		}
 	},
 	{
+		"path": "pages/mainPackages/home/order/orderRefund",
+		"name": "orderRefund",
+		"meta": {
+			"title": "订单退款"
+		}
+	},
+	{
 		"path": "pages/mainPackages/home/order/refundDetail",
 		"name": "orderRefundDetail",
 		"meta": {
 			"title": "退款详情"
 		}
 	},
+	// ====
 	{
 		"path": "pages/mainPackages/home/todayEarning/index",
 		"name": "todayEarning",
@@ -110,14 +118,21 @@ const pages = [{
 		"path": "pages/mainPackages/home/operateModule/trend",
 		"name": "operateModuleTrend",
 		"meta": {
-			"title": "统计趋势"
+			"title": "近30天场地收益趋势"
 		}
 	},
 	{
 		"path": "pages/mainPackages/home/operateModule/detail",
 		"name": "operateModuleDetail",
 		"meta": {
-			"title": "统计详情"
+			"title": "场地收益详情"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/operateModule/classify",
+		"name": "operateModuleDetail",
+		"meta": {
+			"title": "查看收益分类统计"
 		}
 	},
 	// 套餐设置
@@ -144,6 +159,13 @@ const pages = [{
 		}
 	},
 	{
+		"path": "pages/mainPackages/home/remote/operate",
+		"name": "remoteDevice",
+		"meta": {
+			"title": "操作远程启动"
+		}
+	},
+	{
 		"path": "pages/mainPackages/home/remote/record",
 		"name": "remoteRecord",
 		"meta": {
@@ -156,6 +178,58 @@ const pages = [{
 		"name": "marketingModule",
 		"meta": {
 			"title": "营销工具"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/marketingModule/rule/index",
+		"name": "marketingModuleRule",
+		"meta": {
+			"title": "营销工具规则"
+		}
+	},
+	// 新用户
+	{
+		"path": "pages/mainPackages/home/marketingModule/newUser/index",
+		"name": "marketingModuleNewUser",
+		"meta": {
+			"title": "营销工具新用户"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/marketingModule/newUser/operate",
+		"name": "marketingModuleNewUserOperate",
+		"meta": {
+			"title": "营销工具新用户操作"
+		}
+	},
+	// 随机立减
+	{
+		"path": "pages/mainPackages/home/marketingModule/random/index",
+		"name": "marketingModuleRandom",
+		"meta": {
+			"title": "营销工具随机立减"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/marketingModule/random/operate",
+		"name": "marketingModuleRandomOperate",
+		"meta": {
+			"title": "营销工具随机立减操作"
+		}
+	},
+	// 立减券
+	{
+		"path": "pages/mainPackages/home/marketingModule/coupon/index",
+		"name": "marketingModuleCoupon",
+		"meta": {
+			"title": "营销工具立减券"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/marketingModule/coupon/operate",
+		"name": "marketingModuleCouponOperate",
+		"meta": {
+			"title": "营销工具立减券操作"
 		}
 	},
 	// 出货统计、出礼统计
@@ -355,6 +429,7 @@ const pages = [{
 			"title": "钱包"
 		}
 	},
+	// 子账号
 	{
 		"path": "pages/mainPackages/personal/subAccountManagement/index",
 		"name": "subAccountManagement",

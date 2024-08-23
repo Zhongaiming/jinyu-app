@@ -1,313 +1,270 @@
 <template>
-	<div id="placeEarning">
-		<!-- <div class="arrows-bottom text-over" :class="{'hidden-header': changeToptitle}">
-			<div class="value-wrap Center">
-				<span class="date-con">{{ date }}</span>
-				<span class="point"></span>
-				<span class="place-con text-over">{{ placeName }}</span>
-			</div>
-			<div class="arrow-down Center">
-				<u-icon name="arrow-down" size="18" color="#c6c6c6" style="z-index: 9999" />
-			</div>
-			<div class="line"></div>
-		</div> -->
-		<jy-navbar title="场地收益统计" bgColor="#f5f6f7"></jy-navbar>
-		<!-- <div class="header-content" :class="{'hidden-header': changeToptitle}"> -->
-		<div class="header-content">
-			<div class="header-notice" v-show="showDate">
-				<div class="header-bg"></div>
-				<div class="main-con box-sizing">
-					注：为腾出数据空间加速查询性能，系统今后仅支持查询最近半年的历史数据（当前时间可查询
-					<span class="mark">2021-10</span>月起的数据),
-					请您定时记录数据到本地,以免超期无法查询。您还可以用电脑登录https
-				</div>
-			</div>
-			<div class="condition-panel">
-				<div class="condition-main">
-					<div class="time-list box-sizing">
-						<div class="label-btn box-sizing man-left" :style="index == 0 ? { margin: 0 } : ''"
-							:class="{active: activeTime == item.id}" @click="quickTime(item.id)"
-							v-for="(item, index) in timeList" :key="item.id">
-							{{ item.time }}
-						</div>
-					</div>
-					<div class="time-list box-sizing" @click="showDate = !showDate">
-						<div class="left-title">时间</div>
-						<div class="right-info">
-							<div class="time-section">{{ date }}</div>
-							<u-icon name="arrow-right" size="36" color="#c6c6c6" />
-						</div>
-					</div>
-					<!-- <u-calendar v-model="showDate" type="range" allow-same-day @confirm="onConfirm"
-							:max-range="180" range-prompt="只能查询半年的数据" :min-date="minDate" :max-date="maxDate"
-							:round="false" color="#5241FF" /> -->
-					<div class="selectbar box-sizing">
-						<div class="site-con border-right" v-hasPermi="['app:place:index']"
-							@click="$refs.placelist.showPlacePopup()">
-							<span class="text-over label-text">{{ placeName }}</span>
-							<span><u-icon name="arrow-down" /></span>
-						</div>
-						<div class="site-con" @click="$refs.devicelist.showDevice()">
-							<span class="text-over label-text">{{ typeName }}</span><span><u-icon
-									name="arrow-down" /></span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+	<z-paging ref="operatePaging" v-model="dataList" @query="queryList" @scrollXls="scrollXls">
+		<view slot="top" :style="{'height':!changeToptitle?'380rpx':''}" class="header-style">
+			<view class="arrows-bottom text-over" :class="{'hidden-header': !changeToptitle}">
+				<view class="value-wrap Center">
+					<span class="date-con">{{ date }}</span>
+					<span class="point"></span>
+					<span class="place-con text-over">{{ placeName }}</span>
+				</view>
+				<view class="arrow-down Center">
+					<u-icon name="arrow-down" size="36" color="#c6c6c6" style="z-index: 9999" />
+				</view>
+				<view class="line"></view>
+			</view>
+			<jy-navbar title="场地收益统计" bgColor="#f5f6f7"></jy-navbar>
+			<view class="header-content" :class="{'hidden-header': changeToptitle}">
+				<view class="header-notice" v-show="showDate">
+					<view class="header-bg"></view>
+					<view class="main-con box-sizing">
+						注：为腾出数据空间加速查询性能，系统今后仅支持查询最近半年的历史数据（当前时间可查询
+						<span class="mark">2021-10</span>月起的数据),
+						请您定时记录数据到本地,以免超期无法查询。您还可以用电脑登录https
+					</view>
+				</view>
+				<view class="condition-panel">
+					<view class="condition-main">
+						<view class="time-list box-sizing">
+							<view class="label-btn box-sizing man-left" :style="index == 0 ? { margin: 0 } : ''"
+								:class="{active: activeTime == item.id}" @click="quickTime(item.id)"
+								v-for="(item, index) in timeList" :key="item.id">
+								{{ item.time }}
+							</view>
+						</view>
+						<view class="time-list box-sizing" @click="showDate = !showDate">
+							<view class="left-title">时间</view>
+							<view class="right-info">
+								<view class="time-section">{{ date }}</view>
+								<u-icon name="arrow-right" size="36" color="#c6c6c6" />
+							</view>
+						</view>
+						<!-- <u-calendar v-model="showDate" type="range" allow-same-day @confirm="onConfirm"
+								:max-range="180" range-prompt="只能查询半年的数据" :min-date="minDate" :max-date="maxDate"
+								:round="false" color="#5241FF" /> -->
+
+						<view class="selectbar box-sizing">
+							<view class="site-con border-right" v-hasPermi="['app:place:index']"
+								@click="$refs.placelist.showPlacePopup()">
+								<span class="text-over label-text">{{ placeName }}</span>
+								<span><u-icon name="arrow-down" /></span>
+							</view>
+							<view class="site-con" @click="$refs.devicelist.showDevice()">
+								<span class="text-over label-text">{{ typeName }}</span><span><u-icon
+										name="arrow-down" /></span>
+							</view>
+						</view>
+
+					</view>
+				</view>
+			</view>
+		</view>
 		<!-- 精简版 -->
-		<div class="simple-list-panel text-over" v-show="verSion">
-			<div class="panel-hd">
-				<div class="place" v-html="typeName == '设备类型' ? '场地' : '设备类型'"></div>
-				<div class="count" @click="iconDown = true">
-					<div class="title">设备数</div>
-					<div class="icon-play">
-						<div class="icon-up"></div>
-						<div class="icon-down" :class="iconDown ? 'active' : ''"></div>
-					</div>
-				</div>
-				<div class="orderNumber">笔数</div>
-				<div class="income Center" @click="iconDown = false">
+		<view class="simple-list-panel text-over" v-show="switchMode">
+			<view class="panel-hd">
+				<view class="place">{{typeName == '设备类型' ? '场地' : '设备类型'}}</view>
+				<view class="count" @click="iconDown = true">
+					<view class="title">设备数</view>
+					<view class="icon-play">
+						<view class="icon-up"></view>
+						<view class="icon-down" :class="{'active':iconDown}"></view>
+					</view>
+				</view>
+				<view class="orderNumber">笔数</view>
+				<view class="income Center" @click="iconDown = false">
 					<span>合计收益</span>
-					<div class="icon-play">
-						<div class="icon-up"></div>
-						<div class="icon-down" :class="iconDown ? '' : 'active'"></div>
-					</div>
-				</div>
-			</div>
-			<div>
-				<div class="site-analysis" v-for="(item, index) in earnStar.placeDeviceTypeIncomeVos" :key="index"
+					<view class="icon-play">
+						<view class="icon-up"></view>
+						<view class="icon-down" :class="{'active':!iconDown}"></view>
+					</view>
+				</view>
+			</view>
+			<view>
+				<view class="site-analysis" v-for="(item, index) in dataList" :key="index"
 					@click="sliderModalDetail(index)">
-					<div class="arrows-right">
-						<div class="place" v-html="item.placeName ? item.placeName : item.deviceTypeName"></div>
-						<div class="count">{{ item.deviceNum }}台</div>
-						<div class="orderNumber" v-html="item.transactionsNum ? item.transactionsNum : '0'"></div>
-						<div class="income">{{ item.totalIncome }}元</div>
-						<u-icon name="arrow" size="18" color="#c6c6c6" class="icon-arrow" />
-					</div>
-				</div>
-				<!-- <on-earth v-show="onEarth && earnStar.placeDeviceTypeIncomeVos.length" /> -->
-			</div>
-		</div>
+					<view class="arrows-right">
+						<view class="place" v-html="item.placeName ? item.placeName : item.deviceTypeName"></view>
+						<view class="count">{{ item.deviceNum }}台</view>
+						<view class="orderNumber" v-html="item.transactionsNum ? item.transactionsNum : '0'"></view>
+						<view class="income">{{ item.totalIncome }}元</view>
+						<u-icon name="arrow-right" size="36" color="#c6c6c6" class="icon-arrow" />
+					</view>
+				</view>
+			</view>
+		</view>
 		<!-- 精简详情 -->
-		<u-popup v-model="sliderModal">
-			<div class="modal-content">
-				<div class="test-wrapper" v-for="(item, index) in earnStar.placeDeviceTypeIncomeVos" :key="index"
-					:id="[`notice${index}`]">
+		<u-popup :show="sliderModal" round="20" mode="center" :customStyle="{'background-color': 'transparent'}"
+			@close="() => sliderModal = false">
+			<view class="modal-content">
+				<view class="test-wrapper" v-for="(item, index) in dataList" :key="index" :id="[`notice${index}`]">
 					<place-infocard :item="item"></place-infocard>
-				</div>
-			</div>
+				</view>
+			</view>
 		</u-popup>
 		<!-- 详细版 -->
-		<div v-show="!verSion" v-if="earnStar.placeDeviceTypeIncomeVos.length">
-			<div class="survey-panel">
-				<div class="panel-bd">
-					<div class="total-income">
+		<view v-show="!switchMode">
+			<view class="survey-panel">
+				<view class="panel-bd">
+					<view class="total-income">
 						<p class="label-text">
 							<span class="top">
 								<span>合计</span>:&nbsp;
-								<span>{{ earnStar.totalIncome
-                    }}<span class="unit">元</span>&nbsp;
-									<!-- <span
-                      class="service-charge"
-                      >(含服务费{{
-                        earnStar.onlinePayTotalCommission
-                          ? "¥" + earnStar.onlinePayTotalCommission
-                          : "¥0.00"
-                      }}元)</span
-                    > -->
-								</span>
+								<!-- <span>
+									{{ earnStar.totalIncome}}
+									<span class="unit">元</span>&nbsp;
+									<span class="service-charge">
+										(含服务费{{earnStar.onlinePayTotalCommission? "¥" + earnStar.onlinePayTotalCommission: "¥0.00"}}元)
+									</span>
+								</span> -->
 							</span>
 						</p>
-						<div class="desc">
-							预计{{ earnStar.cashPayIncome
-                }}<span class="unit">元</span>在机器钱箱中，现金支付请以实际线下统计为准
-						</div>
-					</div>
-					<div class="income-list text-over">
-						<div class="item-wrap">
-							<div class="label">在线支付</div>
-							<div class="price">
+						<view class="desc">
+							预计{{ earnStar.cashPayIncome }}<span class="unit">元</span>在机器钱箱中，现金支付请以实际线下统计为准
+						</view>
+					</view>
+					<view class="income-list text-over">
+						<view class="item-wrap">
+							<view class="label">在线支付</view>
+							<view class="price">
 								{{ earnStar.onlinePayIncome }}<span class="nit">元</span>
-							</div>
-						</div>
-						<div class="item-wrap side-border">
-							<div class="label">现金支付</div>
-							<div class="price">
+							</view>
+						</view>
+						<view class="item-wrap side-border">
+							<view class="label">现金支付</view>
+							<view class="price">
 								{{ earnStar.cashPayIncome }}<span class="nit">元</span>
-							</div>
-						</div>
-						<div class="item-wrap">
-							<div class="label">补贴总额</div>
-							<div class="price">
+							</view>
+						</view>
+						<view class="item-wrap">
+							<view class="label">补贴总额</view>
+							<view class="price">
 								{{ earnStar.subsidyIncome }}<span class="nit">元</span>
-							</div>
-						</div>
-					</div>
-					<div class="count-list">
-						<div class="total-coin">
-							<div class="label-text">
+							</view>
+						</view>
+					</view>
+					<view class="count-list">
+						<view class="total-coin">
+							<view class="label-text">
 								<span>合计投币</span>
 								<span>{{ earnStar.totalInsertCoins }}</span>
-								<span class="icon-question" @click="answerQuest = !answerQuest"><u-icon
-										name="question-circle-fill" size="36" /></span>
-							</div>
-							<div class="value">
-								线上{{ earnStar.onlineInsertCoins }}个+线下{{
-                    earnStar.offlineInsertCoins
-                  }}个
-							</div>
-						</div>
-						<div class="total-coin left-border">
-							<div class="label-text">
+								<span class="icon-question" @click="answerQuest = !answerQuest">
+									<u-icon name="question-circle-fill" size="36" /></span>
+							</view>
+							<view class="value">
+								线上{{ earnStar.onlineInsertCoins }}个+线下{{earnStar.offlineInsertCoins}}个
+							</view>
+						</view>
+						<view class="total-coin left-border">
+							<view class="label-text">
 								<span>出礼比例</span>
-								<span v-html="
-                      earnStar.outPresentProportion
-                        ? earnStar.outPresentProportion + '/1'
-                        : '0/0'
-                    "></span>
-								<span class="icon-question" @click="answerQuest = !answerQuest"><u-icon
-										name="question-circle-fill" size="36" /></span>
-							</div>
-							<div class="value">
-								{{ earnStar.outPresentNum }}个/{{
-                    earnStar.outPresentTotalPrice
-                  }}元
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="detail-list-panel">
-				<div class="entry" v-for="(item, index) in earnStar.placeDeviceTypeIncomeVos" :key="index">
-					<div class="site-detail-link" @click="
-                goEarnDetail(item.placeName ? item.placeId : item.deviceTypeId)
-              ">
-						<div class="entry-hd">
-							<div class="place-name">
-								<span class="place-name-style">{{
-                    item.placeName
-                      ? $placeNameRule(item.placeName, item.placeNumber)
-                      : item.deviceTypeName
-                  }}</span>
+								<span>{{earnStar.outPresentProportion? earnStar.outPresentProportion + '/1': '0/0'}}</span>
+								<span class="icon-question" @click="answerQuest = !answerQuest">
+									<u-icon name="question-circle-fill" size="36" />
+								</span>
+							</view>
+							<view class="value">
+								{{ earnStar.outPresentNum }}个/{{earnStar.outPresentTotalPrice}}元
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+
+			<view class="detail-list-panel">
+				<view class="entry" v-for="(item, index) in dataList" :key="index">
+					<view class="site-detail-link"
+						@click="goEarnDetail(item.placeName ? item.placeId : item.deviceTypeId)">
+						<view class="entry-hd">
+							<view class="place-name">
+								<span class="place-name-style">
+									{{item.placeName? $placeNameRule(item.placeName, item.placeNumber): item.deviceTypeName}}
+								</span>
 								<span class="count" v-show="item.placeName">{{ item.deviceNum }}台</span>
-							</div>
+							</view>
 							<span class="money text-over">
 								<span class="text">合计：</span>{{ item.totalIncome }}
 								<span class="unit">元</span>
 							</span>
-						</div>
-						<div class="entry-bd text-over">
-							<div>
-								<div class="info-row">
+						</view>
+						<view class="entry-bd text-over">
+							<view>
+								<view class="info-row">
 									<span class="field">在线支付</span>
 									<span class="value">
 										<span class="num">出币{{ item.onlinePayInsertCoins }}个,</span>
-										{{ item.onlinePayIncome
-                      }}<span class="unit">元</span></span>
-								</div>
-								<div class="info-row">
+										{{ item.onlinePayIncome}}<span class="unit">元</span></span>
+								</view>
+								<view class="info-row">
 									<span class="field">平台补贴</span>
 									<span class="value">{{ item.subsidyIncome }}<span class="unit">元</span><u-icon
 											name="arrow-right" size="36" color="#c6c6c6" class="arrows" /></span>
-								</div>
-								<div class="info-row">
+								</view>
+								<view class="info-row">
 									<span class="field">现金支付</span>
-									<span class="value">{{ item.cashPayIncome
-                      }}<span class="unit">元</span></span>
-								</div>
-							</div>
-							<div class="info-part">
-								<div class="one-footer">
+									<span class="value">{{ item.cashPayIncome}}<span class="unit">元</span></span>
+								</view>
+							</view>
+							<view class="info-part">
+								<view class="one-footer">
 									<span class="field">合计投币</span>
-									<span class="right-txt">{{ item.totalInsertCoins
-                      }}<span class="unit">个</span></span>
-								</div>
-								<div class="count">
-									线上{{ item.onlinePayInsertCoins }}个,线下{{
-                      item.offlineInsertCoins
-                    }}个
-								</div>
-							</div>
-							<div class="info-part">
-								<div class="one-footer">
+									<span class="right-txt">{{ item.totalInsertCoins}}<span class="unit">个</span></span>
+								</view>
+								<view class="count">
+									线上{{ item.onlinePayInsertCoins }}个,线下{{item.offlineInsertCoins}}个
+								</view>
+							</view>
+							<view class="info-part">
+								<view class="one-footer">
 									<span class="field">商品消耗</span>
-									<span class="right-txt">{{ item.commodityCount }}<span class="unit">个</span>{{ item.commodityTotalAmount
-                      }}<span class="unit">元</span></span>
-								</div>
-								<div class="count">
-									出礼比例<span v-html="
-                        item.outPresentProportion
-                          ? item.outPresentProportion + '/1'
-                          : '0/0'
-                      "></span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="link" v-show="item.placeName">
-						<div class="tendency-link" @click="
-                  $router.push({
-                    name: 'monthEarntrend',
-                    query: {
-                      placeId: item.placeId,
-                      placeName: item.placeName,
-                    },
-                  })
-                ">
+									<span class="right-txt">{{ item.commodityCount }}<span
+											class="unit">个</span>{{ item.commodityTotalAmount}}<span
+											class="unit">元</span></span>
+								</view>
+								<view class="count">
+									出礼比例<span>{{item.outPresentProportion? item.outPresentProportion + '/1': '0/0'}}</span>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="link" v-show="item.placeName">
+						<view class="tendency-link" @click="goTo(item, 'trend')">
 							场地收益趋势
-						</div>
-						<div class="tendency-link border-left" @click="
-                  $router.push({
-                    name: 'earnClassifystat',
-                    query: {
-                      placeId: item.placeId,
-                      startTime,
-                      endTime,
-                      placeName: item.placeName,
-                      deviceNum: item.deviceNum,
-                      totalIncome: item.totalIncome,
-                    },
-                  })
-                ">
+						</view>
+						<view class="tendency-link border-left" @click="goTo(item, 'classify')">
 							查看收益分类
-						</div>
-					</div>
-				</div>
-				<!-- <on-earth v-show="onEarth && earnStar.placeDeviceTypeIncomeVos.length" /> -->
-			</div>
-		</div>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
 		<!-- 为空 -->
-		<div v-if="!earnStar.placeDeviceTypeIncomeVos.length" style="padding-bottom: 150px">
-			<!-- <no-data /> -->
-		</div>
+		<xls-empty slot="empty"></xls-empty>
 		<!-- 展示切换 -->
-		<div class="switch-mode-btn" @click="changeVersion">
-			<span class="text detail-modal-text" v-show="verSion">详细版</span>
-			<span class="text simple-modal-text" v-show="!verSion">精简版</span>
-			<span class="icon-wrap detail" v-show="verSion">
+		<view class="switch-mode-btn" @click="changeswitchMode">
+			<span class="text detail-modal-text" v-show="switchMode">详细版</span>
+			<span class="text simple-modal-text" v-show="!switchMode">精简版</span>
+			<span class="icon-wrap detail" v-show="switchMode">
 				<span class="icon"><u-icon name="arrow-downward" size="24" /></span>
 			</span>
-			<span class="icon-wrap" v-show="!verSion">
+			<span class="icon-wrap" v-show="!switchMode">
 				<span class="icon"><u-icon name="arrow-downward" size="24" /></span>
 			</span>
-		</div>
+		</view>
+		<!-- 说明 -->
+		<u-popup :show="answerQuest" round="20" mode="center">
+			<view class="quest-con">
+				<image :src="`${$baseUrl}appV4/altered/explain-pic.png`" alt="" mode="widthFix" />
+				<view class="btn" @click="answerQuest = !answerQuest"></view>
+			</view>
+		</u-popup>
 		<!-- place -->
 		<!-- <CustomList ref="placelist" @getPlaceId="getPlaceId" /> -->
 		<!-- 设备类型 -->
 		<!-- <device-list ref="devicelist" @getTypeId="getTypeId"></device-list> -->
-		<!-- 说明 -->
-		<u-popup v-model="answerQuest" round>
-			<div class="quest-con">
-				<image :src="`${$baseUrl}appV4/altered/explain-pic.png`" alt="" />
-				<div class="btn" @click="answerQuest = !answerQuest"></div>
-			</div>
-		</u-popup>
-	</div>
+	</z-paging>
 </template>
 
 <script>
-	// import PlaceInfocard from "../earnComps/placeInfocard";
+	import PlaceInfocard from "./component/placeInfocard.vue";
 	// import {
 	// 	getPlaceIncome,
 	// 	getDeviceTypeIncome
@@ -318,15 +275,19 @@
 	// } from "@/plugins/utilityClass";
 	// import PlaceidList from "@/components/commonComps/placeidList";
 	// import DeviceList from "@/components/commonComps/deviceList";
+	// import CustomList from "@/components/commonComps/customList.vue";
 	import {
 		debounceFun,
 		throttleFun
 	} from "@/plugins/debounceOrthrottle";
-	// import CustomList from "@/components/commonComps/customList.vue";
+
+
+	import {
+		orderController
+	} from "@/api/index.js";
 	export default {
-		name: "placeEarning",
 		components: {
-			// PlaceInfocard,
+			PlaceInfocard,
 			// PlaceidList,
 			// DeviceList,
 			// CustomList
@@ -336,7 +297,7 @@
 				//头部折叠
 				changeToptitle: false,
 				//详细与精简
-				verSion: false,
+				switchMode: false,
 				//精简排序
 				iconDown: false,
 				//精简详情
@@ -380,190 +341,7 @@
 				// startTime: getDateAll(0),
 				// endTime: getDateAll(0),
 				//数据
-				earnStar: {
-					"totalIncome": 0.01,
-					"onlinePayTotalCommission": 0,
-					"onlinePayIncome": 0.01,
-					"subsidyIncome": 0,
-					"cashPayIncome": 0,
-					"totalInsertCoins": 464,
-					"onlineInsertCoins": 10,
-					"offlineInsertCoins": 454,
-					"outPresentProportion": 232,
-					"outPresentNum": 2,
-					"outPresentTotalPrice": 0,
-					"placeDeviceTypeIncomeVos": [{
-							"placeId": 402,
-							"placeName": "V0007中土512(测试)",
-							"deviceNum": 8,
-							"outCoins": 10,
-							"onlinePayIncome": 0.01,
-							"subsidyIncome": 0,
-							"cashPayIncome": 0,
-							"totalInsertCoins": 461,
-							"onlinePayInsertCoins": 10,
-							"offlineInsertCoins": 451,
-							"commodityCount": 2,
-							"commodityTotalAmount": 0,
-							"outPresentProportion": 231,
-							"transactionsNum": 1,
-							"totalIncome": 0.01
-						},
-						{
-							"placeId": 2486,
-							"placeName": "地心测试机",
-							"deviceNum": 7,
-							"outCoins": 0,
-							"onlinePayIncome": 0,
-							"subsidyIncome": 0,
-							"cashPayIncome": 0,
-							"totalInsertCoins": 0,
-							"onlinePayInsertCoins": 0,
-							"offlineInsertCoins": 0,
-							"commodityCount": 0,
-							"commodityTotalAmount": 0,
-							"outPresentProportion": 0,
-							"transactionsNum": 0,
-							"totalIncome": 0
-						},
-						{
-							"placeId": 2448,
-							"placeName": "射水测试场地",
-							"deviceNum": 2,
-							"outCoins": 0,
-							"onlinePayIncome": 0,
-							"subsidyIncome": 0,
-							"cashPayIncome": 0,
-							"totalInsertCoins": 0,
-							"onlinePayInsertCoins": 0,
-							"offlineInsertCoins": 0,
-							"commodityCount": 0,
-							"commodityTotalAmount": 0,
-							"outPresentProportion": 0,
-							"transactionsNum": 0,
-							"totalIncome": 0
-						},
-						{
-							"placeId": 2038,
-							"placeName": "V300G场地名称002",
-							"deviceNum": 0,
-							"outCoins": 0,
-							"onlinePayIncome": 0,
-							"subsidyIncome": 0,
-							"cashPayIncome": 0,
-							"totalInsertCoins": 0,
-							"onlinePayInsertCoins": 0,
-							"offlineInsertCoins": 0,
-							"commodityCount": 0,
-							"commodityTotalAmount": 0,
-							"outPresentProportion": 0,
-							"transactionsNum": 0,
-							"totalIncome": 0
-						},
-						{
-							"placeId": 1319,
-							"placeName": "V0019广州万达店",
-							"deviceNum": 12,
-							"outCoins": 0,
-							"onlinePayIncome": 0,
-							"subsidyIncome": 0,
-							"cashPayIncome": 0,
-							"totalInsertCoins": 0,
-							"onlinePayInsertCoins": 0,
-							"offlineInsertCoins": 0,
-							"commodityCount": 0,
-							"commodityTotalAmount": 0,
-							"outPresentProportion": 0,
-							"transactionsNum": 0,
-							"totalIncome": 0
-						},
-						{
-							"placeId": 1291,
-							"placeName": "V0017游乐车",
-							"deviceNum": 1,
-							"outCoins": 0,
-							"onlinePayIncome": 0,
-							"subsidyIncome": 0,
-							"cashPayIncome": 0,
-							"totalInsertCoins": 0,
-							"onlinePayInsertCoins": 0,
-							"offlineInsertCoins": 0,
-							"commodityCount": 0,
-							"commodityTotalAmount": 0,
-							"outPresentProportion": 0,
-							"transactionsNum": 0,
-							"totalIncome": 0
-						},
-						{
-							"placeId": 1280,
-							"placeName": "V0016售货机横屏工厂测试",
-							"deviceNum": 2,
-							"outCoins": 0,
-							"onlinePayIncome": 0,
-							"subsidyIncome": 0,
-							"cashPayIncome": 0,
-							"totalInsertCoins": 0,
-							"onlinePayInsertCoins": 0,
-							"offlineInsertCoins": 0,
-							"commodityCount": 0,
-							"commodityTotalAmount": 0,
-							"outPresentProportion": 0,
-							"transactionsNum": 0,
-							"totalIncome": 0
-						},
-						{
-							"placeId": 1256,
-							"placeName": "1楼，测试",
-							"deviceNum": 12,
-							"outCoins": 0,
-							"onlinePayIncome": 0,
-							"subsidyIncome": 0,
-							"cashPayIncome": 0,
-							"totalInsertCoins": 3,
-							"onlinePayInsertCoins": 0,
-							"offlineInsertCoins": 3,
-							"commodityCount": 0,
-							"commodityTotalAmount": 0,
-							"outPresentProportion": 3,
-							"transactionsNum": 0,
-							"totalIncome": 0
-						},
-						{
-							"placeId": 1117,
-							"placeName": "V0014502兑币机",
-							"deviceNum": 5,
-							"outCoins": 0,
-							"onlinePayIncome": 0,
-							"subsidyIncome": 0,
-							"cashPayIncome": 0,
-							"totalInsertCoins": 0,
-							"onlinePayInsertCoins": 0,
-							"offlineInsertCoins": 0,
-							"commodityCount": 0,
-							"commodityTotalAmount": 0,
-							"outPresentProportion": 0,
-							"transactionsNum": 0,
-							"totalIncome": 0
-						},
-						{
-							"placeId": 1113,
-							"placeName": "V0013新发18126642688",
-							"deviceNum": 4,
-							"outCoins": 0,
-							"onlinePayIncome": 0,
-							"subsidyIncome": 0,
-							"cashPayIncome": 0,
-							"totalInsertCoins": 0,
-							"onlinePayInsertCoins": 0,
-							"offlineInsertCoins": 0,
-							"commodityCount": 0,
-							"commodityTotalAmount": 0,
-							"outPresentProportion": 0,
-							"transactionsNum": 0,
-							"totalIncome": 0
-						}
-					]
-				},
+				earnStar: {},
 				//placeid
 				placeId: [],
 				placeName: "全部场地",
@@ -574,6 +352,8 @@
 				//获取
 				page: 0,
 				onEarth: false,
+				// 
+				dataList: [],
 			};
 		},
 		// created() {
@@ -589,6 +369,66 @@
 		// 	window.removeEventListener("scroll", this.screenSlide);
 		// },
 		methods: {
+			queryList(pageNo, pageSize) {
+				orderController.getPlaceIncome({
+					page: pageNo,
+					size: pageSize,
+					startTime: '2024-08-23',
+					endTime: '2024-08-23'
+				}).then(res => {
+					this.earnStar = res.data
+					this.$refs.operatePaging.complete(res.data.placeDeviceTypeIncomeVos);
+				})
+			},
+			goTo(item, route) {
+				let params = {}
+				if (route === 'trend') {
+					params = {
+						placeId: item.placeId,
+						placeName: item.placeName,
+					}
+				} else {
+					params = {
+						placeId: item.placeId,
+						startTime: this.startTime,
+						endTime: this.endTime,
+						placeName: item.placeName,
+						deviceNum: item.deviceNum,
+						totalIncome: item.totalIncome,
+					}
+				}
+				this.$goTo(`/pages/mainPackages/home/operateModule/${route}`, "navigateTo", params)
+			},
+			// js 触发的函数:置空即可
+			changeswitchMode() {
+				this.switchMode = !this.switchMode;
+				// document.body.scrollTop = 0;
+				// document.documentElement.scrollTop = 0;
+			},
+			scrollXls(e) {
+				const scrollTop = e.detail.scrollTop
+				if (scrollTop > 70) {
+					this.changeToptitle = true;
+				}
+				if (scrollTop <= 0) {
+					this.changeToptitle = false;
+				}
+			},
+			//精简详情
+			sliderModalDetail(index) {
+				this.sliderModal = !this.sliderModal;
+				this.$nextTick(() => {
+					this.$el.querySelector(`#notice${index}`).scrollIntoView({
+						behavior: "smooth", //定义动画过渡效果，"auto"或 “smooth” 之一。默认为 “auto”。
+						block: "center", //垂直方向的对齐
+						inline: "center", //inline:定义水平方向的对齐， “start”, “center”, “end”, 或 "nearest"之一。默认为 “nearest”。
+					});
+				});
+			},
+
+
+
+
 			//选择日期
 			formatDate(date) {
 				return `${date.getFullYear()}-${
@@ -650,8 +490,8 @@
 						this.onEarth = false;
 					}
 					if (this.page > 1) {
-						this.earnStar.placeDeviceTypeIncomeVos = [
-							...this.earnStar.placeDeviceTypeIncomeVos,
+						this.dataList = [
+							...this.dataList,
 							...res.data.data.placeDeviceTypeIncomeVos,
 						];
 					} else {
@@ -781,42 +621,20 @@
 					});
 				}
 			},
-			//精简详情
-			sliderModalDetail(index) {
-				this.sliderModal = !this.sliderModal;
-				this.$nextTick(() => {
-					this.$el.querySelector(`#notice${index}`).scrollIntoView({
-						behavior: "smooth", //定义动画过渡效果，"auto"或 “smooth” 之一。默认为 “auto”。
-						block: "center", //垂直方向的对齐
-						inline: "center", //inline:定义水平方向的对齐， “start”, “center”, “end”, 或 "nearest"之一。默认为 “nearest”。
-					});
-				});
-			},
-			// js 触发的函数:置空即可
-			changeVersion() {
-				this.verSion = !this.verSion;
-				document.body.scrollTop = 0;
-				document.documentElement.scrollTop = 0;
-			},
+			
+
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
-	#placeEarning {
-		width: 100%;
-		font-family: "Microsoft JhengHei", "Microsoft YaHei";
-		overflow-y: scroll;
+	.header-style {
 		position: relative;
-		padding-top: 138px;
-		padding-bottom: 60px;
-		box-sizing: border-box;
 	}
-
 	//simple-header
 	.arrows-bottom {
-		position: fixed;
-		top: 48PX;
+		position: absolute;
+		top: 100%;
 		width: 100%;
 		max-width: 375px;
 		box-sizing: border-box;
@@ -888,6 +706,7 @@
 
 	.hidden-header {
 		height: 0;
+		overflow: hidden;
 	}
 
 	.header-notice {
@@ -1087,6 +906,8 @@
 					.label-text {
 						font-size: 12px;
 						color: rgba(0, 0, 0, 0.6);
+						display: flex;
+						align-items: center;
 					}
 
 					.icon-question {
@@ -1243,6 +1064,8 @@
 						white-space: nowrap;
 						text-overflow: ellipsis;
 						text-align: right;
+						display: flex;
+						align-items: center;
 
 						.num {
 							font-size: 12px;
@@ -1402,7 +1225,7 @@
 		background-color: transparent;
 	}
 
-	//verSion
+	//switchMode
 	.switch-mode-btn {
 		padding: 10px 0;
 		position: fixed;

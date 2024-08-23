@@ -1,13 +1,19 @@
 <template>
-	<view class="xls-order">
-		<jy-navbar title="订单列表"></jy-navbar>
-		<u-list @scrolltolower="scrolltolower" class="xls-order-list">
-			<u-list-item v-for="(item, index) in dataList" :key="index" class="xls-order-list-item">
-				<view class="xls-order-place">
-					<u-icon name="map" color="#5241ff" size="24"></u-icon>
-					<span class="place">{{item.placeName}}</span>
-					<span>|</span>
-					<span class="time">{{item.createTime}}</span>
+	<z-paging ref="orderPaging" v-model="dataList" @query="queryList">
+		<jy-navbar title="订单列表" slot="top"></jy-navbar>
+		<view class="xls-order-list">
+			<view v-for="(item, index) in dataList" :key="index" class="xls-order-list-item">
+				<view class="xls-order-header">
+					<view class="xls-order-place">
+						<u-icon name="map" color="#5241ff" size="24"></u-icon>
+						<span class="place">{{item.placeName}}</span>
+						<span>|</span>
+						<span class="time">{{item.createTime}}</span>
+					</view>
+
+					<view class="xls-order-place refund-price" v-if="item.amountRefund && item.refundState == 1">
+						<span class="time">已退 ¥{{item.amountRefund}}</span>
+					</view>
 				</view>
 
 				<view class="xls-order-style">
@@ -17,8 +23,9 @@
 						</image>
 						<view class="right-wrapper">
 							<view class="device-style">
-								<span> {{ item.deviceTypeName }}{{ item.deviceNumber }}</span>
-								<span class="state">已支付</span>
+								<span> {{ deviceTypeDict[item.deviceType] }}{{ item.deviceNumber }}</span>
+								<!-- 交易状态 -->
+								<span class="state">{{stateDict[item.state]}}</span>
 							</view>
 							<view class="order-number">
 								<span>{{ item.orderNo }}</span>
@@ -31,6 +38,7 @@
 								</view>
 							</view>
 							<view class="label-style">
+								<!-- 交易类型 -->
 								<view class="label">
 									{{typeDict[item.type]}}
 								</view>
@@ -46,7 +54,9 @@
 					<view class="order_line"></view>
 
 					<view class="xls-order-style-member">
-						<image class="icon-image" :src="`${$baseUrl}appV4/common/wechat.png`" mode="widthFix"></image>
+						<image class="icon-image" :src="item.url" mode="widthFix" v-if="item.url"></image>
+						<image class="icon-image" :src="`${$baseUrl}appV4/common/wechat.png`" mode="widthFix" v-else>
+						</image>
 						<span class="member-name">{{ item.memberName || "***" }}</span>
 						<span class="member-number">ID:{{ item.memberNumber }}</span>
 						<view class="base-copy">
@@ -63,10 +73,10 @@
 							src="https://asset.leyaoyao.com/merchant-order-center/static/d0da3593648b2c25b3ca.png"
 							mode="widthFix"></image>
 						<view class="price-center">
-							{{ item.shopPrice }}元1局
+							{{ item.shopPrice }}元1局 {{ item.commodityName }}
 						</view>
 						<view class="price-right">
-							¥{{ item.shopPrice }}
+							¥{{ item.totalReceivables }}
 						</view>
 					</view>
 
@@ -81,28 +91,39 @@
 
 					<u-line hairline></u-line>
 
+					<view class="xls-order-style-refund-reason" v-if="item.refundType">
+						{{refundDict[item.refundType]}}
+					</view>
+
 					<view class="xls-order-style-button">
-						<view class="button">
-							退款
+						<!-- <view class="button">
+							派发福利
+						</view> -->
+						<view class="button" @click="goTo(item, 'orderDetail')">
+							查看详情
 						</view>
 						<view class="button">
 							远程启动
 						</view>
-						<view class="button" @click="goTo()">
-							查看详情
+						<view class="button" @click="goTo(item, 'orderRefund')">
+							退款
 						</view>
 					</view>
 				</view>
-			</u-list-item>
-			<u-divider text="已经到底啦~" :dashed="true" text-size="28"></u-divider>
-		</u-list>
-	</view>
+			</view>
+		</view>
+		<xls-empty slot="empty"></xls-empty>
+	</z-paging>
 </template>
 
 <script>
 	import {
-		orderController
+		orderController,
+		deviceController
 	} from '@/api/index.js';
+	import {
+		getDateAll
+	} from "@/plugins/utilityClass";
 	export default {
 		data() {
 			return {
@@ -114,34 +135,71 @@
 					5: "充值余额",
 					null: "其他类型"
 				},
+				stateDict: {
+					'-1': "已退款",
+					0: "待支付",
+					1: "已完成",
+					2: "退款中",
+					3: "退款成功",
+					4: "退款失败",
+					5: "已取消",
+					6: "已关闭",
+					7: "待结算",
+					null: "其他"
+				},
+				refundDict: {
+					0: '(出货失败退款)',
+					1: '(出货失败部分退款)',
+					2: '(人工退款)',
+					3: '(通讯失败退款)',
+					4: '(人工部分退款)',
+					null: "其他"
+				},
+				deviceTypeDict: {},
 				dataList: [],
 			}
 		},
 		onLoad(option) {
-			// JSON.parse(option.params)
-			console.log("传参", option)
-			this.getList();
+			if (option.params) {
+				console.log("传参", JSON.parse(option.params))
+			}
+			this.getDeviceTypeList();
 		},
 		methods: {
-			async getList() {
-				let res = await orderController.getOrderList({
-					pageParam: {
-						pageNum: 1,
-						pageSize: 10
-					},
-					orderFormDtoFilter: {
-
-					},
-					orderParam: []
+			getDeviceTypeList() {
+				deviceController.getDeviceTypeLists().then(res => {
+					res.data.forEach(item => {
+						this.deviceTypeDict[item.id] = item.typeName
+					})
 				})
-				this.dataList = res.data.dataList;
 			},
-			scrolltolower() {},
-			goTo(item) {
-				this.$goTo('/pages/mainPackages/home/order/orderDetail', 'navigateTo', {
-					id: 'item.id'
+			queryList(pageNo, pageSize) {
+				this.$loading();
+				const params = {
+					// memberNumber: "",
+					phone: "",
+					// transactionId: "",
+					deviceNumber: "",
+					placeId: "",
+					deviceType: "",
+					state: "",
+					startTime: getDateAll(30),
+					endTime: getDateAll(0),
+				}
+				orderController.getOrderList({
+					page: pageNo,
+					size: pageSize,
+					...params
+				}).then(res => {
+					this.$hideLoading();
+					this.$refs.orderPaging.complete(res.data.records);
 				})
-			}
+			},
+			goTo(order, route) {
+				this.$goTo(`/pages/mainPackages/home/order/${route}`, 'navigateTo', {
+					orderId: order.orderId
+				})
+			},
 		}
 	}
 </script>
@@ -149,145 +207,163 @@
 <style lang="scss" scoped>
 	@import 'index.scss';
 
-	.xls-order {
 
-		&-list {
-			padding: 20rpx 24rpx;
+	.xls-order-list {
+		padding: 20rpx 24rpx;
 
-			&-item {
-				margin-bottom: 24rpx;
-			}
+		&-item {
+			margin-bottom: 24rpx;
+		}
+	}
+
+	.xls-order-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.xls-order-place {
+		font-size: 18rpx;
+		color: #5241ff;
+		display: flex;
+		align-items: center;
+		padding: 5rpx 16rpx;
+		background-color: rgba(131, 120, 255, 0.2);
+		border-radius: 40rpx;
+		margin-bottom: 10rpx;
+
+		.place {
+			display: inline-block;
+			max-width: 140rpx;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			margin-right: 12rpx;
+			margin-left: 8rpx;
 		}
 
-		&-place {
-			width: 450rpx;
-			font-size: 18rpx;
-			color: #5241ff;
+		.time {
+			width: 180rpx;
+			margin-left: 12rpx;
+		}
+	}
+
+	.refund-price {
+		color: #f5222d;
+		background-color: #ffe8ea;
+	}
+
+	.xls-order-style {
+		padding: 18rpx;
+		background-color: #fff;
+		border-radius: 20rpx;
+		position: relative;
+
+		&-header {
 			display: flex;
 			align-items: center;
-			padding: 5rpx 16rpx;
-			background-color: rgba(82, 65, 225, 0.2);
-			border-radius: 40rpx;
-			margin-bottom: 10rpx;
+			padding-bottom: 16rpx;
 
-			.place {
-				display: inline-block;
-				max-width: 160rpx;
+			.icon-image {
+				width: 80rpx;
+			}
+
+			.right-wrapper {
+				flex: 1;
+				margin-left: 20rpx;
 				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-				margin-right: 12rpx;
-				margin-left: 8rpx;
-			}
 
-			.time {
-				margin-left: 12rpx;
-			}
-		}
+				.order-number {
+					display: flex;
+					align-items: center;
+					margin-top: 10rpx;
+					color: rgba(0, 0, 0, .45);
+					font-size: 24rpx;
 
-		&-style {
-			padding: 18rpx;
-			background-color: #fff;
-			border-radius: 20rpx;
-			position: relative;
-
-			&-header {
-				display: flex;
-				align-items: center;
-				padding-bottom: 16rpx;
-
-				.icon-image {
-					width: 80rpx;
-				}
-
-				.right-wrapper {
-					flex: 1;
-					margin-left: 20rpx;
-					overflow: hidden;
-
-					.order-number {
-						display: flex;
-						align-items: center;
-						margin-top: 10rpx;
-						color: rgba(0, 0, 0, .45);
-						font-size: 24rpx;
-
-						.base-copy {
-							line-height: 40rpx;
-							padding: 0 10rpx;
-						}
+					.base-copy {
+						line-height: 40rpx;
+						padding: 0 10rpx;
 					}
 				}
 			}
+		}
 
-			&-member {
-				color: rgba(0, 0, 0, .45);
-				display: flex;
-				align-items: center;
-				padding: 18rpx 0;
-				line-height: 36rpx;
+		&-member {
+			color: rgba(0, 0, 0, .45);
+			display: flex;
+			align-items: center;
+			padding: 18rpx 0;
+			line-height: 36rpx;
 
-				.icon-image {
-					width: 36rpx;
-					border-radius: 50%;
-				}
-
-				.member-name {
-					font-size: 24rpx;
-					padding: 0 12rpx;
-					max-width: 260rpx;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					white-space: nowrap;
-				}
-
-				.member-number {
-					padding: 0 12rpx 0 26rpx;
-					font-size: 24rpx;
-					position: relative;
-				}
-
-				.member-number::before {
-					background: rgba(0, 0, 0, .15);
-					position: absolute;
-					left: 0rpx;
-					top: 50%;
-					transform: translateY(-50%);
-					content: "";
-					display: inline-block;
-					height: 28rpx;
-					margin: 0 12rpx;
-					width: 2rpx;
-				}
-
-				.base-copy {
-					padding: 0 12rpx;
-				}
+			.icon-image {
+				width: 36rpx;
+				border-radius: 50%;
 			}
 
-			&-quantity {
-				line-height: 66rpx;
-				display: flex;
-				align-items: center;
-				justify-content: flex-end;
-				color: rgba(0, 0, 0, .65);
+			.member-name {
 				font-size: 24rpx;
-
-				.accout {
-					color: rgba(0, 0, 0, .85);
-					font-size: 30rpx;
-					margin-left: 20rpx;
-				}
+				padding: 0 12rpx;
+				max-width: 260rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
 
-			&-button {
-				align-items: center;
-				display: flex;
-				flex-direction: row-reverse;
-				margin-top: 20rpx;
-				font-size: 26rpx;
+			.member-number {
+				padding: 0 12rpx 0 26rpx;
+				font-size: 24rpx;
+				position: relative;
+			}
+
+			.member-number::before {
+				background: rgba(0, 0, 0, .15);
+				position: absolute;
+				left: 0rpx;
+				top: 50%;
+				transform: translateY(-50%);
+				content: "";
+				display: inline-block;
+				height: 28rpx;
+				margin: 0 12rpx;
+				width: 2rpx;
+			}
+
+			.base-copy {
+				padding: 0 12rpx;
 			}
 		}
 
+		&-quantity {
+			line-height: 66rpx;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			color: rgba(0, 0, 0, .65);
+			font-size: 24rpx;
+
+			.accout {
+				color: rgba(0, 0, 0, .85);
+				font-size: 30rpx;
+				margin-left: 20rpx;
+			}
+		}
+
+		&-button {
+			align-items: center;
+			display: flex;
+			flex-direction: row-reverse;
+			margin-top: 20rpx;
+			font-size: 26rpx;
+		}
+
+		&-refund-reason {
+			margin-top: 24rpx;
+			color: #ff8c19;
+			font-size: 28rpx;
+			height: 64rpx;
+			line-height: 64rpx;
+			background: #fff7e6;
+			border-radius: 4rpx;
+		}
 	}
 </style>

@@ -69,6 +69,14 @@ export default class deviceController {
 			data
 		})
 	}
+	static getDeviceTypeLists(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceType/getList',
+			method: 'GET',
+			data
+		})
+	}
+	
 	
 	// 设备套餐模块
 	// 订单服务

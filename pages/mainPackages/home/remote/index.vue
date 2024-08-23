@@ -1,144 +1,67 @@
 <template>
-	<div class="xls-remote-page">
+	<view class="xls-remote-page">
 		<xls-jy-navbar title="操作记录" :showRight="false"></xls-jy-navbar>
-		<div class="content">
-			<u-radio-group v-if="typeList" v-model="deviceTypeId">
-				<div class="item-box box-sizing">
-					<div class="item box-sizing" v-for="(item, index) in typeList" :key="index"
+		<view class="content">
+			<u-radio-group v-if="deviceTypeList" v-model="deviceTypeId">
+				<view class="item-box box-sizing">
+					<view class="item box-sizing" v-for="(item, index) in deviceTypeList" :key="index"
 						@click="pickDeviceType(item, index)">
 						<span>{{ item.typeName }}</span>
 						<u-radio :name="item.id" size="36" iconSize="28" activeColor="#5241ff"></u-radio>
-					</div>
-				</div>
+					</view>
+				</view>
 			</u-radio-group>
 			<xls-empty v-else />
-		</div>
+		</view>
 		<xls-bottom />
-		<div class="btnB">
-			<div class="link" v-hasPermi="['app:remoteboot:index:records']"
-				@click="$router.push('/remoteBoot/processRecord')">
+		<view class="btnB">
+			<view class="link" v-hasPermi="['app:remoteboot:index:records']" @click="goTo">
 				远程启动记录 >>
-			</div>
-			<div class="mainB">
-				<div class="btn" @click="$toast('敬请期待~')">扫一扫</div>
-				<div class="btn" @click="nextStep()">下一步</div>
-			</div>
-		</div>
-	</div>
+			</view>
+			<view class="mainB">
+				<view class="btn" @click="$toast('敬请期待~')">扫一扫</view>
+				<view class="btn" @click="nextStep()">下一步</view>
+			</view>
+		</view>
+	</view>
 
 </template>
 
 <script>
-	// import {
-	// 	getDevicetype
-	// } from "@/utils/api/device";
+	import {
+		mapGetters
+	} from 'vuex';
 
 	export default {
-		name: "remoteBoot",
 		data() {
 			return {
 				deviceTypeId: -1,
-				typeList: [{
-						"id": 1,
-						"typeName": "娃娃机",
-						"typeNumber": "1",
-						"wight": 1,
-						"serviceCharge": 10,
-						"createId": 1,
-						"createTime": "2022-03-09 20:21:31",
-						"updateId": 1,
-						"updateTime": "2022-03-18 20:21:35"
-					},
-					{
-						"id": 2,
-						"typeName": "扭蛋机",
-						"typeNumber": "2",
-						"wight": 1,
-						"serviceCharge": 10,
-						"createId": 1,
-						"createTime": "2022-03-18 20:21:49",
-						"updateId": 1,
-						"updateTime": "2022-03-18 20:21:44"
-					},
-					{
-						"id": 3,
-						"typeName": "游乐车",
-						"typeNumber": "3",
-						"wight": 1,
-						"serviceCharge": 10,
-						"createId": 1,
-						"createTime": "2022-03-18 20:21:49",
-						"updateId": 1,
-						"updateTime": "2022-03-18 20:21:44"
-					},
-					{
-						"id": 4,
-						"typeName": "售货机",
-						"typeNumber": "4",
-						"wight": 1,
-						"serviceCharge": 10,
-						"createId": 1,
-						"createTime": "2022-03-18 20:22:42",
-						"updateId": 1,
-						"updateTime": "2022-03-18 20:23:17"
-					},
-					{
-						"id": 5,
-						"typeName": "兑币机",
-						"typeNumber": "5",
-						"wight": 1,
-						"serviceCharge": 10,
-						"createId": 1,
-						"createTime": "2022-03-18 20:23:56",
-						"updateId": 1,
-						"updateTime": "2022-03-18 20:24:02"
-					},
-					{
-						"id": 6,
-						"typeName": "儿童类",
-						"typeNumber": "6",
-						"wight": 1,
-						"serviceCharge": 10,
-						"createId": 1,
-						"createTime": "2023-04-18 09:02:11",
-						"updateId": 1,
-						"updateTime": "2023-04-18 09:02:14"
-					},
-					{
-						"id": 7,
-						"typeName": "游戏类",
-						"typeNumber": "7",
-						"wight": 1,
-						"serviceCharge": 10,
-						"createId": 1,
-						"createTime": "2023-05-22 09:59:31",
-						"updateId": 1,
-						"updateTime": "2023-05-22 09:59:33"
-					}
-				],
 				typeName: "",
 			};
 		},
-		// async created() {
-		// 	let type = await getDevicetype();
-		// 	if (type.data.code == 0 || type.data.msg == "ok") {
-		// 		this.typeList = type.data.data;
-		// 	}
-		// },
+		computed: {
+			...mapGetters([
+				'deviceTypeList',
+				'deviceTypeDict'
+			])
+		},
+		async created() {
+			this.$store.dispatch('config/getList');
+		},
 		methods: {
+			goTo() {
+				this.$goTo("/pages/mainPackages/home/remote/record")
+			},
 			pickDeviceType(item, index) {
 				this.deviceTypeId = item.id;
 				this.typeName = item.typeName;
 			},
 			nextStep() {
 				if (this.deviceTypeId != -1) {
-					this.$router.push({
-						name: "deviceStartup",
-						query: {
-							deviceTypeId: this.deviceTypeId,
-							typeName: this.typeName,
-						},
-					});
+					this.$goTo("/pages/mainPackages/home/remote/operate", "navigateTo", {
+						deviceTypeId: this.deviceTypeId,
+						typeName: this.typeName,
+					})
 				} else {
 					this.$toast("请选择设备类型");
 				}
@@ -153,28 +76,28 @@
 	.content {
 		display: flex;
 		justify-content: center;
-		margin-top: 10px;
-		padding: 12px;
+		margin-top: 20rpx;
+		padding: 0 24rpx;
 
 		.item-box {
 			width: 100%;
-			padding: 0 10px;
+			padding: 0 20rpx;
 			background: #fff;
-			border-radius: 8px;
+			border-radius: 16rpx;
 			overflow: hidden;
 		}
 
 		.item {
-			height: 44px;
+			height: 88rpx;
 			width: 100%;
-			font-size: 14px;
+			font-size: 28rpx;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 		}
 
 		.item:not(:last-child) {
-			border-bottom: 1px solid #f5f5f5;
+			border-bottom: 1rpx solid #f5f5f5;
 		}
 	}
 
@@ -182,13 +105,13 @@
 		text-align: center;
 		width: 95%;
 		margin: 0 auto;
-		padding-top: 12px;
-		font-size: 10px;
+		padding-top: 24rpx;
+		font-size: 20rpx;
 		color: rgba(192, 189, 189, 0.6);
 	}
 
 	.btnB {
-		height: 60px;
+		height: 120rpx;
 		width: 100%;
 		background: #fff;
 		position: fixed;
@@ -201,18 +124,18 @@
 		.link {
 			position: absolute;
 			width: 100%;
-			line-height: 35px;
-			top: -35px;
+			line-height: 70rpx;
+			top: -70rpx;
 			left: 0;
-			font-size: 15px;
+			font-size: 30rpx;
 			text-align: center;
 			background: #fff;
 			color: #5241ff;
-			border-bottom: 1px #ddd dashed;
+			border-bottom: 1rpx #ddd dashed;
 		}
 
 		.mainB {
-			height: 44px;
+			height: 88rpx;
 			width: 95%;
 			margin: 0 auto;
 			display: flex;
@@ -222,13 +145,13 @@
 
 		.btn {
 			background-color: #5241ff;
-			border-radius: 8px;
+			border-radius: 16rpx;
 			color: #fff;
-			font-size: 16px;
-			height: 44px;
-			line-height: 44px;
+			font-size: 32rpx;
+			height: 88rpx;
+			line-height: 88rpx;
 			text-align: center;
-			width: 167px;
+			width: 334rpx;
 		}
 	}
 </style>

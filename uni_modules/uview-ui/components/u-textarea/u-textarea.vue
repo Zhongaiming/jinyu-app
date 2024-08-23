@@ -32,7 +32,7 @@
         <text
             class="u-textarea__count"
             :style="{
-                'background-color': disabled ? 'transparent' : '#fff',
+                'background-color': disabled ? 'transparent' : '',
             }"
             v-if="count"
             >{{ innerValue.length }}/{{ maxlength }}</text
@@ -205,7 +205,7 @@ export default {
     position: relative;
     @include flex;
     flex: 1;
-	padding: 9px 0;
+	padding: 9px;
 
     &--radius {
         border-radius: 4px;
@@ -232,7 +232,6 @@ export default {
         bottom: 2px;
         font-size: 12px;
         color: $u-tips-color;
-        background-color: #ffffff;
         padding: 1px 4px;
     }
 }
