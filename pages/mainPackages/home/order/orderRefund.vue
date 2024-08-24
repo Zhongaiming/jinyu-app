@@ -42,7 +42,8 @@
 				<view class="refund-content_btn_ZFgj" @click="">全额退</view>
 			</view>
 			<view class="order_line"></view>
-			<view class="refund-content_tips_b1qpJ"><svg viewBox="0 0 1024 1024" fill="currentColor" width="1em"
+			<view class="refund-content_tips_b1qpJ" v-if="0">
+				<svg viewBox="0 0 1024 1024" fill="currentColor" width="1em"
 					height="1em" class="refund-content_icon_a8Exy">
 					<path
 						d="M512 0c282.767 0 512 229.233 512 512s-229.233 512-512 512S0 794.767 0 512 229.233 0 512 0zm0 711.68c-25.446 0-46.08 19.487-46.08 43.52s20.634 43.52 46.08 43.52 46.08-19.487 46.08-43.52-20.634-43.52-46.08-43.52zm0-486.4a44.892 44.892 0 0 0-44.877 46.065l9.41 359.705a35.476 35.476 0 0 0 70.933 0l9.41-359.705A44.892 44.892 0 0 0 512 225.28z">

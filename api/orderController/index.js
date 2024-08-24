@@ -98,7 +98,7 @@ export default class orderController {
 	}
 	
 	
-	// 经营统计
+	// ===== 经营统计 =====
 	// 查询场地收益
 	static getPlaceIncome(data) {
 		return http.request({
@@ -107,14 +107,7 @@ export default class orderController {
 			data
 		})
 	}
-	// 查询场地收益详情
-	static getPlaceIncomeDetail(data) {
-		return http.request({
-			url: '/order/api/v1/admin/order/orderForm/getPlaceIncomeDetail',
-			method: 'GET',
-			data
-		})
-	}
+	
 	// 收益分类统计
 	static benefitNew(data) {
 		return http.request({
@@ -131,6 +124,15 @@ export default class orderController {
 			data
 		})
 	}
+	
+	// 查询场地收益详情
+	static getPlaceIncomeDetail(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getPlaceIncomeDetail',
+			method: 'GET',
+			data
+		})
+	}
 	// 货道收益详情
 	static getPlaceDeviceByTypeInfo(data) {
 		return http.request({
@@ -139,5 +141,4 @@ export default class orderController {
 			data
 		})
 	}
-	
 }

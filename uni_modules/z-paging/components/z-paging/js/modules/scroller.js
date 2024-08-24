@@ -403,7 +403,6 @@ export default {
 		// scroll-view滚动中
 		_scroll(e) {
 			this.$emit('scroll', e);
-			this.$emit('scrollXls', e);
 			const scrollTop = e.detail.scrollTop;
 			// #ifndef APP-NVUE
 			this.finalUseVirtualList && this._updateVirtualScroll(scrollTop, this.oldScrollTop - scrollTop);

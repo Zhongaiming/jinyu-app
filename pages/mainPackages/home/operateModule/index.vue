@@ -1,6 +1,7 @@
 <template>
-	<z-paging ref="operatePaging" v-model="dataList" @query="queryList" @scrollXls="scrollXls">
+	<z-paging ref="operatePaging" v-model="dataList" @query="queryList" @scroll="scrollXls">
 		<view slot="top" :style="{'height':!changeToptitle?'380rpx':''}" class="header-style">
+			<jy-navbar title="场地收益统计" bgColor="#f5f6f7"></jy-navbar>
 			<view class="arrows-bottom text-over" :class="{'hidden-header': !changeToptitle}">
 				<view class="value-wrap Center">
 					<span class="date-con">{{ date }}</span>
@@ -12,7 +13,6 @@
 				</view>
 				<view class="line"></view>
 			</view>
-			<jy-navbar title="场地收益统计" bgColor="#f5f6f7"></jy-navbar>
 			<view class="header-content" :class="{'hidden-header': changeToptitle}">
 				<view class="header-notice" v-show="showDate">
 					<view class="header-bg"></view>
@@ -252,7 +252,7 @@
 		<!-- 说明 -->
 		<u-popup :show="answerQuest" round="20" mode="center">
 			<view class="quest-con">
-				<image :src="`${$baseUrl}appV4/altered/explain-pic.png`" alt="" mode="widthFix" />
+				<image :src="`${$baseUrl}appV4/altered/explain-pic.png`" alt="" mode="widthFix" class="image" />
 				<view class="btn" @click="answerQuest = !answerQuest"></view>
 			</view>
 		</u-popup>
@@ -269,19 +269,18 @@
 	// 	getPlaceIncome,
 	// 	getDeviceTypeIncome
 	// } from "@/utils/api/earningStat";
-	// import {
-	// 	getTime,
-	// 	getDateAll
-	// } from "@/plugins/utilityClass";
+	
 	// import PlaceidList from "@/components/commonComps/placeidList";
 	// import DeviceList from "@/components/commonComps/deviceList";
 	// import CustomList from "@/components/commonComps/customList.vue";
 	import {
+		getTime,
+		getDateAll
+	} from "@/plugins/utilityClass";
+	import {
 		debounceFun,
 		throttleFun
 	} from "@/plugins/debounceOrthrottle";
-
-
 	import {
 		orderController
 	} from "@/api/index.js";
@@ -335,11 +334,10 @@
 				// 	new Date().getDate()
 				// ),
 				// maxDate: new Date(getDateAll(0)),
-				// date: getDateAll(0) + "\u2002今天",
-				date: "xxx",
+				date: getDateAll(0) + "\u2002今天",
 				// //开始结束时间
-				// startTime: getDateAll(0),
-				// endTime: getDateAll(0),
+				startTime: getDateAll(0),
+				endTime: getDateAll(0),
 				//数据
 				earnStar: {},
 				//placeid
@@ -370,12 +368,14 @@
 		// },
 		methods: {
 			queryList(pageNo, pageSize) {
+				this.$loading();
 				orderController.getPlaceIncome({
 					page: pageNo,
 					size: pageSize,
 					startTime: '2024-08-23',
 					endTime: '2024-08-23'
 				}).then(res => {
+					this.$hideLoading();
 					this.earnStar = res.data
 					this.$refs.operatePaging.complete(res.data.placeDeviceTypeIncomeVos);
 				})
@@ -425,8 +425,26 @@
 					});
 				});
 			},
-
-
+			//跳转详情页
+			goEarnDetail(params) {
+				let detailArguments = []
+				if (this.typeName == "设备类型") {
+					let placeId = "place";
+					detailArguments = [params, this.startTime, this.endTime, placeId]
+				} else {
+					let deviceTypeId = "type";
+					detailArguments = [
+						params,
+						this.startTime,
+						this.endTime,
+						deviceTypeId,
+						this.placeId,
+					]
+				}
+				this.$goTo(`/pages/mainPackages/home/operateModule/detail`, "navigateTo", {
+					detailArguments
+				})
+			},
 
 
 			//选择日期
@@ -595,34 +613,6 @@
 					this.getDevicedata();
 				}
 			},
-			//跳转详情页
-			goEarnDetail(epl) {
-				if (this.typeName == "设备类型") {
-					let placeId = "place";
-					this.$router.push({
-						name: "placeEarndetail",
-						query: {
-							detailArguments: [epl, this.startTime, this.endTime, placeId],
-						},
-					});
-				} else {
-					let deviceTypeId = "type";
-					this.$router.push({
-						name: "placeEarndetail",
-						query: {
-							detailArguments: [
-								epl,
-								this.startTime,
-								this.endTime,
-								deviceTypeId,
-								this.placeId,
-							],
-						},
-					});
-				}
-			},
-			
-
 		},
 	};
 </script>
@@ -631,6 +621,7 @@
 	.header-style {
 		position: relative;
 	}
+
 	//simple-header
 	.arrows-bottom {
 		position: absolute;
@@ -1271,21 +1262,18 @@
 	}
 
 	.quest-con {
-		width: 305px;
-		height: 390px;
 		position: relative;
 		overflow: hidden;
 
-		img {
-			width: 100%;
-			height: auto;
+		.image {
+			width: 600rpx;
 		}
 
 		.btn {
 			width: 100%;
 			height: 45px;
 			position: absolute;
-			bottom: 0;
+			bottom: 16px;
 		}
 	}
 </style>
