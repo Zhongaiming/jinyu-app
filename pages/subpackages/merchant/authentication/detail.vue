@@ -40,7 +40,7 @@
 							</view>
 						</view>
 					</view>
-					<xls-merchant-state :state="parsms.state" v-if="parsms.state"></xls-merchant-state>
+					<xls-merchant-state :state="parsms.authorizeStatus" v-if="parsms.authorizeStatus == 1"></xls-merchant-state>
 					<!-- 图片 -->
 					<view class="picture__qrCode" v-else>
 						<image
@@ -107,7 +107,7 @@
 				parsms: {
 					id: 3,
 					appPayType: 'ZFB',
-					state: 1,
+					authorizeStatus: 2,
 					threePartnerNo: '123456789',
 					signName: '商户名称',
 					legalPerson: '法人名称',
@@ -117,7 +117,6 @@
 			};
 		},
 		onLoad(option) {
-			console.log("传参", JSON.parse(option.params))
 			this.parsms = JSON.parse(option.params).params;
 		},
 		methods: {

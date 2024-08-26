@@ -241,10 +241,19 @@
 						newDate["businessDateLimit"] = "50000101";
 					}
 				}
-				let res = await merchantController.hlbEntryApply(newDate);
-				if (res.code == 200) {
-					this.current = 4;
-				}
+				this.$modal("您确保已经输入正确信息了吗？",{
+					confirmText: '确定',
+				}).then(() => {
+					this.$loading();
+					merchantController.hlbEntryApply(newDate).then(res => {
+						this.$hideLoading();
+						if (res.code == 200) {
+							this.current = 4;
+						}
+					}).catch(() =>{
+						this.$hideLoading();
+					})
+				})
 			},
 		}
 	}
