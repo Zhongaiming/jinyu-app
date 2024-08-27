@@ -1,105 +1,108 @@
 <template>
-	<view class="device-list">
-		<view v-for="(item, index) in dataList" :key="index" class="device-list-item">
+	<view>
+		<view class="device-list">
+			<view v-for="(item, dataIndex) in dataList" :key="dataIndex" class="device-list-item">
 
-			<view class="device-list-first-place">
-				<view class="place-name" @click="getRailDetail(item, 'edit')">
-					{{ $placeNameRule(item.placeName, item.placeNumber) }}
+				<view class="device-list-first-place">
+					<view class="place-name" @click="getRailDetail(item, 'edit')">
+						{{ $placeNameRule(item.placeName, item.placeNumber) }}
+					</view>
+					<view class="place-detail" @click.stop="getRailDetail(item)">
+						<text>离线 {{ item.offlineNum }} / {{ item.deviceNum }} 台</text>
+						<view class="right-icon">
+							<u-icon name="arrow-up" v-show="!item.deviceSwitch" size="32" />
+							<u-icon name="arrow-down" v-show="item.deviceSwitch" size="32" />
+						</view>
+					</view>
+					<u-icon name="edit-pen" color="#5241FF" size="36" @click="getRailDetail(item, 'edit')" />
 				</view>
-				<view class="place-detail" @click.stop="getRailDetail(item)">
-					<text>离线 {{ item.offlineNum }} / {{ item.deviceNum }} 台</text>
-					<view class="right-icon">
-						<u-icon name="arrow-up" v-show="!item.listSwitch" size="32" />
-						<u-icon name="arrow-down" v-show="item.listSwitch" size="32" />
-					</view>
-				</view>
-				<u-icon name="edit-pen" color="#5241FF" size="36" @click="getRailDetail(item, 'edit')" />
-			</view>
 
-			<!-- 第二层 -->
-			<view class="device-list-second-device">
-				<view v-for="(dev, index) in item.deviceList" :key="index" v-show="item.listSwitch"
-					:class="{'device-style': dev.typeName != '扭蛋机'}">
-					<view class="device" @click="updataDevice(dev)">
-						<view class="left">
-							<view class="name">
-								<text v-show="dev.dollNumber">{{ dev.dollNumber }}号机-</text>
-								{{ dev.typeName }}{{ dev.deviceNumber }}
+				<!-- 第二层 -->
+				<view class="device-list-second-device" :style="{'padding-bottom':item.deviceSwitch?'20rpx':''}">
+					<view v-for="(dev, itemIndex) in item.deviceList" :key="$getUniqueKey(dataIndex, itemIndex)" v-show="item.deviceSwitch"
+						:class="{'device-style': dev.typeName != '扭蛋机'}">
+						<view class="device" @click="updataDevice(dev)">
+							<view class="left">
+								<view class="name">
+									<text v-show="dev.dollNumber">{{ dev.dollNumber }}号机-</text>
+									{{ dev.typeName }}{{ dev.deviceNumber }}
+								</view>
+								<image :src="`${$baseUrl}appV4/device/bunch.png`" alt="" v-if="dev.typeName"
+									class="image" mode="widthFix" />
+								<image :src="`${$baseUrl}appV4/device/pulse.png`" alt="" v-else class="image"
+									mode="widthFix" />
 							</view>
-							<image :src="`${$baseUrl}appV4/device/bunch.png`" alt="" v-if="dev.typeName" class="image"
-								mode="widthFix" />
-							<image :src="`${$baseUrl}appV4/device/pulse.png`" alt="" v-else class="image"
-								mode="widthFix" />
-						</view>
-						<view class="right">
-							<!-- 信号值组件 -->
-							<signal-svuetrength v-if="dev.onlineState == 1 && dev.deviceSignal > 0"
-								:signalValue="dev.deviceSignal || 0" />
-							<signal-offline v-else />
-							<view class="arrow">
-								<u-icon name="arrow-right" size="32" color="rgb(187, 184, 184)" />
-							</view>
-						</view>
-					</view>
-					<view class="remark">
-						<text v-show="disableMethod(dev)" class="disabled">设备已禁用</text>
-						{{ dev.remark }}
-					</view>
-
-					<!-- 蛋仓统计 -->
-					<view v-show="railMethod(dev)">
-						<view class="group-box-dec">
-							<span @click="closeShow(dev)">共{{ dev.railNum }}个
-								{{dev.typeName == "儿童类" ? "座位" : dev.typeName == "扭蛋机" ? "蛋仓" : "机位"}}
-								(在线:{{dev.onlineState == 1 && dev.deviceSignal > 0? dev.railOnlineNum: 0}}
-								离线:{{dev.onlineState == 1 && dev.deviceSignal > 0? dev.railOfflineNum: dev.railNum}})
-							</span>
-							<span @click="closeShow(dev)">
-								<u-icon name="arrow-down-fill" class="play" size="32" color="#8d8d8d"
-									v-show="dev.closeOrshow" />
-								<u-icon name="arrow-up-fill" class="playChang" size="32" color="#8d8d8d"
-									v-show="!dev.closeOrshow" />
-							</span>
-						</view>
-					</view>
-
-					<!-- 第三层 -->
-					<view class="device-list-three-egg" v-if="dev.deviceRailList">
-						<view class="egg-item" v-for="(gash, index) in dev.deviceRailList" :key="index"
-							v-show="dev.closeOrshow">
-
-							<view class="egg-count">
-								<view>{{ gash.shippingSpace }}/{{ gash.railNumber }}</view>
-								<view>
-									<signal-svuetrength
-										v-if="dev.onlineState == 1 && dev.deviceSignal > 0 && gash.railState == 0"
-										:signalValue="dev.deviceSignal ? dev.deviceSignal : 0" />
-									<signal-offline v-else />
+							<view class="right">
+								<!-- 信号值组件 -->
+								<signal-svuetrength v-if="dev.onlineState == 1 && dev.deviceSignal > 0"
+									:signalValue="dev.deviceSignal || 0" />
+								<signal-offline v-else />
+								<view class="arrow">
+									<u-icon name="arrow-right" size="32" color="rgb(187, 184, 184)" />
 								</view>
 							</view>
+						</view>
+						<view class="remark">
+							<text v-show="disableMethod(dev)" class="disabled">设备已禁用</text>
+							{{ dev.remark }}
+						</view>
 
-							<view class="egg-gift">
-								<view class="left-box">
-									<view class="image">
-										<image :src="gash.commodityImg" alt="" class="img" v-if="gash.commodityImg"
-											@error="handleError" />
-										<image :src="`${baseUrl}appV4/device/default.png`" alt="" class="img" v-else />
-									</view>
-									<view class="egg-info">
-										<view class="comidity-name">
-											{{ gash.commodityName }}
-										</view>
-										<view class="egg-des">
-											{{ gash.currency }}币/次,{{gash.price}}元/次,库存{{ gash.railRepertory }}
-										</view>
-										<view class="egg-des color" v-show="gash.railEnable == 0">
-											仓位已禁用
-										</view>
+						<!-- 蛋仓统计 -->
+						<view v-show="railMethod(dev)">
+							<view class="group-box-dec">
+								<span @click="closeShow(dev)">共{{ dev.railNum }}个
+									{{dev.typeName == "儿童类" ? "座位" : dev.typeName == "扭蛋机" ? "蛋仓" : "机位"}}
+									(在线:{{dev.onlineState == 1 && dev.deviceSignal > 0? dev.railOnlineNum: 0}}
+									离线:{{dev.onlineState == 1 && dev.deviceSignal > 0? dev.railOfflineNum: dev.railNum}})
+								</span>
+								<span @click="closeShow(dev)">
+									<u-icon name="arrow-down-fill" class="play" size="32" color="#8d8d8d"
+										v-show="dev.closeOrshow" />
+									<u-icon name="arrow-up-fill" class="playChang" size="32" color="#8d8d8d"
+										v-show="!dev.closeOrshow" />
+								</span>
+							</view>
+						</view>
+
+						<!-- 第三层 -->
+						<view class="device-list-three-egg" v-if="dev.deviceRailList">
+							<view class="egg-item" v-for="(gash, gashIndex) in dev.deviceRailList" :key="$getUniqueKey(itemIndex, gashIndex)"
+								v-show="dev.closeOrshow">
+
+								<view class="egg-count">
+									<view>{{ gash.shippingSpace }}/{{ gash.railNumber }}</view>
+									<view>
+										<signal-svuetrength
+											v-if="dev.onlineState == 1 && dev.deviceSignal > 0 && gash.railState == 0"
+											:signalValue="dev.deviceSignal ? dev.deviceSignal : 0" />
+										<signal-offline v-else />
 									</view>
 								</view>
-								<view class="egg-edit" v-hasPermi="['app:device:index:edit']"
-									@click="showSetEgg(gash, dev)">
-									编辑
+
+								<view class="egg-gift">
+									<view class="left-box">
+										<view class="image">
+											<image :src="gash.commodityImg" alt="" class="img" v-if="gash.commodityImg"
+												@error="handleError" />
+											<image :src="`${$baseUrl}appV4/device/default.png`" alt="" class="img"
+												v-else />
+										</view>
+										<view class="egg-info">
+											<view class="comidity-name">
+												{{ gash.commodityName }}
+											</view>
+											<view class="egg-des">
+												{{ gash.currency }}币/次,{{gash.price}}元/次,库存{{ gash.railRepertory }}
+											</view>
+											<view class="egg-des color" v-show="gash.railEnable == 0">
+												仓位已禁用
+											</view>
+										</view>
+									</view>
+									<view class="egg-edit" v-hasPermi="['app:device:index:edit']"
+										@click="showSetEgg(gash, dev)">
+										编辑
+									</view>
 								</view>
 							</view>
 						</view>
@@ -107,19 +110,27 @@
 				</view>
 			</view>
 		</view>
+		<!-- 设备详情 -->
+		<device-detail ref="deviceDetailpopup" @updatedDevice="updatedDevice"></device-detail>
+		<!-- 蛋仓详情 -->
+		<egg-set ref="setting" @updatedEgg="updatedEgg"></egg-set>
 	</view>
 </template>
 
 <script>
 	import signalOffline from "../signal-offline/index.vue";
 	import signalSvuetrength from "../signal-svuetrength/index.vue";
+	import deviceDetail from "../device-detail/index.vue";
+	import eggSet from "../egg-set/index.vue";
 	import {
 		deviceController
 	} from "@/api/index.js";
 	export default {
 		components: {
 			signalOffline,
-			signalSvuetrength
+			signalSvuetrength,
+			deviceDetail,
+			eggSet,
 		},
 		props: {
 			dataList: {
@@ -137,6 +148,11 @@
 
 			//设备详情
 			async getRailDetail(item, type) {
+				if (item.deviceSwitch) {
+					this.$set(item, "deviceSwitch", false);
+				} else {
+					this.$set(item, "deviceSwitch", true);
+				}
 				if (!item.deviceList || (item.deviceNum && !item.deviceList.length)) {
 					let res = await deviceController.getListDetails({
 						placeId: item.placeId,
@@ -149,18 +165,13 @@
 						// 仓位排序
 						res.data = this.descListMethod(res.data);
 						this.$set(item, "deviceList", res.data);
-						item["listSwitch"] = false;
 						if (type == "edit") {
 							// this.$refs.placePopup.callPlace(item);
-						} else {
-							item.listSwitch = !item.listSwitch;
 						}
 					}
 				} else {
 					if (type == "edit") {
 						// this.$refs.placePopup.callPlace(item);
-					} else {
-						item.listSwitch = !item.listSwitch;
 					}
 				}
 			},
@@ -228,6 +239,30 @@
 					}
 				}
 				return this.quickSortDesc(left).concat(pivot, this.quickSortDesc(right));
+			},
+
+			// 
+			// 设备详情
+			updataDevice(dev) {
+				this.$refs.deviceDetailpopup.isShowdetail(dev.deviceNumber);
+				this.deviceMsg = dev;
+			},
+			//编辑蛋仓
+			showSetEgg(gash, dev) {
+				this.$refs.setting.changSet(
+					gash.deviceNumber,
+					gash.railNumber,
+					dev.typeName,
+					gash.shippingSpace,
+					gash.commodityImg,
+					dev.uuid,
+					gash.railState
+				);
+				this.editEggMsg = gash;
+			},
+			//更新蛋仓数据
+			updatedEgg(egg) {
+				Object.assign(this.editEggMsg, egg);
 			},
 		}
 	}

@@ -1,74 +1,76 @@
 <template>
-	<view class="xls-today-earn-detail">
-		<view class="xls-td-tab-content">
-			<view class="tab-item" v-for="tab in tabList" :key="tab.id" @click="changeTabValue(tab.id)">
-				<view class="name" :class="tabActive == tab.id ? 'active' : ''">
-					{{ tab.name }}
+	<z-paging ref="todayPaging" v-model="dataList" @query="queryList">
+		<view slot="top">
+			<view class="xls-td-tab-content">
+				<view class="tab-item" v-for="tab in tabList" :key="tab.id" @click="changeTabValue(tab.id)">
+					<view class="name" :class="{'active':tabActive == tab.id}">
+						{{ tab.name }}
+					</view>
+				</view>
+			</view>
+			
+			<view class="xls-td-status-label" v-show="tabActive == 1">
+				<view class="status-item" v-for="state in statusList" :key="state.id"
+					:class="{'active-status':stateActive == state.id}" @click="changeStateValue(state.id)">
+					{{ state.name }}
 				</view>
 			</view>
 		</view>
 
-		<view class="xls-td-status-label" v-show="tabActive == 1">
-			<view class="status-item" v-for="state in statusList" :key="state.id"
-				:class="stateActive == state.id ? 'active-status' : ''" @click="changeStateValue(state.id)">
-				{{ state.name }}
+		<view v-for="(item, index) in dataList" :key="index" class="xls-list-item">
+			<view class="entry-hd" v-show="tabActive != 3">
+				<view class="title-info">
+					<p class="top" v-if="item.payType == 0">微信付款</p>
+					<p class="top" v-else-if="item.payType == 1">支付宝付款</p>
+					<p class="top" v-else>线上余额</p>
+					<p class="middle">{{ item.createTime }}</p>
+				</view>
+				<view class="num-info">
+					{{ item.amount }}<span class="small">元</span><br />
+					<span class="has-refund back" v-show="item.state == -1">有退款</span>
+					<span class="has-refund stay" v-show="item.state == 0">待支付</span>
+					<span class="has-refund" v-show="item.state == 1">交易完成</span>
+					<span class="trade-detail" v-hasPermi="['app:order:index']" @click="goTo(item)">订单详情</span>
+				</view>
+			</view>
+			<view class="entry-bd" v-show="tabActive != 3">
+				<view class="info-row">
+					<span class="field">设备类型</span>
+					<span class="value text-over">{{ item.deviceTypeName }}_{{ item.deviceNumber }}</span>
+				</view>
+				<view class="info-row">
+					<span class="field">交易单号</span>
+					<span class="value text-over">{{ item.transactionId }}</span>
+				</view>
+				<view class="info-row">
+					<span class="field">商户单号</span>
+					<span class="value text-over">{{ item.transactionNo }}</span>
+				</view>
+			</view>
+			<view class="entry-hd" v-show="tabActive == 3">
+				<view class="title-info cash-wrapper">
+					<view class="place-text">
+						{{ item.placeName }}
+						<span v-show="item.deviceNumber">_{{ item.deviceNumber }}</span>
+						<span v-show="item.deviceNumber">-{{ "1" }}</span>
+						<span v-show="item.railNumber">-{{ item.railNumbe || "1" }}</span>
+					</view>
+					<view>{{ item.createTime }}</view>
+				</view>
+				<view class="num-info">
+					{{ item.amountTotal }}<span class="small">元</span>
+				</view>
 			</view>
 		</view>
+		<xls-empty slot="empty" />
 
-		<u-list @scrolltolower="scrolltolower" class="xls-list">
-			<u-list-item v-for="(item, index) in dataList" :key="index" class="xls-list-item">
-				<view class="entry-hd" v-show="tabActive != 3">
-					<view class="title-info">
-						<p class="top" v-if="item.payType == 0">微信付款</p>
-						<p class="top" v-else-if="item.payType == 1">支付宝付款</p>
-						<p class="top" v-else>线上余额</p>
-						<p class="middle">{{ item.createTime }}</p>
-					</view>
-					<view class="num-info">
-						{{ item.amountTotal }}<span class="small">元</span><br />
-						<span class="has-refund back" v-show="item.state == -1">有退款</span>
-						<span class="has-refund stay" v-show="item.state == 0">待支付</span>
-						<span class="has-refund" v-show="item.state == 1">交易完成</span>
-						<span class="trade-detail" v-hasPermi="['app:order:index']" @click="goTo(item)">订单详情</span>
-					</view>
-				</view>
-				<view class="entry-bd" v-show="tabActive != 3">
-					<view class="info-row">
-						<span class="field">设备类型</span>
-						<span class="value text-over">{{ item.deviceTypeName }}_{{ item.deviceNumber }}</span>
-					</view>
-					<view class="info-row">
-						<span class="field">交易单号</span>
-						<span class="value text-over">{{ item.transactionId }}</span>
-					</view>
-					<view class="info-row">
-						<span class="field">商户单号</span>
-						<span class="value text-over">{{ item.transactionNo }}</span>
-					</view>
-				</view>
-				<view class="entry-hd" v-show="tabActive == 3">
-					<view class="title-info cash-wrapper">
-						<view class="place-text">
-							{{ item.placeName }}
-							<span v-show="item.deviceNumber">_{{ item.deviceNumber }}</span>
-							<span v-show="item.deviceNumber">-{{ "1" }}</span>
-							<span v-show="item.railNumber">-{{ item.railNumbe || "1" }}</span>
-						</view>
-						<view>{{ item.createTime }}</view>
-					</view>
-					<view class="num-info">
-						{{ item.amountTotal }}<span class="small">元</span>
-					</view>
-				</view>
-			</u-list-item>
-			<u-divider text="已经到底啦~" :dashed="true" text-size="28"></u-divider>
-		</u-list>
-
-		<xls-empty v-if="!dataList.length" />
-	</view>
+	</z-paging>
 </template>
 
 <script>
+	import {
+		orderController
+	} from "@/api/index.js";
 	export default {
 		data() {
 			return {
@@ -112,13 +114,24 @@
 			}
 		},
 		onLoad(option) {
-			console.log("传参", JSON.parse(option.params).id)
+			console.log("传参", JSON.parse(option.params).params)
+			this.tabActive = JSON.parse(option.params).params;
 		},
 		methods: {
-			scrolltolower() {},
+			queryList(pageNo, pageSize) {
+				// 现金getTodayCashOrderList
+				orderController.getTodayOnlineOrderList({
+					page: pageNo,
+					size: pageSize,
+					// state: ,
+				}).then(res => {
+					this.$refs.todayPaging.complete(res.data.records);
+				})
+			},
 			//在线-平台-现金
 			changeTabValue(id) {
 				this.tabActive = id;
+				this.$refs.todayPaging.reload();
 			},
 			//在线支付状态
 			changeStateValue(id) {
@@ -126,9 +139,7 @@
 			},
 			goTo(params) {
 				this.$goTo('/pages/mainPackages/home/order/index', 'navigateTo', {
-					transactionId: params.transactionId ?
-						params.transactionId :
-						params.transactionNo
+					orderNo: params.orderNo
 				})
 			}
 		}
@@ -136,7 +147,6 @@
 </script>
 
 <style lang="scss" scoped>
-	.xls-today-earn-detail {
 		.xls-td-tab-content {
 			height: 88rpx;
 			background: #fff;
@@ -186,10 +196,7 @@
 			}
 		}
 
-		.xls-list {
-			padding-bottom: 120rpx;
-			box-sizing: border-box;
-			font-family: "Microsoft JhengHei", "Microsoft YaHei";
+		
 
 			.xls-list-item {
 				background: #fff;
@@ -285,6 +292,6 @@
 					}
 				}
 			}
-		}
-	}
+		
+	
 </style>

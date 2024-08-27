@@ -1,7 +1,7 @@
 <template>
 	<view class="xls-login-wrapper">
 		<view class="xls-header">
-			<image :src="`${$baseUrl}login_image/ztuwl-logo.png`" mode="" class="xls-image"></image>
+			<xls-image :src="`${$baseUrl}login_image/ztuwl-logo.png`" mode="widthFix" class="xls-image"></xls-image>
 		</view>
 
 		<view class="xls-main-content">
@@ -19,7 +19,7 @@
 				<button class="xls-botton-style" @click="loginMethod">登录</button>
 			</form>
 			<view class="xls-register-wrapper">
-				<image :src="`${this.$baseUrl}login_image/register.png`" alt="" class="image" @click="goTo"
+				<xls-image :src="`${$baseUrl}login_image/register.png`" alt="" class="image" @click="goTo"
 					mode="widthFix" />
 			</view>
 		</view>
@@ -39,7 +39,7 @@
 		data() {
 			return {
 				login: {
-					username: "19854573708",
+					username: "zt18402059455",
 					password: "123456"
 				},
 				rememberNb: true,
@@ -126,16 +126,18 @@
 			height: 32.5%;
 			text-align: center;
 			background: $xls-color-primary;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 
 			.xls-image {
-				margin-top: 12%;
 				width: 160rpx;
-				height: 160rpx;
 			}
 		}
 
 		.xls-main-content {
 			width: 90%;
+			height: 690rpx;
 			padding: 40rpx;
 			box-sizing: border-box;
 			border-radius: 24rpx;
@@ -180,6 +182,7 @@
 			.image {
 				width: 200rpx;
 				margin-top: 64rpx;
+				margin-bottom: 24rpx;
 			}
 		}
 	}

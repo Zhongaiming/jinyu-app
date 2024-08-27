@@ -1,11 +1,10 @@
 <template>
 	<view class="xls-order-detail">
 		<jy-navbar title="订单详情" bgColor="#f5f5f5"></jy-navbar>
-
 		<view class="xls-box-style" @click="goTo()" v-if="order.amountRefund && order.refundState == 1">
 			<view class="device-style">
 				<span>已退 ¥{{order.amountRefund}}</span>
-				<span class="state arrow">退款成功</span>
+				<span class="state arrow">{{stateDict[order.state]}}</span>
 			</view>
 			<view class="text-style">
 				{{order.refundTime}}
@@ -337,13 +336,13 @@
 							res.data.rails = JSON.parse(res.data.rails)
 						}
 						this.order = res.data
-						console.log(this.order)
 					}
 				})
 			},
 			goTo(order) {
+				console.log(this.order)
 				this.$goTo('/pages/mainPackages/home/order/refundDetail', 'navigateTo', {
-					id: 'order.id'
+					orderId: this.order.id
 				})
 			}
 		}

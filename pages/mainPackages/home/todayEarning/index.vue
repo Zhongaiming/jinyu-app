@@ -157,6 +157,9 @@
 				subsidyInfo: {},
 			}
 		},
+		onLoad() {
+			this.getEarnInfo()
+		},
 		methods: {
 			goToDetail(params) {
 				this.$goTo('/pages/mainPackages/home/todayEarning/earnDetail', 'navigateTo', {
@@ -166,21 +169,21 @@
 			getEarnInfo() {
 				orderController.getTodayCashIncome({})
 					.then((res) => {
-						this.cashIncome = res.data.data;
+						this.cashIncome = res.data;
 					})
 					.catch((err) => {
 						console.log(err);
 					});
 				orderController.getTodayOnlineIncome({})
 					.then((res) => {
-						this.onlineIncome = res.data.data;
+						this.onlineIncome = res.data;
 					})
 					.catch((err) => {
 						console.log(err);
 					});
 				orderController.subsidyIncomeInfo({})
 					.then((res) => {
-						this.subsidyInfo = res.data.data;
+						this.subsidyInfo = res.data;
 					})
 					.catch((err) => {});
 			},

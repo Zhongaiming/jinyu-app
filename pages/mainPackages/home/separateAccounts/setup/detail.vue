@@ -65,9 +65,9 @@
 				<view class="content-person">
 					<view class="items">
 						<view class="title">分成人员：</view>
-						<view class="item-con" :style="editOradd ? { 'pointer-events': 'none' } : ''"
+						<view class="item-con" :style="{'pointer-events':editOradd ?'none':''}"
 							@click="showPeople = true">
-							<span class="main-text" :style="billsPeople == '请选择分成人员' ? { color: '#c8c9cc' } : ''">
+							<span class="main-text" :style="{color:billsPeople=='请选择分成人员'?'#c8c9cc':''}">
 								{{ billsPeople }}
 								<span v-show="editOradd" style="color: #c8c9cc; font-size: 10rpx">(不可编辑)</span>
 							</span>

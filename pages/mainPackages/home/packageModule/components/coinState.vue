@@ -1,36 +1,36 @@
 <template>
 	<u-popup :show="coinState" round="20" mode="center">
-		<div class="coinState">
-			<div class="modal-header">修改套餐展示状态</div>
-			<div class="con">
-				<div class="item" v-for="item in deviceState" :key="item.id" @click="activeCheck(item)" v-show="
+		<view class="coinState">
+			<view class="modal-header">修改套餐展示状态</view>
+			<view class="con">
+				<view class="item" v-for="item in deviceState" :key="item.id" @click="activeCheck(item)" v-show="
             mealInfo.setMealType == 2 ? (item.id != 2 ? true : false) : true
           ">
-					<div class="left-icon" v-show="setMealState != item.id"></div>
-					<div class="left-icon active-icon" v-show="setMealState == item.id">
-						<div class="min-icon"></div>
-					</div>
-					<div class="right txt">
-						<p class="label-tit" :class="setMealState == item.id ? 'active' : ''">
+					<view class="left-icon" v-show="setMealState != item.id"></view>
+					<view class="left-icon active-icon" v-show="setMealState == item.id">
+						<view class="min-icon"></view>
+					</view>
+					<view class="right txt">
+						<p class="label-tit" :class="{'active':setMealState == item.id}">
 							{{ item.title }}
 						</p>
 						<p class="desc-info">{{ item.info }}</p>
-					</div>
-				</div>
-				<div class="info-txt" v-show="mealInfo.moneyType == 1">
+					</view>
+				</view>
+				<view class="info-txt" v-show="mealInfo.moneyType == 1">
 					(活动专用：此功能主要用于商户使用营销工具搞活动时,系统可发送指令,执行送币。如抽奖送币,升单送币。适用于原本禁闭1元1币、5元5币的商户)
-				</div>
-				<div class="del-btn-box" v-show="mealInfo.setMealType == 2" @click="
+				</view>
+				<view class="del-btn-box" v-show="mealInfo.setMealType == 2" @click="
             (coinState = !coinState), $emit('deleteMealItem', mealInfo.id)
           ">
 					<span class="del-btn">删除自定义套餐</span>
-				</div>
-			</div>
-			<div class="btn-box">
-				<div class="btn cancel" @click="coinState = !coinState">取消</div>
-				<div class="btn confirm" @click="confirmOper">确认</div>
-			</div>
-		</div>
+				</view>
+			</view>
+			<view class="btn-box">
+				<view class="btn cancel" @click="coinState = !coinState">取消</view>
+				<view class="btn confirm" @click="confirmOper">确认</view>
+			</view>
+		</view>
 	</u-popup>
 </template>
 

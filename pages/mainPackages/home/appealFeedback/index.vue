@@ -1,93 +1,93 @@
 <template>
-	<div class="couple-content">
+	<view class="couple-content">
 		<xls-jy-navbar title="申诉列表"></xls-jy-navbar>
-		<div class="top-tips">
-			<div class="left">
+		<view class="top-tips">
+			<view class="left">
 				<span class="complaint-num">申诉处理({{ $store.state.coupleNum }})</span>
-			</div>
-			<div class="right">
+			</view>
+			<view class="right">
 				<image :src="`${$baseUrl}appV4/image/couple/search-icon.png`" alt="" class="image" />
 				<image :src="`${$baseUrl}appV4/image/couple/sides-icon.png`" alt="" class="image"
 					@click="showState = !showState" />
-			</div>
-		</div>
-		<div class="list-content-title" @click="playDetail">
+			</view>
+		</view>
+		<view class="list-content-title" @click="playDetail">
 			请商家及时处理投诉。若超时未处理的，则系统将会自动处理 &gt;
-		</div>
+		</view>
 		<u-list v-model="loading" :finished="onEarth" finished-text="没有更多了" @load="getRepresent"
 			v-if="dataList.length">
-			<div class="list-content">
-				<div class="items" v-for="(item, index) in dataList" :key="index" @click="goCoupleDetail(item)">
-					<div class="item-top">
-						<div class="left">
+			<view class="list-content">
+				<view class="items" v-for="(item, index) in dataList" :key="index" @click="goCoupleDetail(item)">
+					<view class="item-top">
+						<view class="left">
 							<image :src="`${$baseUrl}appV4/image/couple/phone-icon.png`" alt="" class="image"
 								v-show="item.sourceType == 2" />
 							<image :src="`${$baseUrl}appV4/image/couple/wx.png`" alt="" class="image"
 								v-show="item.sourceType == 1" />
 							<span>
 								<span class="phone">{{ item.phone }}</span>
-								<div class="equipment-info">
+								<view class="equipment-info">
 									{{ item.deviceTypeName }}{{ item.deviceNumber }}
-								</div>
+								</view>
 							</span>
-						</div>
-						<div class="right">{{ item.complaintTime }}</div>
-					</div>
-					<div class="item-middle">{{ item.problemDescription }}</div>
-					<div class="item-bottom">
+						</view>
+						<view class="right">{{ item.complaintTime }}</view>
+					</view>
+					<view class="item-middle">{{ item.problemDescription }}</view>
+					<view class="item-bottom">
 						<span class="btn" v-show="item.conductorState == 1"><span>立即处理</span></span>
 						<span class="btn btn-other" v-show="item.conductorState == 2"><span>已处理</span></span>
 						<span class="btn btn-other" v-show="item.conductorState == 3"><span>已回复</span></span>
 						<span class="btn btn-other" v-show="item.conductorState == 4"><span>已关闭</span></span>
-					</div>
-				</div>
-			</div>
+					</view>
+				</view>
+			</view>
 		</u-list>
 		<xls-empty v-else />
 		<!-- 筛选 -->
 		<u-popup v-model="showState" position="top">
-			<div class="filter-popup">
-				<div class="status-title">处理状态</div>
-				<div class="status-content">
+			<view class="filter-popup">
+				<view class="status-title">处理状态</view>
+				<view class="status-content">
 					<span class="border" v-for="(item, index) in conductorStateList" :key="index"
-						:class="conductorState == item.id ? 'checked' : ''" @click="conductorState = item.id">{{ item.name
+						:class="{'checked':conductorState == item.id}" @click="conductorState = item.id">{{ item.name
               }}<span class="no-handler-status" v-show="index == 1">{{
                 $route.query.coupleNum
               }}</span></span>
-				</div>
-				<div class="status-title">反馈类型</div>
-				<div class="status-content">
+				</view>
+				<view class="status-title">反馈类型</view>
+				<view class="status-content">
 					<span class="border" v-for="(item, index) in feedbackTypeList" :key="index"
-						:class="feedbackType == item.id ? 'checked' : ''"
+						:class="{'checked':feedbackType == item.id}"
 						@click="feedbackType = item.id">{{ item.name }}
 					</span>
-				</div>
+				</view>
 
-				<div class="status-title status">来源渠道</div>
-				<div class="status-content">
+				<view class="status-title status">来源渠道</view>
+				<view class="status-content">
 					<span class="border" v-for="(item, index) in sourceTypeList" :key="index"
-						:class="sourceType == item.id ? 'checked' : ''"
+						:class="{'checked':sourceType == item.id}"
 						@click="sourceType = item.id">{{ item.name }}</span>
-				</div>
+				</view>
 
-				<div class="status-title status">申诉时间</div>
-				<div class="status-content-status">
+				<view class="status-title status">申诉时间</view>
+				<view class="status-content-status">
 					<span class="start-time time" @click="showDate = !showDate">
 						<span class="tips-icon">start</span>{{ startTime }}</span>
 					<span class="line">-</span>
 					<span class="end-time time" @click="showDate = !showDate">
 						<span class="tips-icon end">end</span>{{ endTime }}</span>
-				</div>
+				</view>
 
-				<div class="footer-btn">
-					<div class="btn" @click="resetState">重置</div>
-					<div class="btn success" @click="screenSearch">完成</div>
-				</div>
-			</div>
+				<view class="footer-btn">
+					<view class="btn" @click="resetState">重置</view>
+					<view class="btn success" @click="screenSearch">完成</view>
+				</view>
+			</view>
 		</u-popup>
 		<u-calendar v-model="showDate" type="range" @confirm="onConfirm" :max-range="180" allow-same-day
 			range-prompt="只能查询半年的数据" :min-date="minDate" :max-date="maxDate" :round="false" color="#5241FF" />
-	</div>
+	</view>
 
 </template>
 

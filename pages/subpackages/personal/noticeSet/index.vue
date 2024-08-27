@@ -10,9 +10,9 @@
 					<u-icon name="arrow-right" color="#999" size="32" />
 				</view>
 			</view>
-			<view class="set-list" v-for="(set, index) in setInfolist" :key="index">
+			<view class="set-list" v-for="(set, dataIndex) in setInfolist" :key="dataIndex">
 				<view class="message-title">{{ set.classTitle }}</view>
-				<view class="receive-msg" v-for="(det, index) in set.summarizingList" :key="index">
+				<view class="receive-msg" v-for="(det, itemIndex) in set.summarizingList" :key="$getUniqueKey(dataIndex, itemIndex)">
 					<view class="main-txt">
 						{{ det.title }}
 						<view class="sm-text">

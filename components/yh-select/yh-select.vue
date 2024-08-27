@@ -7,7 +7,7 @@
 					<view class="tag-list">
 						<view class="tag" v-for="(item,index) in selects" :key="item.value">
 							<text>{{item.label}}</text>
-							<text  class="clear iconfont icon-shanchu" @click.stop="handlerClearItem(index)"></text>
+							<text class="clear iconfont icon-shanchu" @click.stop="handlerClearItem(index)"></text>
 						</view>
 					</view>
 				</scroll-view>
@@ -25,32 +25,38 @@
 		</view>
 		<view class="list" :class="{show:dropdown}" :style="{top:`${top}rpx`}">
 			<view class="search" v-if="search" @click.stop>
-				<view class="search-box" >
-					<input class="input" v-model="searchKey" @input="handlerSearch" placeholderStyle="color:#85888d" placeholder="请输入" type="text" />
-					<text  class="clear  iconfont icon-shanchu" v-if="searchKey" @click.stop="handlerClearSearch"></text>
+				<view class="search-box">
+					<input class="input" v-model="searchKey" @input="handlerSearch" placeholderStyle="color:#85888d"
+						placeholder="请输入" type="text" />
+					<text class="clear  iconfont icon-shanchu" v-if="searchKey" @click.stop="handlerClearSearch"></text>
 				</view>
 			</view>
 			<scroll-view scroll-y="true" class="scroll-view">
 				<view v-if="filterList.length > 0">
 					<view v-if="multiple">
-						<view class="option-item" v-for="(item,index) in filterList" :key="index" @click.stop="handlerSelectMutiple(item)">
-							<text class="item-content" :class="{'item-active':selectValues.includes(item.value)}">{{item.label}}</text>
+						<view class="option-item" v-for="(item,index) in filterList" :key="index"
+							@click.stop="handlerSelectMutiple(item)">
+							<text class="item-content"
+								:class="{'item-active':selectValues.includes(item.value)}">{{item.label}}</text>
 						</view>
 					</view>
-					<view  v-else>
-						<view class="option-item" v-for="(item,index) in filterList" :key="index" @click="handlerSelect(item)">
+					<view v-else>
+						<view class="option-item" v-for="(item,index) in filterList" :key="index"
+							@click="handlerSelect(item)">
 							<!-- #ifdef VUE2 -->
-							<text class="item-content" :class="{'item-active':item.value === value}">{{item.label}}</text>
+							<text class="item-content"
+								:class="{'item-active':item.value === value}">{{item.label}}</text>
 							<!-- #endif -->
 							<!-- #ifdef VUE3 -->
-							<text class="item-content" :class="{'item-active':item.value === modelValue}">{{item.label}}</text>
+							<text class="item-content"
+								:class="{'item-active':item.value === modelValue}">{{item.label}}</text>
 							<!-- #endif -->
 						</view>
 					</view>
 				</view>
 				<view class="empty" v-else>
 					<view class="empty-content">
-						<text  class="empty-icon iconfont icon-kongshuju" ></text>
+						<text class="empty-icon iconfont icon-kongshuju"></text>
 						<view class="empty-text">暂无数据</view>
 					</view>
 				</view>
@@ -69,23 +75,23 @@
 			},
 			// #ifdef VUE2
 			value: {
-				type: [String, Number,Array],
+				type: [String, Number, Array],
 				default: ""
 			},
 			// #endif
 			// #ifdef VUE3
 			modelValue: {
-				type: [String, Number,Array],
+				type: [String, Number, Array],
 				default: ""
 			},
 			// #endif
-			search:{
-				type:Boolean,
-				default:false
+			search: {
+				type: Boolean,
+				default: false
 			},
-			multiple:{
-				type:Boolean,
-				default:false
+			multiple: {
+				type: Boolean,
+				default: false
 			},
 			height: {
 				type: Number,
@@ -131,47 +137,47 @@
 		data() {
 			return {
 				dropdown: false,
-				searchKey:"",
+				searchKey: "",
 				select: "",
-				selects:[],
-				selectValues:[],
-				list: [],//所有数据
-				filterList:[],//过滤后的数据
+				selects: [],
+				selectValues: [],
+				list: [], //所有数据
+				filterList: [], //过滤后的数据
 			}
 		},
 		watch: {
 			// #ifdef VUE2
 			value:
-			// #endif
-			// #ifdef VUE3
-			modelValue:
-			// #endif  
-			{
-				handler(v) {
-					if(this.multiple){
-						this.selects = []
-						v.forEach(val=>{
-							this.list.forEach(e=>{
-								if(e.value === val){
-									this.selects.push({
-										label:e.label,
-										value:e.value
-									})
-								}
+				// #endif
+				// #ifdef VUE3
+				modelValue:
+				// #endif  
+				{
+					handler(v) {
+						if (this.multiple) {
+							this.selects = []
+							v.forEach(val => {
+								this.list.forEach(e => {
+									if (e.value === val) {
+										this.selects.push({
+											label: e.label,
+											value: e.value
+										})
+									}
+								})
 							})
-						})
-						this.selectValues = v
-					}else{
-						const item = this.list.find(e => e.value === v)
-						if (item) {
-							this.select = item.label
+							this.selectValues = v
 						} else {
-							this.select = ""
+							const item = this.list.find(e => e.value === v)
+							if (item) {
+								this.select = item.label
+							} else {
+								this.select = ""
+							}
 						}
-					}
+					},
+					immediate: true
 				},
-				immediate: true
-			},
 		},
 		mounted() {
 			const label = this.format.label
@@ -193,21 +199,21 @@
 				this.$emit('update:modelValue', item.value)
 				// #endif
 			},
-			handlerSelectMutiple(item){
-				const index = this.selects.findIndex(e=> e.value === item.value)
-				if(index < 0){
+			handlerSelectMutiple(item) {
+				const index = this.selects.findIndex(e => e.value === item.value)
+				if (index < 0) {
 					this.selects.push(item)
-				}else{
-					this.selects.splice(index,1)
+				} else {
+					this.selects.splice(index, 1)
 				}
-				this.selectValues = this.selects.map(e=>e.value)
+				this.selectValues = this.selects.map(e => e.value)
 				// #ifdef VUE2
 				this.$emit('input', this.selectValues)
 				// #endif
 				// #ifdef VUE3
 				this.$emit('update:modelValue', this.selectValues)
 				// #endif
-				
+
 			},
 			handlerClear() {
 				// #ifdef VUE2
@@ -217,9 +223,9 @@
 				this.$emit('update:modelValue', "")
 				// #endif
 			},
-			handlerClearItem(index){
-				this.selects.splice(index,1)
-				this.selectValues = this.selects.map(e=>e.value)
+			handlerClearItem(index) {
+				this.selects.splice(index, 1)
+				this.selectValues = this.selects.map(e => e.value)
 				// #ifdef VUE2
 				this.$emit('input', this.selectValues)
 				// #endif
@@ -228,13 +234,13 @@
 				// #endif
 			},
 			//清空搜索
-			handlerClearSearch(){
+			handlerClearSearch() {
 				this.searchKey = ""
 				this.handlerSearch()
 			},
 			//过滤
-			handlerSearch(){
-				this.filterList = this.list.filter(v=>v.label.indexOf(this.searchKey) > -1)
+			handlerSearch() {
+				this.filterList = this.list.filter(v => v.label.indexOf(this.searchKey) > -1)
 			},
 		}
 	}
@@ -253,34 +259,40 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+
 		.select-content {
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			font-size: 24rpx;
-			.scroll-view{
+
+			.scroll-view {
 				width: 100%;
 				height: 100%;
-				.tag-list{
+
+				.tag-list {
 					display: flex;
 					height: 100%;
 					align-items: center;
-					.tag{
+
+					.tag {
 						display: flex;
 						align-items: center;
 						flex-shrink: 0;
-					    margin-right: 10rpx;
+						margin-right: 10rpx;
 						padding: 8rpx;
-						background: #f4f4f5;;
+						background: #f4f4f5;
+						;
 						border-radius: 8rpx;
-						.clear{
+
+						.clear {
 							margin-left: 10rpx;
 						}
 					}
 				}
 			}
-			
-           
+
+
 			.placeholder {
 				color: #a8abb2;
 			}
@@ -313,62 +325,75 @@
 			z-index: 99;
 			padding: 10rpx 0;
 			box-shadow: 0px 0px 12px rgba(0, 0, 0, .12);
-			.search{
-				padding: 10rpx ;
-				.search-box{
+
+			.search {
+				padding: 10rpx;
+
+				.search-box {
 					display: flex;
 					align-items: center;
-					padding:0 24rpx;
+					padding: 0 24rpx;
 					border-radius: 30rpx;
 					// border: 1rpx solid #dadbde;
 					background: #f5f5f5;
-					.input{
+
+					.input {
 						font-size: 24rpx;
 						height: 60rpx;
 						flex: 1;
 					}
 				}
 			}
+
 			.scroll-view {
 				height: 280rpx;
+
 				.option-item {
 					height: 68rpx;
 					display: flex;
 					align-items: center;
 					padding: 0 24rpx;
+
 					.item-active {
 						color: $color;
 					}
+
 					.item-content {
 						white-space: nowrap;
 						overflow: hidden;
 						text-overflow: ellipsis;
 					}
 				}
-				.empty{
+
+				.empty {
 					height: 100%;
 					width: 100%;
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					.empty-content{
+
+					.empty-content {
 						display: flex;
 						flex-direction: column;
 						align-items: center;
-						.empty-icon{
+
+						.empty-icon {
 							font-size: 70rpx;
 						}
-						.empty-text{
+
+						.empty-text {
 							padding-top: 30rpx;
 							font-size: 24rpx;
 						}
 					}
 				}
 			}
+
 			&.show {
 				visibility: visible;
 			}
 		}
+
 		.mask {
 			height: 100%;
 			width: 100%;

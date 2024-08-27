@@ -1,13 +1,13 @@
 <template>
 	<u-popup :show="editPopup" :round="20" mode="center">
-		<div class="edit-content home-family">
-			<div class="popup-title">套餐{{ operType }}</div>
+		<view class="edit-content home-family">
+			<view class="popup-title">套餐{{ operType }}</view>
 			<slot></slot>
-			<div class="btn-wrapper">
-				<div class="btn cancel-btn" @click="editPopup = !editPopup">取消</div>
-				<div class="btn" @click="confirmOper">确定</div>
-			</div>
-		</div>
+			<view class="btn-wrapper">
+				<view class="btn cancel-btn" @click="editPopup = !editPopup">取消</view>
+				<view class="btn" @click="confirmOper">确定</view>
+			</view>
+		</view>
 	</u-popup>
 </template>
 

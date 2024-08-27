@@ -19,7 +19,7 @@
 		<u-list @scrolltolower="scrolltolower" class="xls-list" :height="`${uListHeight}px`">
 			<u-list-item v-for="(item, index) in dataList" :key="index" class="xls-list-item">
 				<!-- 操作类型 1添加，2修改，3删除 -->
-				<view :class="`bgCass${item.operationType}`" @click="goTo(item)"></view>
+				<view :class="[`bgCass${item.operationType}`]" @click="goTo(item)"></view>
 				<view class="header">
 					<span>{{ item.placeName }}</span><u-icon name="arrow-right" size="26"></u-icon>
 				</view>
@@ -76,97 +76,7 @@
 				],
 				typeName: "场地名称",
 				searchValue: "",
-				//
-				page: 0,
-				onEarth: false,
-				dataList: [{
-						"id": 7253,
-						"placeId": 2448,
-						"placeName": "射水测试场地",
-						"operationType": 2,
-						"operationBeforeText": "{\"场地名称\":\"射水测试场地\",\"所在地区\":\"北京市北京市东城区\",\"详细地址\":\"射水测试场地\",\"场地类型\":\"酒吧\",\"是否为默认场地\":\"否\"}",
-						"operationText": "{\"场地名称\":\"射水测试场地\",\"所在地区\":\"北京市北京市东城区\",\"详细地址\":\"射水测试场地\",\"场地类型\":\"酒吧\",\"是否为默认场地\":\"是\"}",
-						"operationId": 506,
-						"operationName": "前端测试",
-						"operationTime": "2024-07-25 10:32:46"
-					},
-					{
-						"id": 7254,
-						"placeId": 2486,
-						"placeName": "地心测试机",
-						"operationType": 2,
-						"operationBeforeText": "{\"场地名称\":\"地心测试机\",\"所在地区\":\"广东省广州市番禺区\",\"详细地址\":\"旧水坑\",\"场地类型\":\"其他\",\"是否为默认场地\":\"是\"}",
-						"operationText": "{\"场地名称\":\"地心测试机\",\"所在地区\":\"广东省广州市番禺区\",\"详细地址\":\"旧水坑\",\"场地类型\":\"其他\",\"是否为默认场地\":\"否\"}",
-						"operationId": 506,
-						"operationName": "前端测试",
-						"operationTime": "2024-07-25 10:32:46"
-					},
-					{
-						"id": 7251,
-						"placeId": 2486,
-						"placeName": "地心测试机",
-						"operationType": 2,
-						"operationBeforeText": "{\"场地名称\":\"地心测试机\",\"所在地区\":\"广东省广州市番禺区\",\"详细地址\":\"旧水坑\",\"场地类型\":\"其他\",\"是否为默认场地\":\"否\"}",
-						"operationText": "{\"场地名称\":\"地心测试机\",\"所在地区\":\"广东省广州市番禺区\",\"详细地址\":\"旧水坑\",\"场地类型\":\"其他\",\"是否为默认场地\":\"是\"}",
-						"operationId": 506,
-						"operationName": "前端测试",
-						"operationTime": "2024-07-25 10:32:43"
-					},
-					{
-						"id": 7252,
-						"placeId": 1082,
-						"placeName": "中土物联-513",
-						"operationType": 2,
-						"operationBeforeText": "{\"场地名称\":\"中土物联-513\",\"所在地区\":\"北京市北京市东城区\",\"详细地址\":\"详细地址\",\"场地类型\":\"餐饮店\",\"是否为默认场地\":\"是\"}",
-						"operationText": "{\"场地名称\":\"中土物联-513\",\"所在地区\":\"北京市北京市东城区\",\"详细地址\":\"详细地址\",\"场地类型\":\"餐饮店\",\"是否为默认场地\":\"否\"}",
-						"operationId": 506,
-						"operationName": "前端测试",
-						"operationTime": "2024-07-25 10:32:43"
-					},
-					{
-						"id": 5623,
-						"placeId": 2038,
-						"placeName": "场地名称002",
-						"operationType": 2,
-						"operationBeforeText": "{\"场地名称\":\"场地名称\",\"所在地区\":\"北京市北京市东城区\",\"详细地址\":\"详细地址\",\"场地类型\":\"KTV\",\"是否为默认场地\":\"否\"}",
-						"operationText": "{\"场地名称\":\"场地名称002\",\"所在地区\":\"北京市北京市东城区\",\"详细地址\":\"详细地址\",\"场地类型\":\"KTV\",\"是否为默认场地\":\"否\"}",
-						"operationId": 506,
-						"operationName": "前端测试",
-						"operationTime": "2024-04-08 14:16:32"
-					},
-					{
-						"id": 5611,
-						"placeId": 2038,
-						"placeName": "场地名称",
-						"operationType": 1,
-						"operationText": "{\"场地名称\":\"场地名称\",\"所在地区\":\"北京市北京市东城区\",\"详细地址\":\"详细地址\",\"场地类型\":\"KTV\",\"是否为默认场地\":\"否\"}",
-						"operationId": 506,
-						"operationName": "前端测试",
-						"operationTime": "2024-04-08 12:28:21"
-					},
-					{
-						"id": 3927,
-						"placeId": 1319,
-						"placeName": "V0019广州万达店",
-						"operationType": 2,
-						"operationBeforeText": "{\"场地名称\":\"V0019广州万达店\",\"所在地区\":\"广东省广州市海珠区\",\"详细地址\":\"万达广场四楼119号\",\"场地类型\":\"商场\",\"是否为默认场地\":\"否\"}",
-						"operationText": "{\"场地名称\":\"V0019广州万达店\",\"所在地区\":\"广东省广州市海珠区\",\"详细地址\":\"万达广场四楼119号\",\"场地类型\":\"商场\",\"是否为默认场地\":\"否\"}",
-						"operationId": 506,
-						"operationName": "前端测试",
-						"operationTime": "2023-10-09 11:35:09"
-					},
-					{
-						"id": 3926,
-						"placeId": 1319,
-						"placeName": "V0019广州万达店",
-						"operationType": 2,
-						"operationBeforeText": "{\"场地名称\":\"V0019广州万达店\",\"所在地区\":\"广东省广州市海珠区\",\"详细地址\":\"万达广场四楼119号\",\"场地类型\":\"商场\",\"是否为默认场地\":\"否\"}",
-						"operationText": "{\"场地名称\":\"V0019广州万达店\",\"所在地区\":\"广东省广州市海珠区\",\"详细地址\":\"万达广场四楼119号\",\"场地类型\":\"商场\",\"是否为默认场地\":\"否\"}",
-						"operationId": 506,
-						"operationName": "前端测试",
-						"operationTime": "2023-10-09 11:33:21"
-					}
-				],
+				dataList: [],
 				//
 				fromType: 1,
 				uListHeight: 200,

@@ -100,7 +100,8 @@
 				</view>
 			</view>
 		</view>
-
+		
+		<xls-empty slot="empty"></xls-empty>
 		<view slot="bottom" class="footer-btn" v-show="modulSwitch">
 			<view class="footer footer-two" v-show="multiSelect">
 				<u-checkbox-group v-model="placeAllCheck" @change="allGroupChange">

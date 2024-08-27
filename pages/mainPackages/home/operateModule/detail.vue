@@ -29,7 +29,7 @@
 			<view class="list-panel">
 				<view class="panel-hd">
 					<view class="sort-item" v-for="(i, index) in screenList" :key="index"
-						:class="screenActive == i.id ? 'active-screen' : ''" @click="screenActive = i.id">
+						:class="{'active-screen':screenActive == i.id}" @click="screenActive = i.id">
 						<span>{{ i.title }}</span>
 						<view class="icon-play" @click="iconDown = !iconDown">
 							<view class="icon-up" :class="{'active-up':screenActive==i.id&&iconDown}"></view>

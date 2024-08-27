@@ -1,7 +1,6 @@
 import http from '../../core/http/index.js'
 
 export default class orderController {
-	
 	// 获取订单列表
 	static getOrderList(data) {
 		return http.request({
@@ -20,8 +19,41 @@ export default class orderController {
 			data
 		})
 	}
-	
-	// 订单表操作管理接口
+	// 全额退款
+	static allRefund(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/allRefund',
+			method: 'POST',
+			data
+		})
+	}
+	// 部分退款（指定金额退款）
+	static amountRefund(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/amountRefund',
+			method: 'POST',
+			data
+		})
+	}
+	// 部分退款（按分账比例分配退款）
+	static partRefund(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/partRefund',
+			method: 'POST',
+			data
+		})
+	}
+	// 订单退款查询
+	static refundQuery(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/refundQuery',
+			method: 'GET',
+			data
+		})
+	}
+
+
+	// 收益
 	static getTotalTodayIncome(data) {
 		return http.request({
 			url: '/order/api/v1/admin/order/orderForm/getTotalTodayIncome',
@@ -29,7 +61,6 @@ export default class orderController {
 			data
 		})
 	}
-	
 	static subsidyIncomeInfo(data) {
 		return http.request({
 			url: '/order/api/v1/admin/order/orderForm/subsidyIncomeInfo',
@@ -37,7 +68,6 @@ export default class orderController {
 			data
 		})
 	}
-	
 	static getTodayOnlineIncome(data) {
 		return http.request({
 			url: '/order/api/v1/admin/order/orderForm/getTodayOnlineIncome',
@@ -45,7 +75,6 @@ export default class orderController {
 			data
 		})
 	}
-	
 	static getTodayCashIncome(data) {
 		return http.request({
 			url: '/order/api/v1/admin/order/orderForm/getTodayCashIncome',
@@ -53,7 +82,7 @@ export default class orderController {
 			data
 		})
 	}
-	
+	// === 收益
 	static getTodayOnlineOrderList(data) {
 		return http.request({
 			url: '/order/api/v1/admin/order/orderForm/getTodayOnlineOrderList',
@@ -61,7 +90,6 @@ export default class orderController {
 			data
 		})
 	}
-	
 	static getTodayCashOrderList(data) {
 		return http.request({
 			url: '/order/api/v1/admin/order/orderForm/getTodayCashOrderList',
@@ -69,7 +97,6 @@ export default class orderController {
 			data
 		})
 	}
-	
 	// 投币记录表操作管理接口
 	static getDeviceInsertCoins(data) {
 		return http.request({
@@ -78,7 +105,13 @@ export default class orderController {
 			data
 		})
 	}
-	
+	static getInsertCoinsInfoList(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderInsertCoins/getInsertCoinsInfoList',
+			method: 'GET',
+			data
+		})
+	}
 	static getInsertCoinsPlaceNum(data) {
 		return http.request({
 			url: '/order/api/v1/admin/order/orderInsertCoins/getInsertCoinsPlaceNum',
@@ -86,18 +119,16 @@ export default class orderController {
 			data
 		})
 	}
-	
-	
+
 	// 出礼流水表操作管理接口
-	static getInsertCoinsPlaceNum(data) {
+	static presentConsume(data) {
 		return http.request({
 			url: '/order/api/v1/admin/commodity/outPresentWater/presentConsume',
 			method: 'GET',
 			data
 		})
 	}
-	
-	
+
 	// ===== 经营统计 =====
 	// 查询场地收益
 	static getPlaceIncome(data) {
@@ -107,7 +138,7 @@ export default class orderController {
 			data
 		})
 	}
-	
+
 	// 收益分类统计
 	static benefitNew(data) {
 		return http.request({
@@ -124,7 +155,7 @@ export default class orderController {
 			data
 		})
 	}
-	
+
 	// 查询场地收益详情
 	static getPlaceIncomeDetail(data) {
 		return http.request({

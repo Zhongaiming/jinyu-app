@@ -1,27 +1,27 @@
 <template>
 	<u-popup :show="coinNotice" round="20" mode="center"> 
-		<div class="coinNotice">
-			<div class="modal-header">解释说明</div>
-			<div class="con-out">
-				<div class="h3">以下内容适用于扫码支付和刷脸支付的兑币机</div>
-				<div class="con">
-					<div class="step">
-						<div class="h4">套餐类型</div>
+		<view class="coinNotice">
+			<view class="modal-header">解释说明</view>
+			<view class="con-out">
+				<view class="h3">以下内容适用于扫码支付和刷脸支付的兑币机</view>
+				<view class="con">
+					<view class="step">
+						<view class="h4">套餐类型</view>
 						<p>标准套餐：与纸钞对等金额的套餐</p>
 						<p>自定义：商户自行设置的其他金额套餐</p>
-					</div>
-					<div class="step">
-						<div class="h4">展示状态</div>
+					</view>
+					<view class="step">
+						<view class="h4">展示状态</view>
 						<p>已启用：设备上已设置的套餐,且用户扫码可以看到并购买</p>
 						<p class="red-ff">禁用：设备上没有设置的套餐，且用户扫码看不到</p>
 						<p class="yellow-ff">
 							活动专用:设备上主要用于商户使用营销工具搞活动时,系统可发送指令,执行送币。如抽奖送币,升单送币。适用于原本禁闭1元1币、5元5币的商户。
 						</p>
-					</div>
-				</div>
-				<div class="btn-ok" @click="coinNotice = !coinNotice">好的</div>
-			</div>
-		</div>
+					</view>
+				</view>
+				<view class="btn-ok" @click="coinNotice = !coinNotice">好的</view>
+			</view>
+		</view>
 	</u-popup>
 </template>
 

@@ -14,7 +14,7 @@
 		</div>
 		<!-- 数据列表 -->
 		<div class="list-content">
-			<div class="list-block" v-for="(item, key, index) of dataList" :key="index" @click="
+			<div class="list-block" v-for="(item, key, dataIndex) of dataList" :key="dataIndex" @click="
             $router.push({
               path: '/dataDbj/DbjDataDetail',
               query: {
@@ -33,7 +33,7 @@
 					</div>
 				</div>
 				<div class="block-row-box">
-					<div class="block-row" v-for="(list, index) in item" :key="index">
+					<div class="block-row" v-for="(list, itemIndex) in item" :key="$getUniqueKey(dataIndex, itemIndex)">
 						<div class="block-cell">
 							<div class="cell-top">
 								兑币类型

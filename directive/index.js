@@ -14,11 +14,11 @@ const install = function(Vue) {
   Vue.directive('dialogDragHeight', dialogDragHeight)
 }
 
-if (window.Vue) {
-  // 浏览器环境中使用 Vue.js 框架
-  window['hasRole'] = hasRole
-  window['hasPermi'] = hasPermi
-  Vue.use(install); // eslint-disable-line
-}
+// if (window.Vue) {
+//   // 浏览器环境中使用 Vue.js 框架
+//   window['hasRole'] = hasRole
+//   window['hasPermi'] = hasPermi
+//   Vue.use(install); // eslint-disable-line
+// }
 
 export default install

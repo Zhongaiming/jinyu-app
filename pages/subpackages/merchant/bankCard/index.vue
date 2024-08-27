@@ -1,17 +1,11 @@
 <template>
 	<view class="xls-merchat-ca">
 		<xls-jy-navbar title="绑定银行卡"></xls-jy-navbar>
-		<div class="person-content">
-			<div class="panel">
-				<div class="panel-hd enter-state">
+		<view class="person-content">
+			<view class="panel">
+				<view class="panel-hd enter-state">
 					<span>商户信息</span>
-					<span class="state" :class="
-		          bankCardInfo.entryStatus === 'AUDITED'
-		            ? 'success'
-		            : bankCardInfo.entryStatus === 'OVERRULE'
-		            ? 'bad'
-		            : 'info'
-		        ">
+					<span class="state" :class="[getClass]">
 						{{
 		          bankCardInfo.entryStatus === "INIT"
 		            ? "待审核"
@@ -24,237 +18,237 @@
 		            : "未知状态"
 		        }}
 					</span>
-				</div>
-				<div class="panel-bd">
-					<div class="cm-input-row">
+				</view>
+				<view class="panel-bd">
+					<view class="cm-input-row">
 						<span class="field">商户E码</span>
 						{{ bankCardInfo.appMerchantCode }}
-						<div class="copy" @click.stop="copyMemberId(bankCardInfo.appMerchantCode || '---')">
+						<view class="copy" @click.stop="copyMemberId(bankCardInfo.appMerchantCode || '---')">
 							<span class="text">复制</span>
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">商户类型</span>
-						<div class="value">
+						<view class="value">
 							<input type="text" name="type" class="text-over" placeholder="请选择"
-								:class="!canEnter ? 'cm-unclickable' : ''" v-model="companyType" />
-						</div>
-					</div>
-					<div class="cm-input-row">
+								:class="{'cm-unclickable':!canEnter}" v-model="companyType" />
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">证件类型</span>
-						<div class="value">
+						<view class="value">
 							<input type="text" name="type" class="text-over" placeholder="请选择"
-								:class="!canEnter ? 'cm-unclickable' : ''" v-model="lepCardType" />
-						</div>
-					</div>
-					<div class="cm-input-row">
+								:class="{'cm-unclickable':!canEnter}" v-model="lepCardType" />
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">有效期限</span>
-						<div class="value" v-if="bankCardInfo.merchantType == 'PERSON'">
+						<view class="value" v-if="bankCardInfo.merchantType == 'PERSON'">
 							{{
 		            `${strString(bankCardInfo.idCardStartDate)} 至 ${strString(
 		              bankCardInfo.idCardEndDate
 		            )}`
 		          }}
-						</div>
-						<div class="value" v-else>
+						</view>
+						<view class="value" v-else>
 							{{
 		            `${strString(bankCardInfo.businessDateStart)} 至 ${strString(
 		              bankCardInfo.businessDateLimit
 		            )}`
 		          }}
-						</div>
-					</div>
-					<div class="cm-input-row" v-show="bankCardInfo.merchantType == 'ENTERPRISE'">
+						</view>
+					</view>
+					<view class="cm-input-row" v-show="bankCardInfo.merchantType == 'ENTERPRISE'">
 						<span class="field">信用代码</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.businessLicense }}
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">商户名称</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.signName }}
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">商户简称</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.showName }}
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">地区</span>
-						<div class="value">
+						<view class="value">
 							<!-- {{region}} -->
 							{{ `${bankCardInfo.bankProv} ${bankCardInfo.bankCity}` }}
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">详细地址</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.address }}
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">认证时间</span>
-						<div class="value">
+						<view class="value">
 							{{ pickerTime(bankCardInfo.createTime) }}
-						</div>
-					</div>
-				</div>
-				<div class="panel-hd">结算信息</div>
-				<div class="panel-bd">
-					<div class="cm-input-row">
+						</view>
+					</view>
+				</view>
+				<view class="panel-hd">结算信息</view>
+				<view class="panel-bd">
+					<view class="cm-input-row">
 						<span class="field" v-html="
 		            bankCardInfo.merchantType == 'ENTERPRISE'
 		              ? '法人姓名'
 		              : '持卡人姓名'
 		          "></span>
-						<div class="value">
+						<view class="value">
 							<input type="text" name="type" class="text-over" placeholder="请选择"
-								:class="!canEnter ? 'cm-unclickable' : ''" v-model="bankCardInfo.legalPerson" />
-						</div>
-					</div>
-					<div class="cm-input-row">
+								:class="{'cm-unclickable':!canEnter}" v-model="bankCardInfo.legalPerson" />
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field" v-html="
 		            bankCardInfo.merchantType == 'ENTERPRISE'
 		              ? '法人证件号'
 		              : '身份证号'
 		          "></span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.legalPersonId }}
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field" v-html="
 		            bankCardInfo.merchantType == 'ENTERPRISE'
 		              ? '法人证件期限'
 		              : '证件期限'
 		          "></span>
-						<div class="value">
+						<view class="value">
 							{{
 		            `${strString(bankCardInfo.idCardStartDate)} 至 ${strString(
 		              bankCardInfo.idCardEndDate
 		            )}`
 		          }}
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field" v-html="
 		            bankCardInfo.merchantType == 'ENTERPRISE'
 		              ? '许可证账号'
 		              : '银行卡账号'
 		          "></span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.accountNo }}
-						</div>
-					</div>
-					<div class="cm-input-row" v-if="bankCardInfo.merchantType == 'INDIVIDUALBISS'">
+						</view>
+					</view>
+					<view class="cm-input-row" v-if="bankCardInfo.merchantType == 'INviewIDUALBISS'">
 						<span class="field">结算类型</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.settleBankType == "TOPRIVATE" ? "对私" : "对公" }}
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">开户银行</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.bankName }}
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">开户地区</span>
-						<div class="value">
+						<view class="value">
 							{{ `${bankCardInfo.bankProv} ${bankCardInfo.bankCity}` }}
-						</div>
-					</div>
-					<div class="cm-input-row">
+						</view>
+					</view>
+					<view class="cm-input-row">
 						<span class="field">开户支行</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.bankBranch }}
-						</div>
-					</div>
-					<div class="cm-input-row" v-show="bankCardInfo.merchantType == 'PERSON'">
+						</view>
+					</view>
+					<view class="cm-input-row" v-show="bankCardInfo.merchantType == 'PERSON'">
 						<span class="field">邮箱</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.email }}
-						</div>
-					</div>
-					<div class="cm-input-row" v-show="bankCardInfo.merchantType == 'PERSON'">
+						</view>
+					</view>
+					<view class="cm-input-row" v-show="bankCardInfo.merchantType == 'PERSON'">
 						<span class="field">预留手机号</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.linkPhone }}
-						</div>
-					</div>
-					<div class="cm-input-row" v-show="bankCardInfo.merchantType != 'PERSON'">
+						</view>
+					</view>
+					<view class="cm-input-row" v-show="bankCardInfo.merchantType != 'PERSON'">
 						<span class="field">联系人姓名</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.linkman }}
-						</div>
-					</div>
-					<div class="cm-input-row" v-show="bankCardInfo.merchantType != 'PERSON'">
+						</view>
+					</view>
+					<view class="cm-input-row" v-show="bankCardInfo.merchantType != 'PERSON'">
 						<span class="field">联系人证件号</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.linkManId }}
-						</div>
-					</div>
-					<div class="cm-input-row" v-show="bankCardInfo.merchantType != 'PERSON'">
+						</view>
+					</view>
+					<view class="cm-input-row" v-show="bankCardInfo.merchantType != 'PERSON'">
 						<span class="field">联系人手机号</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.linkPhone }}
-						</div>
-					</div>
-					<div class="cm-input-row" v-show="bankCardInfo.merchantType != 'PERSON'">
+						</view>
+					</view>
+					<view class="cm-input-row" v-show="bankCardInfo.merchantType != 'PERSON'">
 						<span class="field">联系人邮箱</span>
-						<div class="value">
+						<view class="value">
 							{{ bankCardInfo.email }}
-						</div>
-					</div>
-				</div>
-				<div class="panel-hd">证件信息</div>
-				<div class="upload-panel">
-					<div class="one-content">
-						<div class="cm-upload-handle">
-							<div class="handle-wrap" @click="imgView(images.lepUrla)">
+						</view>
+					</view>
+				</view>
+				<view class="panel-hd">证件信息</view>
+				<view class="upload-panel">
+					<view class="one-content">
+						<view class="cm-upload-handle">
+							<view class="handle-wrap" @click="imgView(images.lepUrla)">
 								<img :src="images.lepUrla" alt="" />
-							</div>
+							</view>
 							<p v-html="
 		              bankCardInfo.merchantType == 'ENTERPRISE'
 		                ? '法人证件正面'
 		                : '身份证正面'
 		            "></p>
-						</div>
-						<div class="cm-upload-handle">
-							<div class="handle-wrap" @click="imgView(images.lepUrlb)">
+						</view>
+						<view class="cm-upload-handle">
+							<view class="handle-wrap" @click="imgView(images.lepUrlb)">
 								<img :src="images.lepUrlb" alt="" />
-							</div>
+							</view>
 							<p v-html="
 		              bankCardInfo.merchantType == 'ENTERPRISE'
 		                ? '法人证件背面'
 		                : '身份证背面'
 		            "></p>
-						</div>
-						<div class="cm-upload-handle">
-							<div class="handle-wrap" @click="imgView(images.cardPhoto)">
+						</view>
+						<view class="cm-upload-handle">
+							<view class="handle-wrap" @click="imgView(images.cardPhoto)">
 								<img :src="images.cardPhoto" alt="" />
-							</div>
+							</view>
 							<p v-html="
 		              bankCardInfo.merchantType == 'ENTERPRISE'
 		                ? '开户许可证'
 		                : '银行卡正面'
 		            "></p>
-						</div>
-					</div>
-					<div class="one-content second-content">
-						<div class="cm-upload-handle" v-show="bankCardInfo.merchantType != 'PERSON'">
-							<div class="handle-wrap" @click="imgView(images.blicUrla)">
+						</view>
+					</view>
+					<view class="one-content second-content">
+						<view class="cm-upload-handle" v-show="bankCardInfo.merchantType != 'PERSON'">
+							<view class="handle-wrap" @click="imgView(images.blicUrla)">
 								<img :src="images.blicUrla" alt="" />
-							</div>
+							</view>
 							<p>营业执照</p>
-						</div>
-						<div class="cm-upload-handle">
-							<div class="handle-wrap" @click="imgView(images.img)">
+						</view>
+						<view class="cm-upload-handle">
+							<view class="handle-wrap" @click="imgView(images.img)">
 								<img :src="images.img" alt="" />
-							</div>
+							</view>
 							<p>门头照片</p>
 							<p class="link-btn" @click="
 		              $router.push({
@@ -264,11 +258,11 @@
 		            ">
 								查看示例
 							</p>
-						</div>
-						<div class="cm-upload-handle">
-							<div class="handle-wrap" @click="imgView(images.innerimg)">
+						</view>
+						<view class="cm-upload-handle">
+							<view class="handle-wrap" @click="imgView(images.innerimg)">
 								<img :src="images.innerimg" alt="" />
-							</div>
+							</view>
 							<p>设备照片</p>
 							<p class="link-btn" @click="
 		              $router.push({
@@ -278,11 +272,11 @@
 		            ">
 								查看示例
 							</p>
-						</div>
-						<div class="cm-upload-handle">
-							<div class="handle-wrap" @click="imgView(images.enterimg)">
+						</view>
+						<view class="cm-upload-handle">
+							<view class="handle-wrap" @click="imgView(images.enterimg)">
 								<img :src="images.enterimg" alt="" />
-							</div>
+							</view>
 							<p>设备周边环境（含设备）照片</p>
 							<p class="link-btn" @click="
 		              $router.push({
@@ -292,14 +286,14 @@
 		            ">
 								查看示例
 							</p>
-						</div>
-					</div>
-				</div>
-				<div class="matchant-info-change" @click="dialoguePopup = !dialoguePopup">
+						</view>
+					</view>
+				</view>
+				<view class="matchant-info-change" @click="dialoguePopup = !dialoguePopup">
 					<p class="text">变更商户资料</p>
-				</div>
-			</div>
-		</div>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -325,6 +319,15 @@
 				images: {},
 			}
 		},
+		computed: {
+			getClass() {
+				return this.bankCardInfo.entryStatus === 'AUDITED' ?
+					'success' :
+					this.bankCardInfo.entryStatus === 'OVERRULE' ?
+					'bad' :
+					'info'
+			}
+		},
 		async onLoad(option) {
 			const params = JSON.parse(option.params);
 			let res = await merchantController.getHlbEntryAction({
@@ -335,12 +338,12 @@
 			this.images = res.data.images;
 			let type = this.bankCardInfo.merchantType;
 			let com;
-			//商户类型：ENTERPRISE：企业商户，INDIVIDUALBISS：个体工商户，PERSON：个人商户
+			//商户类型：ENTERPRISE：企业商户，INviewIDUALBISS：个体工商户，PERSON：个人商户
 			type == "ENTERPRISE" ?
 				(com = "企业商户") :
 				type == "PERSON" ?
 				(com = "个人商户") :
-				type == "INDIVIDUALBISS" ?
+				type == "INviewIDUALBISS" ?
 				(com = "个体工商户") :
 				"未设置";
 			this.companyType = `${com}`;

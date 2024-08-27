@@ -1,11 +1,11 @@
 <template>
 	<view id="signalStrength">
 		<ul :style="{ width: sigWidth, height: sigHeight }">
-			<li :style="{ width: gridSize }" :class="signalValue > 0 ? 'signalValue' : ''"></li>
-			<li :style="{ width: gridSize }" :class="signalValue > 15 ? 'signalValue' : ''"></li>
-			<li :style="{ width: gridSize }" :class="signalValue > 19 ? 'signalValue' : ''"></li>
-			<li :style="{ width: gridSize }" :class="signalValue > 23 ? 'signalValue' : ''"></li>
-			<li :style="{ width: gridSize }" :class="signalValue > 27 ? 'signalValue' : ''"></li>
+			<li :style="{ width: gridSize }" :class="{'signalValue':signalValue>0}"></li>
+			<li :style="{ width: gridSize }" :class="{'signalValue':signalValue>15}"></li>
+			<li :style="{ width: gridSize }" :class="{'signalValue':signalValue>19}"></li>
+			<li :style="{ width: gridSize }" :class="{'signalValue':signalValue>23}"></li>
+			<li :style="{ width: gridSize }" :class="{'signalValue':signalValue>27}"></li>
 		</ul>
 	</view>
 </template>

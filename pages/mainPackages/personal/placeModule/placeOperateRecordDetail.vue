@@ -5,45 +5,21 @@
 		<div class="detail-content">
 			<div class="update-details">
 				<div class="top-title" v-show="$route.query.fromType == 0">
-					<span class="details-type add" :class="
-              recordDetail.operationType == 1
-                ? 'add'
-                : recordDetail.operationType == 2
-                ? 'edit'
-                : 'delete'
-            " v-html="
-              recordDetail.operationType == 1
+					<span class="details-type add" :class="[getClassType]">{{recordDetail.operationType == 1
                 ? '新增分账人'
                 : recordDetail.operationType == 2
                 ? '编辑分账人'
-                : '删除分账人'
-            "></span>
+                : '删除分账人'}}</span>
 					<span class="subs">操作已完成</span>
 				</div>
 				<div class="top-title" v-show="$route.query.fromType == 1">
-					<span class="details-type add" :class="
-              recordDetail.operationType == 1
-                ? 'add'
-                : recordDetail.operationType == 2
-                ? 'edit'
-                : 'delete'
-            " v-html="
-              recordDetail.operationType == 1
-                ? '新增场地'
-                : recordDetail.operationType == 2
-                ? '编辑场地'
-                : '删除场地'
-            "></span>
+					<span class="details-type add" :class="[getClassType]">
+						{{recordDetail.operationType == 1?'新增场地':recordDetail.operationType==2?'编辑场地':'删除场地'}}
+					</span>
 					<span class="subs">操作已完成</span>
 				</div>
 				<!-- 操作类型 1添加，2修改，3删除 -->
-				<div class="update-details-content bgAdd" :class="
-            recordDetail.operationType == 1
-              ? 'bgAdd'
-              : recordDetail.operationType == 2
-              ? 'bgEdit'
-              : 'bgDelete'
-          ">
+				<div class="update-details-content bgAdd" :class="[getOperateType]">
 					<div class="update-after">
 						<div class="left-tips">
 							<!-- <img src="@/assets/place_image/suc.png" alt="" class="sub-img" /> -->
@@ -70,9 +46,8 @@
 								<span class="title-subs" v-show="!recordDetail.operationBeforeTextMap">无</span>
 							</div>
 							<div class="bottom">
-								<div class="label-value" v-for="(
-                    value, key, index
-                  ) of recordDetail.operationBeforeTextMap" :key="index">
+								<div class="label-value"
+									v-for="(value, key, index) of recordDetail.operationBeforeTextMap" :key="index">
 									<span class="label">{{ key }}</span>
 									<span class="value">{{ value }}</span>
 								</div>
@@ -139,6 +114,25 @@
 		// 		this.recordDetail = res.data.data;
 		// 	}
 		// },
+		computed: {
+			getClassType() {
+				return this.recordDetail.operationType == 1 ?
+					'add' :
+					this.recordDetail.operationType == 2 ?
+					'edit' :
+					'delete';
+			},
+			getOperateType() {
+				return this.recordDetail.operationType == 1 ?
+					'bgAdd' :
+					this.recordDetail.operationType == 2 ?
+					'bgEdit' :
+					'bgDelete'
+			}
+		},
+		methods: {
+
+		}
 	};
 </script>
 

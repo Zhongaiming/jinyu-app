@@ -46,8 +46,9 @@
 				<span>验证码</span>
 				<view class="code">
 					<input type="text" placeholder="请输入验证码" maxlength="6" v-model="ranCodeNumber" />
-					<view class="btnStyle" :class="isShade ? 'shade' : ''" @click="getCode"
-						v-html="flag ? '获取验证码' : `${second} S`"></view>
+					<view class="btnStyle" :class="{'shade':isShade}" @click="getCode">
+						{{flag ? '获取验证码' : `${second} S`}}
+					</view>
 				</view>
 			</view>
 		</view>

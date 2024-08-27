@@ -19,7 +19,7 @@
 		<u-popup :show="operatePopup" round="20" mode="center">
 			<view class="operate-popup">
 				<view class="operate-popup-body">
-					<view class="title">设备{{operatetype ? "注册":"绑定"}}</view>
+					<view class="title">设备{{operatetype?"注册":"绑定"}}</view>
 					<view>
 						<u--input v-model="device.deviceUuid" placeholder="请输入设备编码/设备唯一码"></u--input>
 					</view>

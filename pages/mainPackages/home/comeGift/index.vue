@@ -29,169 +29,23 @@
 </template>
 
 <script>
+	import {
+		orderController
+	} from "@/api/index.js";
 	export default {
 		data() {
 			return {
-				dataList: []
+				dataList: [],
 			}
 		},
 		methods: {
-			queryList() {
-				const list = [{
-						"commodityId": 1006,
-						"commodityName": "72757-6 3款無殼扭蛋造型系列 之 迪士尼公主人偶 愛麗絲 奇妙仙子 貝兒公主異色版",
-						"commodityReferencePrice": 1,
-						"commodityCount": 1,
-						"placeId": 401,
-						"placeName": "V0006中土513",
-						"deviceType": 2,
-						"deviceTypeName": "扭蛋机",
-						"deviceNumber": "30000036",
-						"shippingSpace": 1,
-						"railNumber": "11",
-						"outPresentType": 3,
-						"createTime": "2024-07-23 14:05:24"
-					},
-					{
-						"commodityId": 1006,
-						"commodityName": "72757-6 3款無殼扭蛋造型系列 之 迪士尼公主人偶 愛麗絲 奇妙仙子 貝兒公主異色版",
-						"commodityReferencePrice": 1,
-						"commodityCount": 1,
-						"placeId": 401,
-						"placeName": "V0006中土513",
-						"deviceType": 2,
-						"deviceTypeName": "扭蛋机",
-						"deviceNumber": "30000036",
-						"shippingSpace": 1,
-						"railNumber": "13",
-						"outPresentType": 3,
-						"createTime": "2024-07-23 14:01:35"
-					},
-					{
-						"commodityId": 1006,
-						"commodityName": "72757-6 3款無殼扭蛋造型系列 之 迪士尼公主人偶 愛麗絲 奇妙仙子 貝兒公主異色版",
-						"commodityReferencePrice": 1,
-						"commodityCount": 1,
-						"placeId": 401,
-						"placeName": "V0006中土513",
-						"deviceType": 2,
-						"deviceTypeName": "扭蛋机",
-						"deviceNumber": "30000036",
-						"shippingSpace": 1,
-						"railNumber": "11",
-						"outPresentType": 3,
-						"createTime": "2024-07-23 13:58:40"
-					},
-					{
-						"commodityId": 1006,
-						"commodityName": "72757-6 3款無殼扭蛋造型系列 之 迪士尼公主人偶 愛麗絲 奇妙仙子 貝兒公主異色版",
-						"commodityReferencePrice": 1,
-						"commodityCount": 1,
-						"placeId": 401,
-						"placeName": "V0006中土513",
-						"deviceType": 2,
-						"deviceTypeName": "扭蛋机",
-						"deviceNumber": "30000036",
-						"shippingSpace": 1,
-						"railNumber": "11",
-						"outPresentType": 3,
-						"createTime": "2024-07-23 13:58:40"
-					},
-					{
-						"commodityId": 1006,
-						"commodityName": "72757-6 3款無殼扭蛋造型系列 之 迪士尼公主人偶 愛麗絲 奇妙仙子 貝兒公主異色版",
-						"commodityReferencePrice": 1,
-						"commodityCount": 1,
-						"placeId": 401,
-						"placeName": "V0006中土513",
-						"deviceType": 2,
-						"deviceTypeName": "扭蛋机",
-						"deviceNumber": "30000036",
-						"shippingSpace": 1,
-						"railNumber": "11",
-						"outPresentType": 3,
-						"createTime": "2024-07-23 13:58:40"
-					},
-					{
-						"commodityId": 1006,
-						"commodityName": "72757-6 3款無殼扭蛋造型系列 之 迪士尼公主人偶 愛麗絲 奇妙仙子 貝兒公主異色版",
-						"commodityReferencePrice": 1,
-						"commodityCount": 1,
-						"placeId": 401,
-						"placeName": "V0006中土513",
-						"deviceType": 2,
-						"deviceTypeName": "扭蛋机",
-						"deviceNumber": "30000036",
-						"shippingSpace": 1,
-						"railNumber": "11",
-						"outPresentType": 3,
-						"createTime": "2024-07-23 13:58:40"
-					},
-					{
-						"commodityId": 1006,
-						"commodityName": "72757-6 3款無殼扭蛋造型系列 之 迪士尼公主人偶 愛麗絲 奇妙仙子 貝兒公主異色版",
-						"commodityReferencePrice": 1,
-						"commodityCount": 1,
-						"placeId": 401,
-						"placeName": "V0006中土513",
-						"deviceType": 2,
-						"deviceTypeName": "扭蛋机",
-						"deviceNumber": "30000036",
-						"shippingSpace": 1,
-						"railNumber": "11",
-						"outPresentType": 3,
-						"createTime": "2024-07-23 13:58:40"
-					},
-					{
-						"commodityId": 1006,
-						"commodityName": "72757-6 3款無殼扭蛋造型系列 之 迪士尼公主人偶 愛麗絲 奇妙仙子 貝兒公主異色版",
-						"commodityReferencePrice": 1,
-						"commodityCount": 1,
-						"placeId": 401,
-						"placeName": "V0006中土513",
-						"deviceType": 2,
-						"deviceTypeName": "扭蛋机",
-						"deviceNumber": "30000036",
-						"shippingSpace": 1,
-						"railNumber": "11",
-						"outPresentType": 3,
-						"createTime": "2024-07-23 13:58:40"
-					},
-					{
-						"commodityId": 1006,
-						"commodityName": "72757-6 3款無殼扭蛋造型系列 之 迪士尼公主人偶 愛麗絲 奇妙仙子 貝兒公主異色版",
-						"commodityReferencePrice": 1,
-						"commodityCount": 1,
-						"placeId": 401,
-						"placeName": "V0006中土513",
-						"deviceType": 2,
-						"deviceTypeName": "扭蛋机",
-						"deviceNumber": "30000036",
-						"shippingSpace": 1,
-						"railNumber": "11",
-						"outPresentType": 3,
-						"createTime": "2024-07-23 13:58:40"
-					},
-					{
-						"commodityId": 1006,
-						"commodityName": "72757-6 3款無殼扭蛋造型系列 之 迪士尼公主人偶 愛麗絲 奇妙仙子 貝兒公主異色版",
-						"commodityReferencePrice": 1,
-						"commodityCount": 1,
-						"placeId": 401,
-						"placeName": "V0006中土513",
-						"deviceType": 2,
-						"deviceTypeName": "扭蛋机",
-						"deviceNumber": "30000036",
-						"shippingSpace": 1,
-						"railNumber": "11",
-						"outPresentType": 3,
-						"createTime": "2024-07-23 13:58:40"
-					}
-				]
-
-				setTimeout(() => {
-					this.$refs.paging.complete(list);
-				}, 1500)
+			queryList(pageNo, pageSize) {
+				orderController.presentConsume({
+					page: pageNo,
+					size: pageSize,
+				}).then(res => {
+					this.$refs.paging.complete(res.data.records);
+				})
 			}
 		}
 	}

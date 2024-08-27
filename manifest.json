@@ -74,7 +74,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx3066460aef0e4d03",
         "setting" : {
             "urlCheck" : false
         },
@@ -106,8 +106,8 @@
             "disableHostCheck" : true,
             "proxy" : {
                 "^/baseUrl" : {
-                    // "target" : "http://8.138.24.164:659",
-					"target" : "http://192.168.0.114:8006",
+                    "target" : "http://8.138.24.164:659",
+                    // "target" : "http://192.168.0.114:8006",
                     "changeOrigin" : true,
                     "secure" : true,
                     "pathRewrite" : {

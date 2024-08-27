@@ -115,7 +115,7 @@
 							<view class="picker-slot-wrapper" style="height: 180px; transform: translateZ(0px)">
 								<view class="picker-item" style="height: 36px; line-height: 36px"
 									v-for="(item, index) in recommendMealList" :key="index"
-									:class="pickerSelect == item ? 'picker-selected' : ''" @click="pickerSelect = item">
+									:class="{'picker-selected':pickerSelect == item}" @click="pickerSelect = item">
 									{{ item }}
 								</view>
 							</view>
@@ -189,7 +189,7 @@
 				allCheckGroup: [],
 			};
 		},
-		async created() {
+		async onLoad() {
 			this.getList();
 		},
 		methods: {

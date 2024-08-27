@@ -37,14 +37,14 @@
 			<view class="refund-content">
 				<view class="refund-content_input">
 					<view class="refund-content_prefix">￥</view>
-					<input placeholder="输入退款金额数量" class="refund-content_input_qV_cV">
+					<input placeholder="输入退款金额" type="number" class="refund-content_input_qV_cV" v-model="refundAmount">
 				</view>
-				<view class="refund-content_btn_ZFgj" @click="">全额退</view>
+				<view class="refund-content_btn_ZFgj" @click="allRefund">全额退</view>
 			</view>
 			<view class="order_line"></view>
 			<view class="refund-content_tips_b1qpJ" v-if="0">
-				<svg viewBox="0 0 1024 1024" fill="currentColor" width="1em"
-					height="1em" class="refund-content_icon_a8Exy">
+				<svg viewBox="0 0 1024 1024" fill="currentColor" width="1em" height="1em"
+					class="refund-content_icon_a8Exy">
 					<path
 						d="M512 0c282.767 0 512 229.233 512 512s-229.233 512-512 512S0 794.767 0 512 229.233 0 512 0zm0 711.68c-25.446 0-46.08 19.487-46.08 43.52s20.634 43.52 46.08 43.52 46.08-19.487 46.08-43.52-20.634-43.52-46.08-43.52zm0-486.4a44.892 44.892 0 0 0-44.877 46.065l9.41 359.705a35.476 35.476 0 0 0 70.933 0l9.41-359.705A44.892 44.892 0 0 0 512 225.28z">
 					</path>
@@ -72,7 +72,7 @@
 			</view>
 		</view>
 
-		<xls-bottom-btn @confirm="confirmMethod"></xls-bottom-btn>
+		<xls-bottom-btn @confirm="confirmMethod" text="原路退款"></xls-bottom-btn>
 	</view>
 </template>
 
@@ -86,6 +86,7 @@
 				order: {},
 				reason: 1,
 				reasonValue: "",
+				refundAmount: "",
 				reasonList: [{
 						id: 1,
 						label: '无原因'
@@ -128,12 +129,51 @@
 						if (res.data.rails) {
 							res.data.rails = JSON.parse(res.data.rails)
 						}
-						this.order = res.data
+						this.order = res.data;
+						this.refundAmount = this.order.amountTotal;
 					}
 				})
 			},
 			confirmMethod() {
-
+				if (this.refundAmount * 100 > this.order.amountTotal * 100) {
+					return this.$toast("退款金额不能超过实付金额！！")
+				}
+				this.$modal(`确定要退款 ¥${this.refundAmount} 吗？`, {
+					title: "退款提示"
+				}).then(() => {
+					const reason = `${this.reasonList[this.reason-1].label}${this.reasonValue}`
+					orderController.allRefund({
+						amountRefundDto: {
+							orderNo: this.order.orderNo,
+							refundAmount: this.refundAmount * 100,
+							refundReason: reason,
+						}
+					}).then(res => {
+						if (res.code == 200) {
+							this.$toast("退款成功！");
+							this.$goBack();
+						}
+					})
+				})
+			},
+			async allRefund() {
+				this.$modal("确定要“全额退款”吗？", {
+					title: "退款提示"
+				}).then(() => {
+					const reason = `${this.reasonList[this.reason-1].label}${this.reasonValue}`
+					orderController.allRefund({
+						amountRefundDto: {
+							orderNo: this.order.orderNo,
+							refundAmount: this.order.amountTotal * 100,
+							refundReason: reason,
+						}
+					}).then(res => {
+						if (res.code == 200) {
+							this.$toast("退款成功！");
+							this.$goBack();
+						}
+					})
+				})
 			},
 		}
 	}

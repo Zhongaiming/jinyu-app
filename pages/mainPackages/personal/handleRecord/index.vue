@@ -1,11 +1,11 @@
 <template>
 	<view class="handleRecord">
 		<jy-navbar title="操作记录" bgColor="#f5f6f7"></jy-navbar>
-		<xls-search-input @stratesSearch="stratesSearch"></xls-search-input>
+		<xls-search @confirm="stratesSearch"></xls-search>
 		<view class="list-panel home-family">
 			<view class="panel-bd">
 				<view class="list-item" v-for="(item, index) in recondList" :key="index">
-					<span class="type" :class="testOperateType(item.operateType)">
+					<span class="type" :class="[testOperateType(item.operateType)]">
 						{{ item.operateType }}
 					</span>
 					<p v-for="(item, key, index) of item.operateContent" :key="index">

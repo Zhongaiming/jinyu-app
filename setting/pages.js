@@ -12,6 +12,13 @@ const pages = [{
 			"title": "xls注册"
 		}
 	},
+	{
+		"path": "pages/loginAndReg/userAccount",
+		"name": "userAccount",
+		"meta": {
+			"title": "xls账号切换"
+		}
+	},
 	// ===== 首页 ======
 	{
 		"path": "pages/mainPackages/home/order/index",

@@ -11,7 +11,7 @@
 			<view class="place-wrapper">
 				<view class="place-item" @click="pickerPlace(-1)" v-if="showAllCheck">
 					<view class="place-main">
-						<span :style="placeActive == -1 ? { color: '#5241FF' } : ''">全部</span>
+						<span :style="{color:placeActive==-1?'#5241FF':''} ">全部</span>
 					</view>
 				</view>
 				<view class="place-item" v-for="(place, index) in dataList" :key="index" @click="pickerPlace(place)"

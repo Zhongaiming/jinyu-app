@@ -35,7 +35,7 @@
 					<view class="button" v-hasPermi="['app:back:index:detail']" @click="getMemberDetail(item.memberId)">
 						详情
 					</view>
-					<view class="button"  v-hasPermi="['app:back:index:delete']" @click="deleteBlackList(item.memberId)">
+					<view class="button" v-hasPermi="['app:back:index:delete']" @click="deleteBlackList(item.memberId)">
 						剔除
 					</view>
 				</view>
@@ -49,7 +49,7 @@
 			<view class="black-member">
 				<view class="title-detail">
 					添加黑名单
-					<u-icon name="question-o" size="18" color="#cccccc" class="icon-o" @click="blackListTips" />
+					<u-icon name="question-o" size="36" color="#cccccc" class="icon-o" @click="blackListTips" />
 				</view>
 				<xls-search placeholder="输入用户ID/手机号" marLeft="-6em" @confirm="stratesSearch" />
 				<search-input placeholder="输入会员ID" marLeft="-5em" @stratesSearch="stratesSearch" />
@@ -59,7 +59,7 @@
 							<img :src="memberDetail.url" alt="" class="avatar" />
 						</view>
 						<view class="middle">
-							<p class="name text-over" :class="memberDetail.name ? '' : 'null-name'">
+							<p class="name text-over" :class="{'null-name':memberDetail.name}">
 								{{ memberDetail.name ? memberDetail.name : "用户未提供" }}
 							</p>
 							<p class="info">
@@ -254,7 +254,7 @@
 				onEarthList: false,
 			};
 		},
-		
+
 		methods: {
 			queryList(pageNo, pageSize) {
 				memberController.getBlackPageList({
@@ -286,12 +286,12 @@
 			stratesSearch(search) {
 				this.searchValue = search;
 				if (this.blackMember) {
-					
+
 				} else {
-					
+
 				}
 			},
-			
+
 			//剔除黑名单
 			deleteBlackList(memberId) {
 				this.$dialog
@@ -450,7 +450,7 @@
 			.right {
 				font-size: 28rpx;
 				@include center-flex();
-				
+
 				.button {
 					border: 2rpx solid #8d8d8d;
 					border-radius: 8rpx;

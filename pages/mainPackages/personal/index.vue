@@ -13,7 +13,7 @@
 					<view class="user-name">{{loginInfo.nickName}}</view>
 					<view class="user-phone">{{loginInfo.username}}</view>
 				</view>
-				<view class="xls-personal-main-header-btn">
+				<view class="xls-personal-main-header-btn" @click="goToUser">
 					账号设置、切换
 				</view>
 			</view>
@@ -205,7 +205,10 @@
 		methods: {
 			goTo(params) {
 				this.$goTo(params)
-			}
+			},
+			goToUser() {
+				this.$goTo("/pages/loginAndReg/userAccount");
+			},
 		}
 	}
 </script>

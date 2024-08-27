@@ -22,8 +22,8 @@
 		<!-- 认证记录 -->
 		<view class="stay-attestation">
 			<!-- 实名认证 -->
-			<view v-for="(data,index) in dataList" :key="index">
-				<view class="screenshot-contanier" v-for="(item,index) in data.authInfoList" :key="`main${index}`"
+			<view v-for="(data,dataIndex) in dataList" :key="dataIndex">
+				<view class="screenshot-contanier" v-for="(item,itemIndex) in data.authInfoList" :key="$getUniqueKey(dataIndex, itemIndex)"
 					v-show="item.authorizeStatus == activeItem">
 					<view class="logo-index">
 						<image :src="`${$baseUrl}appV4/authentications/svg/${item.url}`" alt="" class="image"
@@ -123,6 +123,11 @@
 		created() {
 			this.getList();
 		},
+		computed: {
+			getKey(index) {
+				return `main${index}`;
+			},
+		},
 		methods: {
 			goTo(params, type) {
 				let route = '/pages/subpackages/merchant/authentication/detail';
@@ -149,7 +154,8 @@
 					})
 					this.dataList = res.data
 				})
-			}
+			},
+			
 		}
 	}
 </script>

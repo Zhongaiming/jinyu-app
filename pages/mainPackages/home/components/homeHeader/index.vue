@@ -110,8 +110,8 @@
 					startTime: getDateAll(0),
 					endTime: getDateAll(0)
 				}).then(res => {
-					if(res.data === 200) {
-						this.total = res.data.data
+					if(res.code === 200) {
+						this.total = res.data
 					}
 				})
 			},
@@ -140,6 +140,7 @@
 		box-shadow: 4rpx 6rpx 8rpx 6rpx rgba(98, 113, 186, 0.2);
 		width: 93%;
 		min-height: 260rpx;
+		max-height: 300rpx;
 		margin: 0 auto;
 		background: #fff;
 		border-radius: 20rpx;

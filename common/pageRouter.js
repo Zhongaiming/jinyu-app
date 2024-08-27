@@ -3,6 +3,8 @@ import {
 	isEmptyObject
 } from './index'
 // switchTab tabbar
+// reLaunch 关闭所有 跳到某个页面
+// redirectTo 关闭当前页面，跳转到应用内的某个页面。
 Vue.prototype.$goTo = function(path, openType = 'navigateTo', params = {}, animationType = 'pop-in', animationDuration =
 	300) {
 	if (!isEmptyObject(params)) {

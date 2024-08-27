@@ -115,7 +115,8 @@
 							id: 25,
 							title: '商品管理',
 							imgUrl: `${this.$baseUrl}homeImages/secondList/five.png`,
-							route: '/pages/mainPackages/home/commodity/shjCommodity',
+							// route: '/pages/mainPackages/home/commodity/shjCommodity',
+							route: '/pages/mainPackages/home/commodity/index',
 							permissions: ['app:shj:commodity:read'],
 							status: 0
 						}
@@ -162,32 +163,32 @@
 						// 	permissions: ['app:pay:index'],
 						// 	status: 0
 						// },
-						{
-							id: 35,
-							title: '兑币机数据',
-							imgUrl: `${this.$baseUrl}homeImages/threeList/dbj.png`,
-							route: '/pages/mainPackages/home/dbjData/index',
-							permissions: ['app:dbj:index:read'],
-							status: 0
-						},
-						{
-							id: 36,
-							title: '美团核销',
-							imgUrl: `${this.$baseUrl}homeImages/threeList/meituan.png`,
-							route: '/Meituan',
-							permissions: ['app:meituan:index:read'],
-							status: 0,
-							result: 0,
-						},
-						{
-							id: 37,
-							title: '抖音核销',
-							imgUrl: `${this.$baseUrl}homeImages/threeList/meituan.png`,
-							route: '/Douyin/index',
-							permissions: 'app:meituan:index:read',
-							status: 0,
-							result: 0,
-						}
+						// {
+						// 	id: 35,
+						// 	title: '兑币机数据',
+						// 	imgUrl: `${this.$baseUrl}homeImages/threeList/dbj.png`,
+						// 	route: '/pages/mainPackages/home/dbjData/index',
+						// 	permissions: ['app:dbj:index:read'],
+						// 	status: 0
+						// },
+						// {
+						// 	id: 36,
+						// 	title: '美团核销',
+						// 	imgUrl: `${this.$baseUrl}homeImages/threeList/meituan.png`,
+						// 	route: '/Meituan',
+						// 	permissions: ['app:meituan:index:read'],
+						// 	status: 0,
+						// 	result: 0,
+						// },
+						// {
+						// 	id: 37,
+						// 	title: '抖音核销',
+						// 	imgUrl: `${this.$baseUrl}homeImages/threeList/meituan.png`,
+						// 	route: '/Douyin/index',
+						// 	permissions: 'app:meituan:index:read',
+						// 	status: 0,
+						// 	result: 0,
+						// }
 					]
 				}, {
 					id: 4,

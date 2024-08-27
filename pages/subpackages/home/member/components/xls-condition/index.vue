@@ -1,24 +1,24 @@
 <template>
 	<view>
 		<!-- 搜索 -->
-		<div class="header-wrapper">
-			<div class="manager-header">
-				<div class="center" @click="goTo()">
+		<view class="header-wrapper">
+			<view class="manager-header">
+				<view class="center" @click="goTo()">
 					<u-icon name="search" size="36" class="search-icon" />
-					<div class="info">搜索昵称/会员ID</div>
-				</div>
-				<div class="right">
-					<div class="btn" @click="setMember = !setMember" :style="setMember ? { color: '#5241FF' } : ''">
+					<view class="info">搜索昵称/会员ID</view>
+				</view>
+				<view class="right">
+					<view class="btn" @click="setMember = !setMember" :style="{ color:setMember?'#5241FF':''}">
 						<u-icon name="setting" size="30" />
 						<span v-html="setMember ? '退出' : '设置'"></span>
-					</div>
-				</div>
-			</div>
-		</div>
+					</view>
+				</view>
+			</view>
+		</view>
 		<!-- 条件 -->
-		<div class="sidder-condition">
+		<view class="sidder-condition">
 			
-		</div>
+		</view>
 	</view>
 </template>
 

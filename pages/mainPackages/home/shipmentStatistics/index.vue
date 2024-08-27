@@ -1,46 +1,56 @@
 <template>
-	<div class="xls-gift-Statis-page">
-
-		<!-- <time-header ref="topBav"></time-header> -->
-		<!-- <gift-setting v-if="$route.query.deviceType != 4" v-hasPermi="['app:shop:index']" v-movable />
+	<z-paging ref="dataPaging" v-model="dataList" @query="queryList">
+		<!-- <gift-setting v-if="deviceType != 4" v-hasPermi="['app:shop:index']" v-movable />
 		<gift-setting v-else v-hasPermi="['app:shj:commodity:read']" v-movable /> -->
-		<div class="btn" @click="$router.push('/comeGift/GoodsSet')" v-if="$route.query.deviceType != 4">
+		<xls-list-vue :dataList="dataList" :giftCount="giftCount"></xls-list-vue>
+		<view class="btn" @click="goTo" v-if="deviceType != 4" slot="bottom">
 			<span>商品设置</span>
-		</div>
-	</div>
+		</view>
+	</z-paging>
 </template>
 
 <script>
 	// import TimeHeader from "./giftComps/timeHeader";
 	// import GiftSetting from "./giftComps/giftSetting";
-	// import {
-	// 	drag,
-	// 	movable
-	// } from "@/plugins/order/index";
+	import xlsListVue from "./components/xls-list.vue";
+	import {
+		deviceDataController
+	} from "@/api/index.js";
 	export default {
 		components: {
+			xlsListVue,
 			// TimeHeader,
 			// GiftSetting
 		},
 		data() {
 			return {
 				deviceType: null,
+				dataList: [],
+				giftCount: {},
 			}
 		},
-		// directives: {
-		// 	drag,
-		// 	movable
-		// },
-		// created() {
-		// 	window.addEventListener("scroll", this.screenSlide);
-		// },
-		// beforeDestroy() {
-		// 	window.removeEventListener("scroll", this.screenSlide);
-		// },
 		onLoad(option) {
-			console.log("传参", JSON.parse(option.params).deviceType)
+			// shj 传4
+			if (JSON.parse(option.params)) {
+				this.deviceType = JSON.parse(option.params).deviceType
+			}
 		},
 		methods: {
+			queryList(pageNo, pageSize) {
+				deviceDataController.getPresentList({
+					page: pageNo,
+					size: pageSize,
+					startTime: '2024-08-27',
+					endTime: '2024-08-27',
+				}).then(res => {
+					this.giftCount = res.data.outPresentData;
+					this.$refs.dataPaging.complete(res.data.outPresentPlaceList);
+				})
+			},
+			goTo() {
+				return
+				this.$goTo();
+			},
 			screenSlide() {
 				var scrollTop =
 					document.documentElement.scrollTop ||
@@ -63,24 +73,12 @@
 </script>
 
 <style lang="scss" scoped>
-	.xls-gift-Statis-page {
-		width: 100%;
-		background: #f5f6f7;
-		font-family: "Microsoft JhengHei", "Microsoft YaHei";
-		overflow-y: scroll;
-		padding-top: 190px;
-	}
-
 	.btn {
-		position: fixed;
-		bottom: 0;
 		width: 100%;
 		height: 50px;
 		font-size: 17px;
 		color: #fff;
 		background: #5241ff;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		@include center-flex();
 	}
 </style>

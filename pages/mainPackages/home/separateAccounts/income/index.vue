@@ -2,7 +2,7 @@
 	<view class="revenue-share">
 		<xls-jy-navbar title="收益分成查询"></xls-jy-navbar>
 		<view class="classify-wrapper">
-			<view class="classify-list" :class="accountType == item.id ? 'active-item' : ''"
+			<view class="classify-list" :class="{'active-item':accountType == item.id}"
 				@click="changeAccountType(item.id)" v-for="item in accountTypeList" :key="item.id">
 				{{ item.accountTypeName }}
 			</view>

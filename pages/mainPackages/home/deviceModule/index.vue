@@ -2,15 +2,8 @@
 	<z-paging ref="paging" v-model="dataList" @query="queryList">
 		<device-condition :count="count"></device-condition>
 		<device-list :dataList="dataList"></device-list>
-
-		<!-- <no-data v-show="!dataList.length" /> -->
 		<!-- 批量 -->
 		<!-- <place-popup ref="placePopup"></place-popup> -->
-		<!-- 设备详情 -->
-		<!-- <device-detail ref="deviceDetailpopup" @updatedDevice="updatedDevice"></device-detail> -->
-		<!-- 蛋仓详情 -->
-		<!-- <com-set ref="setting" @updatedEgg="updatedEgg"></com-set> -->
-
 		<!-- <Tabbar v-show="$route.meta.showDeviceTabbar" /> -->
 	</z-paging>
 </template>
@@ -50,11 +43,13 @@
 		},
 		methods: {
 			queryList(pageNo, pageSize) {
+				this.$loading();
 				deviceController.getListTwo({
 					page: pageNo,
 					size: pageSize,
 					// ...this.screen
 				}).then(res => {
+					this.$hideLoading();
 					this.$refs.paging.complete(res.data.List);
 					this.count = {
 						online: res.data.online.onlineNums,

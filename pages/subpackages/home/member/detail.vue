@@ -137,7 +137,7 @@
       <!-- 会员消费记录 -->
       <div
         class="record-container-hidden"
-        :class="showRecord ? 'main-record' : ''"
+        :class="{'main-record':showRecord}"
       >
         <div class="record-btn" @click="showRecord = !showRecord">
           <span
@@ -149,14 +149,14 @@
           <div class="tab-wrapper">
             <div
               class="tab tab1"
-              :class="payType ? 'active-tab' : ''"
+              :class="{'active-tab':payType}"
               @click="cutType('pay')"
             >
               支付订单
             </div>
             <div
               class="tab tab2"
-              :class="!payType ? 'active-tab' : ''"
+              :class="{'active-tab':!payType}"
               @click="cutType('coin')"
             >
               余额余币明细
@@ -338,7 +338,7 @@
                   class="item"
                   v-for="(item, index) in fastTimer"
                   :key="index"
-                  :class="activeFastimer == item.id ? 'active-btn' : ''"
+                  :class="{'active-btn':activeFastimer == item.id}"
                   @click="pickerTime(item.id)"
                 >
                   {{ item.timer }}
@@ -458,7 +458,7 @@
                   class="item"
                   v-for="(item, index) in fastTimer"
                   :key="index"
-                  :class="activeFastimer == item.id ? 'active-btn' : ''"
+                  :class="{'active-btn':activeFastimer == item.id}"
                   @click="pickerTime(item.id)"
                 >
                   {{ item.timer }}
@@ -563,7 +563,7 @@
                   <span
                     class="price"
                     v-show="!payType && item.operationCurrency != null"
-                    :style="item.operationCurrency < 0 ? { color: 'red' } : ''"
+                    :style="{color:item.operationCurrency<0?'red':''}"
                   >
                     {{
                       item.operationCurrency > 0
@@ -574,7 +574,7 @@
                   <span
                     class="price"
                     v-show="!payType && item.operationBalance != null"
-                    :style="item.operationBalance < 0 ? { color: 'red' } : ''"
+                    :style=" {color:item.operationBalance<0?'red':''}"
                   >
                     {{
                       item.operationBalance > 0

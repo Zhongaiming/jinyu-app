@@ -1,6 +1,6 @@
 <template>
 	<view class="xls-empty">
-		<view class="image-wrapper" :style="{ 'margin-top': marginTop }">
+		<view class="image-wrapper" :style="{'margin-top':marginTop}">
 			<image class="image" :src="`${$baseUrl}appV4/common/null-data.png`" alt="" mode="widthFix" />
 		</view>
 		<view class="text" v-if="hiddenText">{{ text }}</view>

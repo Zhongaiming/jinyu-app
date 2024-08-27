@@ -11,7 +11,7 @@
 		</view>
 		
 		<view v-for="(item, index) in dataList" :key="index" class="xls-list-item">
-			<view class="body-wrapper" @click="closeOrshow">
+			<view class="body-wrapper" @click="closeOrshow(item.placeId)">
 				<view class="body-main">
 					<view class="main-place-name">{{ item.placeName }}</view>
 					<view class="main-device-num">{{ item.deviceNum }}台</view>
@@ -91,6 +91,9 @@
 </template>
 
 <script>
+	import {
+		orderController
+	} from "@/api/index.js";
 	export default {
 		data() {
 			return {
@@ -100,66 +103,30 @@
 				placeInfoDetail: [{}],
 			}
 		},
+		onLoad() {
+			this.getCoinsPlaceNum();
+		},
 		methods: {
+			getCoinsPlaceNum() {
+				orderController.getInsertCoinsPlaceNum().then(res => {
+					this.allCount = res.data;
+				})
+			},
 			// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用this.$refs.paging.reload()即可
 			queryList(pageNo, pageSize) {
-				// 此处请求仅为演示，请替换为自己项目中的请求
-				const list = [{
-						placeName: "testtest"
-					},
-					{
-						placeName: "testtest"
-					},
-					{
-						placeName: "testtest"
-					},
-					{
-						placeName: "testtest"
-					},
-					{
-						placeName: "testtest"
-					},
-					{
-						placeName: "testtest"
-					},
-					{
-						placeName: "testtest"
-					},
-					{
-						placeName: "testtest"
-					},
-					{
-						placeName: "testtest"
-					},
-					{
-						placeName: "testtest"
-					}
-				]
-
-
-				setTimeout(() => {
-					this.$refs.paging.complete(list);
-				}, 1500)
-				
-				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				// this.$refs.paging.reload();
-
-				// this.$request.queryList({
-				// 	pageNo,
-				// 	pageSize
-				// }).then(res => {
-				// 	// 将请求结果通过complete传给z-paging处理，同时也代表请求结束，这一行必须调用
-				// 	this.$refs.paging.complete(res.data.list);
-				// }).catch(res => {
-				// 	// 如果请求失败写this.$refs.paging.complete(false)，会自动展示错误页面
-				// 	// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-				// 	// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
-				// 	this.$refs.paging.complete(false);
-				// })
+				orderController.getInsertCoinsInfoList({
+					page: pageNo,
+					size: pageSize,
+				}).then(res => {
+					this.$refs.paging.complete(res.data.records);
+				})
 			},
-			closeOrshow() {
-				this.detailPopup = !this.detailPopup;
-				console.log('==', this.detailPopup)
+			closeOrshow(placeId) {
+				orderController.getDeviceInsertCoins({ placeId }).then((res) => {
+				  this.placeInfoDetail = res.data;
+				  this.detailPopup = !this.detailPopup;
+				})
+				.catch((err) => {});
 			},
 		}
 	}

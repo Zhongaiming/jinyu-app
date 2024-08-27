@@ -10,6 +10,7 @@ import deviceController from './deviceController/index.js'
 import placeController from './placeController/index.js'
 import separateController from './separateController/index.js'
 import packageController from './packageController/index.js'
+import deviceDataController from './deviceDataController/index.js'
 
 export {
 	loginAndRegController,
@@ -24,4 +25,5 @@ export {
 	placeController,
 	separateController,
 	packageController,
+	deviceDataController,
 }

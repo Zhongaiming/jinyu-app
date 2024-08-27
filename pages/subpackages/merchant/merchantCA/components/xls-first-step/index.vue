@@ -11,7 +11,7 @@
 					<u-upload :previewFullImage="true" :fileList="idCardinfo.lepUrlaList" name="lepUrla"
 						@afterRead="afterRead" @delete="deletePic" :maxCount="1" class="upload" width="343"
 						height="212">
-						<view class="uploadBg" :class="`lepUrla${idType}`">
+						<view class="uploadBg" :class="[`lepUrla${idType}`]">
 							<view class="camera-bg">
 								<image :src="`${$baseUrl}appV4/image/wallet/camera.png`" alt="" class="camera"
 									mode="widthFix" />
@@ -25,7 +25,7 @@
 					<u-upload :previewFullImage="true" :fileList="idCardinfo.lepUrlbList" name="lepUrlb"
 						@afterRead="afterRead" @delete="deletePic" :maxCount="1" class="upload" width="343"
 						height="212">
-						<view class="uploadBg" :class="`lepUrlb${idType}`">
+						<view class="uploadBg" :class="[`lepUrlb${idType}`]">
 							<view class="camera-bg">
 								<image :src="`${$baseUrl}appV4/image/wallet/camera.png`" alt="" class="camera"
 									mode="widthFix" />
@@ -178,6 +178,9 @@
 			}
 		},
 		methods: {
+			getClass(idType) {
+				return `lepUrla${idType}`
+			},
 			goTo() {},
 			updateList(list, url) {
 				list = [];

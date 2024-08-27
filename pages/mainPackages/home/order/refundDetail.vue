@@ -5,7 +5,7 @@
 			<view class="xls-header-style"></view>
 			<view class="xls-content-style">
 				<view class="xls-order-detail-refund-state">
-					退款成功
+					{{stateDict[order.refundState]}}
 				</view>
 				<view class="order_line"></view>
 				<view class="xls-order-detail-refund-price">
@@ -14,7 +14,7 @@
 							退款金额
 						</view>
 						<view class="right">
-							￥16.80元
+							￥ {{order.refundMoney}} 元
 						</view>
 					</view>
 					<view class="text">
@@ -64,7 +64,7 @@
 						mode="widthFix"></image>
 					<view class="price-center">
 						<view class="">
-							16.8元1局
+							{{ order.amount }}元1局
 						</view>
 						<view class="">
 							x1
@@ -72,10 +72,10 @@
 					</view>
 					<view class="price-right">
 						<view class="backColor">
-							¥16.80
+							¥{{ order.amount }}
 						</view>
 						<view class="redColor">
-							实付：¥16.80
+							实付：¥{{ order.amountTotal }}
 						</view>
 					</view>
 				</view>
@@ -86,7 +86,7 @@
 							订单编号
 						</view>
 						<view class="right">
-							PA101324072213302119074661891151
+							{{order.orderNo}}
 						</view>
 					</view>
 					<view class="refund-price">
@@ -94,7 +94,7 @@
 							退款方式
 						</view>
 						<view class="right">
-							启动失败退款
+							{{stateDict[order.refundType]}}
 						</view>
 					</view>
 					<view class="refund-price">
@@ -102,7 +102,7 @@
 							退款原因
 						</view>
 						<view class="right">
-							启动失败退款
+							{{order.refundReason}}
 						</view>
 					</view>
 				</view>
@@ -139,14 +139,46 @@
 </template>
 
 <script>
+	import {
+		orderController
+	} from '@/api/index.js';
 	export default {
 		data() {
 			return {
-
+				order: {},
+				stateDict: {
+					'-1': "退款异常",
+					0: "退款失败",
+					1: "退款成功",
+					2: "退款中",
+					null: "其他"
+				},
+				refundDict: {
+					0: '(出货失败退款)',
+					1: '(出货失败部分退款)',
+					2: '(人工退款)',
+					3: '(通讯失败退款)',
+					4: '(人工部分退款)',
+					null: "其他"
+				},
+			}
+		},
+		onLoad(option) {
+			if (option.params) {
+				const params = JSON.parse(option.params);
+				this.getView(params.orderId)
 			}
 		},
 		methods: {
-
+			getView(orderId) {
+				orderController.refundQuery({
+					orderId
+				}).then(res => {
+					if (res.code = 200) {
+						this.order = res.data
+					}
+				})
+			},
 		}
 	}
 </script>
@@ -163,7 +195,7 @@
 			background: $xls-color-primary;
 			border-radius: 2.13333vw 2.13333vw 0 0;
 		}
-		
+
 		.xls-content-style {
 			background-color: #fff;
 			padding: 18rpx;

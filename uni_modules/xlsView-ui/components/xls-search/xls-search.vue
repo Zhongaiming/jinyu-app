@@ -1,24 +1,20 @@
 <template>
-	<view class="searchBox-wrapper" :style="{ background: bgColor }">
+	<view class="searchBox-wrapper" :style="{background:bgColor}">
 		<view class="searchBox-input-wrapper">
-			<view class="search-input" :class="{'search-focus': inputFocus}">
+			<view class="search-input" :class="{'search-focus':inputFocus}">
 				<form action="javascript:void 0">
 					<input type="search" :placeholder="placeholder" v-model="inputEnter" class="input"
-						:class="{'input-focus': inputFocus}" @focus="inputFocus = true" @input="userInputing"
-						@blur="inputBlur" @keyup.13="tapToSearch" @confirm="tapToSearch" :style="{ background: inputColor }" />
+						:class="{'input-focus':inputFocus}" @focus="inputFocus = true" @input="userInputing"
+						@blur="inputBlur" @keyup.13="tapToSearch" @confirm="tapToSearch" :style="{background:inputColor}" />
 				</form>
 				<view class="clear-btn" v-show="showClear" @click="inputEnter = ''">
 					<u-icon name="close-circle-fill" color="#c6c7cb" size="38"></u-icon>
 				</view>
 			</view>
-			<view class="search-icon" :style="
-          inputFocus
-            ? { left: 0, margin: 0 }
-            : { left: '48%', 'margin-left': marLeft }
-        ">
+			<view class="search-icon" :style="[inputFocus?{ left: 0, margin: 0 }:{ left: '48%', 'margin-left': marLeft }]">
 				<u-icon name="search" color="#8e8e93" size="48"></u-icon>
 			</view>
-			<view class="cancel-btn" :class="{'cancel-focus': inputFocus}" @click.stop="cancelOrcomfirm"
+			<view class="cancel-btn" :class="{'cancel-focus':inputFocus}" @click.stop="cancelOrcomfirm"
 				v-html="inputEnter ? '确定' : '取消'"></view>
 		</view>
 	</view>

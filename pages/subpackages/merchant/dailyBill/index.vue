@@ -1,41 +1,41 @@
 <template>
-	<div class="everydayBill">
+	<view class="everydayBill">
 		<xls-jy-navbar title="钱包" bgColor="#f5f6f7"></xls-jy-navbar>
-		<div class="list-wrapper home-family">
-			<div class="header">
-				<div class="header-left">
+		<view class="list-wrapper home-family">
+			<view class="header">
+				<view class="header-left">
 					<p class="day">{{ dataTxt }}</p>
 					<p class="income" v-html="'总收益:' + (monthInfo ? monthInfo : '0.00') + '元'"></p>
-				</div>
-				<div class="header-right" @click="personDatetime = !personDatetime">
+				</view>
+				<view class="header-right" @click="personDatetime = !personDatetime">
 					<!-- <img src="@/assets/authentications/week.png" alt="" class="btn-icon" /> -->
-				</div>
-			</div>
-			<div class="content">
-				<div class="content-panel">
-					<div class="list">
-						<div class="left-table" @click="isClose = false">
+				</view>
+			</view>
+			<view class="content">
+				<view class="content-panel">
+					<view class="list">
+						<view class="left-table" @click="isClose = false">
 							<ul class="content-title">
 								<li class="talbe-column-title talbe-column table-date table-test">
 									日期
 								</li>
 							</ul>
-							<div class="list-item content-title left-table"
+							<view class="list-item content-title left-table"
 								v-for="(item, index) in dataList.slice(0, lengthAll)" :key="index">
 								<span class="talbe-column table-date">{{ item.date }}</span>
-							</div>
-						</div>
+							</view>
+						</view>
 
-						<div class="right-table" @click="isClose = true">
-							<ul class="content-title" :class="isClose ? 'table-open-line' : ''">
+						<view class="right-table" @click="isClose = true">
+							<ul class="content-title" :class="{'table-open-line':isClose}">
 								<li class="talbe-column-title talbe-column table-total"
-									:class="isClose ? 'table-open' : ''">
+									:class="{'table-open':isClose}">
 									总收益
 								</li>
 								<li class="talbe-column-title talbe-column table-pay-income"
-									:class="isClose ? 'table-open' : ''">
+									:class="{'table-open':isClose}">
 									线上交易总额
-									<div class="linear" v-show="!isClose"></div>
+									<view class="linear" v-show="!isClose"></view>
 								</li>
 								<li class="talbe-column-title talbe-column table-open" v-show="isClose">
 									补贴总额
@@ -48,13 +48,13 @@
 									结算到账情况
 								</li>
 							</ul>
-							<div class="list-item content-title" :class="isClose ? 'table-open-line' : ''"
+							<view class="list-item content-title" :class="{'table-open-line':isClose}"
 								v-for="(item, index) in dataList.slice(0, lengthAll)" :key="index">
 								<span class="talbe-column table-total"
-									:class="isClose ? 'table-open' : ''">{{ item.totalIncome }}</span>
+									:class="{'table-open':isClose}">{{ item.totalIncome }}</span>
 								<span class="talbe-column table-pay-income"
-									:class="isClose ? 'table-open' : ''">{{ item.onlineIncome }}
-									<div class="linear" v-show="!isClose"></div>
+									:class="{'table-open':isClose}">{{ item.onlineIncome }}
+									<view class="linear" v-show="!isClose"></view>
 								</span>
 								<span class="talbe-column table-open" v-show="isClose">{{
                     item.subsidyIncome
@@ -65,10 +65,10 @@
 								<span class="talbe-column table-detail" v-hasPermi="['app:payBag:index:bill:resvied']"
 									@click="getEarn(item.date, item.onlineIncome)"><span
 										class="earn-info">查看</span></span>
-							</div>
-						</div>
-					</div>
-				</div>
+							</view>
+						</view>
+					</view>
+				</view>
 				<p class="list-more" @click="
               dataList.length > 10 && lengthAll == 10
                 ? (lengthAll = dataList.length + 1)
@@ -78,14 +78,14 @@
             ">
 					查看更多
 				</p>
-			</div>
-		</div>
+			</view>
+		</view>
 		<!--日期 -->
 		<!-- <van-popup v-model="personDatetime" position="bottom" round>
 				<van-datetime-picker v-model="currentDate" type="year-month" title="选择年月" :min-date="minDate"
 					:max-date="maxDate" @confirm="formatDate" @cancel="personDatetime = !personDatetime" />
 			</van-popup> -->
-	</div>
+	</view>
 </template>
 
 <script>
@@ -335,11 +335,11 @@
 				// }
 				this.monthInfo = this.dataList.reduce(
 					(accumulator, currentValue) =>
-					this.divideMethod(accumulator, currentValue.totalIncome),
+					this.viewideMethod(accumulator, currentValue.totalIncome),
 					0
 				);
 			},
-			divideMethod(a, b) {
+			viewideMethod(a, b) {
 				return suan.addFloast(a, b);
 			},
 			//分账到账

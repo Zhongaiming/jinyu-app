@@ -1,79 +1,79 @@
 <template>
-	<div class="condition-screening-wrapper">
+	<view class="condition-screening-wrapper">
 		<!-- 搜索 -->
 		<xls-search @confirm="searchConfirm" placeholder="请输入设备编码" v-if="text == 'index'"></xls-search>
-		<div class="condition-wrapper">
+		<view class="condition-wrapper">
 			<!-- 快捷时间 -->
-			<div class="cond-item-content timer-wrapper">
-				<div class="time-style" v-for="item in timeList" :key="item.id"
-					:class="pickerTime == item.id ? 'active-time' : ''" @click="quickTime(item.id)">
+			<view class="cond-item-content timer-wrapper">
+				<view class="time-style" v-for="item in timeList" :key="item.id"
+					:class="[{'active-time':pickerTime == item.id}]" @click="quickTime(item.id)">
 					{{ item.time }}
-				</div>
-				<div class="header-btn" v-if="text == 'detail'" @click="getExcelUrl"
+				</view>
+				<view class="header-btn" v-if="text == 'detail'" @click="getExcelUrl"
 					v-hasPermi="['app:dbj:index:export']">
 					想要导出数据
 					<van-icon name="question-o" size="16" class="icon" />
-				</div>
-			</div>
+				</view>
+			</view>
 			<!-- 时间 -->
-			<div class="cond-item-content" @click="showDate = !showDate">
-				<div class="left-wrapper">时间</div>
-				<div class="right-wrapper">
-					<div class="time-section" :class="text == 'history' ? 'On-right' : ''">
+			<view class="cond-item-content" @click="showDate = !showDate">
+				<view class="left-wrapper">时间</view>
+				<view class="right-wrapper">
+					<view class="time-section" :class="{'On-right':text == 'history'}">
 						{{ date }}
-					</div>
+					</view>
 					<van-icon name="arrow" size="18" color="#c6c6c6" />
-				</div>
-			</div>
+				</view>
+			</view>
 			<!-- 场地 -->
-			<div class="cond-item-content" v-if="text == 'history' || text == 'index'">
-				<div class="left-wrapper">场地</div>
-				<div class="right-wrapper" @click="$refs.placelist.showPlacePopup()">
-					<div class="time-section" :class="text == 'history' ? 'On-right' : ''">
+			<view class="cond-item-content" v-if="text == 'history' || text == 'index'">
+				<view class="left-wrapper">场地</view>
+				<view class="right-wrapper" @click="$refs.placelist.showPlacePopup()">
+					<view class="time-section" :class="{'On-right':text == 'history'}">
 						{{ placeName }}
-					</div>
+					</view>
 					<van-icon name="arrow" size="18" color="#c6c6c6" />
-				</div>
-			</div>
+				</view>
+			</view>
 			<van-calendar v-model="showDate" type="range" allow-same-day @confirm="confirmMethod" :max-range="180"
 				range-prompt="只能查询半年的数据" :min-date="minDate" :max-date="maxDate" :round="false" color="#5241FF" />
 			<!-- 出币 -->
-			<div class="cond-item-content" v-if="text == 'detail' && $parent.activeName == 2">
+			<view class="cond-item-content" v-if="text == 'detail' && $parent.activeName == 2">
 				<van-dropdown-menu active-color="#5241FF">
 					<van-dropdown-item title="出币类型" ref="place">
-						<div class="item-wrapper-list">
+						<view class="item-wrapper-list">
 							<van-cell v-for="(item, index) in coinList" :key="index" :title="item.name"
 								:value="payType == item.id ? '✔' : ''" @click="confirmCheck(item.id, 'left')" />
 							<on-earth />
-						</div>
+						</view>
 					</van-dropdown-item>
 					<van-dropdown-item title="出币结果" ref="pay">
-						<div class="item-wrapper-list">
+						<view class="item-wrapper-list">
 							<van-cell v-for="(item, index) in resultList" :key="index" :title="item.name"
 								:value="payResult == item.id ? '✔' : ''" @click="confirmCheck(item.id, 'rigth')" />
-						</div>
+						</view>
 					</van-dropdown-item>
 				</van-dropdown-menu>
-			</div>
+			</view>
 			<!-- 导出 -->
-			<div class="cond-item-content" v-if="text == 'history'">
-				<div class="Bleft-wrapper">
+			<view class="cond-item-content" v-if="text == 'history'">
+				<view class="Bleft-wrapper">
 					温馨提示
 					<van-icon name="warning-o" size="18" @click="$refs.explain.downExplain = true" />
-				</div>
-				<div class="right-wrapper" :class="text == 'history' ? 'On-right' : ''"
+				</view>
+				<view class="right-wrapper" :class="{'On-right':text == 'history'}"
 					v-hasPermi="['app:dbj:index:export']">
-					<div class="export" @click="getExcelUrl">导出</div>
-				</div>
-			</div>
-		</div>
+					<view class="export" @click="getExcelUrl">导出</view>
+				</view>
+			</view>
+		</view>
 		<!-- 导出数据 -->
 		<DownData ref="data" />
 		<DownEcexl ref="down" />
 		<!-- 兑币机场地 -->
 		<CustomList ref="placelist" @getPlaceId="getPlaceId" :deviceType="5" />
 		<ExplainPage ref="explain" />
-	</div>
+	</view>
 </template>
 
 <script>
