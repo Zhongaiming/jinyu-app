@@ -8,16 +8,9 @@
 				</view>
 			</u-col>
 			<u-col :span="10">
-				<view class="input-wrapper">
-					<view class="main-input-wrapper">
-						<u-icon name="search" size="40"></u-icon>
-						<input v-model="enterValue" placeholder="输入设备编码或场地名称" @search="confirmSearch"
-							@focus="focusSearch" class="input-style" />
-					</view>
-					<view class="text" v-show="searchType" @click="cancelSearch">
-						取消
-					</view>
-				</view>
+				<u-search searchIconSize="44" :actionStyle="{color:' #5241ff'}" v-model="enterValue" height="66"
+					placeholder="输入设备编码或场地名称" shape="square" :showAction="true" actionText="取消" :animation="true"
+					@search="confirmSearch" @custom="focusSearch" />
 			</u-col>
 			<u-col :span="0.5"></u-col>
 		</u-row>
@@ -30,7 +23,7 @@
 		</view>
 		<!-- 场地/设备类型 -->
 		<view class="place-type-wrapper">
-			<view class="item-style" v-hasPermi="['app:place:index']" @click="showPlace = true">
+			<view class="item-style" v-hasPermi="['app:place:index']" @click="$refs.placeList.showPlacePopup(placeId)">
 				<span>{{ placeName }}</span>
 				<u-icon name="arrow-down-fill" color="#5c5858" size="26" class="icons" />
 			</view>
@@ -54,45 +47,6 @@
 			</view>
 			<view>点击信号值刷新</view>
 		</view>
-
-		<!-- 场地 -->
-		<u-popup :show="showPlace" mode="bottom">
-			<view class="popup-wrapper">
-				<view class="search-top-wrapper">
-					<view class="title-wrapper">
-						<view class="side-style" @click="showPlace = false">返回</view>
-						<view class="title">选择场地</view>
-						<view class="side-style"></view>
-					</view>
-					<search-input placeholder="请输入场地名称" marLeft="-5.5em" @stratesSearch="stratesSearch"></search-input>
-				</view>
-
-				<view class="place-list-wrapper">
-					<view class="place-style" @click="checkPlace('全部')">
-						<view>全部场地</view>
-						<view class="right">
-							<view class="success">
-								<u-icon name="success" color="#5241FF" size="18" v-show="!placeId" />
-							</view>
-						</view>
-					</view>
-					<u-list v-model="loading" :finished="onEarth" finished-text="没有更多了" @load="getList">
-						<!-- :style="!item.deviceNum ? { opacity: ' 0.5' } : ''" -->
-						<view class="place-style" v-for="item in placeList" :key="item.placeId"
-							@click="checkPlace(item)">
-							<view>{{ item.placeName }}</view>
-							<view class="right">
-								<!-- <view>{{ item.deviceNum }}台</view> -->
-								<view class="success">
-									<u-icon name="success" color="#5241FF" size="18" v-show="placeId == item.placeId" />
-								</view>
-							</view>
-						</view>
-					</u-list>
-					<no-data v-show="!placeList.length"></no-data>
-				</view>
-			</view>
-		</u-popup>
 		<!-- 类型 -->
 		<u-popup :show="showType" mode="bottom">
 			<view class="popup-wrapper">
@@ -107,21 +61,21 @@
 					<view class="place-style" @click="checkType('设备')">
 						<view>全部类型</view>
 						<view>
-							<u-icon name="success" color="#5241FF" size="18" v-show="!deviceType" />
+							<u-icon name="checkmark-circle-fill" color="#5241FF" size="36" v-show="!deviceType" />
 						</view>
 					</view>
 
 					<view class="place-style" v-for="item in deviceTypeList" :key="item.id" @click="checkType(item)">
 						<view>{{ item.typeName }}</view>
 						<view>
-							<u-icon name="success" color="#5241FF" size="18" v-show="deviceType == item.id" />
+							<u-icon name="checkmark-circle-fill" color="#5241FF" size="36" v-show="deviceType == item.id" />
 						</view>
 					</view>
 
-					<!-- <on-earth /> -->
 				</view>
 			</view>
 		</u-popup>
+		<xls-place-radio ref="placeList" @getPlaceId="pickerPlace" showAllCheck></xls-place-radio>
 		<!-- 疑问弹出层 -->
 		<u-popup :show="showQuestion" mode="center" round="20">
 			<view class="popup">
@@ -156,12 +110,9 @@
 </template>
 
 <script>
-	// import {
-	// 	getPlaceDeviceNum
-	// } from "@/utils/api/place";
-	// import {
-	// 	getDevicetype
-	// } from "@/utils/api/device";
+	import {
+		mapGetters
+	} from 'vuex';
 	export default {
 		props: {
 			count: {
@@ -172,7 +123,6 @@
 		data() {
 			return {
 				enterValue: "",
-				searchType: false,
 				// 在线/离线
 				onlineState: null,
 				stateList: [{
@@ -191,27 +141,27 @@
 				// 场地/类型
 				placeName: "全部场地",
 				placeId: null,
-				showPlace: false,
-				page: 0,
-				loading: false,
-				onEarth: false,
 				searchValue: "",
-				placeList: [],
-
+				// 设备类型
 				showType: false,
 				deviceType: null,
 				deviceTypeName: "设备类型",
-				deviceTypeList: [],
 				showQuestion: false,
 				showAscending: false,
 			};
 		},
-		// created() {
-		// 	this.getType();
-		// },
+		computed: {
+			...mapGetters([
+				'deviceTypeList',
+				'deviceTypeDict'
+			])
+		},
+		mounted() {
+			this.$store.dispatch('config/getList');
+		},
 		methods: {
 			goTo() {
-				uni.navigateBack();
+				this.$goBack();
 			},
 			getStateCount(state) {
 				const num = this.count.online + this.count.offline;
@@ -225,24 +175,6 @@
 					return online
 				}
 			},
-			focusSearch() {
-				this.searchType = true;
-				this.$nextTick(() => {
-					try {
-						const input =
-							document.getElementsByClassName("u-field__control")[0];
-						input.focus();
-					} catch (params) {}
-				});
-			},
-			confirmSearch() {
-				this.getParams();
-			},
-			cancelSearch() {
-				this.searchType = false;
-				this.enterValue = "";
-				this.getParams();
-			},
 			// 离线/在线
 			changeState(state) {
 				if (state.id == this.onlineState) {
@@ -251,56 +183,20 @@
 				this.onlineState = state.id;
 				this.getParams();
 			},
-			// 场地
-			stratesSearch(search) {
-				this.searchValue = search;
-				this.page = 0;
-				this.onEarth = false;
-				this.getList();
-			},
-			async getList() {
-				this.loading = true;
-				let res = await getPlaceDeviceNum({
-					page: ++this.page,
-					size: 20,
-					placeName: encodeURIComponent(this.searchValue),
-				});
-				this.loading = false;
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					if (res.data.data != null) {
-						if (res.data.data.length < 20) {
-							this.onEarth = true;
-						} else {
-							this.onEarth = false;
-						}
-						if (this.page > 1) {
-							this.placeList = [...this.placeList, ...res.data.data];
-						} else {
-							this.placeList = res.data.data;
-						}
-					}
-				}
-			},
-			checkPlace(params) {
-				if (params == "全部") {
-					this.placeId = null;
-					this.placeName = "全部场地";
-				} else {
-					this.placeId = params.placeId;
-					this.placeName = params.placeName;
-				}
-				this.showPlace = false;
+			confirmSearch() {
 				this.getParams();
 			},
-			// 类型
-			async getType() {
-				let res = await getDevicetype({
-					page: 1,
-					size: 1000
-				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.deviceTypeList = res.data.data;
-				}
+			focusSearch() {
+				this.getParams();
+			},
+			getParams() {
+				let params = {
+					onlineState: this.onlineState,
+					placeId: this.placeId,
+					deviceType: this.deviceType,
+					search: this.enterValue?encodeURIComponent(this.enterValue):"",
+				};
+				this.$emit('confirm', params);
 			},
 			checkType(params) {
 				if (params == "设备") {
@@ -313,15 +209,16 @@
 				this.showType = false;
 				this.getParams();
 			},
-			getParams() {
-				let params = {
-					onlineState: this.onlineState,
-					placeId: this.placeId,
-					deviceType: this.deviceType,
-					search: this.enterValue ? encodeURIComponent(this.enterValue) : null,
-				};
-				this.$parent.searchParams(params);
-			},
+			pickerPlace(place) {
+				if (place == -1) {
+					this.placeId = null;
+					this.placeName = "全部场地";
+				} else {
+					this.placeId = place.placeId;
+					this.placeName = place.placeName;
+				}
+				this.getParams();
+			},	
 		},
 	};
 </script>
@@ -424,6 +321,7 @@
 
 			.item-style {
 				width: 100px;
+				max-width: 100px;
 				height: 45px;
 				font-size: 14px;
 				color: rgb(92, 88, 88);
@@ -451,6 +349,8 @@
 		//场地弹出
 		.popup-wrapper {
 			width: 100%;
+			max-height: 1000rpx;
+			height: 60vh;
 			position: relative;
 			display: flex;
 			flex-direction: column;

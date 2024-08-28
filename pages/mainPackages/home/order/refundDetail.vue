@@ -28,30 +28,13 @@
 				</view>
 
 				<view class="xls-steps">
-					<view class="xls-steps-item">
+					<view class="xls-steps-item" v-for="(item,index) in order.orderFlowLogVoList" :key="index">
 						<view class="xls-steps-content">
-							<view class="title">退款完成</view>
-							<view class="time">2024-07-22 13:30:51</view>
+							<view class="title">{{item.name}}</view>
+							<view class="time">{{item.createTime}}</view>
 						</view>
-						<view class="xls-steps-circle"></view>
-						<view class="xls-steps-line"></view>
-					</view>
-					<view class="xls-steps-item">
-						<view class="xls-steps-content">
-							<view class="title">退款完成</view>
-							<view class="description">正在为您退款，将在1~3个工作日内原路退还至支付账户</view>
-							<view class="time">2024-07-22 13:30:51</view>
-						</view>
-						<view class="xls-steps-circle"></view>
-						<view class="xls-steps-line"></view>
-					</view>
-					<view class="xls-steps-item">
-						<view class="xls-steps-content">
-							<view class="title">退款完成</view>
-							<view class="time">2024-07-22 13:30:51</view>
-						</view>
-						<view class="xls-steps-circle"></view>
-						<!-- <view class="xls-steps-line"></view> -->
+						<view class="xls-steps-circle" :class="{'active': index==0}"></view>
+						<view class="xls-steps-line" v-if="index+1 !== order.orderFlowLogVoList.length"></view>
 					</view>
 				</view>
 				<view class="order_line"></view>
@@ -64,7 +47,7 @@
 						mode="widthFix"></image>
 					<view class="price-center">
 						<view class="">
-							{{ order.amount }}元1局
+							{{ order.amountTotal }}元1局
 						</view>
 						<view class="">
 							x1
@@ -72,10 +55,10 @@
 					</view>
 					<view class="price-right">
 						<view class="backColor">
-							¥{{ order.amount }}
+							¥{{ order.amountTotal }}
 						</view>
 						<view class="redColor">
-							实付：¥{{ order.amountTotal }}
+							实退：¥{{ order.refundMoney }}
 						</view>
 					</view>
 				</view>
@@ -94,7 +77,7 @@
 							退款方式
 						</view>
 						<view class="right">
-							{{stateDict[order.refundType]}}
+							{{refundDict[order.refundType]}}
 						</view>
 					</view>
 					<view class="refund-price">
@@ -154,11 +137,11 @@
 					null: "其他"
 				},
 				refundDict: {
-					0: '(出货失败退款)',
-					1: '(出货失败部分退款)',
-					2: '(人工退款)',
-					3: '(通讯失败退款)',
-					4: '(人工部分退款)',
+					0: '出货失败退款',
+					1: '出货失败部分退款',
+					2: '人工退款',
+					3: '通讯失败退款',
+					4: '人工部分退款',
 					null: "其他"
 				},
 			}
@@ -176,6 +159,10 @@
 				}).then(res => {
 					if (res.code = 200) {
 						this.order = res.data
+						if(this.order.orderFlowLogVoList) {
+							this.order.orderFlowLogVoList.reverse();
+						}
+						
 					}
 				})
 			},
@@ -189,6 +176,7 @@
 	.xls-order-detail {
 		font-family: PingFangSC-Medium, PingFang SC;
 		padding: 20rpx 24rpx;
+		overflow: auto;
 
 		.xls-header-style {
 			height: 16rpx;
@@ -308,13 +296,13 @@
 			top: 3.73333vw;
 			width: 2.66667vw;
 			z-index: 2;
-			background: $xls-color-primary;
-			border: .53333vw solid $xls-color-primary;
-		}
-
-		&-circle {
 			background: #d9d9d9;
 			border: .53333vw solid #fff;
+		}
+		
+		.active {
+			background: $xls-color-primary;
+			border: .53333vw solid $xls-color-primary;
 		}
 
 		&-line {

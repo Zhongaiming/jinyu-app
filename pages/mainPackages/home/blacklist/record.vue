@@ -55,9 +55,7 @@
 					search: this.searchValue
 				}).then(res => {
 					if (res.code === 200) {
-						setTimeout(() => {
-							this.$refs.paging.complete(res.data);
-						}, 2000)
+						this.$refs.paging.complete(res.data);
 					}
 				})
 			},

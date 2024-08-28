@@ -68,7 +68,7 @@
 				</view>
 				<view class="list">
 					<span>商户实收款：</span>
-					<span class="main-text">¥{{ order.bankCardAmount }}</span>
+					<span class="main-text">¥{{ order.commercialRealCollection }}</span>
 				</view>
 			</view>
 		</view>

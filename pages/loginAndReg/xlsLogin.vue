@@ -16,7 +16,11 @@
 					</checkbox-group>
 				</view>
 
-				<button class="xls-botton-style" @click="loginMethod">登录</button>
+				<!-- <button class="xls-botton-style" @click="loginMethod">登录</button> -->
+				<u-button type="primary" :loading="loginSwitch" color="#5241ff"
+					:disabled="loginSwitch" loadingText="加载中" text="登录" loadingSize="30"
+					@click="loginMethod"></u-button>
+					
 			</form>
 			<view class="xls-register-wrapper">
 				<xls-image :src="`${$baseUrl}login_image/register.png`" alt="" class="image" @click="goTo"
@@ -39,10 +43,11 @@
 		data() {
 			return {
 				login: {
-					username: "zt18402059455",
+					username: "19854573708",
 					password: "123456"
 				},
 				rememberNb: true,
+				loginSwitch: false,
 			}
 		},
 		created() {
@@ -71,12 +76,16 @@
 					password: md5(this.login.password),
 					uuid: ""
 				}
+				// this.$loading();
+				this.loginSwitch = true;
 				this.$store.dispatch('user/login', params).then(res => {
-					this.$toast(this.$t('login.loginSuccess'), 2000)
-					setTimeout(() => {
+					setTimeout(() =>{
 						// this.setInfo();
+						// this.$toast(this.$t('login.loginSuccess'), 2000);
 						this.$goTab();
-					}, 2000)
+						this.loginSwitch = false;
+						// this.$hideLoading();
+					}, 1000)
 				})
 			},
 			setInfo() {

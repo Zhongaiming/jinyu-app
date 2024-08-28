@@ -70,58 +70,60 @@
 							status: 0
 						}
 					]
-				}, {
-					id: 2,
-					title: '售货机',
-					permissions: ['app:shj:statistics:read', 'app:shj:stockUp:read', 'app:shj:data:read',
-						'app:shj:replenish:read', 'app:shj:commodity:read'
-					],
-					dataList: [{
-							id: 21,
-							title: '出货统计',
-							imgUrl: `${this.$baseUrl}homeImages/secondList/one.png`,
-							route: '/pages/mainPackages/home/shipmentStatistics/index',
-							params: {
-								deviceType: 4
-							},
-							permissions: ['app:shj:statistics:read'],
-							status: 0
-						},
-						// {
-						// 	id: 22,
-						// 	title: '缺货备货',
-						// 	imgUrl: `${this.$baseUrl}homeImages/secondList/two.png`,
-						// 	route: '/shjStock',
-						// 	permissions: ['app:shj:stockUp:read'],
-						// 	status: 0
-						// },
-						{
-							id: 23,
-							title: '数据分析',
-							imgUrl: `${this.$baseUrl}homeImages/secondList/three.png`,
-							route: '/shjAnalyse',
-							permissions: ['app:shj:data:read'],
-							status: 0
-						},
-						{
-							id: 24,
-							title: '补货管理',
-							imgUrl: `${this.$baseUrl}homeImages/secondList/four.png`,
-							route: '/shjReplenishment',
-							permissions: ['app:shj:replenish:read'],
-							status: 0
-						},
-						{
-							id: 25,
-							title: '商品管理',
-							imgUrl: `${this.$baseUrl}homeImages/secondList/five.png`,
-							// route: '/pages/mainPackages/home/commodity/shjCommodity',
-							route: '/pages/mainPackages/home/commodity/index',
-							permissions: ['app:shj:commodity:read'],
-							status: 0
-						}
-					]
-				}, {
+				}, 
+				// {
+				// 	id: 2,
+				// 	title: '售货机',
+				// 	permissions: ['app:shj:statistics:read', 'app:shj:stockUp:read', 'app:shj:data:read',
+				// 		'app:shj:replenish:read', 'app:shj:commodity:read'
+				// 	],
+				// 	dataList: [{
+				// 			id: 21,
+				// 			title: '出货统计',
+				// 			imgUrl: `${this.$baseUrl}homeImages/secondList/one.png`,
+				// 			route: '/pages/mainPackages/home/shipmentStatistics/index',
+				// 			params: {
+				// 				deviceType: 4
+				// 			},
+				// 			permissions: ['app:shj:statistics:read'],
+				// 			status: 0
+				// 		},
+				// 		// {
+				// 		// 	id: 22,
+				// 		// 	title: '缺货备货',
+				// 		// 	imgUrl: `${this.$baseUrl}homeImages/secondList/two.png`,
+				// 		// 	route: '/shjStock',
+				// 		// 	permissions: ['app:shj:stockUp:read'],
+				// 		// 	status: 0
+				// 		// },
+				// 		{
+				// 			id: 23,
+				// 			title: '数据分析',
+				// 			imgUrl: `${this.$baseUrl}homeImages/secondList/three.png`,
+				// 			route: '/shjAnalyse',
+				// 			permissions: ['app:shj:data:read'],
+				// 			status: 0
+				// 		},
+				// 		{
+				// 			id: 24,
+				// 			title: '补货管理',
+				// 			imgUrl: `${this.$baseUrl}homeImages/secondList/four.png`,
+				// 			route: '/shjReplenishment',
+				// 			permissions: ['app:shj:replenish:read'],
+				// 			status: 0
+				// 		},
+				// 		{
+				// 			id: 25,
+				// 			title: '商品管理',
+				// 			imgUrl: `${this.$baseUrl}homeImages/secondList/five.png`,
+				// 			// route: '/pages/mainPackages/home/commodity/shjCommodity',
+				// 			route: '/pages/mainPackages/home/commodity/index',
+				// 			permissions: ['app:shj:commodity:read'],
+				// 			status: 0
+				// 		}
+				// 	]
+				// }, 
+				{
 					id: 3,
 					title: '礼品机',
 					permissions: ['app:gift:index', 'app:shop:index', 'app:ndj:index',

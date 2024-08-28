@@ -110,8 +110,9 @@
 		}
 
 		.right {
+			box-sizing: border-box;
 			flex: 1;
-			margin-left: 32rpx;
+			margin-left: 24rpx;
 			color: #5241FF;
 			font-size: 26rpx;
 			text-align: center;

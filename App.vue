@@ -142,6 +142,11 @@
 		align-items: center;
 		justify-content: center;
 	}
+	.text-over {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 
 	@import '@/uni_modules/uview-ui/index.scss';
 	@import './static/styles/index.scss';

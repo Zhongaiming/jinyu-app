@@ -109,6 +109,12 @@
 				default: () => {
 					return {}
 				}
+			},
+			params: {
+				type: Object,
+				default: () => {
+					return {}
+				}
 			}
 		},
 		methods: {
@@ -134,9 +140,10 @@
 				this.$set(dev, "closeOrshow", true);
 			  }
 			  if (!dev.deviceRails) {
+				  
 				let res = await deviceDataController.outPresentDeviceList({
-				  startTime: '2024-08-27',
-				  endTime: '2024-08-27',
+				  startTime: this.params.startTime,
+				  endTime: this.params.endTime,
 				  placeId: placeId,
 				  deviceNumber: dev.deviceNumber,
 				  type: this.deviceType==4?2:null,
@@ -158,6 +165,7 @@
 	.gift-content {
 		margin-top: 10px;
 		padding: 0 10px;
+		padding-top: 406rpx;
 
 		.giftCount {
 			padding: 21px 0;

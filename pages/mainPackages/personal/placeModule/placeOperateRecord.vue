@@ -1,23 +1,23 @@
 <template>
-	<view class="xls-place-operate-record">
-		<jy-navbar title="场地操作记录" bgColor="#f5f6f7"></jy-navbar>
-
-		<view class="search-style">
-			<view class="search-style-main">
-				<view class="left">
-					<!-- <zb-dropdown-menu active-color="#5241FF">
-						<zb-dropdown-item name="first" v-model="value1" :options="option1" @change="beOndutyState" />
-					</zb-dropdown-menu> -->
+	<z-paging ref="paging" v-model="dataList" @query="queryList">
+		<view slot="top" class="xls-place-operate-record">
+			<jy-navbar title="场地操作记录" bgColor="#f5f6f7"></jy-navbar>
+			<view class="search-style">
+				<view class="search-style-main">
+					<view class="left">
+						<!-- <zb-dropdown-menu active-color="#5241FF">
+								<zb-dropdown-item name="first" v-model="value1" :options="option1" @change="beOndutyState" />
+							</zb-dropdown-menu> -->
+					</view>
+					<u-icon name="search" size="46" @click="iconSearch"></u-icon>
+					<input type="text" :placeholder="'输入' + typeName" v-model="searchValue" @keyup.13="iconSearch"
+						@blur="iconSearchBlur" />
 				</view>
-
-				<u-icon name="search" size="46" @click="iconSearch"></u-icon>
-				<input type="text" :placeholder="'输入' + typeName" v-model="searchValue" @keyup.13="iconSearch"
-					@blur="iconSearchBlur" />
 			</view>
 		</view>
-
-		<u-list @scrolltolower="scrolltolower" class="xls-list" :height="`${uListHeight}px`">
-			<u-list-item v-for="(item, index) in dataList" :key="index" class="xls-list-item">
+		
+		<view class="xls-place-operate-record">
+			<view v-for="(item, index) in dataList" :key="index" class="xls-list-item">
 				<!-- 操作类型 1添加，2修改，3删除 -->
 				<view :class="[`bgCass${item.operationType}`]" @click="goTo(item)"></view>
 				<view class="header">
@@ -40,14 +40,10 @@
 					<span class="label">操作时间:</span>
 					<span class="label value">{{ item.operationTime }}</span>
 				</view>
-			</u-list-item>
-			<xls-bottom />
-		</u-list>
-		<xls-empty v-if="!dataList.length"></xls-empty>
-
-
-	</view>
-
+			</view>
+		</view>
+		<xls-empty slot="empty"></xls-empty>
+	</z-paging>
 </template>
 
 <script>
@@ -55,9 +51,10 @@
 	// import { getPlaceLogPage } from "@/utils/api/place";
 	// import { debounceFun, throttleFun } from "@/plugins/debounceOrthrottle";
 	// import { getSeparateBillsLogPage } from "@/utils/api/separateBills";
-
+	import {
+		placeController
+	} from "@/api/index.js";
 	export default {
-		name: "operatingRecord",
 		// components: {
 		// 	TopTab
 		// },
@@ -91,15 +88,17 @@
 		//   }
 		//   this.getRepresent();
 		// },
-		onReady() {
-			uni.createSelectorQuery().select('.search-style').boundingClientRect(data => {
-				this.uListHeight = this.excludeNavbarHeight - data.height;
-				console.log("剩余高度", data)
-			}).exec();
-		},
 
 		methods: {
-
+			queryList(pageNo, pageSize) {
+				placeController.getPlaceLogPage({
+					page: pageNo,
+					size: pageSize,
+					// search: this.searchValue
+				}).then(res => {
+					this.$refs.paging.complete(res.data);
+				})
+			},
 			goTo(item) {
 				this.$goTo('/pages/mainPackages/personal/placeModule/placeOperateRecordDetail', 'navigateTo', {
 					id: item.id
@@ -117,17 +116,7 @@
 			scrolltolower() {
 				console.log("???触底")
 			},
-			//监听滚动
-			getMoretype(elm) {
-				var scrollTop = elm.target.scrollTop;
-				var scrollHeight = elm.target.scrollHeight;
-				var clientHeight = elm.target.clientHeight;
-				if (scrollTop + clientHeight + 50 >= scrollHeight) {
-					if (this.onEarth == false) {
-						this.getRepresent();
-					}
-				}
-			},
+
 			// getRepresent: throttleFun(async function() {
 			// 	let res;
 			// 	if (this.fromType) {
@@ -189,13 +178,6 @@
 <style lang="scss" scoped>
 	.xls-place-operate-record {
 		padding: 0 20rpx;
-		font-family: PingFangSC, PingFangSC-Regular;
-		height: 100%;
-		width: 100%;
-		// height: 100vh;
-		// display: flex;
-		// flex-direction: column;
-		// overflow: hidden;
 
 		.search-style {
 			padding: 12rpx 0;

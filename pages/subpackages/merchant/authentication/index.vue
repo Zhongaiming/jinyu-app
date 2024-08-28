@@ -137,7 +137,9 @@
 				})
 			},
 			getList() {
+				this.$loading();
 				merchantController.authorizeQuery().then(res => {
+					this.$hideLoading();
 					res.data[0].authInfoList.forEach((item, index) => {
 						if (item.appPayType === 'WXPAY') {
 							item['url'] = 'wx-pay.png';

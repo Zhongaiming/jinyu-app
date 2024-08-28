@@ -14,14 +14,14 @@
 				<view class="line"></view>
 			</view>
 			<view class="header-content" :class="{'hidden-header': changeToptitle}">
-				<view class="header-notice" v-show="showDate">
+				<!-- <view class="header-notice" v-show="showDate">
 					<view class="header-bg"></view>
 					<view class="main-con box-sizing">
 						注：为腾出数据空间加速查询性能，系统今后仅支持查询最近半年的历史数据（当前时间可查询
 						<span class="mark">2021-10</span>月起的数据),
 						请您定时记录数据到本地,以免超期无法查询。您还可以用电脑登录https
 					</view>
-				</view>
+				</view> -->
 				<view class="condition-panel">
 					<view class="condition-main">
 						<view class="time-list box-sizing">
@@ -38,9 +38,6 @@
 								<u-icon name="arrow-right" size="36" color="#c6c6c6" />
 							</view>
 						</view>
-						<!-- <u-calendar v-model="showDate" type="range" allow-same-day @confirm="onConfirm"
-								:max-range="180" range-prompt="只能查询半年的数据" :min-date="minDate" :max-date="maxDate"
-								:round="false" color="#5241FF" /> -->
 
 						<view class="selectbar box-sizing">
 							<view class="site-con border-right" v-hasPermi="['app:place:index']"
@@ -48,7 +45,7 @@
 								<span class="text-over label-text">{{ placeName }}</span>
 								<span><u-icon name="arrow-down" /></span>
 							</view>
-							<view class="site-con" @click="$refs.devicelist.showDevice()">
+							<view class="site-con" @click="$refs.deviceType.showDeviceTypelist()">
 								<span class="text-over label-text">{{ typeName }}</span><span><u-icon
 										name="arrow-down" /></span>
 							</view>
@@ -256,40 +253,24 @@
 				<view class="btn" @click="answerQuest = !answerQuest"></view>
 			</view>
 		</u-popup>
-		<!-- place -->
-		<!-- <CustomList ref="placelist" @getPlaceId="getPlaceId" /> -->
-		<!-- 设备类型 -->
-		<!-- <device-list ref="devicelist" @getTypeId="getTypeId"></device-list> -->
+		<xls-calendar :show="showDate" @close="() => { showDate = false }" @confirm="getCalender"></xls-calendar>
+		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
+		<xls-device-type-radio ref="deviceType" @changDeviceType="changDeviceType"></xls-device-type-radio>
 	</z-paging>
 </template>
 
 <script>
 	import PlaceInfocard from "./component/placeInfocard.vue";
-	// import {
-	// 	getPlaceIncome,
-	// 	getDeviceTypeIncome
-	// } from "@/utils/api/earningStat";
-	
-	// import PlaceidList from "@/components/commonComps/placeidList";
-	// import DeviceList from "@/components/commonComps/deviceList";
-	// import CustomList from "@/components/commonComps/customList.vue";
 	import {
 		getTime,
 		getDateAll
 	} from "@/plugins/utilityClass";
-	import {
-		debounceFun,
-		throttleFun
-	} from "@/plugins/debounceOrthrottle";
 	import {
 		orderController
 	} from "@/api/index.js";
 	export default {
 		components: {
 			PlaceInfocard,
-			// PlaceidList,
-			// DeviceList,
-			// CustomList
 		},
 		data() {
 			return {
@@ -303,6 +284,17 @@
 				sliderModal: false,
 				//疑问开关
 				answerQuest: false,
+				//数据
+				earnStar: {},
+				//选中场地数
+				deviceTypeId: [],
+				typeName: "设备类型",
+				// 条件筛选
+				dataList: [],
+				showDate: false,
+				date: getDateAll(0) + "\u2002今天",
+				startTime: getDateAll(0),
+				endTime: getDateAll(0),
 				//快捷时间
 				activeTime: 0,
 				timeList: [{
@@ -326,57 +318,30 @@
 						time: "半年"
 					},
 				],
-				//选择日期
-				showDate: false,
-				// minDate: new Date(
-				// 	new Date().getFullYear() - 1,
-				// 	new Date().getMonth(),
-				// 	new Date().getDate()
-				// ),
-				// maxDate: new Date(getDateAll(0)),
-				date: getDateAll(0) + "\u2002今天",
-				// //开始结束时间
-				startTime: getDateAll(0),
-				endTime: getDateAll(0),
-				//数据
-				earnStar: {},
 				//placeid
 				placeId: [],
 				placeName: "全部场地",
-				//选中场地数
-				placeNum: "",
-				deviceTypeId: [],
-				typeName: "设备类型",
-				//获取
-				page: 0,
-				onEarth: false,
-				// 
-				dataList: [],
 			};
 		},
-		// created() {
-		// 	if (this.$route.query.place) {
-		// 		let place = JSON.parse(this.$route.query.place);
-		// 		this.placeId = place.placeId;
-		// 		this.placeName = place.placeName;
-		// 	}
-		// 	this.getDetaildata();
-		// 	window.addEventListener("scroll", this.screenSlide);
-		// },
-		// beforeDestroy() {
-		// 	window.removeEventListener("scroll", this.screenSlide);
-		// },
+		onLoad() {
+			if (this.$route.query.place) {
+				let place = JSON.parse(this.$route.query.place);
+				this.placeId = place.placeId;
+				this.placeName = place.placeName;
+			}
+		},
 		methods: {
 			queryList(pageNo, pageSize) {
 				this.$loading();
 				orderController.getPlaceIncome({
 					page: pageNo,
 					size: pageSize,
-					startTime: '2024-08-23',
-					endTime: '2024-08-23'
+					startTime: this.startTime,
+					endTime: this.endTime,
+					...(this.placeId.length && { places: String(this.placeId) })
 				}).then(res => {
 					this.$hideLoading();
-					this.earnStar = res.data
+					this.earnStar = res.data;
 					this.$refs.operatePaging.complete(res.data.placeDeviceTypeIncomeVos);
 				})
 			},
@@ -445,78 +410,84 @@
 					detailArguments
 				})
 			},
-
-
-			//选择日期
-			formatDate(date) {
-				return `${date.getFullYear()}-${
-        date.getMonth() + 1 < 10
-          ? "0" + (date.getMonth() + 1)
-          : date.getMonth() + 1
-      }-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`;
+			//快捷时间
+			quickTime(id) {
+			    this.activeTime = id;
+			
+			    // 获取当前日期
+			    const today = getDateAll(0);
+			    const yesterday = getDateAll(1);
+			    const startOfMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-01`;
+			    const startOfYear = `${new Date().getFullYear()}-01-01`;
+			    const endOfWeek = getTime(0);
+			    const startOfWeek = getTime(-6);
+			    const endOfHalfYear = getDateAll(180);
+			
+			    // 设置日期范围
+			    switch (id) {
+			        case 0:
+			            this.date = `${today} \u2002今天`;
+			            this.startTime = today;
+			            this.endTime = today;
+			            break;
+			        case 1:
+			            this.date = `${yesterday} \u2002昨天`;
+			            this.startTime = yesterday;
+			            this.endTime = yesterday;
+			            break;
+			        case 2:
+			            this.date = `${endOfWeek} 至 ${startOfWeek}`;
+			            this.startTime = endOfWeek;
+			            this.endTime = startOfWeek;
+			            break;
+			        case 3:
+			            this.date = `${startOfMonth} 至 ${today}`;
+			            this.startTime = startOfMonth;
+			            this.endTime = today;
+			            break;
+			        case 4:
+			            this.date = `${endOfHalfYear} 至 ${today}`;
+			            this.startTime = endOfHalfYear;
+			            this.endTime = today;
+			            break;
+			        default:
+			            // 如果 id 不匹配任何情况，可以选择抛出错误或处理默认情况
+			            console.warn('Invalid quick time id:', id);
+			            return;
+			    }
+			    this.getParams();
 			},
 			//选择日期
-			onConfirm(date) {
-				const [start, end] = date;
+			getCalender(date) {
+				const [startTime, endTime] = date;
 				this.showDate = false;
 				this.activeTime = -1;
-				this.date = `${this.formatDate(start)} 至 ${this.formatDate(end)}`;
-				this.startTime = this.formatDate(start);
-				this.endTime = this.formatDate(end);
-				this.page = 0;
-				this.onEarth = false;
-				this.getDetaildata();
+				this.date = `${startTime} 至 ${endTime}`;
+				this.startTime = startTime;
+				this.endTime = endTime;
+				this.getParams();
 			},
-			//判断滚动
-			screenSlide() {
-				var scrollTop =
-					document.documentElement.scrollTop ||
-					document.body.scrollTop ||
-					window.pageYOffset;
-				this.scrollTop = scrollTop;
-				var scrollHeight = document.documentElement.scrollHeight;
-				var clientHeight = document.documentElement.clientHeight;
-				if (scrollTop + clientHeight + 50 >= scrollHeight) {
-					if (
-						this.onEarth == false &&
-						this.typeName == "设备类型" &&
-						this.$route.path == "/earningStat/placeEarning"
-					) {
-						this.getDetaildata();
-					}
+			//按场地
+			getPlaceId(place) {
+				if (place[1].length == 1) {
+					this.placeName = `${place[0][0]}`;
+				} else {
+					this.placeName = place[1].length ?
+						place[0][0] + "、" + place[0][1] + "、" + place[0][2] :
+						"全部场地";
 				}
-				if (scrollTop > 70) {
-					this.changeToptitle = true;
-				}
-				if (scrollTop <= 0) {
-					this.changeToptitle = false;
-				}
+				this.placeId = place[1].length ? String(place[1]) : [];
+				this.getParams();
 			},
-			//获取场地收益数据
-			getDetaildata: debounceFun(async function() {
-				let res = await getPlaceIncome({
-					page: ++this.page,
-					size: 10,
-					startTime: this.startTime,
-					endTime: this.endTime,
-					placeIds: this.placeId,
-				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					if (res.data.data.placeDeviceTypeIncomeVos < 10) {
-						this.onEarth = true;
-					} else {
-						this.onEarth = false;
-					}
-					if (this.page > 1) {
-						this.dataList = [
-							...this.dataList,
-							...res.data.data.placeDeviceTypeIncomeVos,
-						];
-					} else {
-						this.earnStar = res.data.data;
-					}
-				}
-			}, 500),
+			//设备类型
+			changDeviceType(params) {
+				this.typeName = params.typeName;
+				this.deviceTypeId = params.deviceTypeId;
+				this.getParams();
+			},
+			getParams() {
+				this.$refs.operatePaging.reload();
+			},
 			//获取设备类型（场地）收益数据
 			getDevicedata() {
 				getDeviceTypeIncome({
@@ -531,87 +502,6 @@
 					.catch((err) => {
 						console.log(err);
 					});
-			},
-			//按设备类型
-			getTypeId(id) {
-				let array = id[1].toString();
-				this.deviceTypeId = array;
-				if (id[0].length == 1) {
-					this.typeName = id[0][0];
-				} else {
-					this.typeName = id[0][0] + "、" + id[0][1] + "、" + id[0][2];
-				}
-				this.getDevicedata();
-			},
-			//按场地
-			getPlaceId(place) {
-				if (place[1].length == 1) {
-					this.pickerPlace = `${place[0][0]}`;
-				} else {
-					this.placeName = place[1].length ?
-						place[0][0] + "、" + place[0][1] + "、" + place[0][2] :
-						"全部场地";
-				}
-				this.placeNum = place[1].length;
-				this.placeId = place[1].length ? String(place[1]) : [];
-
-				if (!this.deviceTypeId.length) {
-					this.page = 0;
-					this.onEarth = false;
-					this.getDetaildata();
-				} else {
-					this.getDevicedata();
-				}
-			},
-			//快捷时间
-			quickTime(id) {
-				this.activeTime = id;
-				this.page = 0;
-				this.onEarth = false;
-				if (id == 0) {
-					let today = getDateAll(0);
-					this.date = today + "\u2002今天";
-					this.startTime = today;
-					this.endTime = today;
-				}
-				if (id == 1) {
-					let yesterday = getDateAll(1);
-					this.date = yesterday + "\u2002昨天";
-					this.startTime = yesterday;
-					this.endTime = yesterday;
-				}
-				if (id == 2) {
-					//本周
-					this.date = `${getTime(0)} 至 ${getTime(-6)}`;
-					this.startTime = getTime(0);
-					this.endTime = getTime(-6);
-				}
-				if (id == 3) {
-					//本月
-					let monStrat =
-						new Date().getFullYear() +
-						"-" +
-						(new Date().getMonth() + 1 < 10 ?
-							"0" + (new Date().getMonth() + 1) :
-							new Date().getMonth() + 1) +
-						"-" +
-						"01";
-					this.date = monStrat + "至" + getDateAll(0);
-					this.startTime = monStrat;
-					this.endTime = getDateAll(0);
-				}
-				if (id == 4) {
-					//本年
-					let halfYear = getDateAll(180);
-					this.date = halfYear + "至" + `${getDateAll(0)}`;
-					this.startTime = halfYear;
-					this.endTime = getDateAll(0);
-				}
-				if (!this.deviceTypeId.length) {
-					this.getDetaildata();
-				} else {
-					this.getDevicedata();
-				}
 			},
 		},
 	};

@@ -1,25 +1,34 @@
 <template>
-	<z-paging ref="dataPaging" v-model="dataList" @query="queryList">
-		<!-- <gift-setting v-if="deviceType != 4" v-hasPermi="['app:shop:index']" v-movable />
-		<gift-setting v-else v-hasPermi="['app:shj:commodity:read']" v-movable /> -->
-		<xls-list-vue :dataList="dataList" :giftCount="giftCount"></xls-list-vue>
-		<view class="btn" @click="goTo" v-if="deviceType != 4" slot="bottom">
-			<span>商品设置</span>
+	<z-paging ref="dataPaging" v-model="dataList" @query="queryList" @scroll="scrollXls">
+		<view class="xls-device-condition-wrapper">
+			<view class="detail" :class="{'detail-none':transitionTop}">
+				<xls-dd-header-vue @getSearch="getSearch"></xls-dd-header-vue>
+				<xls-quick-date @getCondition="getCondition" placeCheck="radio"></xls-quick-date>
+			</view>
+			<xls-simple-header-vue v-if="transitionTop" :params="params"></xls-simple-header-vue>
 		</view>
+		<xls-list-vue :dataList="dataList" :giftCount="giftCount" :params="params"></xls-list-vue>
+		<xls-empty slot="empty"></xls-empty>
+		<!-- <view class="btn" @click="goTo" v-if="deviceType != 4" slot="bottom">
+			<span>商品设置</span>
+		</view> -->
 	</z-paging>
 </template>
 
 <script>
-	// import TimeHeader from "./giftComps/timeHeader";
-	// import GiftSetting from "./giftComps/giftSetting";
-	import xlsListVue from "./components/xls-list.vue";
 	import {
 		deviceDataController
 	} from "@/api/index.js";
+	import xlsListVue from "./components/xls-list.vue";
+	import xlsDdHeaderVue from "./components/xls-dd-header.vue";
+	import xlsSimpleHeaderVue from "./components/xls-simple-header.vue";
+	// import GiftSetting from "./giftComps/giftSetting";
+	
 	export default {
 		components: {
 			xlsListVue,
-			// TimeHeader,
+			xlsDdHeaderVue,
+			xlsSimpleHeaderVue,
 			// GiftSetting
 		},
 		data() {
@@ -27,6 +36,14 @@
 				deviceType: null,
 				dataList: [],
 				giftCount: {},
+				params: {
+					startTime: "",
+					endTime: "",
+					search: "",
+					pickerPlace: "",
+					placeIdList: "",
+				},
+				transitionTop: false,
 			}
 		},
 		onLoad(option) {
@@ -37,11 +54,16 @@
 		},
 		methods: {
 			queryList(pageNo, pageSize) {
+				const params = {
+					startTime: this.params.startTime,
+					endTime: this.params.endTime,
+					...(this.params.search && { search: encodeURIComponent(this.params.search) }),
+					...(this.params.placeIdList && { placeId: this.params.placeIdList })
+				};
 				deviceDataController.getPresentList({
 					page: pageNo,
 					size: pageSize,
-					startTime: '2024-08-27',
-					endTime: '2024-08-27',
+					...params
 				}).then(res => {
 					this.giftCount = res.data.outPresentData;
 					this.$refs.dataPaging.complete(res.data.outPresentPlaceList);
@@ -51,28 +73,47 @@
 				return
 				this.$goTo();
 			},
-			screenSlide() {
-				var scrollTop =
-					document.documentElement.scrollTop ||
-					window.pageYOffset ||
-					document.body.scrollTop;
-				var scrollHeight = document.documentElement.scrollHeight;
-				var clientHeight = document.documentElement.clientHeight;
-				if (scrollTop + clientHeight + 50 >= scrollHeight) {
-					this.$refs.topBav.getGiftList();
-				}
+			scrollXls(e) {
+				const scrollTop = e.detail.scrollTop
 				if (scrollTop > 100) {
-					this.$refs.topBav.showSptop();
+					this.transitionTop = true;
 				}
 				if (scrollTop <= 0) {
-					this.$refs.topBav.hideSptop();
+					this.transitionTop = false;
 				}
+			},
+			getCondition(params) {
+				Object.assign(this.params, params);
+				this.$refs.dataPaging.reload();
+			},
+			getSearch(value) {
+				this.params.search = value;
+				this.$refs.dataPaging.reload();
 			},
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
+	.xls-device-condition-wrapper {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 99999;
+
+		.detail {
+			height: 406rpx;
+			overflow: hidden;
+			transition: height 0.5s;
+			-webkit-transition: height 0.5s;
+		}
+
+		.detail-none {
+			height: 0;
+		}
+	}
+
 	.btn {
 		width: 100%;
 		height: 50px;

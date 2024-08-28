@@ -11,7 +11,7 @@
 			<view class="place-wrapper">
 				<view class="place-item" @click="pickerPlace(-1)" v-if="showAllCheck">
 					<view class="place-main">
-						<span :style="{color:placeActive==-1?'#5241FF':''} ">全部</span>
+						<span :style="{color:placeActive==-1?'#5241FF':''} ">全部场地</span>
 					</view>
 				</view>
 				<view class="place-item" v-for="(place, index) in dataList" :key="index" @click="pickerPlace(place)"
@@ -20,7 +20,7 @@
 						<span :style="placeActive == place.placeId ? { color: '#5241FF' } : ''">
 							{{index+1}}_{{place.placeNumber}}{{ place.placeName }}
 						</span>
-						<span class="device-num" v-show="showDeviceNum">{{ place.deviceNum }}台</span>
+						<span class="device-num" v-if="showDeviceNum">{{ place.deviceNum }}台</span>
 					</view>
 				</view>
 				<xls-bottom></xls-bottom>
@@ -88,7 +88,7 @@
 					this.placeActive = place.placeId;
 				}
 				this.placePopup = !this.placePopup;
-				this.$emit("pickerPlace", place);
+				this.$emit("getPlaceId", place);
 			},
 		},
 	};

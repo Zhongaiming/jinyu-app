@@ -30,7 +30,7 @@ export default class placeController {
 	static deletePlace(data) {
 		return http.request({
 			url: '/merchant/api/v1/admin/merchant/place/delete',
-			method: 'PUT',
+			method: 'POST',
 			data
 		})
 	}
@@ -38,7 +38,7 @@ export default class placeController {
 	static editPlace(data) {
 		return http.request({
 			url: '/merchant/api/v1/admin/merchant/place/edit',
-			method: 'PUT',
+			method: 'POST',
 			data
 		})
 	}
@@ -192,7 +192,7 @@ export default class placeController {
 	static setWeight(data) {
 		return http.request({
 			url: '/merchant/api/v1/admin/merchant/place/setWeight',
-			method: 'PUT',
+			method: 'POST',
 			data
 		})
 	}

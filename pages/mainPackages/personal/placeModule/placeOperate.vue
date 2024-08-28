@@ -1,6 +1,6 @@
 <template>
 	<view class="xls-place-operate">
-		<xls-jy-navbar :title="`${place.id ? '编辑':'添加'}场地`"></xls-jy-navbar>
+		<xls-jy-navbar :title="`${place.id?'编辑':'添加'}场地`"></xls-jy-navbar>
 		<view class="xls-place-operate-form">
 			<u--form :model="place" labelWidth="200" ref="placeForm" :rules="rules">
 				<view class="place-modul">
@@ -202,7 +202,7 @@
 				})
 			},
 			getplaceView(id) {
-				placeController.getPlaceDeviceList({
+				placeController.getPlaceById({
 					placeId: id
 				}).then(res => {
 					Object.assign(this.place, res.data);
@@ -257,7 +257,7 @@
 				let params = JSON.parse(JSON.stringify(this.place));
 				params.wight = params.wightState ? 1 : 0;
 				this.$refs.placeForm.validate().then(() => {
-					placeController[`${params.id ? 'edit':'add'}Place`](params).then(res => {
+					placeController[`${params.id?'edit':'add'}Place`](params).then(res => {
 						if(res.code === 200) {
 							this.$toast('校验通过')
 							this.$goBack();

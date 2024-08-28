@@ -1,7 +1,8 @@
 <template>
 	<z-paging ref="paging" v-model="dataList" @query="queryList">
-		<device-condition :count="count"></device-condition>
+		<device-condition :count="count" @confirm="getScreen"></device-condition>
 		<device-list :dataList="dataList"></device-list>
+		<xls-empty slot="empty"></xls-empty>
 		<!-- 批量 -->
 		<!-- <place-popup ref="placePopup"></place-popup> -->
 		<!-- <Tabbar v-show="$route.meta.showDeviceTabbar" /> -->
@@ -24,10 +25,10 @@
 				dataList: [],
 				//筛选条件
 				screen: {
-					onlineState: null,
-					placeId: null,
-					deviceType: null,
-					search: null,
+					onlineState: "",
+					placeId: "",
+					deviceType: "",
+					search: "",
 				},
 				//设备数
 				count: {
@@ -42,12 +43,19 @@
 			};
 		},
 		methods: {
+			getScreen(params) {
+				Object.assign(this.screen, params);
+				this.$refs.paging.reload();
+			},
 			queryList(pageNo, pageSize) {
 				this.$loading();
+				const screen = Object.fromEntries(
+					Object.entries(this.screen).filter(([key, value]) => value !== null && value !== undefined && value !== '')
+				);
 				deviceController.getListTwo({
 					page: pageNo,
 					size: pageSize,
-					// ...this.screen
+					...screen
 				}).then(res => {
 					this.$hideLoading();
 					this.$refs.paging.complete(res.data.List);
@@ -55,7 +63,10 @@
 						online: res.data.online.onlineNums,
 						offline: res.data.offline.offlineNums
 					}
-				})
+				}).catch(error => {
+					this.$hideLoading();
+					console.error('查询失败:', error);
+				});
 			},
 		},
 	}

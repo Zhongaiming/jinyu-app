@@ -1,6 +1,8 @@
 <template>
 	<!-- 设备类型-单选 -->
-	<u-popup :show="showDeviceType" mode="bottom">
+	<u-popup :show="showDeviceType" mode="bottom" closeable @close="() => {
+		showDeviceType = false
+	}">
 		<view class="type-content">
 			<view class="panel-title">
 				<span class="title">请选择设备类型</span>
@@ -21,7 +23,7 @@
 				</view>
 				<xls-bottom></xls-bottom>
 			</view>
-			xls-emp 
+			xls-emp
 			<view class="modal-footer" @click="showDeviceType = !showDeviceType">
 				<view class="cancel-btn">关闭</view>
 			</view>

@@ -139,4 +139,13 @@ export default class deviceController {
 			data
 		})
 	}
+	
+	// 设备数量
+	static getDeviceNum(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/getDeviceNum',
+			method: 'GET',
+			data
+		})
+	}
 }

@@ -51,32 +51,45 @@
 		watch: {
 			// #ifdef VUE2
 			value:
-				// #endif
-				// #ifdef VUE3
-				modelValue:
-				// #endif  
-				{
-					handler(v) {
-						const item = this.placeTypeList.find(e => e.id === v)
-						if (item) {
-							this.active = item;
-							this.confirm();
-						} else {
-							this.active = {
-								id: 0,
-								name: ''
-							}
+			// #endif
+			// #ifdef VUE3
+			modelValue:
+			// #endif  
+			{
+				handler(v) {
+					const item = this.placeTypeList.find(e => e.id === v)
+					if (item) {
+						this.active = item;
+						this.confirm();
+					} else {
+						this.active = {
+							id: 0,
+							name: ''
 						}
-					},
-					immediate: true
+					}
 				},
+				immediate: true
+			},
 		},
-		created() {
+		mounted() {
 			placeController.getPlaceType().then(res => {
 				this.placeTypeList = res.data;
+				this.returnMethod();
 			})
 		},
 		methods: {
+			returnMethod() {
+				const item = this.placeTypeList.find(e => e.id === this.value)
+				if (item) {
+					this.active = item;
+					this.confirm();
+				} else {
+					this.active = {
+						id: 0,
+						name: ''
+					}
+				}
+			},
 			confirm() {
 				this.showPlaceType = false;
 				this.$emit('confirm', this.active);

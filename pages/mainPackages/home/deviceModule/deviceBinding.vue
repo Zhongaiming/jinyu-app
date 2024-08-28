@@ -49,7 +49,7 @@
 
 		<!-- <crane-machine @getRailNumber="getRailNumber"
 			v-if="deviceInfo.typeName == '娃娃机' || deviceInfo.typeName == '儿童类'" ref="number" /> -->
-		<xls-place-radio ref="placeList" @pickerPlace="pickerPlace"></xls-place-radio>
+		<xls-place-radio ref="placeList" @getPlaceId="pickerPlace"></xls-place-radio>
 
 		<!-- 输入机台编号 -->
 		<u-popup v-model="serialNumber" round>

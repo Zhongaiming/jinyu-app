@@ -1,6 +1,6 @@
 {
     "name" : "jinyu-app",
-    "appid" : "__UNI__F2C6000",
+    "appid" : "__UNI__AE5E931",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : 100,
@@ -105,13 +105,13 @@
             "host" : "0.0.0.0",
             "disableHostCheck" : true,
             "proxy" : {
-                "^/baseUrl" : {
-                    "target" : "http://8.138.24.164:659",
-                    // "target" : "http://192.168.0.114:8006",
+                "^/appV4" : {
+                    // "target" : "http://8.138.24.164:659",
+                    "target" : "https://xls.redorange.top",
                     "changeOrigin" : true,
                     "secure" : true,
                     "pathRewrite" : {
-                        "^/baseUrl" : ""
+                        "^/appV4" : ""
                     }
                 }
             },
@@ -120,6 +120,10 @@
         },
         "unipush" : {
             "enable" : true
+        },
+        "router" : {
+            "mode" : "hash",
+            "base" : "./"
         }
     }
 }

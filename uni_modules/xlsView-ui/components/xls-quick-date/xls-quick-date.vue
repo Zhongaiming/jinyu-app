@@ -13,7 +13,7 @@
 			<view class="date-wrapper" @click="pickerTime = !pickerTime">
 				<view><span>时间</span></view>
 				<view class="date-value">
-					<span class="date">{{ date }}</span><u-icon name="arrow-right" size="36" color="#666" />
+					<span class="date">{{ params.date }}</span><u-icon name="arrow-right" size="36" color="#666" />
 				</view>
 			</view>
 		</view>
@@ -22,13 +22,14 @@
 			<view class="date-wrapper" @click="openPopup">
 				<view><span>场地</span></view>
 				<view class="date-value">
-					<span class="date">{{ pickerPlace }}</span><u-icon name="arrow-right" size="36" color="#666" />
+					<span class="date">{{ params.pickerPlace }}</span><u-icon name="arrow-right" size="36" color="#666" />
 				</view>
 			</view>
 		</view>
 		
 		<!-- place -->
-		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
+		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId" v-if="placeCheck === 'checkbox'"></xls-place-checkbox>
+		<xls-place-radio ref="placelist" @getPlaceId="getPlaceId" v-else showAllCheck></xls-place-radio>
 		<!-- calendar -->
 		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="getCalender"></xls-calendar>
 	</view>
@@ -37,10 +38,15 @@
 <script>
 	import { getDateAll, getTime } from "@/plugins/utilityClass";
 	export default {
+		props: {
+			placeCheck: {
+				type: String,
+				default: 'checkbox'
+			}
+		},
 		data() {
 			return {
 				//快捷时间
-				date: `${getDateAll(0)} 今天`,
 				activeBtn: -1,
 				btnList: [{
 						id: -1,
@@ -64,24 +70,28 @@
 					},
 				],
 				// 场地
-				pickerPlace: "全部场地",
 				pickerTime: false,
 				params: {
 					startTime: getDateAll(0),
 					endTime: getDateAll(0),
-					placeIdList: ""
+					date: `${getDateAll(0)} 今天`,
+					placeIdList: "",
+					pickerPlace: "全部场地",
 				}
 			}
+		},
+		mounted() {
+			this.$emit("getCondition", this.params);
 		},
 		methods: {
 			//选择日期
 			getCalender(date) {
 				const [startTime, endTime] = date;
 				this.pickerTime = false;
-				this.date = `${startTime} 至 ${endTime}`;
+				this.params.date = `${startTime} 至 ${endTime}`;
 				this.params.startTime = startTime;
 				this.params.endTime = endTime;
-				this.$emit("getCondition", this.params)
+				this.$emit("getCondition", this.params);
 			},
 			//快捷时间
 			onChange(index) {
@@ -139,24 +149,29 @@
 					break;
 				}
 				this.activeBtn = index;
-				this.date = dateRange;
+				this.params.date = dateRange;
 				this.params.startTime = startTime;
 				this.params.endTime = endTime;
 				this.$emit("getCondition", this.params)
 			},
 			//选择场地
 			openPopup() {
-				this.$refs.placelist.showPlacePopup()
+				this.$refs.placelist.showPlacePopup(this.params.placeIdList)
 			},
 			getPlaceId(place) {
-				if (place[1].length == 1) {
-					this.pickerPlace = `${place[0][0]}`;
+				if(this.placeCheck === 'checkbox') {
+					if (place[1].length == 1) {
+						this.params.pickerPlace = `${place[0][0]}`;
+					} else {
+						this.params.pickerPlace = place[1].length ?
+							`已选中(${place[1].length})个场地` :
+							"全部场地";
+					}
+					this.params.placeIdList = place[1].length?String(place[1]):"";
 				} else {
-					this.pickerPlace = place[1].length ?
-						`已选中(${place[1].length})个场地` :
-						"全部场地";
+					this.params.pickerPlace = place.placeName;
+					this.params.placeIdList = place.placeId;
 				}
-				this.params.placeIdList = place[1].length?String(place[1]):"";
 				this.$emit("getCondition", this.params)
 			},
 		}

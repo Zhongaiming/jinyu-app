@@ -20,11 +20,11 @@
 							:value="commodity.commodityTypeId"></xls-select>
 					</u-form-item>
 					<u-form-item label="商品成本价" prop="costPrice" borderBottom required>
-						<u--input placeholder="请输入" v-model="commodity.costPrice" border="none"
+						<u--input placeholder="请输入" v-model="commodity.costPrice" border="none" type="number"
 							:placeholderStyle="placeholderStyle" :prefixIconStyle="prefixIconStyle"></u--input>
 					</u-form-item>
 					<u-form-item label="建议零售价" prop="suggestRetailPrice" borderBottom required>
-						<u--input placeholder="请输入" v-model="commodity.suggestRetailPrice" border="none"
+						<u--input placeholder="请输入" v-model="commodity.suggestRetailPrice" border="none" type="number"
 							:placeholderStyle="placeholderStyle" :prefixIconStyle="prefixIconStyle"></u--input>
 					</u-form-item>
 					<u-form-item label="商品图片" borderBottom>
@@ -134,13 +134,13 @@
 						trigger: ['blur', 'change']
 					},
 					'costPrice': {
-						type: 'string',
+						type: 'number',
 						required: true,
 						message: '请填写',
 						trigger: ['blur']
 					},
 					'suggestRetailPrice': {
-						type: 'string',
+						type: 'number',
 						required: true,
 						message: '请填写',
 						trigger: ['blur']
@@ -189,14 +189,7 @@
 				const id = JSON.parse(option.params).id
 				this.getCommodityView(id)
 			}
-			commodityController.getCommodityType({
-				pageParam: {
-					pageNum: 1,
-					pageSize: 10000
-				}
-			}).then(res => {
-				this.$refs.typeSelect.initialData(res.data.dataList);
-			})
+			this.getCommodityType();
 		},
 		methods: {
 			initialMethod() {
@@ -225,16 +218,27 @@
 					this.$refs.ipSelect.initialData(res.data.dataList);
 				})
 			},
-			getCommodityView(id) {
+			async getCommodityView(id) {
 				commodityController.getCommodityView({
 					id
 				}).then(res => {
 					Object.assign(this.commodity, res.data);
 					this.commodity.openSourceMaterial = this.commodity.openSourceMaterial == 1;
 					if (this.commodity.commodityImg) {
-						this.image.commodityImgList = this.updateList(this.image.commodityImgList, this.commodity
+						this.image.commodityImgList = this.updateList(this.image.commodityImgList, this
+							.commodity
 							.commodityImg);
 					}
+				})
+			},
+			getCommodityType() {
+				commodityController.getCommodityType({
+					pageParam: {
+						pageNum: 1,
+						pageSize: 10000
+					}
+				}).then(res => {
+					this.$refs.typeSelect.initialData(res.data.dataList);
 				})
 			},
 			updateList(list, url) {
@@ -282,15 +286,25 @@
 			confirmMethod() {
 				let params = JSON.parse(JSON.stringify(this.commodity));
 				params.openSourceMaterial = params.openSourceMaterial ? 1 : 0;
-				params.suggestRetailPrice *= 100;
-				params.costPrice *= 100;
 				this.$refs.commodityForm.validate().then(res => {
-					commodityController.addCommodity({
-						dto: params
-					}).then(res => {
-						this.$toast('校验通过')
-						this.$goBack();
-					})
+					if (this.commodity.commodityId) {
+						commodityController.updateCommodity({
+							commodityDto: params
+						}).then(res => {
+							this.$toast('校验通过')
+							this.$goBack();
+						})
+					} else {
+						params.suggestRetailPrice *= 100;
+						params.costPrice *= 100;
+						commodityController.addCommodity({
+							dto: params
+						}).then(res => {
+							this.$toast('校验通过')
+							this.$goBack();
+						})
+					}
+
 				}).catch(errors => {
 					this.$toast('请补全信息~')
 				})

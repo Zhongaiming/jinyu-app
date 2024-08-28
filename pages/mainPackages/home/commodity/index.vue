@@ -64,7 +64,7 @@
 		onShow() {
 			this.$nextTick(() => {
 				if (this.$refs.commodityPaging) {
-					this.$refs.commodityPaging.reload();
+					this.$refs.commodityPaging.refresh();
 				}
 			})
 		},

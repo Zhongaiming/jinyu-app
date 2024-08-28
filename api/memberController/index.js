@@ -1,7 +1,6 @@
 import http from '../../core/http/index.js'
 
 export default class memberController {
-
 	// 获取会员统计信息
 	static getTotalInfo(data) {
 		return http.request({
@@ -10,7 +9,6 @@ export default class memberController {
 			data
 		})
 	}
-
 	// 获取会员统计信息
 	static getList(data) {
 		return http.request({
@@ -49,6 +47,14 @@ export default class memberController {
 		return http.request({
 			url: '/member/api/v1/admin/blacklist/getBlackLogList',
 			method: 'GET',
+			data
+		})
+	}
+	// 删除黑名单
+	static deleteBlackInfo(data) {
+		return http.request({
+			url: '/member/api/v1/admin/blacklist/deleteBlackInfo',
+			method: 'POST',
 			data
 		})
 	}

@@ -7,8 +7,6 @@
 				<span>{{ allCount.insertedCoinsPlaceNum || 0 }}个产生投币记录</span>
 			</view>
 		</view>
-
-		</view>
 		
 		<view v-for="(item, index) in dataList" :key="index" class="xls-list-item">
 			<view class="body-wrapper" @click="closeOrshow(item.placeId)">
@@ -118,7 +116,7 @@
 					page: pageNo,
 					size: pageSize,
 				}).then(res => {
-					this.$refs.paging.complete(res.data.records);
+					this.$refs.paging.complete(res.data);
 				})
 			},
 			closeOrshow(placeId) {
@@ -235,7 +233,9 @@
 
 	.detail-content {
 		width: 100%;
-		height: 100%;
+		max-height: 1000rpx;
+		height: 60vh;
+		overflow-y: auto;
 		display: flex;
 		flex-direction: column;
 

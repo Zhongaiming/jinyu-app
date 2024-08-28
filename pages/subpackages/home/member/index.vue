@@ -18,7 +18,7 @@
 							<view class="content">
 								<view class="info-container">
 									<view class="avatar">
-										<img :src="item.url" alt="" class="img" v-if="item.url" />
+										<xls-image :src="item.url" alt="" class="img" v-if="item.url" />
 									</view>
 									<view class="info">
 										<view class="name-wrapper">
@@ -70,7 +70,6 @@
 				<xls-empty slot="empty" />
 			</u-checkbox-group>
 		</view>
-
 	</z-paging>
 </template>
 
@@ -100,6 +99,7 @@
 
 			},
 			goMemberDetail(item) {
+				return
 				this.$goTo('/pages/subpackages/home/member/detail', 'navigateTo', {
 					item
 				})
@@ -114,141 +114,7 @@
 					size: pageSize,
 				}).then(res => {
 					if (res.code === 200) {
-						const list = [{
-								"id": 10563443,
-								"memberId": 658702,
-								"memberOpenid": "2088922695122761",
-								"memberNumber": "10563443",
-								"totalPay": 0.02,
-								"balance": 0,
-								"currency": 0,
-								"recentConsumption": "0",
-								"updateTime": "2024-01-27 15:01:06",
-								"createTime": "2024-08-02 11:09:44"
-							},
-							{
-								"id": 10771829,
-								"memberId": 1323002,
-								"url": "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
-								"memberOpenid": "oWb-q6xhBoQPbaxhVrp-m1nyDFuY",
-								"name": "小程序用户",
-								"memberNumber": "10771829",
-								"totalPay": 0,
-								"balance": 0,
-								"currency": 0,
-								"recentConsumption": "3",
-								"createTime": "2024-07-30 17:26:51"
-							},
-							{
-								"id": 10958288,
-								"memberId": 1118843,
-								"url": "https://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaELTnG7UbrZZaicPBGCNb1QfNYtTFzcCA9Nb76ozVvgLG5L9Ss4qOpzr6jOicxomeiaicCItr4KTR37amYNyI6LwnzibmLGhOlzibBBfm5leG7LdJGvQ/132",
-								"memberOpenid": "ohnHM6pZBUHl9DPweE6izuj5aEXc",
-								"name": "郑坚潮",
-								"memberNumber": "10958288",
-								"totalPay": 0,
-								"balance": 0,
-								"currency": 0,
-								"recentConsumption": "3",
-								"updateTime": "2024-06-21 10:44:28",
-								"createTime": "2024-07-30 14:45:21"
-							},
-							{
-								"id": 10726488,
-								"memberId": 848833,
-								"url": "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIbmyO6JLFcUtiaGjmuLY5yWIib88z8iacVd3Ric9OAW9MbIX3oENiaLLSaZyQhJ19fzGEUNDdpE9PLKWA/132",
-								"memberOpenid": "ohnHM6lx-eu82JCHeV9R8X9QFw3E",
-								"name": "钅·䖝",
-								"memberNumber": "10726488",
-								"totalPay": 0.08,
-								"balance": 48,
-								"currency": 0,
-								"recentConsumption": "3",
-								"updateTime": "2024-03-26 09:50:47",
-								"createTime": "2024-07-30 14:02:18"
-							},
-							{
-								"id": 10482879,
-								"memberId": 575628,
-								"url": "https://thirdwx.qlogo.cn/mmopen/vi_32/lHqDjZHa6BXWGBhHpp8Guxw1IEYutl8iah0OKwZTPeItDGib3JCu9ztHbNmh94eeMyZd5NZtvicL8rdAibKiaxWToRQ/132",
-								"memberOpenid": "ohnHM6g0l4nMfkvTx7KONw-17MO8",
-								"name": "星耀",
-								"memberNumber": "10482879",
-								"totalPay": 13,
-								"balance": 0,
-								"currency": 0,
-								"recentConsumption": "4",
-								"createTime": "2024-07-29 11:08:07"
-							},
-							{
-								"id": 10482879,
-								"memberId": 575628,
-								"url": "https://thirdwx.qlogo.cn/mmopen/vi_32/lHqDjZHa6BXWGBhHpp8Guxw1IEYutl8iah0OKwZTPeItDGib3JCu9ztHbNmh94eeMyZd5NZtvicL8rdAibKiaxWToRQ/132",
-								"memberOpenid": "ohnHM6g0l4nMfkvTx7KONw-17MO8",
-								"name": "星耀",
-								"memberNumber": "10482879",
-								"totalPay": 13,
-								"balance": 0,
-								"currency": 0,
-								"recentConsumption": "4",
-								"createTime": "2024-07-29 11:08:07"
-							},
-							{
-								"id": 10482879,
-								"memberId": 575628,
-								"url": "https://thirdwx.qlogo.cn/mmopen/vi_32/lHqDjZHa6BXWGBhHpp8Guxw1IEYutl8iah0OKwZTPeItDGib3JCu9ztHbNmh94eeMyZd5NZtvicL8rdAibKiaxWToRQ/132",
-								"memberOpenid": "ohnHM6g0l4nMfkvTx7KONw-17MO8",
-								"name": "星耀",
-								"memberNumber": "10482879",
-								"totalPay": 13,
-								"balance": 0,
-								"currency": 0,
-								"recentConsumption": "4",
-								"createTime": "2024-07-29 11:08:07"
-							},
-							{
-								"id": 10482879,
-								"memberId": 575628,
-								"url": "https://thirdwx.qlogo.cn/mmopen/vi_32/lHqDjZHa6BXWGBhHpp8Guxw1IEYutl8iah0OKwZTPeItDGib3JCu9ztHbNmh94eeMyZd5NZtvicL8rdAibKiaxWToRQ/132",
-								"memberOpenid": "ohnHM6g0l4nMfkvTx7KONw-17MO8",
-								"name": "星耀",
-								"memberNumber": "10482879",
-								"totalPay": 13,
-								"balance": 0,
-								"currency": 0,
-								"recentConsumption": "4",
-								"createTime": "2024-07-29 11:08:07"
-							},
-							{
-								"id": 10482879,
-								"memberId": 575628,
-								"url": "https://thirdwx.qlogo.cn/mmopen/vi_32/lHqDjZHa6BXWGBhHpp8Guxw1IEYutl8iah0OKwZTPeItDGib3JCu9ztHbNmh94eeMyZd5NZtvicL8rdAibKiaxWToRQ/132",
-								"memberOpenid": "ohnHM6g0l4nMfkvTx7KONw-17MO8",
-								"name": "星耀",
-								"memberNumber": "10482879",
-								"totalPay": 13,
-								"balance": 0,
-								"currency": 0,
-								"recentConsumption": "4",
-								"createTime": "2024-07-29 11:08:07"
-							},
-							{
-								"id": 10482879,
-								"memberId": 575628,
-								"url": "https://thirdwx.qlogo.cn/mmopen/vi_32/lHqDjZHa6BXWGBhHpp8Guxw1IEYutl8iah0OKwZTPeItDGib3JCu9ztHbNmh94eeMyZd5NZtvicL8rdAibKiaxWToRQ/132",
-								"memberOpenid": "ohnHM6g0l4nMfkvTx7KONw-17MO8",
-								"name": "星耀",
-								"memberNumber": "10482879",
-								"totalPay": 13,
-								"balance": 0,
-								"currency": 0,
-								"recentConsumption": "4",
-								"createTime": "2024-07-29 11:08:07"
-							}
-						]
-						setTimeout(() => {
-							this.$refs.memberPaging.complete(list);
-						}, 2000)
+						this.$refs.memberPaging.complete(res.data);
 					}
 				})
 			},

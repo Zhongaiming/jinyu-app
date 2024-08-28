@@ -2,41 +2,43 @@
 	<z-paging ref="paging" v-model="dataList" @query="queryList">
 		<xls-p-navbar @stratesSearch="searchMethod" slot="top"></xls-p-navbar>
 		<view class="xls-list-place">
-			<u-radio-group v-model="defaultPlace" placement="column">
-				<view class="xls-list-place-item" v-for="(item, index) in dataList" :key="index">
-					<view class="header">
-						<span class="group-name text-clamp">
-							{{ $placeNameRule(item.placeName, item.placeNumber) }}
-						</span>
+			<!-- <u-radio-group v-model="defaultPlace" placement="column"> -->
+			<view class="xls-list-place-item" v-for="(item, index) in dataList" :key="index">
+				<view class="header">
+					<span class="group-name text-clamp">
+						{{ $placeNameRule(item.placeName, item.placeNumber) }}
+					</span>
 
-						<span class="equipmentCount">{{ item.deviceNum }}台</span>
+					<span class="equipmentCount">{{ item.deviceNum }}台</span>
+				</view>
+				<view class="body">
+					<view class="itemText">
+						<span class="base-tips isDefault" v-show="item.id == defaultPlace">默认</span>
+						<span class="base-tips addressType">{{item.placeTypeName}}</span>
+						<span
+							class="item-place">{{ item.province }}{{ item.city }}{{ item.region}}{{ item.placeDetail }}</span>
 					</view>
-					<view class="body">
-						<view class="itemText">
-							<span class="base-tips isDefault" v-show="item.id == defaultPlace">默认</span>
-							<span class="base-tips addressType">{{item.placeTypeName}}</span>
-							<span
-								class="item-place">{{ item.province }}{{ item.city }}{{ item.region}}{{ item.placeDetail }}</span>
-						</view>
-						<view class="edit-btn" v-hasPermi="['app:place:index:edit']" @click="goTo(item.id)">
-							<u-icon name="edit-pen" size="40" color="#999"></u-icon>
-						</view>
-					</view>
-					<view class="footer">
-						<view class="default-set">
-							<view class="default-set-btn">
-								<view class="radio" :class="{'unclick': item.id == defaultPlace}">
-									<u-radio :name="item.id" activeColor="#5241FF" @click="setDefaultplace(item.id)"
-										size="36" iconSize="30"></u-radio>
-								</view>
-								<span class="text">默认场地</span>
-							</view>
-						</view>
-						<span v-hasPermi="['app:place:index:delete']" class="dele-btn"
-							@click="deleteType(item)">删除</span>
+					<view class="edit-btn" v-hasPermi="['app:place:index:edit']" @click="goTo(item.id)">
+						<u-icon name="edit-pen" size="40" color="#999"></u-icon>
 					</view>
 				</view>
-			</u-radio-group>
+				<view class="footer">
+					<view class="default-set">
+						<view class="default-set-btn">
+							<view class="radio" @click="setWeight(item)">
+								<!-- <u-radio :name="item.id" activeColor="#5241FF" @click="setDefaultplace(item.id)"
+										size="36" iconSize="30"></u-radio> -->
+								<u-icon name="checkmark-circle-fill" color="#5241FF" size="40"
+									v-if="item.wight === 1"></u-icon>
+								<u-icon name="checkmark-circle" size="40" color="#999" v-else></u-icon>
+							</view>
+							<span class="text">默认场地</span>
+						</view>
+					</view>
+					<span v-hasPermi="['app:place:index:delete']" class="dele-btn" @click="deleteType(item)">删除</span>
+				</view>
+			</view>
+			<!-- </u-radio-group> -->
 		</view>
 		<xls-empty slot="empty" />
 		<xls-p-botn slot="bottom" @goTo="goTo" v-hasPermi="['app:place:index:add']"></xls-p-botn>
@@ -67,10 +69,17 @@
 				place: {},
 			};
 		},
+		onShow() {
+			this.$nextTick(() => {
+				if (this.$refs.paging) {
+					this.$refs.paging.refresh();			
+				}
+			})
+		},
 		methods: {
 			searchMethod(search) {
 				this.searchValue = search;
-				this.getdataList();
+				this.$refs.paging.reload();
 			},
 			// 去编辑
 			goTo(placeId = '') {
@@ -82,59 +91,54 @@
 				placeController.getPage({
 					page: pageNo,
 					size: pageSize,
-					// search: this.searchValue
+					search: this.searchValue
 				}).then(res => {
-					if(pageNo === 1 && res.data.length) {
+					if (pageNo === 1 && res.data.length) {
 						const wight = res.data[0].wight;
 						this.defaultPlace = wight
 					}
 					this.$refs.paging.complete(res.data);
 				})
 			},
-
 			//删除
 			deleteType(item) {
+				if (item.deviceNum) {
+					this.$modal("该场地有" + item.deviceNum + "台设备需要解绑后才能删除该场地", {
+							title: "温馨提示",
+							confirmText: "我知道了",
+							confirmColor: "#5241FF",
+							showCancel: false,
+						})
+						.then(() => {})
+					return
+				}
 				var _that = this;
-				this.$dialog
-					.confirm({
+				this.$modal("确定删除投放场地？", {
 						title: "温馨提示",
-						message: "确定删除投放场地？",
-						confirmButtonColor: "rgb(247, 62, 62)",
+						confirmText: '删除',
+						confirmColor: "rgb(247, 62, 62)",
 					})
 					.then(() => {
-						if (item.deviceNum) {
-							this.$dialog
-								.confirm({
-									title: "温馨提示",
-									message: "该场地有" + this.page + "台设备需要解绑后才能删除该场地",
-									confirmButtonText: "前往解绑",
-									confirmButtonColor: "#5241FF",
-								})
-								.then(() => {})
-								.catch(() => {});
-						} else {
-							placeController.deletePlace({
-									id: item.id
-								})
-								.then((res) => {
-									if (res.data.code == 0 || res.data.msg == "ok") {
-										_that.dataList = _that.dataList.filter((option) => {
-											return option.id != item.id;
-										});
-										_that.$toast("删除成功~");
-									}
-								})
-								.catch((err) => {});
-						}
+						placeController.deletePlace({
+								id: item.id
+							})
+							.then((res) => {
+								if (res.code == 200) {
+									_that.$refs.paging.reload();
+									_that.$toast("删除成功~");
+								}
+							})
+							.catch((err) => {});
 					})
 					.catch(() => {});
 			},
 
 			// 设为默认值
 			async setWeight(placeId) {
-				placeController.setWeight({
-					placeId
-				}).then((res) => {}).catch((res) => {});
+				placeId.wight = 1;
+				placeController.setWeight(placeId).then((res) => {
+					this.$refs.paging.refresh();
+				}).catch((res) => {});
 			},
 		},
 	};

@@ -4,14 +4,14 @@
 		<view class="xls-order-list">
 			<view v-for="(item, index) in dataList" :key="index" class="xls-order-list-item">
 				<view class="xls-order-header">
-					<view class="xls-order-place">
+					<view class="xls-order-place text-over">
 						<u-icon name="map" color="#5241ff" size="24"></u-icon>
 						<span class="place">{{item.placeName}}</span>
 						<span>|</span>
 						<span class="time">{{item.createTime}}</span>
 					</view>
 
-					<view class="xls-order-place refund-price" v-if="item.amountRefund && item.refundState == 1">
+					<view class="xls-order-place refund-price text-over" v-if="item.amountRefund && item.refundState == 1">
 						<span class="time">已退 ¥{{item.amountRefund}}</span>
 					</view>
 				</view>
@@ -19,7 +19,7 @@
 				<view class="xls-order-style">
 					<view class="xls-order-style-header">
 						<image class="icon-image"
-							:src="`${$baseUrl}appV4/common/${item.payType == 0 ? 'wechat':'pay'}.png`" mode="widthFix">
+							:src="`${$baseUrl}appV4/common/${item.payType==0?'wechat':'pay'}.png`" mode="widthFix">
 						</image>
 						<view class="right-wrapper">
 							<view class="device-style">
@@ -68,7 +68,7 @@
 						</view>
 					</view>
 
-					<view class="xls-order-style-price" @click="goTo()">
+					<view class="xls-order-style-price" @click="goTo(item, 'orderDetail')">
 						<image class="icon-image"
 							src="https://asset.leyaoyao.com/merchant-order-center/static/d0da3593648b2c25b3ca.png"
 							mode="widthFix"></image>
@@ -148,11 +148,11 @@
 					null: "其他"
 				},
 				refundDict: {
-					0: '(出货失败退款)',
-					1: '(出货失败部分退款)',
-					2: '(人工退款)',
-					3: '(通讯失败退款)',
-					4: '(人工部分退款)',
+					0: '出货失败退款',
+					1: '出货失败部分退款',
+					2: '人工退款',
+					3: '通讯失败退款',
+					4: '人工部分退款',
 					null: "其他"
 				},
 				deviceTypeDict: {},
@@ -164,6 +164,13 @@
 				console.log("传参", JSON.parse(option.params))
 			}
 			this.getDeviceTypeList();
+		},
+		onShow() {
+			this.$nextTick(() => {
+				if (this.$refs.orderPaging) {
+					this.$refs.orderPaging.refresh();
+				}
+			})
 		},
 		methods: {
 			getDeviceTypeList() {
@@ -249,6 +256,7 @@
 	}
 
 	.refund-price {
+		width: 140rpx;
 		color: #f5222d;
 		background-color: #ffe8ea;
 	}
@@ -364,6 +372,7 @@
 			line-height: 64rpx;
 			background: #fff7e6;
 			border-radius: 4rpx;
+			text-align: center;
 		}
 	}
 </style>

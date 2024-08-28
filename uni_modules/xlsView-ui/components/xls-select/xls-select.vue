@@ -148,36 +148,36 @@
 		watch: {
 			// #ifdef VUE2
 			value:
-				// #endif
-				// #ifdef VUE3
-				modelValue:
-				// #endif  
-				{
-					handler(v) {
-						if (this.multiple) {
-							this.selects = []
-							v.forEach(val => {
-								this.list.forEach(e => {
-									if (e.value === val) {
-										this.selects.push({
-											label: e.label,
-											value: e.value
-										})
-									}
-								})
+			// #endif
+			// #ifdef VUE3
+			modelValue:
+			// #endif  
+			{
+				handler(v) {
+					if (this.multiple) {
+						this.selects = []
+						v.forEach(val => {
+							this.list.forEach(e => {
+								if (e.value === val) {
+									this.selects.push({
+										label: e.label,
+										value: e.value
+									})
+								}
 							})
-							this.selectValues = v
+						})
+						this.selectValues = v
+					} else {
+						const item = this.list.find(e => e.value === v)
+						if (item) {
+							this.select = item.label
 						} else {
-							const item = this.list.find(e => e.value === v)
-							if (item) {
-								this.select = item.label
-							} else {
-								this.select = ""
-							}
+							this.select = ""
 						}
-					},
-					immediate: true
+					}
 				},
+				immediate: true
+			},
 		},
 		// mounted() {
 		// 	this.initialData();
@@ -193,7 +193,28 @@
 					}
 				})
 				this.filterList = [...this.list]
-				console.log(this.filterList)
+				
+				if (this.multiple) {
+					this.selects = []
+					this.value.forEach(val => {
+						this.list.forEach(e => {
+							if (e.value === val) {
+								this.selects.push({
+									label: e.label,
+									value: e.value
+								})
+							}
+						})
+					})
+					this.selectValues = this.value
+				} else {
+					const item = this.list.find(e => e.value === this.value)
+					if (item) {
+						this.select = item.label
+					} else {
+						this.select = ""
+					}
+				}
 			},
 			handlerSelect(item) {
 				// #ifdef VUE2

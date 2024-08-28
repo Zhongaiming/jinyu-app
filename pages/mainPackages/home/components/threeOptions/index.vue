@@ -10,8 +10,10 @@
 </template>
 
 <script>
+	import {
+		deviceController
+	} from "@/api/index.js";
 	export default {
-		name: "threeOptions",
 		data() {
 			return {
 				dataList: [{
@@ -43,6 +45,15 @@
 					}
 				]
 			};
+		},
+		mounted() {
+			deviceController.getDeviceNum().then(res => {
+				const {
+					deviceOnlineNum,
+					deviceNum
+				} = res.data;
+				this.dataList[0].subheading = `在线 ${deviceOnlineNum} / ${deviceNum} 台`
+			})
 		},
 		methods: {
 			goTo(route) {

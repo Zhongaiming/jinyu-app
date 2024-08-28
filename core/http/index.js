@@ -34,7 +34,6 @@ http.interceptors.request.use(config => {
 	// 获取token
 	const token = getToken()
 	if (reqConfig.whiteList.indexOf(config.url) == -1) {
-
 		if (!token) {
 			// 跳转到登录页重新登录
 			console.log("token跳转111")
@@ -57,7 +56,6 @@ http.interceptors.request.use(config => {
 			mask: true
 		})
 	}
-
 	return config
 
 }, error => {
@@ -76,24 +74,25 @@ http.interceptors.response.use(response => {
 			Vue.prototype.$toast(message)
 		}
 	}
-
-
+	
 	if (loading) {
 		console.log('Jinglail lmei ')
 		uni.hideLoading()
 	}
-
-
 	return response.data
 }, error => {
 	console.log('错误拦截', error)
-
+	// '服务器繁忙，请稍后再试'
 	const {
 		code,
+		status,
 		message
 	} = error.data
 	console.log('返回错误处理 返回错误处理 123')
-	Vue.prototype.$toast(message)
+	if(status === 503) {
+		const text = '人太多，服务器忙不过来了，请稍后再使用';
+		Vue.prototype.$toast(text)
+	}
 	if (code === STATUS.TIMEOUT || (message === '用户登录已过期或尚未登录，请重新登录！' || message === '用户会话已失效，请重新登录！')) {
 		cache.clearCache()
 		setTimeout(() => {

@@ -90,7 +90,9 @@
 	// import {
 	// 	getSeparateBillsLogDetail
 	// } from "@/utils/api/separateBills";
-
+	import {
+		placeController
+	} from "@/api/index.js";
 	export default {
 		name: "operatingRecordDetail",
 		data() {

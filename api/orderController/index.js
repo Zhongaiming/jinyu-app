@@ -107,7 +107,7 @@ export default class orderController {
 	}
 	static getInsertCoinsInfoList(data) {
 		return http.request({
-			url: '/order/api/v1/admin/order/orderInsertCoins/getInsertCoinsInfoList',
+			url: '/merchant/api/v1/admin/merchant/place/getInsertCoinsInfoList',
 			method: 'GET',
 			data
 		})
