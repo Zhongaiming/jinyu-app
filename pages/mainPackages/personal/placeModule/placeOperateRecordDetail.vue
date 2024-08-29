@@ -1,86 +1,77 @@
 <template>
-	<div class="operatingRecordDetail">
+	<view class="operatingRecordDetail">
 		<xls-jy-navbar title="操作详情" bgColor="#5241FF" titleStyle="color: #fff"></xls-jy-navbar>
-		<div class="bg"></div>
-		<div class="detail-content">
-			<div class="update-details">
-				<div class="top-title" v-show="$route.query.fromType == 0">
-					<span class="details-type add" :class="[getClassType]">{{recordDetail.operationType == 1
-                ? '新增分账人'
-                : recordDetail.operationType == 2
-                ? '编辑分账人'
-                : '删除分账人'}}</span>
-					<span class="subs">操作已完成</span>
-				</div>
-				<div class="top-title" v-show="$route.query.fromType == 1">
+		<view class="bg"></view>
+		<view class="detail-content">
+			<view class="update-details">
+				<view class="top-title">
 					<span class="details-type add" :class="[getClassType]">
-						{{recordDetail.operationType == 1?'新增场地':recordDetail.operationType==2?'编辑场地':'删除场地'}}
-					</span>
+					{{ `${operateDict[recordDetail.operationType]}${name}`}}</span>
 					<span class="subs">操作已完成</span>
-				</div>
+				</view>
 				<!-- 操作类型 1添加，2修改，3删除 -->
-				<div class="update-details-content bgAdd" :class="[getOperateType]">
-					<div class="update-after">
-						<div class="left-tips">
+				<view class="update-details-content bgAdd" :class="[getOperateType]">
+					<view class="update-after">
+						<view class="left-tips">
 							<!-- <img src="@/assets/place_image/suc.png" alt="" class="sub-img" /> -->
-							<div class="line"></div>
-						</div>
-						<div class="right-main">
-							<div class="title"><span>更新后</span></div>
-							<div class="bottom">
-								<div class="label-value" v-for="(value, key, index) of recordDetail.operationTextMap"
+							<view class="line"></view>
+						</view>
+						<view class="right-main">
+							<view class="title"><span>更新后</span></view>
+							<view class="bottom">
+								<view class="label-value" v-for="(value, key, index) of recordDetail.operationTextMap"
 									:key="index">
 									<span class="label">{{ key }}</span>
 									<span class="value">{{ value }}</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="update-before">
-						<div class="left">
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="update-before">
+						<view class="left">
 							<span class="cicle"></span> <span class="occupied line"></span>
-						</div>
-						<div class="right">
-							<div class="title">
+						</view>
+						<view class="right">
+							<view class="title">
 								<span>更新前:</span>
 								<span class="title-subs" v-show="!recordDetail.operationBeforeTextMap">无</span>
-							</div>
-							<div class="bottom">
-								<div class="label-value"
+							</view>
+							<view class="bottom">
+								<view class="label-value"
 									v-for="(value, key, index) of recordDetail.operationBeforeTextMap" :key="index">
 									<span class="label">{{ key }}</span>
 									<span class="value">{{ value }}</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
 
-			<div class="opreation-info">
-				<div class="top">操作信息</div>
-				<div class="bottom">
-					<div class="label-value">
+			<view class="opreation-info">
+				<view class="top">操作信息</view>
+				<view class="bottom">
+					<view class="label-value">
 						<span class="label">场地ID</span>
 						<span class="value">{{ recordDetail.placeId }}</span>
-					</div>
-					<div class="label-value">
+					</view>
+					<view class="label-value">
 						<span class="label">场地名称</span>
 						<span class="value">{{ recordDetail.placeName }}</span>
-					</div>
-					<div class="label-value">
+					</view>
+					<view class="label-value">
 						<span class="label">操作时间</span>
 						<span class="value">{{ recordDetail.operationTime }}</span>
-					</div>
-					<div class="label-value">
+					</view>
+					<view class="label-value">
 						<span class="label">操作人</span>
 						<span class="value">{{ recordDetail.operationName }}</span>
-					</div>
-					<!-- <div class="label-value"><span class="label">网络IP</span> <span class="value">{{recordDetail.placeId}}</span></div> -->
-				</div>
-			</div>
-		</div>
-	</div>
+					</view>
+					<!-- <view class="label-value"><span class="label">网络IP</span> <span class="value">{{recordDetail.placeId}}</span></view> -->
+				</view>
+			</view>
+		</view>
+	</view>
 </template>
 
 <script>
@@ -94,28 +85,29 @@
 		placeController
 	} from "@/api/index.js";
 	export default {
-		name: "operatingRecordDetail",
 		data() {
 			return {
 				recordDetail: {},
+				operateDict: {
+					1: '新增',
+					2: '编辑',
+					3: '删除'
+				},
+				name: '场地',// 分账人
 			};
 		},
-		// async created() {
-		// 	let id = this.$route.query.id;
-		// 	let res;
-		// 	if (this.$route.query.fromType == 1) {
-		// 		res = await getPlaceLogDetail({
-		// 			id
-		// 		});
-		// 	} else if (this.$route.query.fromType == 0) {
-		// 		res = await getSeparateBillsLogDetail({
-		// 			id
-		// 		});
-		// 	}
-		// 	if (res.data.code == 0 || res.data.msg == "ok") {
-		// 		this.recordDetail = res.data.data;
-		// 	}
-		// },
+		async onLoad(option) {
+			if(option.params) {
+				const {id} = JSON.parse(option.params);
+				// 'PlaceLog' : 'SeparateBillsLog'
+				const API = 'PlaceLog';
+				placeController[`get${API}Detail`]({id}).then(res => {
+					if (res.code == 200) {
+						this.recordDetail = res.data;
+					}
+				})
+			}
+		},
 		computed: {
 			getClassType() {
 				return this.recordDetail.operationType == 1 ?
@@ -132,9 +124,6 @@
 					'bgDelete'
 			}
 		},
-		methods: {
-
-		}
 	};
 </script>
 

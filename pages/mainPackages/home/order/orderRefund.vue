@@ -39,7 +39,9 @@
 					<view class="refund-content_prefix">￥</view>
 					<input placeholder="输入退款金额" type="number" class="refund-content_input_qV_cV" v-model="refundAmount">
 				</view>
-				<view class="refund-content_btn_ZFgj" @click="allRefund">全额退</view>
+				<view class="refund-content_btn_ZFgj" @click="() => {
+					refundAmount = order.amountTotal
+				}">全额退</view>
 			</view>
 			<view class="order_line"></view>
 			<view class="refund-content_tips_b1qpJ" v-if="0">
@@ -130,13 +132,15 @@
 							res.data.rails = JSON.parse(res.data.rails)
 						}
 						this.order = res.data;
-						this.refundAmount = this.order.amountTotal;
 					}
 				})
 			},
 			confirmMethod() {
 				if (this.refundAmount * 100 > this.order.amountTotal * 100) {
 					return this.$toast("退款金额不能超过实付金额！！")
+				}
+				if (this.refundAmount == this.order.amountTotal) {
+					return this.allRefund();
 				}
 				this.$modal(`确定要退款 ¥${this.refundAmount} 吗？`, {
 					title: "退款提示"
@@ -154,6 +158,7 @@
 							this.$goBack();
 						}
 					})
+
 				})
 			},
 			async allRefund() {

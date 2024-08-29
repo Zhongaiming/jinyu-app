@@ -1,5 +1,5 @@
 <template>
-	<view v-if="0">
+	<view>
 		<xls-jy-navbar title="修改充值套餐"></xls-jy-navbar>
 		<!-- 场地信息 -->
 		<view class="address-container" v-if="params.id">
@@ -840,7 +840,6 @@
 			};
 		},
 		onLoad(option) {
-			return
 			const params = JSON.parse(option.params);
 			this.params = params;
 			this.getStart(params);

@@ -172,4 +172,32 @@ export default class orderController {
 			data
 		})
 	}
+	
+	
+	// 钱包
+	// 日期收益信息
+	static getDateIncome(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getDateIncome',
+			method: 'GET',
+			data
+		})
+	}
+	
+	// 目标月份的收益
+	static getMonthIncome(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getMonthIncome',
+			method: 'GET',
+			data
+		})
+	}
+	// ==
+	static getCommonDetailBill(data) {
+		return http.request({
+			url: '/pay/api/v1/admin/pay/merchant/getCommonDetailBill',
+			method: 'POST',
+			data
+		})
+	}
 }

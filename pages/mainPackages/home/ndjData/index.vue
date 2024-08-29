@@ -194,19 +194,22 @@
 							<!-- 线下投币 -->
 							<td class="tex-center">
 								<p>
-									<span style="max-width: 60px">{{listType == 1?item.offlineOutTokenCount:item.offline_count || 0}}</span>
+									<span
+										style="max-width: 60px">{{listType == 1?item.offlineOutTokenCount:item.offline_count || 0}}</span>
 								</p>
 							</td>
 							<!-- 线上投币 -->
 							<td class="tex-center">
 								<p>
-									<span style="max-width: 60px">{{listType==1?item.onlineOutTokenCount:item.online_count}}</span>
+									<span
+										style="max-width: 60px">{{listType==1?item.onlineOutTokenCount:item.online_count}}</span>
 								</p>
 							</td>
 							<!-- 在线支付 -->
 							<td class="tex-center">
 								<p>
-									<span style="max-width: 70px">{{listType == 1?item.orderMoney||0:item.amount_total||0}}</span>
+									<span
+										style="max-width: 70px">{{listType == 1?item.orderMoney||0:item.amount_total||0}}</span>
 								</p>
 							</td>
 							<!-- 出货数 -->
@@ -230,7 +233,7 @@
 						</tr>
 					</tbody>
 				</table>
-			
+
 			</view>
 		</view>
 		<xls-empty slot="empty"></xls-empty>
@@ -266,9 +269,6 @@
 				topTitle: false,
 			};
 		},
-		onLoad() {
-			this.getAcount();
-		},
 		computed: {
 			containerStyle() {
 				return this.listType === 1 ?
@@ -290,45 +290,52 @@
 				//支付总数
 				deviceDataController.getOrderSum(params).then((res) => {
 					const result = res.data;
-					this.eggEarnMsg.onlinePayAmount = result?result.orderMoney:0;
+					this.eggEarnMsg.onlinePayAmount = result ? result : 0;
 				});
 				//投币总数
 				deviceDataController.getCoinSum(params).then((res) => {
 					const result = res.data;
-					this.eggEarnMsg.totalInsertCoins = result?result.orderMoney:0;
+					this.eggEarnMsg.totalInsertCoins = result ? result : 0;
 				});
 				//出礼总数
 				deviceDataController.getOutPresentSum(params).then((res) => {
 					const result = res.data;
-					this.eggEarnMsg.outPresentCount = result?result.orderMoney:0;
+					this.eggEarnMsg.outPresentCount = result ? result : 0;
 				});
 			},
 			queryList(pageNo, pageSize) {
+				this.getAcount();
 				const params = {
 					page: pageNo,
 					size: pageSize,
 					startTime: `${this.startTime} 00:00:00`,
 					endTime: `${this.endTime} 23:59:59`,
-					placeId: String(this.placeId)
+					...(this.placeId && {
+						placeId: String(this.placeId)
+					})
 				}
-				const API = this.listType==1?'getSumByDate':'getTwistedEggInfo';
+				const API = this.listType == 1 ? 'getTwistedEggInfo' : 'getSumByDate';
 				deviceDataController[`${API}`](params).then(res => {
 					this.$refs.ndjPaging.complete(res.data);
 				})
 			},
 			//按货道或日期
 			aisleOrdate(params) {
-				this.listType = params?2:1;
+				this.listType = params ? 2 : 1;
 				this.$refs.ndjPaging.reload();
 			},
 			getCondition(result) {
-				const {startTime,endTime,placeIdList} = result;
+				const {
+					startTime,
+					endTime,
+					placeIdList
+				} = result;
 				this.startTime = startTime;
 				this.endTime = endTime;
 				this.placeId = placeIdList;
 				this.$refs.ndjPaging.reload();
 			},
-			
+
 			//纵向
 			screenSlide() {
 				let scrollTop =

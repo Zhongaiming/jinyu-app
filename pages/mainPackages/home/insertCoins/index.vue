@@ -69,7 +69,7 @@
 						<view class="item-c-text-w">
 							<view class="box-top-text">
 								<view>
-									<view>-号机</view>
+									<!-- <view>-号机</view> -->
 									<view>{{ item.typeName }}{{ item.deviceNumber }}</view>
 								</view>
 							</view>
@@ -116,7 +116,7 @@
 					page: pageNo,
 					size: pageSize,
 				}).then(res => {
-					this.$refs.paging.complete(res.data);
+					this.$refs.paging.complete(res.data.dataList);
 				})
 			},
 			closeOrshow(placeId) {

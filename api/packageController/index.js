@@ -94,7 +94,7 @@ export default class packageController {
 	// 修改扭蛋机设置
 	static editEggSet(data) {
 		return http.request({
-			url: '/order/api/v1/eggSet/editEggSet',
+			url: '/order/api/v1/admin/eggSet/editEggSet',
 			method: 'POST',
 			data
 		})
@@ -102,7 +102,7 @@ export default class packageController {
 	// 场地id查询扭蛋机设置
 	static getEggSet(data) {
 		return http.request({
-			url: '/order/api/v1/eggSet/getEggSet',
+			url: '/order/api/v1/admin/eggSet/getEggSet',
 			method: 'GET',
 			data
 		})

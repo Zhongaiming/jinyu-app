@@ -44,7 +44,7 @@
 					page: pageNo,
 					size: pageSize,
 				}).then(res => {
-					this.$refs.paging.complete(res.data.records);
+					this.$refs.paging.complete(res.data.dataList);
 				})
 			}
 		}

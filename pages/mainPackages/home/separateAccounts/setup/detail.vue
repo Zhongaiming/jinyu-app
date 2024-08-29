@@ -272,7 +272,7 @@
 					separateBillsId: this.separateBillsId, //分账人员ID
 					masterNo: this.checked ? 1 : 0, //是否主分账人员;（1：是，0：否）
 					proportion: this.proportion, //分账比例;100% = 100
-					placeIdList: this.placeId, //场地ID
+					placeIdList: String(this.placeId), //场地ID
 				});
 				if (res.code == 200) {
 					this.getPeopleList();

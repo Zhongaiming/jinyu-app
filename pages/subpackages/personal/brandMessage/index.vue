@@ -1,14 +1,14 @@
 <template>
-	<div class="content">
+	<view class="content">
 		<jy-navbar title="品牌信息设置"></jy-navbar>
-		<div class="center-warp">
-			<div class="txt">基础设置</div>
+		<view class="center-warp">
+			<view class="txt">基础设置</view>
 			<u-cell-group>
 				<u-cell v-hasPermi="['app:brand:index:service']" title="场地客服"
 					url="/pages/subpackages/personal/placeService/index" isLink />
-				<u-cell title="首页标题" isLink url="/blrandInfo/titleSet" v-hasPermi="['app:brand:title:read']" />
+				<!-- <u-cell title="首页标题" isLink url="/blrandInfo/titleSet" v-hasPermi="['app:brand:title:read']" /> -->
 			</u-cell-group>
-			<div class="txt block">个性化设置</div>
+			<!-- <view class="txt block">个性化设置</view>
 			<u-cell-group>
 				<u-cell title="首页消息通知" isLink url="/blrandInfo/infoNotify"
 					v-hasPermi="['app:brand:notification:read']" />
@@ -19,9 +19,9 @@
 					v-hasPermi="['app:brand:coinName:read']" />
 				<u-cell title="轮播图设置" isLink @click="goTo(1)" v-hasPermi="['app:brand:swiper:read']" />
 				<u-cell title="广告图设置" isLink @click="goTo(2)" v-hasPermi="['app:brand:swiper:read']" />
-			</u-cell-group>
-		</div>
-	</div>
+			</u-cell-group> -->
+		</view>
+	</view>
 </template>
 
 <script>
@@ -59,10 +59,6 @@
 
 <style lang="scss" scoped>
 	.content {
-		width: 100%;
-		height: 100vh;
-		font-family: "Microsoft JhengHei", "Microsoft YaHei";
-
 		.center-warp {
 			padding: 10px 10px 68px;
 			position: relative;
@@ -79,21 +75,4 @@
 			}
 		}
 	}
-
-	// .u-cell-group {
-	// 	border-radius: 5px;
-	// 	overflow: hidden;
-	// }
-
-	// .u-cell {
-	// 	font-size: 16px;
-	// 	line-height: normal;
-	// 	padding: 13px 10px 13px 15px;
-	// }
-
-	// .van-cell__value {
-	// 	font-size: 14px;
-	// 	color: #999;
-	// 	line-height: 24px;
-	// }
 </style>

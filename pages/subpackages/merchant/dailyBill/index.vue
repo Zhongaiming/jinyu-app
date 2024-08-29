@@ -8,7 +8,7 @@
 					<p class="income" v-html="'总收益:' + (monthInfo ? monthInfo : '0.00') + '元'"></p>
 				</view>
 				<view class="header-right" @click="personDatetime = !personDatetime">
-					<!-- <img src="@/assets/authentications/week.png" alt="" class="btn-icon" /> -->
+					<xls-image :src="`${$baseUrl}appV4/authentications/week.png`" alt="" class="btn-icon" />
 				</view>
 			</view>
 			<view class="content">
@@ -28,8 +28,7 @@
 
 						<view class="right-table" @click="isClose = true">
 							<ul class="content-title" :class="{'table-open-line':isClose}">
-								<li class="talbe-column-title talbe-column table-total"
-									:class="{'table-open':isClose}">
+								<li class="talbe-column-title talbe-column table-total" :class="{'table-open':isClose}">
 									总收益
 								</li>
 								<li class="talbe-column-title talbe-column table-pay-income"
@@ -56,12 +55,8 @@
 									:class="{'table-open':isClose}">{{ item.onlineIncome }}
 									<view class="linear" v-show="!isClose"></view>
 								</span>
-								<span class="talbe-column table-open" v-show="isClose">{{
-                    item.subsidyIncome
-                  }}</span>
-								<span class="talbe-column table-open" v-show="isClose">{{
-                    item.cashIncome
-                  }}</span>
+								<span class="talbe-column table-open" v-show="isClose">{{item.subsidyIncome}}</span>
+								<span class="talbe-column table-open" v-show="isClose">{{item.cashIncome}}</span>
 								<span class="talbe-column table-detail" v-hasPermi="['app:payBag:index:bill:resvied']"
 									@click="getEarn(item.date, item.onlineIncome)"><span
 										class="earn-info">查看</span></span>
@@ -74,35 +69,37 @@
                 ? (lengthAll = dataList.length + 1)
                 : dataList.length == lengthAll - 1
                 ? $toast('本月已全部加载~')
-                : ''
-            ">
+                : ''">
 					查看更多
 				</p>
 			</view>
 		</view>
 		<!--日期 -->
-		<!-- <van-popup v-model="personDatetime" position="bottom" round>
-				<van-datetime-picker v-model="currentDate" type="year-month" title="选择年月" :min-date="minDate"
-					:max-date="maxDate" @confirm="formatDate" @cancel="personDatetime = !personDatetime" />
-			</van-popup> -->
+		<u-datetime-picker :show="personDatetime" v-model="currentDate" mode="year-month" itemHeight="88"
+			:maxDate="maxDate" :minDate="minDate" confirmColor="#5241ff" @cancel="() => {
+			personDatetime = false
+		}" @confirm="formatDate"></u-datetime-picker>
 	</view>
 </template>
 
 <script>
-	// import {
-	// 	getMonthIncome,
-	// 	getDateIncome
-	// } from "@/utils/api/wallet";
-	// import suan from "@/plugins/floastCalculate";
+	import {
+		orderController
+	} from "@/api/index.js";
+	import suan from "@/plugins/floastCalculate";
+	import {
+		getDateAll
+	} from '@/plugins/utilityClass';
 	export default {
 		name: "everydayBill",
 		data() {
 			return {
 				isClose: false,
 				personDatetime: false,
-				minDate: new Date(new Date().getFullYear() - 1, 0, 1),
-				maxDate: new Date(),
-				currentDate: new Date(),
+				minDate: new Date(getDateAll(365)).getTime(),
+				maxDate: new Date(getDateAll(0)).getTime(),
+				currentDate: getDateAll(0),
+				// currentDate: new Date(),
 				dataTxt: new Date().getFullYear() +
 					"年" +
 					(new Date().getMonth() + 1 > 9 ?
@@ -113,226 +110,35 @@
 					(new Date().getMonth() + 1 > 9 ?
 						new Date().getMonth() + 1 :
 						"0" + (new Date().getMonth() + 1)),
-				dataList: [{
-						"date": "2024-07-26",
-						"totalIncome": 62,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 62
-					},
-					{
-						"date": "2024-07-25",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-24",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-23",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-22",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-21",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-20",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-19",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-18",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-17",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-16",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-15",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-14",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-13",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-12",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-11",
-						"totalIncome": 9,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 9
-					},
-					{
-						"date": "2024-07-10",
-						"totalIncome": 18,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 18
-					},
-					{
-						"date": "2024-07-09",
-						"totalIncome": 0.11,
-						"onlineIncome": 0.11,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-08",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-07",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-06",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-05",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-04",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-03",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-02",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					},
-					{
-						"date": "2024-07-01",
-						"totalIncome": 0,
-						"onlineIncome": 0,
-						"subsidyIncome": 0,
-						"cashIncome": 0
-					}
-				],
+				dataList: [],
 				monthInfo: "0.00",
 				lengthAll: 10,
 			};
 		},
-		// created() {
-		// 	this.getWalletInfo();
-		// },
+		created() {
+			this.getWalletInfo();
+		},
 		methods: {
-			formatDate(date) {
-				this.pickTime = `${date.getFullYear()}-${
-        date.getMonth() + 1 > 9
-          ? date.getMonth() + 1
-          : "0" + (date.getMonth() + 1)
-      }`;
-				this.dataTxt = `${date.getFullYear()}年${
-        date.getMonth() + 1 > 9
-          ? date.getMonth() + 1
-          : "0" + (date.getMonth() + 1)
-      }月`;
-				this.personDatetime = !this.personDatetime;
+			formatDate(result) {
+				const {
+					value
+				} = result
+				const date = new Date(value);
+				const year = date.getFullYear();
+				const month = ('0' + (date.getMonth() + 1)).slice(-2);
+				this.personDatetime = false;
+				this.pickTime = `${year}-${month}`;
+				this.dataTxt = `${year}年${month}月`;
 				this.getWalletInfo();
 			},
 			async getWalletInfo() {
-				this.loading();
-				let dataIncome = await getDateIncome({
+				let dataIncome = await orderController.getDateIncome({
 					date: this.pickTime
 				});
-				let monthIncome = await getMonthIncome({
-					date: this.pickTime
-				});
-				this.clearing();
-				if (dataIncome.data.code == 0 || dataIncome.data.msg == "ok") {
-					this.dataList = dataIncome.data.data;
+
+				if (dataIncome.code == 200) {
+					this.dataList = dataIncome.data;
 				}
-				// if (monthIncome.data.code == 0 || monthIncome.data.msg == "ok") {
-				//   this.monthInfo = monthIncome.data.data;
-				// }
 				this.monthInfo = this.dataList.reduce(
 					(accumulator, currentValue) =>
 					this.viewideMethod(accumulator, currentValue.totalIncome),
@@ -349,12 +155,9 @@
 				}
 				var reg1 = new RegExp("-", "g"); // 加'g'，删除字符串里所有的"-"
 				var settleDate = data.replace(reg1, "");
-				this.$router.push({
-					name: "dayBillState",
-					query: {
-						settleDate
-					},
-				});
+				this.$goTo("/pages/subpackages/merchant/dailyBill/detail", "navigateTo", {
+					settleDate
+				})
 			},
 		},
 	};

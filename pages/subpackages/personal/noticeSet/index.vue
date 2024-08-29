@@ -63,6 +63,7 @@
 	import {
 		baseController
 	} from "@/api/index.js";
+	import { getInfo } from "@/common/auth";
 	export default {
 		data() {
 			return {
@@ -256,7 +257,7 @@
 		},
 		async created() {
 			this.getMessagePushSet();
-			// this.getWxSet();
+			this.getWxSet();
 		},
 		methods: {
 			goTo() {
@@ -264,15 +265,10 @@
 			},
 			// 微信设置
 			async getWxSet() {
-				let commercialNumber = JSON.parse(
-					localStorage.getItem("commercialNumber")
-				);
-				let res = await baseController.getWechatInform({
-					commercialNumber
-				});
-				this.wechatSet = res.data.data.length;
+				const {commercialNumber} = getInfo();
+				let res = await baseController.getWechatInform({commercialNumber});
+				this.wechatSet = res.data.length;
 			},
-
 			async getMessagePushSet() {
 				let res = await baseController.messagePushSet();
 				if (res.code == 200) {

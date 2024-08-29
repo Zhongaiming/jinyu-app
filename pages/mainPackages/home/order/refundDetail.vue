@@ -31,6 +31,7 @@
 					<view class="xls-steps-item" v-for="(item,index) in order.orderFlowLogVoList" :key="index">
 						<view class="xls-steps-content">
 							<view class="title">{{item.name}}</view>
+							<view class="time" v-if="item.orderDesc">{{item.orderDesc}}</view>
 							<view class="time">{{item.createTime}}</view>
 						</view>
 						<view class="xls-steps-circle" :class="{'active': index==0}"></view>
@@ -80,6 +81,16 @@
 							{{refundDict[order.refundType]}}
 						</view>
 					</view>
+					
+					<view class="refund-price" v-if="order.refundCommercialUserName">
+						<view class="left">
+							退款人
+						</view>
+						<view class="right">
+							{{order.refundCommercialUserName}}
+						</view>
+					</view>
+					
 					<view class="refund-price">
 						<view class="left">
 							退款原因
@@ -115,8 +126,6 @@
 					<view class="index_semicircle_M0lxi"></view>
 				</view>
 			</view>
-
-
 		</view>
 	</view>
 </template>
@@ -139,9 +148,10 @@
 				refundDict: {
 					0: '出货失败退款',
 					1: '出货失败部分退款',
-					2: '人工退款',
+					2: '人工退款（全额）',
 					3: '通讯失败退款',
-					4: '人工部分退款',
+					4: '人工部分退款（部分商品）',
+					5: '人工部分退款（指定金额）',
 					null: "其他"
 				},
 			}

@@ -8,7 +8,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="xls-td-status-label" v-show="tabActive == 1">
 				<view class="status-item" v-for="state in statusList" :key="state.id"
 					:class="{'active-status':stateActive == state.id}" @click="changeStateValue(state.id)">
@@ -25,15 +25,23 @@
 					<p class="top" v-else>线上余额</p>
 					<p class="middle">{{ item.createTime }}</p>
 				</view>
+				
 				<view class="num-info">
 					{{ item.amount }}<span class="small">元</span><br />
-					<span class="has-refund back" v-show="item.state == -1">有退款</span>
+					<!-- <span class="has-refund back" v-show="item.state == -1">有退款</span>
 					<span class="has-refund stay" v-show="item.state == 0">待支付</span>
-					<span class="has-refund" v-show="item.state == 1">交易完成</span>
+					<span class="has-refund" v-show="item.state == 1">交易完成</span> -->
+
+					<span class="has-refund"
+						:style="[{color: stateColorDict[item.state]}]">{{stateDict[item.state]}}</span>
 					<span class="trade-detail" v-hasPermi="['app:order:index']" @click="goTo(item)">订单详情</span>
 				</view>
 			</view>
 			<view class="entry-bd" v-show="tabActive != 3">
+				<view class="info-row" v-if="item.amountRefund">
+					<span class="field">退款金额</span>
+					<span class="value text-over redColor">已退￥{{ item.amountRefund }}</span>
+				</view>
 				<view class="info-row">
 					<span class="field">设备类型</span>
 					<span class="value text-over">{{ item.deviceTypeName }}_{{ item.deviceNumber }}</span>
@@ -74,22 +82,16 @@
 	export default {
 		data() {
 			return {
-				dataList: [{
-					payType: 0
-				}, {
-					payType: 1
-				}, {
-					payType: 2
-				}],
+				dataList: [],
 				//支付方式
 				tabList: [{
 						id: 1,
 						name: "在线支付"
 					},
-					{
-						id: 2,
-						name: "平台补贴"
-					},
+					// {
+					// 	id: 2,
+					// 	name: "平台补贴"
+					// },
 					{
 						id: 3,
 						name: "现金支付"
@@ -98,34 +100,60 @@
 				tabActive: 1,
 				//在线支付状态
 				statusList: [{
-						id: -2,
+						id: null,
 						name: "全部"
 					},
 					{
-						id: -1,
-						name: "已退款"
+						id: 6,
+						name: "退款成功"
 					},
 					{
 						id: 1,
-						name: "交易成功"
+						name: "已支付"
 					},
 				],
-				stateActive: -2,
+				stateActive: null,
+				stateDict: {
+					'-1': "已退款",
+					0: "待支付",
+					1: "已支付",
+					2: "退款中",
+					3: "退款成功",
+					4: "退款失败",
+					5: "已取消",
+					6: "已关闭",
+					7: "待结算",
+					null: "其他"
+				},
+				stateColorDict: {
+					'-1': "#f5222d",
+					0: "#5241ff",
+					1: "#52c41a",
+					2: "#f5222d",
+					3: "#f5222d",
+					4: "#f5222d",
+					5: "#f5222d",
+					6: "#8c8c8c",
+					7: "#8c8c8c",
+					null: "#8c8c8c"
+				}
 			}
 		},
 		onLoad(option) {
-			console.log("传参", JSON.parse(option.params).params)
 			this.tabActive = JSON.parse(option.params).params;
 		},
 		methods: {
 			queryList(pageNo, pageSize) {
-				// 现金getTodayCashOrderList
-				orderController.getTodayOnlineOrderList({
+				// 现金
+				const API = this.tabActive == 1 ? 'getTodayOnlineOrderList' : 'getTodayCashOrderList';
+				orderController[`${API}`]({
 					page: pageNo,
 					size: pageSize,
-					// state: ,
+					...(this.stateActive && {
+						state: this.stateActive
+					})
 				}).then(res => {
-					this.$refs.todayPaging.complete(res.data.records);
+					this.$refs.todayPaging.complete(res.data.dataList);
 				})
 			},
 			//在线-平台-现金
@@ -136,10 +164,11 @@
 			//在线支付状态
 			changeStateValue(id) {
 				this.stateActive = id;
+				this.$refs.todayPaging.reload();
 			},
 			goTo(params) {
-				this.$goTo('/pages/mainPackages/home/order/index', 'navigateTo', {
-					orderNo: params.orderNo
+				this.$goTo('/pages/mainPackages/home/order/orderDetail', 'navigateTo', {
+					orderId: params.orderNo
 				})
 			}
 		}
@@ -147,151 +176,153 @@
 </script>
 
 <style lang="scss" scoped>
-		.xls-td-tab-content {
-			height: 88rpx;
-			background: #fff;
+	.xls-td-tab-content {
+		height: 88rpx;
+		background: #fff;
+		width: 100%;
+		display: flex;
+
+		.tab-item {
+			flex: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			.name {
+				font-size: 32rpx;
+				color: rgba(0, 0, 0, 0.6);
+				text-align: center;
+				height: 88rpx;
+				line-height: 88rpx;
+				padding: 0 10rpx;
+			}
+
+			.active {
+				color: #5241ff;
+				border-bottom: 4rpx solid #5241ff;
+			}
+		}
+	}
+
+	.xls-td-status-label {
+		height: 100rpx;
+		padding: 10rpx 30rpx;
+		display: flex;
+		align-items: center;
+		font-size: 30rpx;
+
+		.status-item {
+			padding: 10rpx 20rpx;
+			border: 2rpx solid #7c7c7c;
+			color: #333;
+			border-radius: 10rpx;
+			margin-right: 30rpx;
+		}
+
+		.active-status {
+			border: 2rpx solid #5241ff;
+			color: #5241ff;
+		}
+	}
+
+
+
+	.xls-list-item {
+		background: #fff;
+		padding: 0 30rpx;
+		margin-bottom: 30rpx;
+
+		.entry-hd {
+			padding: 32rpx 0 12.5px;
 			width: 100%;
 			display: flex;
+			align-items: center;
+			justify-content: space-between;
 
-			.tab-item {
-				flex: 1;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-
-				.name {
-					font-size: 32rpx;
-					color: rgba(0, 0, 0, 0.6);
-					text-align: center;
-					height: 88rpx;
-					line-height: 88rpx;
-					padding: 0 10rpx;
+			.title-info {
+				.top {
+					font-size: 34rpx;
+					color: #000;
+					font-weight: 700;
 				}
 
-				.active {
-					color: #5241ff;
-					border-bottom: 4rpx solid #5241ff;
+				font-size: 24rpx;
+				color: rgba(0, 0, 0, 0.7);
+				width: 280rpx;
+
+				.middle {
+					margin-top: 5rpx;
+					color: #666;
+				}
+			}
+
+			.cash-wrapper {
+				flex: 1;
+
+				.place-text {
+					font-size: 28rpx;
+					font-weight: 600;
+					margin-bottom: 16rpx;
 				}
 			}
 		}
 
-		.xls-td-status-label {
-			height: 100rpx;
-			padding: 10rpx 30rpx;
-			display: flex;
-			align-items: center;
-			font-size: 30rpx;
+		.num-info {
+			max-width: 400rpx;
+			text-align: right;
+			color: #333;
+			line-height: 1.1;
+			font-size: 40rpx;
+			font-weight: 700;
 
-			.status-item {
-				padding: 10rpx 20rpx;
-				border: 2rpx solid #7c7c7c;
-				color: #333;
-				border-radius: 10rpx;
-				margin-right: 30rpx;
+			.small {
+				font-weight: 400;
+				font-size: 32rpx;
 			}
 
-			.active-status {
-				border: 2rpx solid #5241ff;
+			.has-refund {
+				font-size: 28rpx;
+				margin-right: 10rpx;
+			}
+
+			.back {
+				color: red;
+			}
+
+			.stay {
+				color: #5241ff;
+			}
+
+			.trade-detail {
+				font-weight: 400;
+				font-size: 28rpx;
 				color: #5241ff;
 			}
 		}
 
-		
+		.entry-bd {
+			padding-top: 10;
+			padding-bottom: 35rpx;
+			line-height: 1.1;
+			border-top: 2rpx dashed #ddd;
+			
+			.redColor {
+				color: #f5222d;
+			}
 
-			.xls-list-item {
-				background: #fff;
-				padding: 0 30rpx;
-				margin-bottom: 30rpx;
+			.info-row {
+				display: flex;
+				justify-content: space-between;
+				line-height: 1.1;
+				padding-top: 15rpx;
+				white-space: nowrap;
+				font-size: 26rpx;
+				color: #7c7c7c;
 
-				.entry-hd {
-					padding: 32rpx 0 12.5px;
-					width: 100%;
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
-
-					.title-info {
-						.top {
-							font-size: 34rpx;
-							color: #000;
-							font-weight: 700;
-						}
-
-						font-size: 24rpx;
-						color: rgba(0, 0, 0, 0.7);
-						width: 280rpx;
-
-						.middle {
-							margin-top: 5rpx;
-							color: #666;
-						}
-					}
-
-					.cash-wrapper {
-						flex: 1;
-
-						.place-text {
-							font-size: 28rpx;
-							font-weight: 600;
-							margin-bottom: 16rpx;
-						}
-					}
-				}
-
-				.num-info {
-					max-width: 300rpx;
-					text-align: right;
-					color: #333;
-					line-height: 1.1;
-					font-size: 40rpx;
-					font-weight: 700;
-
-					.small {
-						font-weight: 400;
-						font-size: 32rpx;
-					}
-
-					.has-refund {
-						font-size: 28rpx;
-						margin-right: 10rpx;
-					}
-
-					.back {
-						color: red;
-					}
-
-					.stay {
-						color: #5241ff;
-					}
-
-					.trade-detail {
-						font-weight: 400;
-						font-size: 28rpx;
-						color: #5241ff;
-					}
-				}
-
-				.entry-bd {
-					padding-top: 10;
-					padding-bottom: 35rpx;
-					line-height: 1.1;
-					border-top: 2rpx dashed #ddd;
-
-					.info-row {
-						display: flex;
-						justify-content: space-between;
-						line-height: 1.1;
-						padding-top: 15rpx;
-						white-space: nowrap;
-						font-size: 26rpx;
-						color: #7c7c7c;
-
-						.value {
-							max-width: 75%;
-						}
-					}
+				.value {
+					max-width: 75%;
 				}
 			}
-		
-	
+		}
+	}
 </style>

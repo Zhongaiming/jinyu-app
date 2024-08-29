@@ -1,6 +1,9 @@
 <template>
 	<z-paging ref="orderPaging" v-model="dataList" @query="queryList">
-		<jy-navbar title="订单列表" slot="top"></jy-navbar>
+		<view slot="top">
+			<jy-navbar title="订单列表"></jy-navbar>
+			<xls-order-screen-vue></xls-order-screen-vue>
+		</view>
 		<view class="xls-order-list">
 			<view v-for="(item, index) in dataList" :key="index" class="xls-order-list-item">
 				<view class="xls-order-header">
@@ -25,11 +28,11 @@
 							<view class="device-style">
 								<span> {{ deviceTypeDict[item.deviceType] }}{{ item.deviceNumber }}</span>
 								<!-- 交易状态 -->
-								<span class="state">{{stateDict[item.state]}}</span>
+								<span class="state" :style="[{color: stateColorDict[item.state]}]">{{stateDict[item.state]}}</span>
 							</view>
 							<view class="order-number">
 								<span>{{ item.orderNo }}</span>
-								<view class="base-copy">
+								<view class="base-copy" @click="copyEvent(item.orderNo)">
 									<svg viewBox="0 0 1024 1024" fill="currentColor" width="1em" height="1em">
 										<path
 											d="M810.667 85.333a128 128 0 0 1 127.786 120.491l.214 7.51V640a128 128 0 0 1-120.491 127.787l-7.51.213H768v42.667a128 128 0 0 1-120.49 127.786l-7.51.214H213.333a128 128 0 0 1-128-128V384a128 128 0 0 1 128-128H256v-42.667A128 128 0 0 1 376.49 85.547l7.51-.214h426.667zM640 341.333H213.333A42.667 42.667 0 0 0 170.667 384v426.667a42.667 42.667 0 0 0 42.666 42.666H640a42.667 42.667 0 0 0 42.667-42.666V384A42.667 42.667 0 0 0 640 341.333zm170.667-170.666H384a42.667 42.667 0 0 0-42.368 37.674l-.299 4.992V256H640a128 128 0 0 1 127.787 120.49L768 384v298.667h42.667a42.667 42.667 0 0 0 42.368-37.675l.298-4.992V213.333a42.667 42.667 0 0 0-37.674-42.368l-4.992-.298z">
@@ -59,7 +62,7 @@
 						</image>
 						<span class="member-name">{{ item.memberName || "***" }}</span>
 						<span class="member-number">ID:{{ item.memberNumber }}</span>
-						<view class="base-copy">
+						<view class="base-copy" @click="copyEvent(item.memberNumber)">
 							<svg viewBox="0 0 1024 1024" fill="currentColor" width="1em" height="1em">
 								<path
 									d="M810.667 85.333a128 128 0 0 1 127.786 120.491l.214 7.51V640a128 128 0 0 1-120.491 127.787l-7.51.213H768v42.667a128 128 0 0 1-120.49 127.786l-7.51.214H213.333a128 128 0 0 1-128-128V384a128 128 0 0 1 128-128H256v-42.667A128 128 0 0 1 376.49 85.547l7.51-.214h426.667zM640 341.333H213.333A42.667 42.667 0 0 0 170.667 384v426.667a42.667 42.667 0 0 0 42.666 42.666H640a42.667 42.667 0 0 0 42.667-42.666V384A42.667 42.667 0 0 0 640 341.333zm170.667-170.666H384a42.667 42.667 0 0 0-42.368 37.674l-.299 4.992V256H640a128 128 0 0 1 127.787 120.49L768 384v298.667h42.667a42.667 42.667 0 0 0 42.368-37.675l.298-4.992V213.333a42.667 42.667 0 0 0-37.674-42.368l-4.992-.298z">
@@ -105,7 +108,7 @@
 						<view class="button">
 							远程启动
 						</view>
-						<view class="button" @click="goTo(item, 'orderRefund')">
+						<view class="button" @click="goTo(item, 'orderRefund')" v-if="!item.amountRefund">
 							退款
 						</view>
 					</view>
@@ -124,7 +127,9 @@
 	import {
 		getDateAll
 	} from "@/plugins/utilityClass";
+	import xlsOrderScreenVue from './components/xls-order-screen.vue';
 	export default {
+		components: {xlsOrderScreenVue},
 		data() {
 			return {
 				typeDict: {
@@ -138,7 +143,7 @@
 				stateDict: {
 					'-1': "已退款",
 					0: "待支付",
-					1: "已完成",
+					1: "已支付",
 					2: "退款中",
 					3: "退款成功",
 					4: "退款失败",
@@ -147,12 +152,25 @@
 					7: "待结算",
 					null: "其他"
 				},
+				stateColorDict: {
+					'-1': "#f5222d",
+					0: "#5241ff",
+					1: "#52c41a",
+					2: "#f5222d",
+					3: "#f5222d",
+					4: "#f5222d",
+					5: "#f5222d",
+					6: "#8c8c8c",
+					7: "#8c8c8c",
+					null: "#8c8c8c"
+				},
 				refundDict: {
 					0: '出货失败退款',
 					1: '出货失败部分退款',
-					2: '人工退款',
+					2: '人工退款（全额）',
 					3: '通讯失败退款',
-					4: '人工部分退款',
+					4: '人工部分退款（部分商品）',
+					5: '人工部分退款（指定金额）',
 					null: "其他"
 				},
 				deviceTypeDict: {},
@@ -207,6 +225,23 @@
 					orderId: order.orderId
 				})
 			},
+			copyEvent(copyValue) {
+				// 手动创建 textarea 标签
+				const textarea = document.createElement("textarea");
+				// 将该 textarea 设为 readonly禁止输入 防止 iOS 下自动唤起键盘，同时将 textarea 移出可视区域
+				textarea.readOnly = "readonly";
+				textarea.style.position = "absolute";
+				textarea.style.left = "-9999px";
+				// 将要 copy 的值赋给 textarea 标签的 value 属性
+				textarea.value = copyValue;
+				// 将 textarea 插入到 body 中
+				document.body.appendChild(textarea);
+				// 选中值并复制
+				textarea.select();
+				document.execCommand("Copy");
+				document.body.removeChild(textarea);
+				this.$toast("复制成功");
+			},
 		}
 	}
 </script>
@@ -237,7 +272,6 @@
 		padding: 5rpx 16rpx;
 		background-color: rgba(131, 120, 255, 0.2);
 		border-radius: 40rpx;
-		margin-bottom: 10rpx;
 
 		.place {
 			display: inline-block;

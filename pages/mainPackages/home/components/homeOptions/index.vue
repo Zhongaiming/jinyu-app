@@ -61,14 +61,14 @@
 							permissions: ['app:remoteboot:index'],
 							status: 0
 						},
-						{
-							id: 15,
-							title: '营销工具',
-							imgUrl: `${this.$baseUrl}homeImages/fristList/five.png`,
-							route: '/pages/mainPackages/home/marketingModule/index',
-							permissions: ['app:marketing:index'],
-							status: 0
-						}
+						// {
+						// 	id: 15,
+						// 	title: '营销工具',
+						// 	imgUrl: `${this.$baseUrl}homeImages/fristList/five.png`,
+						// 	route: '/pages/mainPackages/home/marketingModule/index',
+						// 	permissions: ['app:marketing:index'],
+						// 	status: 0
+						// }
 					]
 				}, 
 				// {
@@ -206,14 +206,14 @@
 							permissions: ['app:subaccounts:index'],
 							status: 0
 						},
-						{
-							id: 42,
-							title: '申诉反馈',
-							imgUrl: `${this.$baseUrl}homeImages/fourList/four.png`,
-							route: '/pages/mainPackages/home/appealFeedback/index',
-							permissions: ['app:couple:index'],
-							status: 0
-						},
+						// {
+						// 	id: 42,
+						// 	title: '申诉反馈',
+						// 	imgUrl: `${this.$baseUrl}homeImages/fourList/four.png`,
+						// 	route: '/pages/mainPackages/home/appealFeedback/index',
+						// 	permissions: ['app:couple:index'],
+						// 	status: 0
+						// },
 						// {
 						// 	id: 43,
 						// 	title: '标签管理',

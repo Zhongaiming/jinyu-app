@@ -178,6 +178,7 @@
 			// 点击遮罩
 			overlayClick() {
 				if (this.closeOnClickOverlay) {
+					this.
 					this.$emit('close')
 				}
 			},

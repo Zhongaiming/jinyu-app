@@ -2,7 +2,7 @@
 	<z-paging ref="mealPaging" v-model="dataList" @query="queryList">
 		<view slot="top">
 			<jy-navbar title="套餐设置"></jy-navbar>
-			<view class="headerBox">
+			<view class="headerBox" v-if="0">
 				<view class="header-item" @click.stop="showRecomList" v-hasPermi="['app:meal:recommendMoney:read']">
 					<view class="image-box">
 						<image :src="`${$baseUrl}appV4/setImage/top-up.png`" alt="" class="image" mode="widthFix" />
@@ -74,7 +74,7 @@
 						<i class="iconfont icon-sousuo1" style="font-size: 15px"></i>
 					</view>
 					<input type="text" v-model="searchValue" placeholder="输入搜索场地名称" @blur="confirmSearch"
-						@keyup.13="confirmSearch" />
+						@keyup.13="confirmSearch" @search="confirmSearch"/>
 					<view class="cancel" @click="cancelSearch">取消</view>
 				</view>
 			</transition>
@@ -243,7 +243,7 @@
 				packageController.getPlaceDeviceNum({
 					page: pageNo,
 					size: pageSize,
-					placeName: this.searchValue ? encodeURIComponent(this.searchValue) : "",
+					...(this.searchValue && {placeName:encodeURIComponent(this.searchValue)})
 				}).then(res => {
 					this.$refs.mealPaging.complete(res.data);
 				})
@@ -255,7 +255,6 @@
 				this.$refs.mealPaging.reload();
 			},
 			confirmSearch() {
-				this.getdataList();
 				this.$refs.mealPaging.reload();
 			},
 			allGroupChange(item) {

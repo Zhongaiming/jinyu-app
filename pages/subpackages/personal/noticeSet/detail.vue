@@ -82,17 +82,12 @@
 </template>
 
 <script>
-	// 二维码组件
-	// import VueQr from "vue-qr";
-	// import {
-	// 	getCustomerQR,
-	// 	getWechatInform
-	// } from "@/utils/api/service";
+	import {
+		baseController
+	} from "@/api/index.js";
+	import { getInfo } from "@/common/auth";
 	import uQRCode from '@/common/uqrcode.js'; //引入uqrcode.js
 	export default {
-		components: {
-			// VueQr
-		},
 		data() {
 			return {
 				wechat: false,
@@ -105,24 +100,20 @@
 				},
 			};
 		},
-		async created() {
-			let commercialNumber = JSON.parse(localStorage.getItem("commercialNumber"));
-			//推送客服
-			// let res = await getWechatInform({
-			// 	commercialNumber
-			// });
-			// if (res.data.data.length) {
-			// 	this.wechatSet.nickName = res.data.data[0].nickName;
-			// 	this.wechatSet.img = res.data.data[0].img;
-			// 	this.wechatSet.acount = res.data.data.length;
-			// }
+		onLoad() {
 			this.getOfficial();
+			this.getWxSet();
 		},
 		methods: {
+			// 微信设置
+			async getWxSet() {
+				const {commercialNumber} = getInfo();
+				let res = await baseController.getWechatInform({commercialNumber});
+				const result = res.data.length > 0 ? res.data[0] : {};
+				Object.assign(this.wechatSet, result);
+			},
 			async getOfficial() {
-				let commercialNumber = JSON.parse(
-					localStorage.getItem("commercialNumber")
-				);
+				const {commercialNumber} = getInfo();
 				this.qsUrl = `https://mv3.ztuwl.com/GZH/?commercialNumber=${commercialNumber}`;
 				this.qrFun();
 			},

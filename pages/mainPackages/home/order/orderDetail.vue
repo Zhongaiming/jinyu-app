@@ -83,11 +83,11 @@
 						{{ order.orderNo }}
 					</view>
 				</view>
-				<view class="copy">
+				<view class="copy" @click="copyEvent(order.orderNo)">
 					复制
 				</view>
 			</view>
-			
+
 			<view class="record-detail-list" v-if="order.amountCoupon">
 				<view class="title">
 					营销活动
@@ -154,7 +154,7 @@
 						{{ order.transactionId }}
 					</view>
 				</view>
-				<view class="copy">
+				<view class="copy" @click="copyEvent(order.transactionId)">
 					复制
 				</view>
 			</view>
@@ -168,7 +168,7 @@
 						{{ order.orderNo }}
 					</view>
 				</view>
-				<view class="copy">
+				<view class="copy" @click="copyEvent(order.orderNo)">
 					复制
 				</view>
 			</view>
@@ -182,7 +182,7 @@
 						{{ order.transactionNo }}
 					</view>
 				</view>
-				<view class="copy">
+				<view class="copy" @click="copyEvent(order.transactionNo)">
 					复制
 				</view>
 			</view>
@@ -201,7 +201,7 @@
 				</view>
 				<view class="value">
 					<view class="">
-						{{order.memberName}}
+						{{order.nickName}}
 					</view>
 				</view>
 			</view>
@@ -215,7 +215,7 @@
 						{{order.memberNumber}}
 					</view>
 				</view>
-				<view class="copy">
+				<view class="copy" @click="copyEvent(order.memberNumber)">
 					复制
 				</view>
 			</view>
@@ -255,7 +255,7 @@
 
 		<view class="fixed-box">
 			<view class="fixed-box-wrapper">
-				<view class="button">
+				<view class="button" v-if="!order.amountRefund">
 					退款
 				</view>
 				<view class="button">
@@ -288,7 +288,7 @@
 				stateDict: {
 					'-1': "已退款",
 					0: "待支付",
-					1: "已完成",
+					1: "已支付",
 					2: "退款中",
 					3: "退款成功",
 					4: "退款失败",
@@ -297,12 +297,25 @@
 					7: "待结算",
 					null: "其他"
 				},
+				stateColorDict: {
+					'-1': "#f5222d",
+					0: "#5241ff",
+					1: "#52c41a",
+					2: "#f5222d",
+					3: "#f5222d",
+					4: "#f5222d",
+					5: "#f5222d",
+					6: "#8c8c8c",
+					7: "#8c8c8c",
+					null: "#8c8c8c"
+				},
 				refundDict: {
-					0: '(出货失败退款)',
-					1: '(出货失败部分退款)',
-					2: '(人工退款)',
-					3: '(通讯失败退款)',
-					4: '(人工部分退款)',
+					0: '出货失败退款',
+					1: '出货失败部分退款',
+					2: '人工退款（全额）',
+					3: '通讯失败退款',
+					4: '人工部分退款（部分商品）',
+					5: '人工部分退款（指定金额）',
 					null: "其他"
 				},
 				payTypeDict: {
@@ -332,7 +345,7 @@
 					id
 				}).then(res => {
 					if (res.code = 200) {
-						if(res.data.rails) {
+						if (res.data.rails) {
 							res.data.rails = JSON.parse(res.data.rails)
 						}
 						this.order = res.data
@@ -344,7 +357,24 @@
 				this.$goTo('/pages/mainPackages/home/order/refundDetail', 'navigateTo', {
 					orderId: this.order.id
 				})
-			}
+			},
+			copyEvent(copyValue) {
+				// 手动创建 textarea 标签
+				const textarea = document.createElement("textarea");
+				// 将该 textarea 设为 readonly禁止输入 防止 iOS 下自动唤起键盘，同时将 textarea 移出可视区域
+				textarea.readOnly = "readonly";
+				textarea.style.position = "absolute";
+				textarea.style.left = "-9999px";
+				// 将要 copy 的值赋给 textarea 标签的 value 属性
+				textarea.value = copyValue;
+				// 将 textarea 插入到 body 中
+				document.body.appendChild(textarea);
+				// 选中值并复制
+				textarea.select();
+				document.execCommand("Copy");
+				document.body.removeChild(textarea);
+				this.$toast("复制成功");
+			},
 		}
 	}
 </script>

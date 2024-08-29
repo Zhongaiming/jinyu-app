@@ -148,4 +148,56 @@ export default class deviceController {
 			data
 		})
 	}
+	
+	
+	// 远程启动相关
+	// 扭蛋机添加远程启动
+	static addEggPoints(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceLongRange/addEggPoints',
+			method: 'POST',
+			data
+		})
+	}
+	// 娃娃机兑币机远程启动
+	static addPoints(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceLongRange/addPoints',
+			method: 'POST',
+			data
+		})
+	}
+	// 售货机添加远程启动
+	static addVendingPoints(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceLongRange/addVendingPoints',
+			method: 'POST',
+			data
+		})
+	}
+	// 场地和设备类型的设备列表
+	static getDeviceListByPlaceDeviceType(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/getDeviceListByPlaceDeviceType',
+			method: 'GET',
+			data
+		})
+	}
+	// 设备类型的场地列表
+	static getDeviceTypePlaceList(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/place/getDeviceTypePlaceList',
+			method: 'GET',
+			data
+		})
+	}
+	// getPlaceListByDeviceType
+	static getPlaceListByDeviceType(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/place/getPlaceListByDeviceType',
+			method: 'GET',
+			data
+		})
+	}
+	
 }

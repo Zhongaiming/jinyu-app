@@ -75,14 +75,15 @@
 					}, {
 						id: 2,
 						permissions: ['app:account:index', 'app:account:index:read', 'app:material:index'],
-						dataList: [{
-								id: 21,
-								title: '子账号管理',
-								imgUrl: `${this.$baseUrl}appV4/my_img/sub-account.png`,
-								route: '/pages/mainPackages/personal/subAccountManagement/index',
-								permissions: ['app:account:index', 'app:account:index:read'],
-								subheading: '',
-							},
+						dataList: [
+							// {
+							// 	id: 21,
+							// 	title: '子账号管理',
+							// 	imgUrl: `${this.$baseUrl}appV4/my_img/sub-account.png`,
+							// 	route: '/pages/mainPackages/personal/subAccountManagement/index',
+							// 	permissions: ['app:account:index', 'app:account:index:read'],
+							// 	subheading: '',
+							// },
 							// {
 							// 	id: 22,
 							// 	title: '物料管理',
@@ -133,22 +134,22 @@
 								permissions: ['app:place:index'],
 								subheading: '',
 							},
-							{
-								id: 42,
-								title: '操作记录',
-								imgUrl: `${this.$baseUrl}appV4/my_img/option.png`,
-								route: '/pages/mainPackages/personal/handleRecord/index',
-								permissions: ['app:records:index'],
-								subheading: '',
-							},
-							{
-								id: 43,
-								title: '补货记录',
-								imgUrl: `${this.$baseUrl}appV4/my_img/record.png`,
-								route: '/replenishmentRecord',
-								permissions: ['app:system:replenishmentRecord'],
-								subheading: '',
-							},
+							// {
+							// 	id: 42,
+							// 	title: '操作记录',
+							// 	imgUrl: `${this.$baseUrl}appV4/my_img/option.png`,
+							// 	route: '/pages/mainPackages/personal/handleRecord/index',
+							// 	permissions: ['app:records:index'],
+							// 	subheading: '',
+							// },
+							// {
+							// 	id: 43,
+							// 	title: '补货记录',
+							// 	imgUrl: `${this.$baseUrl}appV4/my_img/record.png`,
+							// 	route: '/replenishmentRecord',
+							// 	permissions: ['app:system:replenishmentRecord'],
+							// 	subheading: '',
+							// },
 							// {
 							// 	id: 44,
 							// 	title: 'wifi配网',
