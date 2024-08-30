@@ -114,14 +114,6 @@ export default class deviceController {
 		})
 	}
 	// 查询扭蛋机货道信息
-	static getEggDeviceRailInfo(data) {
-		return http.request({
-			url: '/device/api/v1/admin/device/deviceRail/getEggDeviceRailInfo',
-			method: 'GET',
-			data
-		})
-	}
-	
 	// 货道商品信息列表
 	static getEggDeviceRailInfo(data) {
 		return http.request({
@@ -195,6 +187,14 @@ export default class deviceController {
 	static getPlaceListByDeviceType(data) {
 		return http.request({
 			url: '/merchant/api/v1/admin/merchant/place/getPlaceListByDeviceType',
+			method: 'GET',
+			data
+		})
+	}
+	// 货道商品信息列表
+	static getRailCommodityList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/getRailCommodityList',
 			method: 'GET',
 			data
 		})

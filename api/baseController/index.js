@@ -23,7 +23,7 @@ export default class baseController {
 	// 修改消息推送设置
 	static getWechatInform(data) {
 		return http.request({
-			url: '/member/api/v1/admin/member/wechatInform/getWechatInform',
+			url: '/member/api/v1/admin/merchant/wechatInform/getWechatInform',
 			method: 'GET',
 			data
 		})

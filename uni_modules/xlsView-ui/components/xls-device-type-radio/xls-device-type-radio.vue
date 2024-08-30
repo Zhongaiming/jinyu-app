@@ -58,7 +58,7 @@
 				'deviceTypeDict'
 			])
 		},
-		async created() {
+		async mounted() {
 			this.$store.dispatch('config/getList');
 		},
 		methods: {

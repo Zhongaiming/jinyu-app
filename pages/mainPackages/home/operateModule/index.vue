@@ -105,13 +105,13 @@
 						<p class="label-text">
 							<span class="top">
 								<span>合计</span>:&nbsp;
-								<!-- <span>
+								<span>
 									{{ earnStar.totalIncome}}
 									<span class="unit">元</span>&nbsp;
-									<span class="service-charge">
+									<!-- <span class="service-charge">
 										(含服务费{{earnStar.onlinePayTotalCommission? "¥" + earnStar.onlinePayTotalCommission: "¥0.00"}}元)
-									</span>
-								</span> -->
+									</span> -->
+								</span>
 							</span>
 						</p>
 						<view class="desc">

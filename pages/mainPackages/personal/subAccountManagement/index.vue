@@ -1,91 +1,74 @@
 <template>
-	<view class="accountManagement">
-		<xls-jy-navbar title="子账号管理"></xls-jy-navbar>
-		<view class="tabs-item">
-			<view class="tab-box">
-				<view class="tab" v-hasPermi="['app:account:index']" :class="{active: 1 == activeItem}"
-					@click="activeItem = 1">
-					子账号
-				</view>
-				<view class="tab" v-hasPermi="['app:account:index:read']" :class="{active: 2 == activeItem}"
-					@click="activeItem = 2">
-					岗位角色
+	<z-paging ref="paging" v-model="dataList" @query="queryList">
+		<view slot="top">
+			<xls-jy-navbar title="子账号管理"></xls-jy-navbar>
+			<view class="tabs-item">
+				<view class="tab-box">
+					<view class="tab" v-hasPermi="['app:account:index']" :class="{active: 1 == activeItem}"
+						@click="activeItem = 1">
+						子账号
+					</view>
+					<view class="tab" v-hasPermi="['app:account:index:read']" :class="{active: 2 == activeItem}"
+						@click="activeItem = 2">
+						岗位角色
+					</view>
 				</view>
 			</view>
 		</view>
-		<xls-search 
-			placeholder="输入子账号名称/账号" 
-			marLeft="-6.5em" 
-			@confirm="stratesSearch" bgColor="#f5f6f7"
+		<xls-search placeholder="输入子账号名称/账号" marLeft="-6.5em" @confirm="stratesSearch" bgColor="#f5f6f7"
 			inputColor="#fff" v-show="activeItem == 1">
 		</xls-search>
 		<!-- 子账号 -->
 		<view class="sub-account box-sizing" v-show="activeItem == 1">
-			<u-list v-if="sonAccountList.length">
-				<view class="child-list">
-					<view class="child-item" v-for="(item, index) in sonAccountList" :key="index">
-						<view class="top-info">
-							<view class="role-info">
-								<view class="title">
-									<text class="name">{{ item.nickName }}</text>
-									<text class="post">({{ item.roleName ? item.roleName : "未设置" }})</text>
-								</view>
-								<view class="phone-group">
-									<text class="phone">{{ item.username }}</text>
-									<view class="line"></view>
-									<text class="group-num">管理场地({{
-                        item.placeIdList || 0
-                      }})个</text>
-								</view>
+			<view class="child-list">
+				<view class="child-item" v-for="(item, index) in dataList" :key="index">
+					<view class="top-info">
+						<view class="role-info">
+							<view class="title">
+								<text class="name">{{ item.nickName }}</text>
+								<text class="post">({{ item.roleName ? item.roleName : "未设置" }})</text>
 							</view>
-							<view class="right-switch">
-								<u-switch size="50" v-model="item.userState"
-									@change="editState(item.id, item.userState)" active-color="#5241FF" />
+							<view class="phone-group">
+								<text class="phone">{{ item.username }}</text>
+								<view class="line"></view>
+								<text class="group-num">管理场地({{item.placeIdList || 0}})个</text>
 							</view>
 						</view>
-						<view class="handle-btn">
-							<!-- 新 -->
-							<view v-hasPermi="['app:account:index:deleteson']" @click="deleteItem(item.id)">
-								删除
-							</view>
-							<view v-hasPermi="['app:account:index:editson']" @click="
-                    $router.push({
-                      path: '/accountManagement/addAccount',
-                      query: { sonAccount: JSON.stringify(item) },
-                    })
-                  ">
-								编辑
-							</view>
+						<view class="right-switch">
+							<!-- <u-switch size="50" v-model="item.userState" @change="editState(item.id, item.userState)"
+								active-color="#5241FF" /> -->
 						</view>
 					</view>
-					<xls-bottom v-show="sonAccountList.length" />
+					<view class="handle-btn">
+						<!-- 新 -->
+						<view v-hasPermi="['app:account:index:deleteson']" @click="deleteItem(item.id)">
+							删除
+						</view>
+						<view v-hasPermi="['app:account:index:editson']" @click="goTo">
+							编辑
+						</view>
+					</view>
 				</view>
-			</u-list>
-			<xls-empty v-else />
+				<xls-bottom v-show="dataList.length" />
+			</view>
 			<view class="btn-bottom" v-hasPermi="[
-            'app:subacounts:index:person',
-            'app:subaccounts:index:earn',
-            'app:subacounts:index:ratio',
-            'app:account:index:addson',
-          ]">
+				'app:subacounts:index:person',
+				'app:subaccounts:index:earn',
+				'app:subacounts:index:ratio',
+				'app:account:index:addson',
+			  ]">
 				<view class="share-money" v-hasPermi="[
-              'app:subacounts:index:person',
-              'app:subaccounts:index:earn',
-              'app:subacounts:index:ratio',
-            ]" @click="$router.push('/subAccount')">
-					<!-- <img src="./image/account.png" /> -->
+				  'app:subacounts:index:person',
+				  'app:subaccounts:index:earn',
+				  'app:subacounts:index:ratio',
+				]" @click="goTo">
 					<u-icon name="order" size="58" color="#5241ff" />
 					<text class="txt">分账设置</text>
 				</view>
-				<view class="create-btn" v-hasPermi="['app:account:index:addson']" @click="
-              roleList.length
-                ? $router.push('/accountManagement/addAccount')
-                : $toast('请先创建角色~')
-            ">
+				<view class="create-btn" v-hasPermi="['app:account:index:addson']" @click="goTo">
 					创建子账号
 				</view>
 			</view>
-			<!-- <no-data v-show="!sonAccountList.length"/> -->
 		</view>
 		<!-- 岗位角色 -->
 		<view class="sub-account box-sizing" v-show="activeItem == 2">
@@ -93,40 +76,19 @@
 				<view class="role-item" v-for="(role, index) in roleList" :key="index">
 					<p class="name">{{ role.roleName }}</p>
 					<view class="right">
-						<text class="one" v-hasPermi="['app:account:index:editjob']" @click="
-                  $router.push({
-                    path: '/accountManagement/createJobs',
-                    query: {
-                      jobs: JSON.stringify(role.roleName),
-                      roleId: role.roleId,
-                    },
-                  })
-                ">权限查看</text>
-						<!-- <text class="one"
-                        v-hasPermi="['app:account:index:editjob']"
-                        @click="$router.push({
-                            path:'/accountManagement/createJobs',
-                            query:{jobs:JSON.stringify(role)}
-                        })">权限查看</text> -->
-						<text class="one next" @click="
-                  $router.push({
-                    path: '/accountManagement/sonAccount',
-                    query: {
-                      roleName: role.roleName,
-                    },
-                  })
-                ">子账号查看</text>
+						<text class="one" v-hasPermi="['app:account:index:editjob']" @click="goTo">权限查看</text>
+
+						<text class="one next" @click="goTo">子账号查看</text>
 					</view>
 				</view>
 			</view>
 			<view class="btn-bottom" v-hasPermi="['app:account:index:addjob']">
-				<view class="create-btn" @click="$router.push('/accountManagement/createJobs')">
+				<view class="create-btn" @click="goTo">
 					创建岗位
 				</view>
 			</view>
 		</view>
-	</view>
-
+	</z-paging>
 </template>
 
 <script>
@@ -157,7 +119,100 @@
 				inputEnter: "",
 				showClear: false,
 				//子账号
-				sonAccountList: [{
+				dataList: [],
+				roleList: [{
+						"roleId": 150,
+						"roleName": "全部权限",
+						"roleKey": "ztwl",
+						"roleSort": 2,
+						"dataScope": 1,
+						"menuCheckStrictly": 1,
+						"deptCheckStrictly": 1,
+						"status": 0,
+						"delFlag": 0,
+						"createBy": "18144999904",
+						"createTime": "2022-12-12 11:26:09",
+						"updateBy": "18144999904",
+						"updateTime": "2023-10-23 15:18:13"
+					},
+					{
+						"roleId": 154,
+						"roleName": "部分权限",
+						"roleKey": "ztwl",
+						"roleSort": 2,
+						"dataScope": 1,
+						"menuCheckStrictly": 1,
+						"deptCheckStrictly": 1,
+						"status": 0,
+						"delFlag": 0,
+						"createBy": "18144999904",
+						"createTime": "2023-02-17 08:47:16",
+						"updateBy": "18144999904",
+						"updateTime": "2023-09-21 15:23:57"
+					},
+					{
+						"roleId": 247,
+						"roleName": "体验",
+						"roleKey": "ztwl",
+						"roleSort": 2,
+						"dataScope": 1,
+						"menuCheckStrictly": 1,
+						"deptCheckStrictly": 1,
+						"status": 0,
+						"delFlag": 0,
+						"createBy": "18144999904",
+						"createTime": "2023-12-19 09:47:03",
+						"updateBy": "18144999904",
+						"updateTime": "2023-12-19 09:47:03"
+					},
+					{
+						"roleId": 397,
+						"roleName": "前端",
+						"roleKey": "ztwl",
+						"roleSort": 2,
+						"dataScope": 1,
+						"menuCheckStrictly": 1,
+						"deptCheckStrictly": 1,
+						"status": 0,
+						"delFlag": 0,
+						"createBy": "18144999904",
+						"createTime": "2024-04-02 09:49:12",
+						"updateBy": "18144999904",
+						"updateTime": "2024-04-03 10:32:27"
+					},
+					{
+						"roleId": 413,
+						"roleName": "合作商",
+						"roleKey": "ztwl",
+						"roleSort": 2,
+						"dataScope": 1,
+						"menuCheckStrictly": 1,
+						"deptCheckStrictly": 1,
+						"status": 0,
+						"delFlag": 0,
+						"createBy": "18144999904",
+						"createTime": "2024-04-08 17:47:39",
+						"updateBy": "18144999904",
+						"updateTime": "2024-04-08 17:47:39"
+					}
+				],
+				searchValue: "",
+				loading: false,
+				finished: false,
+				page: 0,
+			};
+		},
+		async created() {
+			// this.activeItem = auth.hasPermi("app:account:index") ? 1 : 2;
+			// this.getAcountList();
+			// this.getRoleList();
+			// this.dataList.forEach((item) => {
+			// 	item.userState = item.userState == 1;
+			// });
+		},
+		methods: {
+			queryList(pageNo, pageSize) {
+				const list = [{
 						"id": 1081,
 						"username": "zt15089452840",
 						"nickName": "地心体验",
@@ -265,98 +320,13 @@
 						"ledger": 0,
 						"rate": 0
 					}
-				],
-				roleList: [{
-						"roleId": 150,
-						"roleName": "全部权限",
-						"roleKey": "ztwl",
-						"roleSort": 2,
-						"dataScope": 1,
-						"menuCheckStrictly": 1,
-						"deptCheckStrictly": 1,
-						"status": 0,
-						"delFlag": 0,
-						"createBy": "18144999904",
-						"createTime": "2022-12-12 11:26:09",
-						"updateBy": "18144999904",
-						"updateTime": "2023-10-23 15:18:13"
-					},
-					{
-						"roleId": 154,
-						"roleName": "部分权限",
-						"roleKey": "ztwl",
-						"roleSort": 2,
-						"dataScope": 1,
-						"menuCheckStrictly": 1,
-						"deptCheckStrictly": 1,
-						"status": 0,
-						"delFlag": 0,
-						"createBy": "18144999904",
-						"createTime": "2023-02-17 08:47:16",
-						"updateBy": "18144999904",
-						"updateTime": "2023-09-21 15:23:57"
-					},
-					{
-						"roleId": 247,
-						"roleName": "体验",
-						"roleKey": "ztwl",
-						"roleSort": 2,
-						"dataScope": 1,
-						"menuCheckStrictly": 1,
-						"deptCheckStrictly": 1,
-						"status": 0,
-						"delFlag": 0,
-						"createBy": "18144999904",
-						"createTime": "2023-12-19 09:47:03",
-						"updateBy": "18144999904",
-						"updateTime": "2023-12-19 09:47:03"
-					},
-					{
-						"roleId": 397,
-						"roleName": "前端",
-						"roleKey": "ztwl",
-						"roleSort": 2,
-						"dataScope": 1,
-						"menuCheckStrictly": 1,
-						"deptCheckStrictly": 1,
-						"status": 0,
-						"delFlag": 0,
-						"createBy": "18144999904",
-						"createTime": "2024-04-02 09:49:12",
-						"updateBy": "18144999904",
-						"updateTime": "2024-04-03 10:32:27"
-					},
-					{
-						"roleId": 413,
-						"roleName": "合作商",
-						"roleKey": "ztwl",
-						"roleSort": 2,
-						"dataScope": 1,
-						"menuCheckStrictly": 1,
-						"deptCheckStrictly": 1,
-						"status": 0,
-						"delFlag": 0,
-						"createBy": "18144999904",
-						"createTime": "2024-04-08 17:47:39",
-						"updateBy": "18144999904",
-						"updateTime": "2024-04-08 17:47:39"
-					}
-				],
-				searchValue: "",
-				loading: false,
-				finished: false,
-				page: 0,
-			};
-		},
-		async created() {
-			// this.activeItem = auth.hasPermi("app:account:index") ? 1 : 2;
-			// this.getAcountList();
-			// this.getRoleList();
-			this.sonAccountList.forEach((item) => {
-				item.userState = item.userState == 1;
-			});
-		},
-		methods: {
+				]
+				this.$refs.paging.complete(list);
+			},
+
+
+
+
 			async getRoleList() {
 				let role = await getSysRoles();
 				if (role.data.data.length) {
@@ -380,14 +350,14 @@
 							this.finished = false;
 						}
 						if (this.page > 1) {
-							this.sonAccountList = [
-								...this.sonAccountList,
+							this.dataList = [
+								...this.dataList,
 								...res.data.data.records,
 							];
 						} else {
-							this.sonAccountList = res.data.data.records;
+							this.dataList = res.data.data.records;
 						}
-						this.sonAccountList.forEach((item) => {
+						this.dataList.forEach((item) => {
 							item.userState = item.userState == 1;
 						});
 					}
@@ -426,7 +396,7 @@
 							.then((res) => {
 								if (res.data.code == 0 || res.data.msg == "ok") {
 									this.$toast("删除成功~");
-									this.sonAccountList = this.sonAccountList.filter((item) => {
+									this.dataList = this.dataList.filter((item) => {
 										return item.id != id;
 									});
 								}

@@ -289,8 +289,11 @@
 							params.switch = this.pushSetObj[property] == 1;
 
 							// 处理 inventory 的情况
-							if ([11, 12, 13, 15, 16].includes(params.id)) {
+							if ([11, 12, 13, 16].includes(params.id)) {
 								params.inventory = this.pushSetObj[property.replace('Msg', '')];
+							}
+							if ([15].includes(params.id)) {
+								params.inventory = this.pushSetObj.coinInventoryRepertory;
 							}
 						}
 					});
@@ -329,7 +332,7 @@
 						}
 					})
 
-				}, 1000)
+				}, 200)
 			},
 
 			//设备库存设置

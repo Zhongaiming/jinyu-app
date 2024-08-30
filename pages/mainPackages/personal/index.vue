@@ -76,14 +76,14 @@
 						id: 2,
 						permissions: ['app:account:index', 'app:account:index:read', 'app:material:index'],
 						dataList: [
-							// {
-							// 	id: 21,
-							// 	title: '子账号管理',
-							// 	imgUrl: `${this.$baseUrl}appV4/my_img/sub-account.png`,
-							// 	route: '/pages/mainPackages/personal/subAccountManagement/index',
-							// 	permissions: ['app:account:index', 'app:account:index:read'],
-							// 	subheading: '',
-							// },
+							{
+								id: 21,
+								title: '子账号管理',
+								imgUrl: `${this.$baseUrl}appV4/my_img/sub-account.png`,
+								route: '/pages/mainPackages/personal/subAccountManagement/index',
+								permissions: ['app:account:index', 'app:account:index:read'],
+								subheading: '',
+							},
 							// {
 							// 	id: 22,
 							// 	title: '物料管理',

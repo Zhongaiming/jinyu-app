@@ -5,7 +5,10 @@
         <view class="zb-dropdown-menu__title" 
 		:class="[{'zb-dropdown-menu__title--active':item.showWrap,'zb-dropdown-menu__title--down':item.showWrap}]"
         :style="[{color:item.showWrap?activeColor:'',},titleColorStyle]">
-		{{item.title}}
+		<view class="Badge" v-if="item.Badge"></view>
+		<text class="title-wrapper">
+			{{item.title}}
+		</text>
 		</view>
       </view>
     </view>
@@ -29,7 +32,7 @@ export default {
     activeColor:{
       type:String,
       default:'#5241ff'
-    }
+    },
   },
   provide(){
     return{
@@ -48,14 +51,14 @@ export default {
       }
     },
   },
-  watch:{
-    childrenList:{
-      handler(val){
-        console.log('=====val====ss=',val)
-      },
-      immediate:true
-    }
-  },
+  // watch:{
+  //   childrenList:{
+  //     handler(val){
+  //       console.log('=====val====ss=',val)
+  //     },
+  //     immediate:true
+  //   }
+  // },
   data() {
     return {
       childrenList:[],
@@ -229,7 +232,25 @@ export default {
   color: #323233;
   font-size: 12px;
   // font-size: 15px;
-  line-height: 22px;
+  // line-height: 22px;
+  position: relative;
+  
+  .Badge {
+  	width: 10rpx;
+  	height: 10rpx;
+  	border-radius: 50%;
+  	background-color: #ee0a24;
+  	position: absolute;
+  	right: 0rpx;
+  	top: 0;
+  }
+}
+.title-wrapper {
+	display: inline-block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 120rpx;
 }
 
 .zb-dropdown-menu__title::after {
@@ -254,7 +275,7 @@ export default {
   border-color: transparent transparent currentColor currentColor;
 }
 .zb-dropdown-menu__bar--opened {
-  z-index: 11;
+  z-index: 9;
 }
 .zb-dropdown-menu__title--active {
   color: #ee0a24;

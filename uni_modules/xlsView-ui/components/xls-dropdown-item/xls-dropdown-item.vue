@@ -6,35 +6,30 @@
 			:class="[{'content--visible_Y':mask}]">
 			<view style="min-height: 50px;">
 				 <slot></slot>
-				<!-- <view class="box" v-for="item,index in boxList" :key="index">
-					{{item.text}}
-				</view> -->
 
 				<!-- <view
-            class="zb-cell zb-cell--clickable zb-dropdown-item__option"
-            v-for="item,index in options"
-            :key="index"
-            @click.stop="clickCell(item)"
-        >
-          <view class="zb-cell__title"
-                :class="[{
-                  'active-cell__title':mValue===item.value
-                }]"
-                :style="[{
-                  color:mValue===item.value?activeColor:''
-                }]"
-          >
-            <text>{{item.text}}</text>
-          </view>
-          <view class="zb-cell__value" v-if="mValue===item.value">
-            <text
-                class="iconfont icon-duihao active-icon"
-                :style="[{
-                  color:showWrap?activeColor:''
-                }]"
-            ></text>
-          </view>
-        </view> -->
+					class="zb-cell zb-cell--clickable zb-dropdown-item__option"
+					v-for="item,index in options"
+					:key="index"
+					@click.stop="clickCell(item)"
+				>
+				  <view class="zb-cell__title"
+						:class="[{
+						  'active-cell__title':mValue===item.value
+						}]"
+						:style="[{
+						  color:mValue===item.value?activeColor:''
+						}]"
+				  >
+					<text>{{item.text}}</text>
+				  </view>
+				  <view class="zb-cell__value" v-if="mValue===item.value">
+					<text
+						class="iconfont icon-duihao active-icon"
+						:style="[{color:showWrap?activeColor:''}]"
+					></text>
+				  </view>
+				</view> -->
 			</view>
 		</view>
 	</view>
@@ -63,6 +58,10 @@
 			title: {
 				type: String,
 				default: "title"
+			},
+			Badge:{
+				type: Boolean,
+				default: false
 			}
 		},
 		inject: {

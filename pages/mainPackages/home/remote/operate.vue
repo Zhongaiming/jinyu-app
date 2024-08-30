@@ -61,8 +61,8 @@
 					<view class="childStep">
 						<view class="main-box">
 							<view class="stepper">
-								<u-stepper v-model="valueStep" input-width="60px" button-size="35px" min="1" max="100"
-									integer />
+								<u-number-box v-model="valueStep" input-width="60px" button-size="35px" min="1" max="100"
+									integer iconStyle="fontSize: 32rpx" />
 							</view>
 						</view>
 						<view style="margin-left: 30px; color: red">数值范围 1~99</view>
@@ -99,32 +99,34 @@
 		</view>
 		<!-- 设备 -->
 		<u-popup :show="pickerDevice" mode="bottom">
-			<view class="titleP">选择设备</view>
-			<view v-if="deviceOrplace">
-				<view class="outSide">
-					<view class="mainB">
-						<view class="title-txt">{{deviceOrplace?'选择场地':'选择设备'}}</view>
-						<view @click="showPlacelist" class="place-txt text-over">
-							{{ placeName }}
+			<view class="popup-content">
+				<view class="titleP">选择设备</view>
+				<view v-if="deviceOrplace">
+					<view class="outSide">
+						<view class="mainB">
+							<view class="title-txt">{{deviceOrplace?'选择场地':'选择设备'}}</view>
+							<view @click="showPlacelist" class="place-txt text-over">
+								{{ placeName }}
+							</view>
 						</view>
+						<u-icon name="arrow-right" size="32" color="#969799" class="right-icons" />
 					</view>
-					<u-icon name="arrow-right" size="32" color="#969799" class="right-icons" />
-				</view>
-
-				<view style="height: 12px; background: #e6e4fe"></view>
-
-				<view class="outSide-other" v-for="(dev, index) in deviceList" :key="index" @click="pickDevice(dev)">
-					<view class="mainB">
-						<view class="title-txt" :style="{ color:dev.deviceNumber==enterValue?'#5241FF':''}">
-							{{ dev.typeName }}{{ dev.deviceNumber }}
+				
+					<view style="height: 12px; background: #e6e4fe"></view>
+				
+					<view class="outSide-other" v-for="(dev, index) in deviceList" :key="index" @click="pickDevice(dev)">
+						<view class="mainB">
+							<view class="title-txt" :style="{ color:dev.deviceNumber==enterValue?'#5241FF':''}">
+								{{ dev.typeName }}{{ dev.deviceNumber }}
+							</view>
+							<view :style="{background:dev.onlineState?'#07c160':'#ee0a24'}" class="demo">
+								<span>{{dev.onlineState ? '在线' : '离线'}}</span>
+							</view>
 						</view>
-						<view :style="{background:dev.onlineState?'#07c160':'#ee0a24'}" class="demo">
-							<span>{{dev.onlineState ? '在线' : '离线'}}</span>
-						</view>
+						<view class="remark" v-if="dev.remark">备注：{{ dev.remark }}</view>
 					</view>
-					<view class="remark" v-if="dev.remark">备注：{{ dev.remark }}</view>
+					<xls-empty v-if="!deviceList.length" text="场地无该类型设备"></xls-empty>
 				</view>
-				<xls-empty v-if="!deviceList.length" text="场地无该类型设备"></xls-empty>
 			</view>
 		</u-popup>
 		<!-- 场地 -->
@@ -137,14 +139,14 @@
 					<span class="title">选择仓位</span>
 					<span @click="confirmEgg">确定</span>
 				</view>
-				<search-input placeholder="请输入商品名称或货道编号" marLeft="-8em" />
+				<!-- <xls-search placeholder="请输入商品名称或货道编号" marLeft="-8em" /> -->
 				<view class="rail-content">
 					<view class="rail-item" v-for="(rail, index) in railList" :key="index" @click="pickRail(rail)">
 						<view class="checkbox">
-							<u-icon name="circle" size="20" color="#cacbce" v-if="activeRail != rail.railNumber" />
-							<u-icon name="checked" size="20" color="#5241FF" v-if="activeRail == rail.railNumber" />
+							<u-icon name="checkmark-circle-fill" size="40" color="#5241FF" v-if="activeRail == rail.railNumber" />
+							<u-icon name="checkmark-circle" size="40" color="#cacbce" v-else />
 						</view>
-						<img :src="rail.commodityImg" alt="" class="img" />
+						<xls-image :src="rail.commodityImg" alt="" class="img" />
 						<p class="device">{{ rail.shippingSpace }}-{{ rail.railNumber }}</p>
 						<p class="name">{{ rail.commodityName }}</p>
 					</view>
@@ -324,7 +326,6 @@
 				this.pickerDevice = false;
 				this.$refs.placelist.showPlacelist();
 			},
-
 			pitchonPlace(place) {
 				this.placeName = place.placeName;
 				this.placeId = place.id;
@@ -379,11 +380,11 @@
 						});
 					return;
 				}
-				let res = await getRailCommodityList({
+				let res = await deviceController.getRailCommodityList({
 					deviceNumber: this.enterValue,
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.railList = res.data.data;
+				if (res.code == 200) {
+					this.railList = res.data;
 				}
 			},
 
@@ -483,21 +484,19 @@
 					return "badRequest";
 				}
 				//设备详情
-				let res = await deviceDetail({
+				let res = await deviceController.deviceDetail({
 					deviceNumber: this.pickDeviceDetail.deviceNumber,
 				});
-				let device = res.data.data;
+				let device = res.data;
 				if (device.uuid) {
 					this.uuid = device.uuid;
 				}
 				if (device.onlineState != 1) {
-					return this.$dialog
-						.alert({
+					return this.$modal("设备离线，无法启动~",{
 							title: "温馨提示",
-							message: "设备离线，无法启动~",
-							width: "270",
-							confirmButtonText: "我知道了",
-							confirmButtonColor: "#5241FF",
+							confirmText: "我知道了",
+							confirmColor: "#5241FF",
+							showCancel: false
 						})
 						.then(() => {
 							return "badRequest";
@@ -514,40 +513,41 @@
 				let gash;
 				//扭蛋机 儿童类 游戏类
 				if ([2, 6, 7].includes(this.deviceTypeId)) {
-					gash = await getEggDeviceRailInfo({
+					gash = await deviceController.getEggDeviceRailInfo({
 						deviceNumber: this.pickDeviceDetail.deviceNumber,
 						shippingSpace: this.pickDeviceDetail.shippingSpace,
 						railNumber: this.pickDeviceDetail.railNumber,
 					});
-				} else {
-					gash = await getRailInfo({
-						deviceNumber: this.pickDeviceDetail.deviceNumber,
-						railNumber: this.pickDeviceDetail.railNumber,
-					});
-				}
-				let eggDevice = gash.data.data;
+				} 
+				
+				// else {
+				// 	gash = await getRailInfo({
+				// 		deviceNumber: this.pickDeviceDetail.deviceNumber,
+				// 		railNumber: this.pickDeviceDetail.railNumber,
+				// 	});
+				// }
+				let eggDevice = gash.data;
 				let info = this.pickDeviceDetail;
 				if (eggDevice.railState != 0) {
-					return this.$dialog
-						.alert({
+					return this.$modal("子设备离线，无法启动~",{
 							title: "温馨提示",
-							message: "子设备离线，无法启动~",
-							width: "270",
-							confirmButtonText: "我知道了",
-							confirmButtonColor: "#5241FF",
+							title: "温馨提示",
+							confirmText: "我知道了",
+							confirmColor: "#5241FF",
+							showCancel: false
 						})
 						.then(() => {
 							return "badRequest";
 						});
 				}
-				let Egg = await addEggPoints({
+				let Egg = await deviceController.addEggPoints({
 					uuid: this.uuid,
 					deviceNumber: info.deviceNumber,
 					railNumber: info.railNumber,
 					shippingSpace: info.shippingSpace,
 					points: this.valueStep * eggDevice.currency,
 				});
-				if (Egg.data.code == 0 || Egg.data.msg == "ok") {
+				if (Egg.code == 200) {
 					this.$toast("上分成功");
 				}
 			},
@@ -833,6 +833,7 @@
 	}
 
 	.outSide {
+		background: #fff;
 		min-height: 44px;
 		padding: 0 12px;
 		display: flex;
@@ -882,6 +883,7 @@
 	}
 
 	.outSide-other {
+		background: #fff;
 		padding: 9px 12px;
 		border-bottom: 1px solid #e5e5e5;
 	}
@@ -901,7 +903,8 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		height: 100%;
+		max-height: 1000rpx;
+		height: 60vh;
 
 		.header {
 			align-items: center;

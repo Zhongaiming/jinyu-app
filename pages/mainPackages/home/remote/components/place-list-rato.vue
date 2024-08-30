@@ -1,6 +1,6 @@
 <template>
 	<!-- 远程启动 场地 -->
-	<u-popup v-model="showPlace" mode="bottom">
+	<u-popup :show="showPlace" mode="bottom">
 		<view class="placeList">
 			<view class="place-top">
 				<view class="left-back" @click="showPlace = false">返回</view>
@@ -57,7 +57,6 @@
 			showPlacelist() {
 				this.showPlace = !this.showPlace;
 			},
-
 			pitchPlace(params) {
 				this.$emit("pitchonPlace", params);
 				this.placeActive = params.id;

@@ -81,8 +81,8 @@
 							{{refundDict[order.refundType]}}
 						</view>
 					</view>
-					
-					<view class="refund-price" v-if="order.refundCommercialUserName">
+
+					<view class="refund-price">
 						<view class="left">
 							退款人
 						</view>
@@ -90,8 +90,8 @@
 							{{order.refundCommercialUserName}}
 						</view>
 					</view>
-					
-					<view class="refund-price">
+
+					<view class="refund-price" v-if="order.refundReason">
 						<view class="left">
 							退款原因
 						</view>
@@ -163,18 +163,23 @@
 			}
 		},
 		methods: {
-			getView(orderId) {
-				orderController.refundQuery({
+			async getView(orderId) {
+				let res = await orderController.refundQuery({
 					orderId
-				}).then(res => {
-					if (res.code = 200) {
-						this.order = res.data
-						if(this.order.orderFlowLogVoList) {
-							this.order.orderFlowLogVoList.reverse();
-						}
-						
-					}
 				})
+				let data = await orderController.getOrderView({
+					id: orderId
+				})
+				if (res.code = 200) {
+					this.order = res.data;
+					if (this.order.orderFlowLogVoList) {
+						this.order.orderFlowLogVoList.reverse();
+					}
+				}
+				if (data.code = 200) {
+					const name = data.data.refundCommercialUserName ? data.data.refundCommercialUserName : '系统退款';
+					this.order['refundCommercialUserName'] = name;
+				}
 			},
 		}
 	}
@@ -309,7 +314,7 @@
 			background: #d9d9d9;
 			border: .53333vw solid #fff;
 		}
-		
+
 		.active {
 			background: $xls-color-primary;
 			border: .53333vw solid $xls-color-primary;

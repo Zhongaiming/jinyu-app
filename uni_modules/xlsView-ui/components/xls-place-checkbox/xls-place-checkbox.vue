@@ -8,7 +8,7 @@
 
 			<xls-search placeholder="请输入场地名称" marLeft="-5.5em" @confirm="stratesSearch"></xls-search>
 
-			<view class="place-content-style" v-show="placeList.length">
+			<view class="place-content-style" v-if="placeList.length">
 				<view class="place-item-style">
 					<view class="text-name all-check">全选</view>
 					<view class="radio-style" @click="checkAllPlace">
@@ -29,7 +29,7 @@
 				</view>
 				<xls-bottom></xls-bottom>
 			</view>
-			<xls-empty v-show="!placeList.length"></xls-empty>
+			<xls-empty v-else></xls-empty>
 		</view>
 	</u-popup>
 </template>
@@ -49,7 +49,7 @@
 				placeNameList: [],
 			};
 		},
-		created() {
+		mounted() {
 			this.getPlace();
 		},
 		methods: {

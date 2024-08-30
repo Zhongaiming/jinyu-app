@@ -8,7 +8,6 @@
 			// 动态菜单需要隐藏系统自带菜单
 			// #ifdef APP-PLUS
 			APPUpdate()
-			
 			uni.getPushClientId({
 				success: (res) => {
 					let push_clientid = res.cid
@@ -18,10 +17,9 @@
 					console.log(err)
 				}
 			})
-			
-				uni.onPushMessage((res) => {
-						console.log("收到推送消息：",res) //监听推送消息
-					})
+			uni.onPushMessage((res) => {
+				console.log("收到推送消息：",res) //监听推送消息
+			})
 			
 			// plus.push.addEventListener("click", function(msg) {
 			// 	console.log(msg);
@@ -36,8 +34,6 @@
 			// })
 			// this.getQuanxian()
 			// #endif
-			
-	
 		},
 		onShow: function() {
 		},

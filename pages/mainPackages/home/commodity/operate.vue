@@ -48,7 +48,8 @@
 						<u--input placeholder="请输入" v-model="commodity.commodityCode" border="none"
 							:placeholderStyle="placeholderStyle" :prefixIconStyle="prefixIconStyle"></u--input>
 					</u-form-item>
-					<u-form-item label="商品条形码" prop="barCode" borderBottom required>
+					<!-- prop="barCode"  -->
+					<u-form-item label="商品条形码" borderBottom required>
 						<u--input placeholder="请输入" v-model="commodity.barCode" border="none"
 							:placeholderStyle="placeholderStyle" :prefixIconStyle="prefixIconStyle"></u--input>
 					</u-form-item>

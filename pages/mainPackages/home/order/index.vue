@@ -1,8 +1,8 @@
 <template>
 	<z-paging ref="orderPaging" v-model="dataList" @query="queryList">
 		<view slot="top">
-			<jy-navbar title="订单列表"></jy-navbar>
-			<xls-order-screen-vue></xls-order-screen-vue>
+			<!-- <jy-navbar title="订单列表"></jy-navbar> -->
+			<xls-order-screen-vue @getCondition="getCondition" :screen="params"></xls-order-screen-vue>
 		</view>
 		<view class="xls-order-list">
 			<view v-for="(item, index) in dataList" :key="index" class="xls-order-list-item">
@@ -14,21 +14,23 @@
 						<span class="time">{{item.createTime}}</span>
 					</view>
 
-					<view class="xls-order-place refund-price text-over" v-if="item.amountRefund && item.refundState == 1">
+					<view class="xls-order-place refund-price text-over"
+						v-if="item.amountRefund && item.refundState == 1">
 						<span class="time">已退 ¥{{item.amountRefund}}</span>
 					</view>
 				</view>
 
 				<view class="xls-order-style">
 					<view class="xls-order-style-header">
-						<image class="icon-image"
-							:src="`${$baseUrl}appV4/common/${item.payType==0?'wechat':'pay'}.png`" mode="widthFix">
+						<image class="icon-image" :src="`${$baseUrl}appV4/common/${item.payType==0?'wechat':'pay'}.png`"
+							mode="widthFix">
 						</image>
 						<view class="right-wrapper">
 							<view class="device-style">
 								<span> {{ deviceTypeDict[item.deviceType] }}{{ item.deviceNumber }}</span>
 								<!-- 交易状态 -->
-								<span class="state" :style="[{color: stateColorDict[item.state]}]">{{stateDict[item.state]}}</span>
+								<span class="state"
+									:style="[{color: stateColorDict[item.state]}]">{{stateDict[item.state]}}</span>
 							</view>
 							<view class="order-number">
 								<span>{{ item.orderNo }}</span>
@@ -94,7 +96,7 @@
 
 					<u-line hairline></u-line>
 
-					<view class="xls-order-style-refund-reason" v-if="item.refundType">
+					<view class="xls-order-style-refund-reason" v-if="item.amountRefund">
 						{{refundDict[item.refundType]}}
 					</view>
 
@@ -129,7 +131,9 @@
 	} from "@/plugins/utilityClass";
 	import xlsOrderScreenVue from './components/xls-order-screen.vue';
 	export default {
-		components: {xlsOrderScreenVue},
+		components: {
+			xlsOrderScreenVue
+		},
 		data() {
 			return {
 				typeDict: {
@@ -165,7 +169,7 @@
 					null: "#8c8c8c"
 				},
 				refundDict: {
-					0: '出货失败退款',
+					0: '出货失败，自动退款',
 					1: '出货失败部分退款',
 					2: '人工退款（全额）',
 					3: '通讯失败退款',
@@ -175,12 +179,16 @@
 				},
 				deviceTypeDict: {},
 				dataList: [],
+				params: {
+					startTime: getDateAll(0),
+					endTime: getDateAll(0),
+				}
 			}
 		},
 		onLoad(option) {
-			if (option.params) {
-				console.log("传参", JSON.parse(option.params))
-			}
+			// if (option.params) {
+			// 	console.log("传参", JSON.parse(option.params))
+			// }
 			this.getDeviceTypeList();
 		},
 		onShow() {
@@ -191,6 +199,11 @@
 			})
 		},
 		methods: {
+			getCondition(params) {
+				console.log('params', params)
+				this.params = params;
+				this.$refs.orderPaging.reload(true);
+			},
 			getDeviceTypeList() {
 				deviceController.getDeviceTypeLists().then(res => {
 					res.data.forEach(item => {
@@ -200,21 +213,10 @@
 			},
 			queryList(pageNo, pageSize) {
 				this.$loading();
-				const params = {
-					// memberNumber: "",
-					phone: "",
-					// transactionId: "",
-					deviceNumber: "",
-					placeId: "",
-					deviceType: "",
-					state: "",
-					startTime: getDateAll(30),
-					endTime: getDateAll(0),
-				}
 				orderController.getOrderList({
 					page: pageNo,
 					size: pageSize,
-					...params
+					...this.params
 				}).then(res => {
 					this.$hideLoading();
 					this.$refs.orderPaging.complete(res.data.records);
