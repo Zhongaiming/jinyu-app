@@ -11,7 +11,7 @@ import placeController from './placeController/index.js'
 import separateController from './separateController/index.js'
 import packageController from './packageController/index.js'
 import deviceDataController from './deviceDataController/index.js'
-
+import appealController from './appealController/index.js'
 export {
 	loginAndRegController,
 	userController,
@@ -26,4 +26,5 @@ export {
 	separateController,
 	packageController,
 	deviceDataController,
+	appealController,
 }

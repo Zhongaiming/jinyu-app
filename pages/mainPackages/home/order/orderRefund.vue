@@ -162,7 +162,8 @@
 				})
 			},
 			async allRefund() {
-				this.$modal("确定要“全额退款”吗？", {
+				// "确定要“全额退款”吗？"
+				this.$modal(`确定要退款 ¥${this.refundAmount} 吗？`, {
 					title: "退款提示"
 				}).then(() => {
 					const reason = `${this.reasonList[this.reason-1].label}${this.reasonValue}`

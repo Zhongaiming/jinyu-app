@@ -1,7 +1,7 @@
 <template>
 	<view class="xls-order-detail">
 		<jy-navbar title="订单详情" bgColor="#f5f5f5"></jy-navbar>
-		<view class="xls-box-style" @click="goTo()" v-if="order.amountRefund && order.refundState == 1">
+		<view class="xls-box-style" @click="goTo('refundDetail')" v-if="order.amountRefund && order.refundState == 1">
 			<view class="device-style">
 				<span>已退 ¥{{order.amountRefund}}</span>
 				<span class="state arrow">{{stateDict[order.state]}}</span>
@@ -255,10 +255,10 @@
 
 		<view class="fixed-box">
 			<view class="fixed-box-wrapper">
-				<view class="button" v-if="!order.amountRefund">
+				<view class="button" @click="goTo('orderRefund')" v-if="!order.amountRefund">
 					退款
 				</view>
-				<view class="button">
+				<view class="button" @click="goTo('remote')">
 					远程启动
 				</view>
 			</view>
@@ -352,9 +352,17 @@
 					}
 				})
 			},
-			goTo(order) {
-				console.log(this.order)
-				this.$goTo('/pages/mainPackages/home/order/refundDetail', 'navigateTo', {
+			goTo(route) {
+				if (route === 'remote') {
+					this.$goTo("/pages/mainPackages/home/remote/operate", "navigateTo", {
+						railNumber: this.order.railNumber,
+						shippingSpace: this.order.shippingSpace,
+						deviceNumber: this.order.deviceNumber,
+						deviceTypeId: this.order.deviceType
+					})
+					return
+				} 
+				this.$goTo(`/pages/mainPackages/home/order/${route}`, 'navigateTo', {
 					orderId: this.order.id
 				})
 			},

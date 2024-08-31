@@ -164,6 +164,21 @@ export default class orderController {
 			data
 		})
 	}
+	// 设备类型的设备收益
+	static getDeviceTypeIncome(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getDeviceTypeIncome',
+			method: 'GET',
+			data
+		})
+	}
+	static getDeviceTypeIncomeDetail(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getDeviceTypeIncomeDetail',
+			method: 'GET',
+			data
+		})
+	}
 	// 货道收益详情
 	static getPlaceDeviceByTypeInfo(data) {
 		return http.request({
@@ -192,7 +207,7 @@ export default class orderController {
 			data
 		})
 	}
-	// ==
+	//
 	static getCommonDetailBill(data) {
 		return http.request({
 			url: '/pay/api/v1/admin/pay/merchant/getCommonDetailBill',

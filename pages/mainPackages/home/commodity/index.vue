@@ -19,7 +19,7 @@
 							<view class="countB">
 								￥ <span>{{ item.suggestRetailPrice }}</span>
 							</view>
-							<view class="centerB">
+							<view class="centerB" v-if="item.commodityCode != ''">
 								编码: <span>{{ item.commodityCode }}</span>
 							</view>
 						</view>
@@ -74,7 +74,9 @@
 			},
 			queryList(pageNo, pageSize) {
 				commodityController.getCommodity({
-					commodityDtoFilter: {},
+					commodityDtoFilter: {
+						commodityName: this.searchValue
+					},
 					pageParam: {
 						pageNum: pageNo,
 						pageSize: pageSize

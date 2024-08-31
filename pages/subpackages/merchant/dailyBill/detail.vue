@@ -66,7 +66,7 @@
 		<view class="main-content">
 			<view class="main-header">
 				<!-- <span>商家不分账账单 (费率 {{ obj.settleFee }} %)</span> -->
-				<span>商家不分账账单</span>
+				<span>商家账单</span>
 			</view>
 			<view class="line-cell-wrapper">
 				<span>收益日期</span>
@@ -75,6 +75,10 @@
 			<view class="line-cell-wrapper">
 				<span>收益金额</span>
 				<view class="cell-value">{{ voList.totalAmount }}</view>
+			</view>
+			<view class="line-cell-wrapper">
+				<span>分账金额</span>
+				<view class="cell-value">{{ voList.separateMoneySum }}</view>
 			</view>
 			<view class="line-cell-wrapper">
 				<span>手续费</span>
@@ -93,14 +97,14 @@
 				<view class="cell-value">{{ obj.completeDate }}</view>
 			</view>
 		</view>
-		<u-popup :show="rulePopup" round="20" mode="bottom">
+		<u-popup :show="rulePopup" round="20" mode="center">
 			<view class="rule-popup-wrapper">
 				<view class="title">手续费收取规则</view>
 				<view class="main-wrapper">
 					<view class="content-center">
 						<p>每笔订单收取0.6%手续费，按四舍五入计费保留小数点后两位；</p>
 						<p class="example">如图所示</p>
-						<ul class="rule-list">
+						<ul class="rule-list" style="list-style-type: none;">
 							<li class="flex-colum">
 								<span>交易金额</span><span>费率</span><span>应扣金额(元)</span><span>实际扣除(元)</span>
 							</li>

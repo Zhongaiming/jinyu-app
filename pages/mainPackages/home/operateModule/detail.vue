@@ -40,19 +40,22 @@
 				</view>
 			</view>
 
-			<view class="list-content" v-for="(dev, index) in detailList.simpleDeviceIncomeInfoVoList" :key="index" v-show="placeDeviceList">
+			<view class="list-content" 
+				v-for="(dev, index) in detailList.simpleDeviceIncomeInfoVoList"
+				:key="index"
+				v-if="placeDeviceList.length">
 				<view class="info-part">
 					<view class="device-type">
 						<view class="left">
 							{{ dev.deviceTypeName }}{{ dev.deviceNumber }}
 							<span class="status" v-show="!dev.moveState">已转移</span>
 						</view>
-						<view class="right" @click="isShowfoldOrno(dev)">
+						<view class="right" @click="isShowfoldOrno(dev)" style="display: flex;align-items: center;">
 							合计: {{ dev.deviceIncome }}<span class="unit">元</span>
 							<span>
-								<u-icon name="arrow-up" size="18" color="#d1d1d1" class="icons"
+								<u-icon name="arrow-up" size="36" color="#d1d1d1" class="icons"
 									v-show="!dev.isShowfold" />
-								<u-icon name="arrow-down" size="18" color="#d1d1d1" class="icons"
+								<u-icon name="arrow-down" size="36" color="#d1d1d1" class="icons"
 									v-show="dev.isShowfold" />
 							</span>
 						</view>
@@ -139,7 +142,7 @@
 					</view>
 				</view>
 			</view>
-			<xls-empty v-show="!placeDeviceList"></xls-empty>
+			<xls-empty v-show="!placeDeviceList.length"></xls-empty>
 		</view>
 		<xls-device-type-radio ref="deviceType" @changDeviceType="changDeviceType"></xls-device-type-radio>
 	</view>
@@ -170,7 +173,7 @@
 				//场地或类型
 				placeOrdevice: true,
 				//详情
-				detailList: [],
+				detailList: {},
 				//开始时间
 				startTime: "",
 				//结束时间
@@ -227,8 +230,8 @@
 					})
 					.then((res) => {
 						if (res.code == 200) {
-							this.detailList = res.data;
-							this.placeDeviceList = this.detailList.simpleDeviceIncomeInfoVoList;
+							this.detailList = res.data ?? {};
+							this.placeDeviceList = this.detailList.simpleDeviceIncomeInfoVoList ?? [];
 						}
 					})
 					.catch((err) => {});
@@ -438,7 +441,7 @@
 
 			.info-part {
 				padding: 10px;
-				min-height: 48px;
+				min-height: 68px;
 				font-size: 16px;
 
 				.device-type {

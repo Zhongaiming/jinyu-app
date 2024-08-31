@@ -61,8 +61,8 @@ const actions = {
 								commit('SET_PERMISSIONS', data.permissions)
 							}
 						})
-						resolve(res)
 					}
+					resolve(res)
 				}).catch(error => {
 					reject(error)
 				})

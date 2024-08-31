@@ -89,9 +89,13 @@ http.interceptors.response.use(response => {
 		message
 	} = error.data
 	console.log('返回错误处理 返回错误处理 123')
+	
 	if(status === 503) {
 		const text = '人太多，服务器忙不过来了，请稍后再使用';
 		Vue.prototype.$toast(text)
+	}
+	if(message) {
+		Vue.prototype.$toast(message)
 	}
 	if (code === STATUS.TIMEOUT || (message === '用户登录已过期或尚未登录，请重新登录！' || message === '用户会话已失效，请重新登录！')) {
 		cache.clearCache()

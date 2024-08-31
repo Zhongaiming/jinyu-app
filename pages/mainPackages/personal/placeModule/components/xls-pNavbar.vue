@@ -8,7 +8,7 @@
 				<view class="center-input-box">
 					<image :src="`${$baseUrl}appV4/img/icons/search.png`" alt="" class="image" mode="widthFix" />
 					<input type="text" v-model="inputEnter" placeholder="请输入场地关键词" @blur="inputBlur"
-						@keyup.13="inputSearch" />
+						@keyup.13="inputSearch" @confirm="inputSearch"/>
 				</view>
 			</view>
 			<view class="right" @click="goTo">操作记录</view>

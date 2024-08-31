@@ -256,7 +256,8 @@
 					gash.shippingSpace,
 					gash.commodityImg,
 					dev.uuid,
-					gash.railState
+					gash.railState,
+					gash.commodityName,
 				);
 				this.editEggMsg = gash;
 			},

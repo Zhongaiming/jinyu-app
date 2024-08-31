@@ -240,29 +240,31 @@
 			};
 		},
 		onLoad(option) {
-			//来自订单
-			// if (this.$route.query.railNumber && this.$route.query.railSpace) {
-			// 	this.pickDeviceDetail.railNumber = this.$route.query.railNumber;
-			// 	this.pickDeviceDetail.shippingSpace = this.$route.query.railSpace;
-			// 	this.upperScore = `${this.pickDeviceDetail.shippingSpace}-${this.pickDeviceDetail.railNumber}`;
-			// }
-			//来自申诉和订单
-			// if (this.$route.query.deviceNumber) {
-			// 	this.deviceTypeId = this.$route.query.deviceTypeId * 1;
-			// 	this.pickDeviceDetail.deviceNumber = this.$route.query.deviceNumber;
-			// 	this.enterValue = this.$route.query.deviceNumber;
-			// }
-
-			//售货机
-			// if (this.deviceTypeId == 4) {
-			// 	this.upperScore = "";
-			// }
 			const {
-				deviceTypeId
+				deviceTypeId,
+				railNumber,
+				shippingSpace,
+				deviceNumber
 			} = JSON.parse(option.params);
+			console.log("remote", JSON.parse(option.params))
 			//来自上级
 			if (deviceTypeId) {
 				this.deviceTypeId = deviceTypeId * 1;
+			}
+			//售货机
+			if (this.deviceTypeId == 4) {
+				this.upperScore = "";
+			}
+			//来自订单
+			if (railNumber && shippingSpace) {
+				this.pickDeviceDetail.railNumber = railNumber;
+				this.pickDeviceDetail.shippingSpace = shippingSpace;
+				this.upperScore = `${shippingSpace}-${railNumber}`;
+			}
+			//来自申诉和订单
+			if (deviceNumber) {
+				this.pickDeviceDetail.deviceNumber = deviceNumber;
+				this.enterValue = deviceNumber;
 			}
 			this.getTypePlace();
 		},
@@ -277,7 +279,7 @@
 		},
 		methods: {
 			goTo() {
-				// $router.push('/remoteBoot/processRecord')
+				this.$goTo("/pages/mainPackages/home/remote/record")
 			},
 			/**
 			 * @description:

@@ -6,30 +6,91 @@
 				<view class="xls-search__content">
 					<u-icon name="search" size="40" color="#323233"></u-icon>
 					<input type="search" placeholder="搜索昵称/会员ID" class="xls-field__control" ref="searchInput"
-						@focus="showButton" @blur="hideButton" v-model="inputValue">
+						@focus="showButton" @blur="hideButton" v-model="inputValue" @confirm="getList">
 				</view>
 			</view>
 			<view v-if="isButtonVisible" class="xls-search__button">取消</view>
 		</view>
-		<div class="history-wrapper" v-if="!cancelAction">
-			<div class="title-wrapper">
-				<div class="title">搜索历史</div>
-				<div class="btn" @click="deleteHistory">清空</div>
-			</div>
-			<div class="history-list">
+		<view class="history-wrapper" v-if="!cancelAction">
+			<view class="title-wrapper">
+				<view class="title">搜索历史</view>
+				<view class="btn" @click="deleteHistory">清空</view>
+			</view>
+			<view class="history-list">
 				<span v-show="!historyList.length" class="null-history">---暂无搜索历史---</span>
-				<div class="item" v-show="historyList.length" v-for="(value, index) in historyList" :key="index"
+				<view class="item" v-show="historyList.length" v-for="(value, index) in historyList" :key="index"
 					@click="quicklySearch(value)">
 					{{ value }}
-				</div>
-			</div>
-		</div>
-
-
+				</view>
+			</view>
+		</view>
+		
+		<view class="xls-list" v-if="dataList.length && cancelAction">
+			<view v-for="(item, index) in dataList" :key="index" class="xls-list-item">
+				<view class="list-item">
+					<view class="user-list">
+						
+						<view class="content">
+							<view class="info-container">
+								<view class="avatar">
+									<xls-image :src="item.url" alt="" class="img" v-if="item.url" />
+								</view>
+								<view class="info">
+									<view class="name-wrapper">
+										<view class="top">
+											<view class="icon-image icon">
+												<!-- item.platformState  1 微信  2 支付宝 -->
+												<image :src="`${$baseUrl}appV4/member/Alipay.png`" alt=""
+													class="img" v-if="item.memberOpenid * 1 > 0" />
+												<image :src="`${$baseUrl}appV4/member/WeChat2.png`" alt=""
+													class="img" v-else />
+											</view>
+											<view class="nickname">{{ item.name }}</view>
+										</view>
+										<view class="desc">
+											<span>最近消费:
+												{{ item.recentConsumption * 1? item.recentConsumption + "天前": "今天"}}</span>
+										</view>
+									</view>
+									<view class="other-info">
+										<view class="id">ID:{{ item.id }}</view>
+										<view class="copy" @click.stop="copyMemberId(item.id)">
+											<span class="text">复制</span>
+										</view>
+									</view>
+								</view>
+							</view>
+							<view class="data-container">
+								<view class="data-list">
+									<view class="number">{{ item.totalPay }}</view>
+									<view class="name"><span>累计支付(元)</span></view>
+								</view>
+								<view class="data-list">
+									<view class="number">{{ item.balance }}</view>
+									<view class="name"><span>余额(元)</span></view>
+								</view>
+								<view class="data-list">
+									<view class="number">{{ item.currency }}</view>
+									<view class="name"><span>余币(个)</span></view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+			<xls-bottom></xls-bottom>
+		</view>
+		<xls-empty v-if="!dataList.length && cancelAction" />
 	</view>
 </template>
 
 <script>
+	import {
+		copyEvent
+	} from "@/plugins/formUtils";
+	import {
+		memberController
+	} from '@/api/index.js';
 	export default {
 		data() {
 			return {
@@ -37,10 +98,16 @@
 				isButtonVisible: false,
 				historyList: ['小米', '晚上加班', '五点'],
 				cancelAction: false,
+				dataList: [],
 			}
 		},
 		methods: {
+			//copy-会员ID
+			copyMemberId(memberId) {
+				copyEvent(memberId);
+			},
 			showButton() {
+				this.cancelAction = true
 				this.isButtonVisible = true; // 获取焦点时显示按钮
 			},
 			hideButton() {
@@ -51,15 +118,14 @@
 			},
 			//历史搜索
 			quicklySearch(value) {
-				this.searchEnter = value;
-				this.searchMember();
+				this.inputValue = value;
 			},
 			//存取搜索记录
 			setHistory() {
 				let arr = local.get("historyList") || [];
-				if (!arr.includes(this.searchEnter) && this.searchEnter) {
+				if (!arr.includes(this.inputValue) && this.inputValue) {
 					//不为空且不重复
-					arr.unshift(this.searchEnter);
+					arr.unshift(this.inputValue);
 				}
 				if (arr.length > 10) {
 					arr.pop(); //删除最后一位 shift() 删除第一位
@@ -83,11 +149,24 @@
 			goTo() {
 				uni.navigateBack();
 			},
+			getList() {
+				memberController.getList({
+					page: 1,
+					size: 50,
+					search: this.inputValue,
+				}).then(res => {
+					if (res.code === 200) {
+						this.dataList = res.data;
+					}
+				})
+			},
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	@import 'index.scss';
+	
 	.xls-search-input {
 		padding-left: 10px;
 		display: flex;

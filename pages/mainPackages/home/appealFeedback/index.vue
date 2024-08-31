@@ -1,73 +1,70 @@
 <template>
-	<view class="couple-content">
-		<xls-jy-navbar title="申诉列表"></xls-jy-navbar>
-		<view class="top-tips">
-			<view class="left">
-				<span class="complaint-num">申诉处理({{ $store.state.coupleNum }})</span>
-			</view>
-			<view class="right">
-				<image :src="`${$baseUrl}appV4/image/couple/search-icon.png`" alt="" class="image" />
-				<image :src="`${$baseUrl}appV4/image/couple/sides-icon.png`" alt="" class="image"
-					@click="showState = !showState" />
-			</view>
-		</view>
-		<view class="list-content-title" @click="playDetail">
-			请商家及时处理投诉。若超时未处理的，则系统将会自动处理 &gt;
-		</view>
-		<u-list v-model="loading" :finished="onEarth" finished-text="没有更多了" @load="getRepresent"
-			v-if="dataList.length">
-			<view class="list-content">
-				<view class="items" v-for="(item, index) in dataList" :key="index" @click="goCoupleDetail(item)">
-					<view class="item-top">
-						<view class="left">
-							<image :src="`${$baseUrl}appV4/image/couple/phone-icon.png`" alt="" class="image"
-								v-show="item.sourceType == 2" />
-							<image :src="`${$baseUrl}appV4/image/couple/wx.png`" alt="" class="image"
-								v-show="item.sourceType == 1" />
-							<span>
-								<span class="phone">{{ item.phone }}</span>
-								<view class="equipment-info">
-									{{ item.deviceTypeName }}{{ item.deviceNumber }}
-								</view>
-							</span>
-						</view>
-						<view class="right">{{ item.complaintTime }}</view>
-					</view>
-					<view class="item-middle">{{ item.problemDescription }}</view>
-					<view class="item-bottom">
-						<span class="btn" v-show="item.conductorState == 1"><span>立即处理</span></span>
-						<span class="btn btn-other" v-show="item.conductorState == 2"><span>已处理</span></span>
-						<span class="btn btn-other" v-show="item.conductorState == 3"><span>已回复</span></span>
-						<span class="btn btn-other" v-show="item.conductorState == 4"><span>已关闭</span></span>
-					</view>
+	<z-paging ref="paging" v-model="dataList" @query="queryList">
+		<view slot="top">
+			<xls-jy-navbar title="申诉列表"></xls-jy-navbar>
+			<view class="top-tips">
+				<view class="left">
+					<span class="complaint-num">申诉处理({{ coupleNum }})</span>
+				</view>
+				<view class="right">
+					<!-- <image :src="`${$baseUrl}appV4/image/couple/search-icon.png`" alt="" class="image" /> -->
+					<image :src="`${$baseUrl}appV4/image/couple/sides-icon.png`" alt="" class="image"
+						@click="showState = !showState" />
 				</view>
 			</view>
-		</u-list>
-		<xls-empty v-else />
+			<view class="list-content-title" @click="playDetail">
+				请商家及时处理投诉。若超时未处理的，则系统将会自动处理 &gt;
+			</view>
+		</view>
+		<view class="list-content">
+			<view class="items" v-for="(item, index) in dataList" :key="index" @click="goCoupleDetail(item)">
+				<view class="item-top">
+					<view class="left">
+						<image :src="`${$baseUrl}appV4/remoteBoot/pay.jpg`" alt="" class="image"
+							v-show="item.sourceType == 3" />
+						<image :src="`${$baseUrl}appV4/image/couple/phone-icon.png`" alt="" class="image"
+							v-show="item.sourceType == 2" />
+						<image :src="`${$baseUrl}appV4/image/couple/wx.png`" alt="" class="image"
+							v-show="item.sourceType == 1" />
+						<span>
+							<span class="phone">{{ item.phone }}</span>
+							<view class="equipment-info">
+								{{ item.deviceTypeName }}{{ item.deviceNumber }}
+							</view>
+						</span>
+					</view>
+					<view class="right">{{ item.complaintTime }}</view>
+				</view>
+				<view class="item-middle">{{ item.problemDescription }}</view>
+				<view class="item-bottom">
+					<span class="btn" v-show="item.conductorState == 1"><span>立即处理</span></span>
+					<span class="btn btn-other" v-show="item.conductorState == 2"><span>已处理</span></span>
+					<span class="btn btn-other" v-show="item.conductorState == 3"><span>已回复</span></span>
+					<span class="btn btn-other" v-show="item.conductorState == 4"><span>已关闭</span></span>
+				</view>
+			</view>
+		</view>
+		<xls-empty slot="empty" />
 		<!-- 筛选 -->
-		<u-popup v-model="showState" position="top">
+		<u-popup :show="showState" mode="top" @close="() => showState=false">
 			<view class="filter-popup">
 				<view class="status-title">处理状态</view>
 				<view class="status-content">
 					<span class="border" v-for="(item, index) in conductorStateList" :key="index"
 						:class="{'checked':conductorState == item.id}" @click="conductorState = item.id">{{ item.name
-              }}<span class="no-handler-status" v-show="index == 1">{{
-                $route.query.coupleNum
-              }}</span></span>
+              }}<span class="no-handler-status" v-show="index == 1">{{coupleNum}}</span></span>
 				</view>
 				<view class="status-title">反馈类型</view>
 				<view class="status-content">
 					<span class="border" v-for="(item, index) in feedbackTypeList" :key="index"
-						:class="{'checked':feedbackType == item.id}"
-						@click="feedbackType = item.id">{{ item.name }}
+						:class="{'checked':feedbackType == item.id}" @click="feedbackType = item.id">{{ item.name }}
 					</span>
 				</view>
 
 				<view class="status-title status">来源渠道</view>
 				<view class="status-content">
 					<span class="border" v-for="(item, index) in sourceTypeList" :key="index"
-						:class="{'checked':sourceType == item.id}"
-						@click="sourceType = item.id">{{ item.name }}</span>
+						:class="{'checked':sourceType == item.id}" @click="sourceType = item.id">{{ item.name }}</span>
 				</view>
 
 				<view class="status-title status">申诉时间</view>
@@ -85,23 +82,23 @@
 				</view>
 			</view>
 		</u-popup>
-		<u-calendar v-model="showDate" type="range" @confirm="onConfirm" :max-range="180" allow-same-day
-			range-prompt="只能查询半年的数据" :min-date="minDate" :max-date="maxDate" :round="false" color="#5241FF" />
-	</view>
-
+		<!-- 日历 -->
+		<xls-calendar :show="showDate" @close="() => { showDate = false }" @confirm="onConfirm"></xls-calendar>
+	</z-paging>
 </template>
 
 <script>
-	// import {
-	// 	getRepresentationList
-	// } from "@/utils/api/couple";
-	// import {
-	// 	getTime,
-	// 	getDateAll
-	// } from "@/plugins/utilityClass";
+	import {
+		getDateAll
+	} from "@/plugins/utilityClass";
+	import {
+		appealController
+	} from '@/api/index.js';
 	export default {
 		data() {
 			return {
+				dataList: [],
+				coupleNum: 0,
 				showState: false,
 				conductorState: 0,
 				//处理状态;1. 待处理，2：已处理，3：已回复，4：已关闭
@@ -169,310 +166,180 @@
 						name: "用户端"
 					},
 				],
-				startTime: 'getDateAll(29)',
-				endTime: 'getDateAll(0)',
-				page: 0,
-				onEarth: false,
-				loading: false,
-				dataList: [{
-						"id": 3171,
-						"claimantName": "钅·䖝",
-						"claimantId": 10000021,
-						"phone": "12345678908",
-						"feedbackType": 1,
-						"sourceType": 2,
-						"orderNo": "10000021-300000282023120408440048",
-						"problemDescription": "测试提交 问题 反馈",
-						"problemImg": "",
-						"deviceNumber": "30000033",
-						"commercialNumber": "ZTWL_20220617111542006",
-						"placeId": 402,
-						"placeName": "V0007中土512(测试)",
-						"complaintTime": "2024-01-31 08:44:20",
-						"conductorId": 18,
-						"conductorName": "商户_18144999904",
-						"conductorTime": "2024-02-12 20:22:14",
-						"conductorState": 2,
-						"deviceTypeName": "游戏类"
-					},
-					{
-						"id": 2631,
-						"claimantName": "钅·䖝",
-						"claimantId": 10000021,
-						"phone": "12345678974",
-						"feedbackType": 3,
-						"sourceType": 2,
-						"orderNo": "10000021-300000282023100710201624",
-						"problemDescription": "测试",
-						"problemImg": "",
-						"deviceNumber": "30000028",
-						"commercialNumber": "ZTWL_20220617111542006",
-						"placeId": 402,
-						"placeName": "V0007中土512(测试)",
-						"complaintTime": "2023-10-07 10:22:09",
-						"conductorId": 506,
-						"conductorName": "前端测试",
-						"conductorTime": "2023-10-07 16:11:03",
-						"conductorState": 2,
-						"deviceTypeName": "扭蛋机"
-					},
-					{
-						"id": 2611,
-						"complaintId": "200000020231005100119178987",
-						"claimantName": "阿燊",
-						"claimantId": 10000740,
-						"phone": "13794469414",
-						"feedbackType": 3,
-						"sourceType": 1,
-						"orderNo": "10000740-300000282023100509365362",
-						"problemDescription": "1111111111111",
-						"deviceNumber": "30000028",
-						"commercialNumber": "ZTWL_20220617111542006",
-						"placeId": 402,
-						"placeName": "V0007V0007中土512(测试)",
-						"complaintTime": "2023-10-05 10:03:27",
-						"conductorId": 18,
-						"conductorName": "商户_18144999904",
-						"conductorTime": "2023-10-05 10:03:36",
-						"conductorState": 2,
-						"deviceTypeName": "扭蛋机"
-					}
-				],
+				startTime: getDateAll(30),
+				endTime: getDateAll(0),
 				showDate: false,
-				minDate: 'new Date(getDateAll(360))',
-				maxDate: 'new Date(getDateAll(0))',
 				detailItem: {
 					conductorState: "",
 				},
 			};
 		},
-		// created() {
-		// 	this.getRepresent();
-		// },
+		onLoad() {
+			this.getCoupleNum();
+		},
 		methods: {
+			getCoupleNum() {
+				appealController.appealNotHandleNum().then(res => {
+					this.coupleNum = res.data
+				})
+			},
 			//说明
 			playDetail() {
-				this.$dialog
-					.alert({
-						title: "系统自动处理说明",
-						message: "为避免商家受到微信处罚、影响支付功能的使用，从微信渠道反馈的投诉内容，若超时未处理的，则系统将会自动处理。\n（1）若超过23小时，商家未主动回复的，则系统将自动回复消息给投诉者。\n（2）若超过65小时，商家未主动关闭投诉的，则系统将自动回复并关闭投诉。\n请商家及时处理投诉内容，否则系统将会自动处理。",
-						width: "275",
-						messageAlign: "left",
-						confirmButtonText: "我知道了",
-						confirmButtonColor: "#5241FF",
-					})
+				this.$modal(
+						"为避免商家受到微信处罚、影响支付功能的使用，从微信渠道反馈的投诉内容，若超时未处理的，则系统将会自动处理。\n（1）若超过23小时，商家未主动回复的，则系统将自动回复消息给投诉者。\n（2）若超过65小时，商家未主动关闭投诉的，则系统将自动回复并关闭投诉。\n请商家及时处理投诉内容，否则系统将会自动处理。", {
+							title: "系统自动处理说明",
+							confirmText: "我知道了",
+							confirmColor: "#5241FF",
+							showCancel: false,
+						})
 					.then(() => {});
-			},
-			//日期格式
-			formatDate(date) {
-				return `${date.getFullYear()}-${
-        date.getMonth() + 1 < 10
-          ? "0" + (date.getMonth() + 1)
-          : date.getMonth() + 1
-      }-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`;
 			},
 			//选择日期
 			onConfirm(date) {
-				const [start, end] = date;
+				const [startTime, endTime] = date;
 				this.showDate = false;
-				this.startTime = this.formatDate(start);
-				this.endTime = this.formatDate(end);
+				this.startTime = startTime;
+				this.endTime = endTime;
 			},
 			//重置条件
 			resetState() {
 				this.conductorState = 0;
 				this.feedbackType = 0;
 				this.sourceType = 0;
-				this.startTime = getDateAll(29);
+				this.startTime = getDateAll(30);
 				this.endTime = getDateAll(0);
 			},
 			//条件筛选
 			screenSearch() {
 				this.showState = false;
-				this.page = 0;
-				this.onEarth = false;
 				this.dataList = [];
-				this.getRepresent();
+				this.$refs.paging.reload();
 			},
-			//监听滚动
 			// conductorState  处理状态;1. 待处理，2：已处理，3：已回复，4：已关闭
-			async getRepresent() {
-				this.conductorStateList = [{
-						id: 0,
-						name: "不限",
-						conductorStateNum: 0
-					},
-					{
-						id: 1,
-						name: "待处理",
-						conductorStateNum: 0
-					},
-					{
-						id: 2,
-						name: "已处理",
-						conductorStateNum: 0
-					},
-					{
-						id: 3,
-						name: "已回复",
-						conductorStateNum: 0
-					},
-					{
-						id: 4,
-						name: "已关闭投诉",
-						conductorStateNum: 0
-					},
-				];
+			queryList(pageNo, pageSize) {
 				let conductorState = this.conductorState == 0 ? "" : this.conductorState;
 				let feedbackType = this.feedbackType == 0 ? "" : this.feedbackType;
 				let sourceType = this.sourceType == 0 ? "" : this.sourceType;
-				this.loading = true;
-				let res = await getRepresentationList({
-					page: ++this.page,
-					size: 30,
+				appealController.getRepresentationList({
+					page: pageNo,
+					size: pageSize,
 					startTime: this.startTime,
 					endTime: this.endTime,
 					conductorState: conductorState, //处理状态
 					feedbackType: feedbackType, //反馈类型
 					sourceType: sourceType, //来源渠道
-				});
-				this.loading = false;
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					if (res.data.data.records.length == 0) {
-						this.onEarth = true;
-					} else {
-						this.onEarth = false;
-					}
-					if (res.data.data.records != null) {
-						if (this.page > 1) {
-							this.dataList = [...this.dataList, ...res.data.data.records];
-						} else {
-							this.dataList = [];
-							this.dataList = res.data.data.records;
-							if (res.data.data.records.length < 30) {
-								this.onEarth = true;
-							} else {
-								this.onEarth = false;
-							}
-						}
-					}
-				}
+				}).then(res => {
+					this.$refs.paging.complete(res.data);
+				})
 			},
 			//详情
 			goCoupleDetail(item) {
 				this.detailItem = item;
-				this.$router.push({
-					path: "/coupleBack/coupleDetail",
-					query: {
-						id: item.id
-					},
-				});
+				const {id} = item
+				this.$goTo("/pages/mainPackages/home/appealFeedback/detail", "navigateTo", {id})
 			},
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
-	.couple-content {
-		font-family: PingFangSC, PingFangSC-Medium;
-		width: 100%;
+	.top-tips {
+		padding: 12px;
+		display: flex;
+		align-items: center;
 		font-size: 14px;
-		color: #262626;
 
-		.top-tips {
+		.left {
+			flex: 1;
+			color: #262626;
+			font-size: 16px;
+			font-weight: 500;
+		}
+
+		.image {
+			width: 20px;
+			height: 20px;
+			margin-left: 20px;
+		}
+	}
+
+	.list-content-title {
+		color: #ff4747;
+		padding: 12px 24px;
+		font-size: 14px;
+	}
+
+	.list-content {
+		font-size: 14px;
+
+		.items {
+			background: #fff;
+			border-radius: 8px;
+			margin: 8px 12px 0;
 			padding: 12px;
-			display: flex;
-			align-items: center;
 
-			.left {
-				flex: 1;
-				color: #262626;
-				font-size: 16px;
-				font-weight: 500;
-			}
+			.item-top {
+				display: flex;
 
-			.image {
-				width: 20px;
-				height: 20px;
-				margin-left: 20px;
-			}
-		}
-
-		.list-content-title {
-			color: #ff4747;
-			padding: 12px 24px;
-		}
-
-		.list-content {
-			.items {
-				background: #fff;
-				border-radius: 8px;
-				margin: 8px 12px 0;
-				padding: 12px;
-
-				.item-top {
+				.left {
 					display: flex;
+					flex: 1;
+					align-items: center;
 
-					.left {
-						display: flex;
-						flex: 1;
-						align-items: center;
-
-						image {
-							width: 32px;
-							height: 32px;
-							margin-right: 8px;
-						}
-
-						.phone {
-							font-size: 13px;
-							font-weight: 500;
-						}
-
-						.equipment-info {
-							color: #a6a6a6;
-							font-size: 10px;
-							font-weight: 400;
-						}
+					image {
+						width: 32px;
+						height: 32px;
+						margin-right: 8px;
 					}
 
-					.right {
-						color: #a4a5a6;
-						font-size: 11px;
-						font-weight: 400;
-						text-align: right;
-					}
-				}
-
-				.item-middle {
-					font-size: 13px;
-					font-weight: 400;
-					margin-left: 40px;
-					margin-top: 12px;
-				}
-
-				.item-bottom {
-					margin-top: 12px;
-					text-align: right;
-
-					.btn {
-						background: #ffeff0;
-						border-radius: 4px;
-						color: #ff4747;
-						display: inline-block;
+					.phone {
 						font-size: 13px;
 						font-weight: 500;
-						height: 32px;
-						line-height: 32px;
-						text-align: center;
-						width: 84px;
 					}
 
-					.btn-other {
-						color: rgb(164, 165, 166);
-						border: 1px solid rgb(234, 235, 236);
-						background: rgb(255, 255, 255);
+					.equipment-info {
+						color: #a6a6a6;
+						font-size: 10px;
+						font-weight: 400;
 					}
+				}
+
+				.right {
+					color: #a4a5a6;
+					font-size: 11px;
+					font-weight: 400;
+					text-align: right;
+				}
+			}
+
+			.item-middle {
+				font-size: 13px;
+				font-weight: 400;
+				margin-left: 40px;
+				margin-top: 12px;
+			}
+
+			.item-bottom {
+				margin-top: 12px;
+				text-align: right;
+
+				.btn {
+					background: #ffeff0;
+					border-radius: 4px;
+					color: #ff4747;
+					display: inline-block;
+					font-size: 13px;
+					font-weight: 500;
+					height: 32px;
+					line-height: 32px;
+					text-align: center;
+					width: 84px;
+				}
+
+				.btn-other {
+					color: rgb(164, 165, 166);
+					border: 1px solid rgb(234, 235, 236);
+					background: rgb(255, 255, 255);
 				}
 			}
 		}

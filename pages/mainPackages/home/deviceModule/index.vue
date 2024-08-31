@@ -58,6 +58,13 @@
 					...screen
 				}).then(res => {
 					this.$hideLoading();
+					if(pageNo == 1&&res.data.List.length>0&&res.data.List.length<10) {
+						res.data.List.forEach(item => {
+							if(item.deviceList.length) {
+								item['deviceSwitch'] = true
+							}
+						})
+					}
 					this.$refs.paging.complete(res.data.List);
 					this.count = {
 						online: res.data.online.onlineNums,

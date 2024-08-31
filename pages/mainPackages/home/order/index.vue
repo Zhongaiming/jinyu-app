@@ -107,7 +107,7 @@
 						<view class="button" @click="goTo(item, 'orderDetail')">
 							查看详情
 						</view>
-						<view class="button">
+						<view class="button" @click="goTo(item, 'remote')">
 							远程启动
 						</view>
 						<view class="button" @click="goTo(item, 'orderRefund')" v-if="!item.amountRefund">
@@ -219,10 +219,19 @@
 					...this.params
 				}).then(res => {
 					this.$hideLoading();
-					this.$refs.orderPaging.complete(res.data.records);
+					this.$refs.orderPaging.complete(res.data.dataList);
 				})
 			},
 			goTo(order, route) {
+				if(route === 'remote') {
+					this.$goTo("/pages/mainPackages/home/remote/operate", "navigateTo", {
+						railNumber: order.railNumber,
+						shippingSpace: order.shippingSpace,
+						deviceNumber: order.deviceNumber,
+						deviceTypeId: order.deviceType
+					})
+					return
+				}
 				this.$goTo(`/pages/mainPackages/home/order/${route}`, 'navigateTo', {
 					orderId: order.orderId
 				})

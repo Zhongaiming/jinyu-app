@@ -14,6 +14,9 @@
 					<view class="xls-options-list-main-text">
 						{{item.title}}
 					</view>
+					<view class="no-handler-status" v-if="item.id==42&&coupleNum>0">
+						{{ coupleNum }}
+					</view>
 				</view>
 			</view>
 		</view>
@@ -23,6 +26,12 @@
 <script>
 	export default {
 		name: "homeOptions",
+		props: {
+			coupleNum: {
+				type: Number,
+				default: 0
+			}
+		},
 		data() {
 			return {
 				dataList: [{
@@ -206,14 +215,14 @@
 							permissions: ['app:subaccounts:index'],
 							status: 0
 						},
-						// {
-						// 	id: 42,
-						// 	title: '申诉反馈',
-						// 	imgUrl: `${this.$baseUrl}homeImages/fourList/four.png`,
-						// 	route: '/pages/mainPackages/home/appealFeedback/index',
-						// 	permissions: ['app:couple:index'],
-						// 	status: 0
-						// },
+						{
+							id: 42,
+							title: '申诉反馈',
+							imgUrl: `${this.$baseUrl}homeImages/fourList/four.png`,
+							route: '/pages/mainPackages/home/appealFeedback/index',
+							permissions: ['app:couple:index'],
+							status: 0
+						},
 						// {
 						// 	id: 43,
 						// 	title: '标签管理',
@@ -269,6 +278,7 @@
 				flex-direction: column;
 				align-items: center;
 				justify-content: center;
+				position: relative;
 			}
 
 			&-image {
@@ -303,5 +313,22 @@
 				}
 			}
 		}
+	}
+	
+	.no-handler-status {
+	  background: #ff4747;
+	  border-radius: 14rpx 14rpx 14rpx 8rpx;
+	  box-sizing: content-box;
+	  color: #fff;
+	  font-size: 20rpx;
+	  font-weight: 400;
+	  height: 24rpx;
+	  line-height: 24rpx;
+	  min-width: 24rpx;
+	  padding: 0 5rpx;
+	  position: absolute;
+	  text-align: center;
+	  top: 10rpx;
+	  right: 6rpx;
 	}
 </style>

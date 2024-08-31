@@ -60,6 +60,10 @@ import {
 import {
 	commonController
 } from "@/api/index.js"
+import axios from 'axios'
+import {
+	UploadRent
+} from './axiosReq.js'
 export function uploadFilePromise(file) {
 	return new Promise((resolve, reject) => {
 		const blobUrl = file.url
@@ -67,36 +71,114 @@ export function uploadFilePromise(file) {
 		fetch(blobUrl)
 			.then(response => response.blob())
 			.then(blob => {
+				
 				// 创建一个 File 对象
 				const file = new File([blob], fileName, {
 					type: blob.type
 				});
-				// 你可以使用 File 对象，例如上传到服务器或保存到本地
-				uni.uploadFile({
-					url: reqConfig.proxyUrl + '/upms/api/v1/common/upload/upload',
-					header: {
-						"Authorization": getToken(),
-					},
-					file: file,
-					name: "uploadFile",
-					formData: {
-						asImage: true
-					},
-					success: (res) => {
-						if (res.statusCode === 200) {
-							const result = JSON.parse(res.data)
+				
+				// const token = getToken();
+				// axios({
+				// 	url: 'http://8.138.24.164:659/upms/api/v1/common/upload/downloadOSS',
+				// 	method: 'GET',
+				// 	headers: {
+				// 		"Authorization": token,
+				// 		// "Content-Type": "application/json;charset=UTF-8",
+				// 		// 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+				// 	},
+				// 	params: {
+				// 		filePath:''
+				// 	}
+				// }).then(res => {
+				// 	console.log("filePath", res)
+				// 	// if (res.data.code === 200) {
+				// 	// 	resolve(res.data)
+				// 	// }
+				// })
+				// return
+				// blobToBase64(blob).then(res =>{
+				// 	console.log("blobresres", res)
+				// 	const token = getToken();
+				// 	axios({
+				// 		url: reqConfig.proxyUrl + '/upms/api/v1/common/upload/uploadByBase64',
+				// 		method: 'POST',
+				// 		headers: {
+				// 			"Authorization": token,
+				// 			// "Content-Type": "application/json;charset=UTF-8",
+				// 			// 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+				// 		},
+				// 		data: {
+				// 			uploadDataDto: {
+				// 				fileName: fileName,
+				// 				originalFilename: fileName,
+				// 				str: res
+				// 			}
+				// 		}
+				// 	}).then(res => {
+				// 		if (res.data.code === 200) {
+				// 			resolve(res.data)
+				// 		}
+				// 	})
+				// })
 
-							if (result.code === 200) {
-								resolve(result)
-							}
-						}
+				let formdata = new FormData();
+				formdata.append('uploadFile', file)
+				formdata.append('asImage', true)
+				const token = getToken();
+				axios({
+					url: reqConfig.proxyUrl + '/upms/api/v1/common/upload/upload',
+					method: 'post',
+					headers: {
+						"Authorization": token,
 					},
-					fail: (err) => {
-						console.log("失败", err)
+					data: formdata
+				}).then(res => {
+					if (res.data.code === 200) {
+						resolve(res.data)
 					}
-				});
+				})
+
+
+			// 你可以使用 File 对象， 例如上传到服务器或保存到本地
+			// 	uni.uploadFile({
+			// 		url: reqConfig.proxyUrl + '/upms/api/v1/common/upload/upload',
+			// 		header: {
+			// 			"Authorization": getToken(),
+			// 		},
+			// 		file: file,
+			// 		name: "uploadFile",
+			// 		formData: {
+			// 			asImage: true
+			// 		},
+			// 		success: (res) => {
+			// 			if (res.statusCode === 200) {
+			// 				const result = JSON.parse(res.data)
+			// 				if (result.code === 200) {
+			// 					resolve(result)
+			// 				}
+			// 			}
+			// 		},
+			// 		fail: (err) => {
+			// 			console.log("失败", err)
+			// 		}
+			// 	});
+			
 			})
 			.catch(error => console.error('Error:', error));
 
 	})
+}
+
+function blobToBase64(blob) {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+
+		reader.onloadend = () => {
+			const base64String = reader.result.split(',')[1]; // Extract base64 part
+			resolve(base64String);
+		};
+
+		reader.onerror = reject; // Handle errors
+		reader.readAsDataURL(blob); // Convert Blob to base64 data URL
+	});
 }

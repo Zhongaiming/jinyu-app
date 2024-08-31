@@ -45,7 +45,8 @@
 								<span class="text-over label-text">{{ placeName }}</span>
 								<span><u-icon name="arrow-down" /></span>
 							</view>
-							<view class="site-con" @click="$refs.deviceType.showDeviceTypelist()">
+							<!--  -->
+							<view class="site-con" @click="$refs.deviceType.showDviceType(deviceTypeId)">
 								<span class="text-over label-text">{{ typeName }}</span><span><u-icon
 										name="arrow-down" /></span>
 							</view>
@@ -166,7 +167,7 @@
 				</view>
 			</view>
 
-			<view class="detail-list-panel">
+			<view class="detail-list-panel"  style="padding: 0 0 60px 0;">
 				<view class="entry" v-for="(item, index) in dataList" :key="index">
 					<view class="site-detail-link"
 						@click="goEarnDetail(item.placeName ? item.placeId : item.deviceTypeId)">
@@ -222,14 +223,14 @@
 							</view>
 						</view>
 					</view>
-					<view class="link" v-show="item.placeName">
+					<!-- <view class="link" v-show="item.placeName">
 						<view class="tendency-link" @click="goTo(item, 'trend')">
 							场地收益趋势
 						</view>
 						<view class="tendency-link border-left" @click="goTo(item, 'classify')">
 							查看收益分类
 						</view>
-					</view>
+					</view> -->
 				</view>
 			</view>
 		</view>
@@ -255,7 +256,7 @@
 		</u-popup>
 		<xls-calendar :show="showDate" @close="() => { showDate = false }" @confirm="getCalender"></xls-calendar>
 		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
-		<xls-device-type-radio ref="deviceType" @changDeviceType="changDeviceType"></xls-device-type-radio>
+		<xls-device-type-checkbox ref="deviceType" @getDeviceType="changDeviceType"></xls-device-type-checkbox>
 	</z-paging>
 </template>
 
@@ -323,9 +324,9 @@
 				placeName: "全部场地",
 			};
 		},
-		onLoad() {
-			if (this.$route.query.place) {
-				let place = JSON.parse(this.$route.query.place);
+		onLoad(option) {
+			if (option.params) {
+				let place = JSON.parse(option.params);
 				this.placeId = place.placeId;
 				this.placeName = place.placeName;
 			}
@@ -333,12 +334,16 @@
 		methods: {
 			queryList(pageNo, pageSize) {
 				this.$loading();
-				orderController.getPlaceIncome({
+				const placeIds = String(this.placeId);
+				const deviceTypeId = String(this.deviceTypeId);
+				const API = this.deviceTypeId.length?'getDeviceTypeIncome':'getPlaceIncome';
+				orderController[`${API}`]({
 					page: pageNo,
 					size: pageSize,
 					startTime: this.startTime,
 					endTime: this.endTime,
-					...(this.placeId.length && { places: String(this.placeId) })
+					...(this.placeId.length && { placeIds: placeIds}),
+					...(this.deviceTypeId.length && { deviceTypeId: deviceTypeId})
 				}).then(res => {
 					this.$hideLoading();
 					this.earnStar = res.data;
@@ -480,9 +485,18 @@
 				this.getParams();
 			},
 			//设备类型
+			// changDeviceType(params) {
+			// 	this.typeName = params.typeName;
+			// 	this.deviceTypeId = params.deviceTypeId;
+			// 	this.getParams();
+			// },
 			changDeviceType(params) {
-				this.typeName = params.typeName;
-				this.deviceTypeId = params.deviceTypeId;
+				const {
+					deviceTypeText,
+					deviceTypeCheckList
+				} = params;
+				this.typeName = deviceTypeText;
+				this.deviceTypeId = deviceTypeCheckList;
 				this.getParams();
 			},
 			getParams() {
@@ -813,7 +827,6 @@
 
 	.detail-list-panel {
 		margin-top: 10px;
-
 		.entry {
 			margin-bottom: 15px;
 

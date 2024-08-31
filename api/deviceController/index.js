@@ -199,5 +199,20 @@ export default class deviceController {
 			data
 		})
 	}
-	
+	// 后台远程登录记录
+	static getRemoteLoginRecord(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceLongRange/getRemoteLoginRecord',
+			method: 'GET',
+			data
+		})
+	}
+	// 操作人列表
+	static getOperatorList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceLongRange/getOperatorList',
+			method: 'GET',
+			data
+		})
+	}
 }

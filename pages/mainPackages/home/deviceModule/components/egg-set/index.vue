@@ -1,7 +1,7 @@
 <template>
 	<view class="egg-content">
 		<!-- 蛋仓详情 -->
-		<u-popup :show="showSetting" mode="bottom">
+		<u-popup :show="showSetting" mode="bottom" @close="showSetting=false">
 			<view class="top">
 				<view class="sides" @click="showSetting = false">取消</view>
 				<view class="title">商品设置</view>
@@ -119,7 +119,7 @@
 			</view>
 		</u-popup>
 		<!-- 增减库存 -->
-		<u-popup :show="alterRepertory" mode="bottom" @click-overlay="(alterRepertory = false), (showSetting = true)">
+		<u-popup :show="alterRepertory" mode="bottom" @close="(alterRepertory = false), (showSetting = true)">
 			<view class="qs-content repertory-wrapper">
 				<view class="qs-top">
 					<view class="sider-content" @click="(alterRepertory = false), (showSetting = true)">
@@ -141,11 +141,11 @@
 			</view>
 		</u-popup>
 		<!-- 二维码 -->
-		<u-popup :show="showQs" mode="bottom" @click-overlay="(showQs = !showQs), (showSetting = !showSetting)">
+		<u-popup :show="showQs" mode="bottom" @close="(showQs = !showQs), (showSetting = !showSetting)">
 			<view class="qs-content">
 				<view class="qs-top">
 					<view class="top-left" @click="(showQs = !showQs), (showSetting = !showSetting)">
-						<u-icon name="arrow-left" />
+						<u-icon name="arrow-left" size="40"/>
 					</view>
 					<view class="qs-title">{{ deviceTypeName }}{{ deviceNumber }}</view>
 				</view>
@@ -235,7 +235,7 @@
 </template>
 
 <script>
-	// import QrCanvasRail from "./qrCanvasRail";
+	import QrCanvasRail from "../qr-canvas-rail/index.vue";
 	// import {
 	// 	getList
 	// } from "@/utils/api/commodity";
@@ -257,11 +257,11 @@
 	} from "@/api/index.js";
 
 	export default {
-		// components: {
-		// 	QrCanvasRail,
-		// 	CommodityType,
-		// 	qrCanvasRailMini
-		// },
+		components: {
+			QrCanvasRail,
+			// CommodityType,
+			// qrCanvasRailMini
+		},
 		data() {
 			return {
 				//修改库存
@@ -335,7 +335,8 @@
 				shippingSpace,
 				commodityImg,
 				uuid,
-				railState
+				railState,
+				commodityName
 			) {
 				if (
 					name == "扭蛋机" ||
@@ -391,6 +392,7 @@
 				this.railNumber = rail;
 				this.showSetting = true;
 				this.eggDetail.commodityImg = commodityImg;
+				this.eggDetail.commodityName = commodityName;
 				this.uuid = uuid;
 				this.railState = railState;
 			},
@@ -495,11 +497,12 @@
 			},
 			//选中商品
 			pitchCommodity(commodity) {
+				console.log(commodity)
 				this.eggDetail.commodityName = commodity.commodityName;
 				this.eggDetail.commodityId = commodity.commodityId;
 				this.eggDetail.commodityImg = commodity.commodityImg;
 				this.eggDetail.price = commodity.suggestRetailPrice;
-				this.eggDetail.currency = commodity.suggestInsertCoins;
+				// this.eggDetail.currency = commodity.suggestInsertCoins;
 				this.commodityPopup = !this.commodityPopup;
 				this.showSetting = !this.showSetting;
 			},
@@ -721,7 +724,6 @@
 	}
 
 	.qs-content {
-		height: 100%;
 		width: 100%;
 		font-family: PingFangSC-Regular, PingFang SC;
 
@@ -738,6 +740,7 @@
 			.top-left {
 				width: 10%;
 				color: rgb(177, 175, 175);
+				@include center-flex();
 			}
 
 			.qs-title {
@@ -770,6 +773,7 @@
 		.qs-body {
 			width: 100%;
 			margin-bottom: 20px;
+			padding: 20rpx;
 
 			.desc {
 				color: #8f8f8f;

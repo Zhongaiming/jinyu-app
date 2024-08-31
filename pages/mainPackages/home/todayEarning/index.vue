@@ -65,7 +65,7 @@
 		</u-row>
 
 		<!-- 平台补贴 -->
-		<u-row type="flex" class="xls-today-item-wrapper" @click="goToDetail(2)">
+		<u-row type="flex" class="xls-today-item-wrapper" @click="goToDetail(2)" v-if="0">
 			<u-col :span="3">
 				<view class="item-main-style">
 					<view class="main-T-box">

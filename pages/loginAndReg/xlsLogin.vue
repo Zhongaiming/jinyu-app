@@ -79,13 +79,15 @@
 				// this.$loading();
 				this.loginSwitch = true;
 				this.$store.dispatch('user/login', params).then(res => {
-					setTimeout(() =>{
-						// this.setInfo();
-						// this.$toast(this.$t('login.loginSuccess'), 2000);
-						this.$goTab();
-						this.loginSwitch = false;
-						// this.$hideLoading();
-					}, 1000)
+					this.loginSwitch = false;
+					if(res.code === 200) {
+						setTimeout(() =>{
+							// this.setInfo();
+							// this.$toast(this.$t('login.loginSuccess'), 2000);
+							this.$goTab();
+							// this.$hideLoading();
+						}, 1000)
+					}
 				})
 			},
 			setInfo() {

@@ -58,7 +58,7 @@
 					</view>
 				</view>
 			</xls-dropdown-item>
-			<xls-dropdown-item name="2" title="交易类型" :Badge="screen.payType&&true">
+			<xls-dropdown-item name="2" title="交易类型" :Badge="screen.type&&true">
 				<view>
 					<view class="index_pullDownPad_vynxu">
 						<view class="tabs_warp_VABLU">
@@ -480,8 +480,9 @@
 					...(filterNonEmpty(this.payState).length && {
 						state: String(filterNonEmpty(this.payState))
 					}),
+					// 反了 type 和 payType
 					...(filterNonEmpty(this.payType).length && {
-						payType: String(filterNonEmpty(this.payType))
+						type: String(filterNonEmpty(this.payType))
 					}),
 					...(this.checkboxGroup.length && {
 						placeId: String(this.checkboxGroup)

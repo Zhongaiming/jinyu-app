@@ -2,7 +2,7 @@
 	<view>
 		<home-header></home-header>
 		<three-options></three-options>
-		<home-options></home-options>
+		<home-options :coupleNum="coupleNum"></home-options>
 		<!-- <return-top></return-top> -->
 		<jy-tabbar :selected="0"></jy-tabbar>
 	</view>
@@ -13,6 +13,9 @@
 	import ThreeOptions from "./components/threeOptions/index.vue"
 	import HomeOptions from "./components/homeOptions/index.vue"
 	import ReturnTop from "./components/homeTools/returnTop.vue"
+	import {
+		appealController
+	} from '@/api/index.js';
 	export default {
 		components: {
 			HomeHeader,
@@ -22,20 +25,23 @@
 		},
 		data() {
 			return {
-
+				coupleNum: 0,
 			}
 		},
-		computed: {
-
+		onShow() {
+			this.getCoupleNum();
 		},
 		methods: {
 			goTo() {
 				this.$goTo('/pages/loginAndReg/index')
 			},
+			getCoupleNum() {
+				appealController.appealNotHandleNum().then(res => {
+					this.coupleNum = res.data;
+				})
+			},
 		},
-		mounted() {
-
-		}
+		
 	}
 </script>
 
