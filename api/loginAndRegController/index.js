@@ -24,7 +24,6 @@ export default class loginAndRegController {
 			}
 		})
 	}
-	
 	// 获取验证码
 	static getCode(data) {
 		return http.request({
@@ -37,6 +36,31 @@ export default class loginAndRegController {
 		})
 	}
 	
+	// 账号与安全
+	static inspectCode(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/login/inspectCode',
+			method: 'POST',
+			data
+		})
+	}
+	// 改密码
+	static updateUser(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/login/updateUser',
+			method: 'POST',
+			data
+		})
+	}
+	// 改手机号
+	static updateUserName(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/login/updateUserName',
+			method: 'POST',
+			data
+		})
+	}
+	
 	//邮箱登录
 	static emailLogin(data) {
 		return http.request({
@@ -45,4 +69,5 @@ export default class loginAndRegController {
 			data
 		})
 	}
+	
 }

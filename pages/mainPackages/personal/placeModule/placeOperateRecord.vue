@@ -11,7 +11,7 @@
 					</view>
 					<u-icon name="search" size="46" @click="iconSearch"></u-icon>
 					<input type="text" :placeholder="'输入' + typeName" v-model="searchValue" @keyup.13="iconSearch"
-						@blur="iconSearchBlur" />
+						@blur="iconSearchBlur" @confirm="iconSearch"/>
 				</view>
 			</view>
 		</view>
@@ -47,17 +47,10 @@
 </template>
 
 <script>
-	// import TopTab from "../putPlaceComps/topTab";
-	// import { getPlaceLogPage } from "@/utils/api/place";
-	// import { debounceFun, throttleFun } from "@/plugins/debounceOrthrottle";
-	// import { getSeparateBillsLogPage } from "@/utils/api/separateBills";
 	import {
 		placeController
 	} from "@/api/index.js";
 	export default {
-		// components: {
-		// 	TopTab
-		// },
 		data() {
 			return {
 				//
@@ -74,37 +67,38 @@
 				typeName: "场地名称",
 				searchValue: "",
 				dataList: [],
-				//
-				fromType: 1,
-				uListHeight: 200,
+				fromType: "Place",
 			};
 		},
-		// created() {
-		//   // console.log(this.$route.query.fromType)//undefined || 分账
-		//   if (this.$route.query.fromType) {
-		//     this.fromType = 0;
-		//   } else {
-		//     this.fromType = 1;
-		//   }
-		//   this.getRepresent();
-		// },
+		onLoad(option) {
+			if (option.params) {
+				const {
+					type
+				} = JSON.parse(option.params)
+				this.fromType = type;
+			}
+		},
 
 		methods: {
 			queryList(pageNo, pageSize) {
-				placeController.getPlaceLogPage({
+				placeController[`get${this.fromType}LogPage`]({
 					page: pageNo,
 					size: pageSize,
-					// search: this.searchValue
+					search: this.searchValue
 				}).then(res => {
-					this.$refs.paging.complete(res.data);
+					if(this.fromType == 'Place') {
+						this.$refs.paging.complete(res.data);
+					} else {
+						this.$refs.paging.complete(res.data.dataList);
+					}
 				})
 			},
 			goTo(item) {
 				this.$goTo('/pages/mainPackages/personal/placeModule/placeOperateRecordDetail', 'navigateTo', {
-					id: item.id
+					id: item.id,
+					type: this.fromType
 				})
 			},
-
 			beOndutyState(text) {
 				this.searchValue = "";
 				if (text) {
@@ -113,62 +107,12 @@
 					this.typeName = "场地名称";
 				}
 			},
-			scrolltolower() {
-				console.log("???触底")
-			},
-
-			// getRepresent: throttleFun(async function() {
-			// 	let res;
-			// 	if (this.fromType) {
-			// 		res = await getPlaceLogPage({
-			// 			page: ++this.page,
-			// 			size: 8,
-			// 			placeName: this.typeName == "场地名称" ?
-			// 				encodeURIComponent(this.searchValue) :
-			// 				"",
-			// 			placeId: this.typeName == "场地ID" ? this.searchValue : "",
-			// 		});
-			// 	} else {
-			// 		res = await getSeparateBillsLogPage({
-			// 			page: ++this.page,
-			// 			size: 8,
-			// 			placeName: this.typeName == "场地名称" ?
-			// 				encodeURIComponent(this.searchValue) :
-			// 				"",
-			// 			placeId: this.typeName == "场地ID" ? this.searchValue : "",
-			// 		});
-			// 	}
-			// 	if (res.data.code == 0 || res.data.msg == "ok") {
-			// 		if (res.data.data.records.length == 0) {
-			// 			this.onEarth = true;
-			// 		} else {
-			// 			this.onEarth = false;
-			// 		}
-			// 		if (res.data.data.records != null) {
-			// 			if (this.page > 1) {
-			// 				this.dataList = [...this.dataList, ...res.data.data.records];
-			// 			} else {
-			// 				this.dataList = [];
-			// 				this.dataList = res.data.data.records;
-			// 				if (res.data.data.records.length < 8) {
-			// 					this.onEarth = true;
-			// 				} else {
-			// 					this.onEarth = false;
-			// 				}
-			// 			}
-			// 		}
-			// 	}
-			// }, 1000),
 			iconSearch() {
-				this.page = 0;
-				this.onEarth = false;
-				this.getRepresent();
+				this.$refs.paging.reload();
 			},
 			iconSearchBlur() {
 				if (this.searchValue == "") {
-					this.page = 0;
-					this.onEarth = false;
-					this.getRepresent();
+					this.$refs.paging.reload();
 				}
 			},
 		},

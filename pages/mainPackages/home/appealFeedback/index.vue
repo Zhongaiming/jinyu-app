@@ -177,6 +177,11 @@
 		onLoad() {
 			this.getCoupleNum();
 		},
+		onShow() {
+			this.$nextTick(() =>{
+				this.$refs.paging.reload();
+			})
+		},
 		methods: {
 			getCoupleNum() {
 				appealController.appealNotHandleNum().then(res => {

@@ -6,7 +6,7 @@
 			</view>
 			<view class="flexbox">
 				<view class="info">请选择需要设置收益分成的场地</view>
-				<view class="handle" @click="goTo">
+				<view class="handle" @click="goTo('record')">
 					<span>操作记录 &gt;</span>
 				</view>
 			</view>
@@ -63,6 +63,13 @@
 		},
 		methods: {
 			goTo(placeId) {
+				if(placeId === 'record') {
+					// 'Place' : 'SeparateBills'
+					this.$goTo('/pages/mainPackages/personal/placeModule/placeOperateRecord', 'navigateTo', {
+						type: 'SeparateBills'
+					})
+					return
+				}
 				this.$goTo('/pages/mainPackages/home/separateAccounts/setup/detail', 'navigateTo', {
 					placeId: placeId,
 					type: "radio"
@@ -80,7 +87,7 @@
 			nextStep() {
 				if (this.checkboxGroup.length) {
 					this.$goTo('/pages/mainPackages/home/separateAccounts/setup/detail', 'navigateTo', {
-						placeId: this.checkboxGroup,
+						placeId: String(this.checkboxGroup),
 						type: "checkbox"
 					})
 				} else {

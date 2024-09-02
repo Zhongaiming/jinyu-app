@@ -75,12 +75,6 @@
 </template>
 
 <script>
-	// import {
-	// 	getPlaceLogDetail
-	// } from "@/utils/api/place";
-	// import {
-	// 	getSeparateBillsLogDetail
-	// } from "@/utils/api/separateBills";
 	import {
 		placeController
 	} from "@/api/index.js";
@@ -98,10 +92,8 @@
 		},
 		async onLoad(option) {
 			if(option.params) {
-				const {id} = JSON.parse(option.params);
-				// 'PlaceLog' : 'SeparateBillsLog'
-				const API = 'PlaceLog';
-				placeController[`get${API}Detail`]({id}).then(res => {
+				const {id, type} = JSON.parse(option.params);
+				placeController[`get${type}LogDetail`]({id}).then(res => {
 					if (res.code == 200) {
 						this.recordDetail = res.data;
 					}

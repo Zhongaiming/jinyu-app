@@ -395,6 +395,13 @@ const pages = [{
 		}
 	},
 	{
+		"path": "pages/mainPackages/personal/replenishmentRecord/index",
+		"name": "replenishmentRecord",
+		"meta": {
+			"title": "补货记录"
+		}
+	},
+	{
 		"path": "pages/mainPackages/personal/placeModule/index",
 		"name": "placeModule",
 		"meta": {
@@ -445,15 +452,15 @@ const pages = [{
 		}
 	},
 	{
-		"path": "pages/mainPackages/personal/subAccountManagement/operate",
-		"name": "subAccountManagementOperate",
+		"path": "pages/mainPackages/personal/subAccountManagement/children/addAccount",
+		"name": "operateAccount",
 		"meta": {
 			"title": "子账号操作"
 		}
 	},
 	{
-		"path": "pages/mainPackages/personal/subAccountManagement/roleOperate",
-		"name": "roleOperateManagement",
+		"path": "pages/mainPackages/personal/subAccountManagement/children/createJobs",
+		"name": "subAccountManagementAddRole",
 		"meta": {
 			"title": "子账号角色操作"
 		}
@@ -471,6 +478,27 @@ const pages = [{
 		"name": "register",
 		"meta": {
 			"title": "注册"
+		}
+	},
+	{
+		"path": "pages/loginAndReg/children/codeSafe",
+		"name": "codeSafe",
+		"meta": {
+			"title": "账号与安全"
+		}
+	},
+	{
+		"path": "pages/loginAndReg/children/changePassword",
+		"name": "personal",
+		"meta": {
+			"title": "更改登录密码"
+		}
+	},
+	{
+		"path": "pages/loginAndReg/children/changePhone",
+		"name": "personal",
+		"meta": {
+			"title": "修改登录手机号码"
 		}
 	},
 	{

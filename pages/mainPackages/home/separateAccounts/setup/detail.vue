@@ -28,7 +28,8 @@
 					</span>
 				</view>
 				<view class="phone">{{item.username ? '(' + item.username + ')' : ''}}</view>
-				<view class="right" v-show="acountPlaceNum(placeId) <= 1">
+				<!--  v-if="acountPlaceNum(placeId) <= 1" -->
+				<view class="right">
 					{{item.proportion ? item.proportion + '%' : ''}}
 				</view>
 			</view>
@@ -69,9 +70,9 @@
 							@click="showPeople = true">
 							<span class="main-text" :style="{color:billsPeople=='请选择分成人员'?'#c8c9cc':''}">
 								{{ billsPeople }}
-								<span v-show="editOradd" style="color: #c8c9cc; font-size: 10rpx">(不可编辑)</span>
+								<span v-show="editOradd" style="color: #c8c9cc; font-size: 20rpx">(不可编辑)</span>
 							</span>
-							<u-icon name="arrow-down" class="icon" size="20" color="#c8c9cc" />
+							<u-icon name="arrow-down" class="icon" size="40" color="#c8c9cc" />
 						</view>
 					</view>
 					<view class="items">
@@ -85,7 +86,7 @@
 					<view class="items" v-show="editOradd">
 						<view class="title">是否主分账人员：</view>
 						<view class="right">
-							<u-switch v-model="checked" size="24rpx" active-color="#5241FF" />
+							<u-switch v-model="checked" active-color="#5241FF" size="50" />
 						</view>
 					</view>
 					<view class="items">
@@ -106,7 +107,7 @@
 			<view class="person-list">
 				<span class="title">请选择分成人员</span>
 				<xls-search placeholder="请输入场地名称" marLeft="-5.5em" @confirm="stratesSearch"></xls-search>
-				<view class="list-content">
+				<view class="list-content" v-if="searchBillList.length">
 					<view class="item" v-for="(item, index) in searchBillList" :key="index" @click="pickerPerson(item)">
 						<span class="person-name">{{ item.nickName}}
 							<span class="person-phone">&nbsp;&nbsp;({{ item.username }})</span></span>
@@ -114,6 +115,7 @@
 					</view>
 					<view class="on-earth">到底了~</view>
 				</view>
+				<xls-empty v-else></xls-empty>
 			</view>
 		</u-popup>
 
@@ -136,7 +138,6 @@
 		data() {
 			return {
 				dataList: [],
-
 				checked: false,
 				noPersontips: false,
 				havePersontips: false,
@@ -170,9 +171,7 @@
 		async onLoad(option) {
 			const params = JSON.parse(option.params);
 			this.placeId = params.placeId;
-			if (params.type !== "checkbox") {
-				this.getPeopleList();
-			}
+			this.getPeopleList();
 			this.getBillPerson();
 		},
 		methods: {

@@ -37,7 +37,7 @@
 			<view class="refund-content">
 				<view class="refund-content_input">
 					<view class="refund-content_prefix">￥</view>
-					<input placeholder="输入退款金额" type="number" class="refund-content_input_qV_cV" v-model="refundAmount">
+					<input v-model="refundAmount" placeholder="输入退款金额" type="number" class="refund-content_input_qV_cV">
 				</view>
 				<view class="refund-content_btn_ZFgj" @click="() => {
 					refundAmount = order.amountTotal
@@ -146,7 +146,7 @@
 					title: "退款提示"
 				}).then(() => {
 					const reason = `${this.reasonList[this.reason-1].label}${this.reasonValue}`
-					orderController.allRefund({
+					orderController.amountRefund({
 						amountRefundDto: {
 							orderNo: this.order.orderNo,
 							refundAmount: this.refundAmount * 100,

@@ -2,10 +2,10 @@
 	<view class="account-mana">
 		<xls-jy-navbar title="账号管理"></xls-jy-navbar>
 		<view class="user-wrapper">
-			<view class="item-wrapper" v-for="(item, index) in userList" :key="index"
+			<!-- <view class="item-wrapper" v-for="(item, index) in userList" :key="index"
 				@click="loginThisUser(item.username, item.password)">
 				<view class="main">
-					<!-- <img src="@/assets/img/user-header.png" alt="" /> -->
+					<img src="@/assets/img/user-header.png" alt="" />
 					<view class="text user-info">
 						<view>{{ item.nickName }}</view>
 						<view>{{ item.username }}</view>
@@ -14,9 +14,9 @@
 				<view class="icon">
 					<u-icon name="success" size="24" color="#5241FF" v-show="null == item.id" />
 				</view>
-			</view>
+			</view> -->
 
-			<view class="bottom">
+			<!-- <view class="bottom">
 				<view class="delete" @click="deleteUser = !deleteUser">删除账号</view>
 				<view class="addCount">
 					<view class="addIcon Center box-sizing">
@@ -26,10 +26,10 @@
 						<span class="addCount-txt">添加账号</span><u-icon name="arrow-right" size="32" color="#999" />
 					</view>
 				</view>
-			</view>
+			</view> -->
 		</view>
 		<view class="user-wrapper">
-			<view class="countSafe position" @click="$router.push('/login/codeSafe')">
+			<view class="countSafe position" @click="goTo">
 				<span>账号安全</span><u-icon name="arrow-right" size="32" color="#999" />
 			</view>
 		</view>
@@ -37,7 +37,7 @@
 			<view class="countSafe exit-text"><span>退出账号</span></view>
 		</view>
 		<!-- 删除账户 -->
-		<u-popup v-model="deleteUser" position="bottom">
+		<!-- <u-popup v-model="deleteUser" position="bottom">
 			<view class="delete-user-wrapper">
 				<view class="title-wrapper">
 					<view class="close-btn"></view>
@@ -47,7 +47,7 @@
 				<view class="user-show-wrppaer">
 					<view class="item-style" v-for="(item, index) in userList" :key="index">
 						<view class="main-wrapper">
-							<!-- <img src="@/assets/img/user-header.png" alt="" /> -->
+							<img src="@/assets/img/user-header.png" alt="" />
 							<view class="text">
 								<view>{{ item.nickName }}</view>
 								<view>{{ item.username }}</view>
@@ -59,9 +59,9 @@
 					</view>
 				</view>
 			</view>
-		</u-popup>
+		</u-popup> -->
 		<!-- 添加用户 -->
-		<view class="add-user-wrapper" v-show="addUser" @click.stop="addUser = !addUser">
+		<!-- <view class="add-user-wrapper" v-show="addUser" @click.stop="addUser = !addUser">
 			<view class="header-text-wrapper" @click.stop="">
 				<view class="tit">用户须知</view>
 				<p>
@@ -92,7 +92,7 @@
 					<view class="btn-style login-btn" @click="addUserMethods">登录</view>
 				</view>
 			</view>
-		</view>
+		</view> -->
 	</view>
 </template>
 
@@ -227,6 +227,9 @@
 						this.$goTo("/", "reLaunch", {})
 					})
 					.catch(() => {});
+			},
+			goTo() {
+				this.$goTo("/pages/loginAndReg/children/codeSafe")
 			},
 		},
 	};

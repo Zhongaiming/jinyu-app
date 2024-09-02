@@ -43,11 +43,30 @@ export default class appealController {
 		})
 	}
 	// replyInfo
-	static replyInfo(data) {
+	static replyFeed(data) {
 		return http.request({
 			url: '/merchant/api/v1/admin/complaintFeedback/replyInfo',
 			method: 'POST',
-			data
+			data,
+			custom: {
+				header: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			}
 		})
 	}
+	// 微信图片
+	static setComplaintsImg(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/wechatapi/setComplaintsImg',
+			method: 'POST',
+			data,
+			// custom: {
+			// 	header: {
+			// 		'Content-Type': 'application/x-www-form-urlencoded'
+			// 	}
+			// }
+		})
+	}
+	
 }

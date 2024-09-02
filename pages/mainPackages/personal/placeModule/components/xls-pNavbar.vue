@@ -41,10 +41,12 @@
 				uni.navigateBack()
 			},
 			goTo() {
+				// 'Place' : 'SeparateBills'
 				this.$goTo('/pages/mainPackages/personal/placeModule/placeOperateRecord', 'navigateTo', {
-
+					type: 'Place'
 				})
-			}
+			},
+			
 		},
 	};
 </script>

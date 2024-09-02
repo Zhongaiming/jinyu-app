@@ -182,3 +182,28 @@ function blobToBase64(blob) {
 		reader.readAsDataURL(blob); // Convert Blob to base64 data URL
 	});
 }
+
+
+export async function blobUrlToBase64(blobUrl) {
+    try {
+        // Fetch the Blob from the URL
+        const response = await fetch(blobUrl);
+        const blob = await response.blob();
+
+        // Create a FileReader to convert Blob to Base64
+        const reader = new FileReader();
+
+        // Convert Blob to Base64
+        return new Promise((resolve, reject) => {
+            reader.onloadend = () => {
+                const base64String = reader.result.split(',')[1]; // Extract base64 part
+                resolve(base64String);
+            };
+
+            reader.onerror = reject; // Handle errors
+            reader.readAsDataURL(blob); // Convert Blob to base64 data URL
+        });
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}

@@ -162,23 +162,6 @@ export default class placeController {
 			data
 		})
 	}
-
-	// 场地操作日志
-	static getPlaceLogPage(data) {
-		return http.request({
-			url: '/merchant/api/v1/admin/merchant/placeLog/getPlaceLogPage',
-			method: 'GET',
-			data
-		})
-	}
-	static getPlaceLogDetail(data) {
-		return http.request({
-			url: '/merchant/api/v1/admin/merchant/placeLog/getPlaceLogDetail',
-			method: 'GET',
-			data
-		})
-	}
-
 	// 场地类型
 	static getPlaceType(data) {
 		return http.request({
@@ -251,6 +234,49 @@ export default class placeController {
 		return http.request({
 			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaff/addStaff',
 			method: 'POST',
+			data
+		})
+	}
+	
+	
+	// 场地操作日志
+	static getPlaceLogPage(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/placeLog/getPlaceLogPage',
+			method: 'GET',
+			data
+		})
+	}
+	static getPlaceLogDetail(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/placeLog/getPlaceLogDetail',
+			method: 'GET',
+			data
+		})
+	}
+	// 分成设置操作日志
+	static getSeparateBillsLogPage(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/separateBillsLog/getSeparateBillsLogPage',
+			method: 'GET',
+			data
+		})
+	}
+	static getSeparateBillsLogDetail(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/separateBillsLog/getSeparateBillsLogDetail',
+			method: 'GET',
+			data
+		})
+	}
+	
+	/**
+	 * 子账号管理场地列表
+	 */
+	static getPlaceList(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/merchantUserBinding/getPlaceList',
+			method: "GET",
 			data
 		})
 	}

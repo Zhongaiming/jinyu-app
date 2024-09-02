@@ -12,6 +12,8 @@ import separateController from './separateController/index.js'
 import packageController from './packageController/index.js'
 import deviceDataController from './deviceDataController/index.js'
 import appealController from './appealController/index.js'
+import subAccountController from './subAccountController/index.js'
+
 export {
 	loginAndRegController,
 	userController,
@@ -27,4 +29,5 @@ export {
 	packageController,
 	deviceDataController,
 	appealController,
+	subAccountController,
 }

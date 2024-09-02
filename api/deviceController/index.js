@@ -215,4 +215,20 @@ export default class deviceController {
 			data
 		})
 	}
+	// 设备操作日志列表
+	static getDeviceLogList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceLog/getDeviceLogList',
+			method: 'GET',
+			data
+		})
+	}
+	// 补货记录
+	static replenishmentList(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/deviceReplenishment/replenishmentList',
+			method: 'GET',
+			data
+		})
+	}
 }

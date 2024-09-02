@@ -149,7 +149,9 @@
 		</xls-dropdown-menu>
 		<xls-device-type-checkbox ref="deviceType" @getDeviceType="getDeviceType"></xls-device-type-checkbox>
 		<!-- calendar -->
-		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="getCalender"></xls-calendar>
+		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" 
+			@confirm="getCalender" :minDate="minDate"
+		></xls-calendar>
 	</view>
 </template>
 
@@ -157,6 +159,9 @@
 	import {
 		placeController
 	} from "@/api/index.js";
+	import {
+		getDateAll
+	} from '@/plugins/utilityClass';
 	export default {
 		props: {
 			screen: {
@@ -166,6 +171,7 @@
 		},
 		data() {
 			return {
+				minDate: getDateAll(30),
 				// 搜索
 				keyword: "",
 				mValue: 3,

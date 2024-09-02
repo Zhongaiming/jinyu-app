@@ -1,26 +1,29 @@
 <template>
 	<z-paging ref="paging" v-model="dataList" @query="queryList">
-		<view slot="top">
+		<template slot="top">
 			<xls-jy-navbar title="子账号管理"></xls-jy-navbar>
 			<view class="tabs-item">
 				<view class="tab-box">
 					<view class="tab" v-hasPermi="['app:account:index']" :class="{active: 1 == activeItem}"
-						@click="activeItem = 1">
+						@click="tabEvent(1)">
 						子账号
 					</view>
 					<view class="tab" v-hasPermi="['app:account:index:read']" :class="{active: 2 == activeItem}"
-						@click="activeItem = 2">
+						@click="tabEvent(2)">
 						岗位角色
 					</view>
 				</view>
 			</view>
-		</view>
-		<xls-search placeholder="输入子账号名称/账号" marLeft="-6.5em" @confirm="stratesSearch" bgColor="#f5f6f7"
-			inputColor="#fff" v-show="activeItem == 1">
-		</xls-search>
+			<xls-search 
+				placeholder="输入子账号名称/账号" 
+				marLeft="-6.5em" 
+				@confirm="stratesSearch" bgColor="#f5f6f7"
+				inputColor="#fff" v-show="activeItem == 1">
+			</xls-search>
+		</template>
 		<!-- 子账号 -->
 		<view class="sub-account box-sizing" v-show="activeItem == 1">
-			<view class="child-list">
+			<view v-if="dataList.length" class="child-list">
 				<view class="child-item" v-for="(item, index) in dataList" :key="index">
 					<view class="top-info">
 						<view class="role-info">
@@ -31,12 +34,14 @@
 							<view class="phone-group">
 								<text class="phone">{{ item.username }}</text>
 								<view class="line"></view>
-								<text class="group-num">管理场地({{item.placeIdList || 0}})个</text>
+								<text class="group-num">管理场地({{
+											item.placeIdList || 0
+										}})个</text>
 							</view>
 						</view>
 						<view class="right-switch">
-							<!-- <u-switch size="50" v-model="item.userState" @change="editState(item.id, item.userState)"
-								active-color="#5241FF" /> -->
+							<u-switch size="50" :value="item.userState == 1 ? true : false"
+								@change="editState(item.id, item.userState)" active-color="#5241FF" />
 						</view>
 					</view>
 					<view class="handle-btn">
@@ -44,63 +49,63 @@
 						<view v-hasPermi="['app:account:index:deleteson']" @click="deleteItem(item.id)">
 							删除
 						</view>
-						<view v-hasPermi="['app:account:index:editson']" @click="goTo">
+						<view v-hasPermi="['app:account:index:editson']" @click="goTo('account', {sonAccount: item})">
 							编辑
 						</view>
 					</view>
 				</view>
-				<xls-bottom v-show="dataList.length" />
-			</view>
-			<view class="btn-bottom" v-hasPermi="[
-				'app:subacounts:index:person',
-				'app:subaccounts:index:earn',
-				'app:subacounts:index:ratio',
-				'app:account:index:addson',
-			  ]">
-				<view class="share-money" v-hasPermi="[
-				  'app:subacounts:index:person',
-				  'app:subaccounts:index:earn',
-				  'app:subacounts:index:ratio',
-				]" @click="goTo">
-					<u-icon name="order" size="58" color="#5241ff" />
-					<text class="txt">分账设置</text>
-				</view>
-				<view class="create-btn" v-hasPermi="['app:account:index:addson']" @click="goTo">
-					创建子账号
-				</view>
 			</view>
 		</view>
 		<!-- 岗位角色 -->
-		<view class="sub-account box-sizing" v-show="activeItem == 2">
+		<view class="sub-account" v-show="activeItem == 2">
 			<view class="role-list">
-				<view class="role-item" v-for="(role, index) in roleList" :key="index">
+				<view class="role-item" v-for="(role, index) in dataList" :key="index">
 					<p class="name">{{ role.roleName }}</p>
 					<view class="right">
-						<text class="one" v-hasPermi="['app:account:index:editjob']" @click="goTo">权限查看</text>
-
-						<text class="one next" @click="goTo">子账号查看</text>
+						<text class="one" v-hasPermi="['app:account:index:editjob']" @click="goTo('role', {jobs: role.roleName, roleId: role.roleId})">权限查看</text>
+						<text style="color: red;margin-right: 25rpx;" @click="deleteJob(role.roleId)">删除</text>
 					</view>
 				</view>
 			</view>
-			<view class="btn-bottom" v-hasPermi="['app:account:index:addjob']">
-				<view class="create-btn" @click="goTo">
-					创建岗位
+		</view>
+		
+		
+		<!-- 底部按钮 -->
+		<template slot="bottom">
+			<view v-show="activeItem == 1">
+				<view class="btn-bottom" v-hasPermi="[
+							'app:subacounts:index:person',
+							'app:subaccounts:index:earn',
+							'app:subacounts:index:ratio',
+							'app:account:index:addson',
+						]">
+					<view class="share-money" v-hasPermi="[
+								'app:subacounts:index:person',
+								'app:subaccounts:index:earn',
+								'app:subacounts:index:ratio',
+							]" @click="goTo('subAccount')">
+						<!-- <img src="./image/account.png" /> -->
+						<u-icon name="order" size="58" color="#5241ff" />
+						<text class="txt">分账设置</text>
+					</view>
+					<view class="create-btn" v-hasPermi="['app:account:index:addson']" @click="roleList.length ? goTo('account') : $toast('请先创建角色~')">
+						创建子账号
+					</view>
 				</view>
 			</view>
-		</view>
+			<view v-show="activeItem == 2">
+				<view class="btn-bottom" v-hasPermi="['app:account:index:addjob']">
+					<view class="create-btn" @click="goTo('role')">
+						创建岗位
+					</view>
+				</view>
+			</view>
+		</template>
 	</z-paging>
 </template>
 
 <script>
-	// import auth from "@/plugins/premission";
-	// import {
-	// 	getSysReleuceList,
-	// 	delSonUser,
-	// 	updateReleuceState,
-	// } from "@/utils/otherRequest/modules";
-	// import {
-	// 	getSysRoles
-	// } from "@/utils/otherRequest/modules";
+	import { subAccountController } from '@/api/index.js'
 	export default {
 		data() {
 			return {
@@ -118,299 +123,126 @@
 				focusInput: false,
 				inputEnter: "",
 				showClear: false,
-				//子账号
-				dataList: [],
-				roleList: [{
-						"roleId": 150,
-						"roleName": "全部权限",
-						"roleKey": "ztwl",
-						"roleSort": 2,
-						"dataScope": 1,
-						"menuCheckStrictly": 1,
-						"deptCheckStrictly": 1,
-						"status": 0,
-						"delFlag": 0,
-						"createBy": "18144999904",
-						"createTime": "2022-12-12 11:26:09",
-						"updateBy": "18144999904",
-						"updateTime": "2023-10-23 15:18:13"
-					},
-					{
-						"roleId": 154,
-						"roleName": "部分权限",
-						"roleKey": "ztwl",
-						"roleSort": 2,
-						"dataScope": 1,
-						"menuCheckStrictly": 1,
-						"deptCheckStrictly": 1,
-						"status": 0,
-						"delFlag": 0,
-						"createBy": "18144999904",
-						"createTime": "2023-02-17 08:47:16",
-						"updateBy": "18144999904",
-						"updateTime": "2023-09-21 15:23:57"
-					},
-					{
-						"roleId": 247,
-						"roleName": "体验",
-						"roleKey": "ztwl",
-						"roleSort": 2,
-						"dataScope": 1,
-						"menuCheckStrictly": 1,
-						"deptCheckStrictly": 1,
-						"status": 0,
-						"delFlag": 0,
-						"createBy": "18144999904",
-						"createTime": "2023-12-19 09:47:03",
-						"updateBy": "18144999904",
-						"updateTime": "2023-12-19 09:47:03"
-					},
-					{
-						"roleId": 397,
-						"roleName": "前端",
-						"roleKey": "ztwl",
-						"roleSort": 2,
-						"dataScope": 1,
-						"menuCheckStrictly": 1,
-						"deptCheckStrictly": 1,
-						"status": 0,
-						"delFlag": 0,
-						"createBy": "18144999904",
-						"createTime": "2024-04-02 09:49:12",
-						"updateBy": "18144999904",
-						"updateTime": "2024-04-03 10:32:27"
-					},
-					{
-						"roleId": 413,
-						"roleName": "合作商",
-						"roleKey": "ztwl",
-						"roleSort": 2,
-						"dataScope": 1,
-						"menuCheckStrictly": 1,
-						"deptCheckStrictly": 1,
-						"status": 0,
-						"delFlag": 0,
-						"createBy": "18144999904",
-						"createTime": "2024-04-08 17:47:39",
-						"updateBy": "18144999904",
-						"updateTime": "2024-04-08 17:47:39"
-					}
-				],
+				roleList: [],
 				searchValue: "",
 				loading: false,
 				finished: false,
-				page: 0,
+				dataList: []
 			};
 		},
-		async created() {
-			// this.activeItem = auth.hasPermi("app:account:index") ? 1 : 2;
-			// this.getAcountList();
-			// this.getRoleList();
-			// this.dataList.forEach((item) => {
-			// 	item.userState = item.userState == 1;
-			// });
+		onShow() {
+			this.$nextTick(() => {
+				this.$refs.paging.reload();
+				if(this.activeItem == 1) { // 第一次进来处于子账号的时候调用一次（因为创建子账号的时候需要判断是否有角色）
+					this.getRoleList() 
+				}
+				
+			})
+			
 		},
 		methods: {
+			/**
+			 * 顶部tab切换
+			 */
+			tabEvent(value) {
+				this.activeItem = value
+				this.$refs.paging.reload();
+			},
+			/**
+			 * 获取数据事件
+			 * @param {Object} pageNo
+			 * @param {Object} pageSize
+			 */
 			queryList(pageNo, pageSize) {
-				const list = [{
-						"id": 1081,
-						"username": "zt15089452840",
-						"nickName": "地心体验",
-						"userType": 5,
-						"userState": 1,
-						"commercialNumber": "ZTWL_20220617111542006",
-						"createId": 18,
-						"createTime": "2023-12-19 09:44:39",
-						"delFlag": 0,
-						"roleId": 247,
-						"roleName": "体验",
-						"subUserId": 1081,
-						"placeIdList": "0",
-						"synchronizationPlace": 0,
-						"ledger": 0,
-						"rate": 0
-					},
-					{
-						"id": 661,
-						"username": "zt18237419564",
-						"nickName": "体验",
-						"userType": 5,
-						"userState": 1,
-						"commercialNumber": "ZTWL_20220617111542006",
-						"createId": 18,
-						"createTime": "2023-06-15 09:43:34",
-						"delFlag": 0,
-						"roleId": 150,
-						"roleName": "全部权限",
-						"subUserId": 661,
-						"placeIdList": "0",
-						"synchronizationPlace": 0,
-						"ledger": 0,
-						"rate": 0
-					},
-					{
-						"id": 574,
-						"username": "zt18144999908",
-						"nickName": "体验",
-						"userType": 5,
-						"userState": 1,
-						"commercialNumber": "ZTWL_20220617111542006",
-						"createId": 18,
-						"createTime": "2023-04-20 17:29:08",
-						"delFlag": 0,
-						"roleId": 150,
-						"roleName": "全部权限",
-						"subUserId": 574,
-						"placeIdList": "7",
-						"synchronizationPlace": 0,
-						"ledger": 0,
-						"rate": 0
-					},
-					{
-						"id": 506,
-						"username": "zt18402059455",
-						"nickName": "前端测试",
-						"userType": 5,
-						"userState": 1,
-						"commercialNumber": "ZTWL_20220617111542006",
-						"createId": 18,
-						"createTime": "2023-03-21 17:38:23",
-						"delFlag": 0,
-						"roleId": 397,
-						"roleName": "前端",
-						"subUserId": 506,
-						"placeIdList": "14",
-						"synchronizationPlace": 1,
-						"ledger": 1,
-						"rate": 0
-					},
-					{
-						"id": 426,
-						"username": "zt18144999900",
-						"nickName": "中土物联",
-						"userType": 5,
-						"userState": 1,
-						"commercialNumber": "ZTWL_20220617111542006",
-						"createId": 18,
-						"createTime": "2022-12-13 09:34:56",
-						"delFlag": 0,
-						"roleId": 150,
-						"roleName": "全部权限",
-						"subUserId": 426,
-						"placeIdList": "14",
-						"synchronizationPlace": 1,
-						"ledger": 1,
-						"rate": 0
-					},
-					{
-						"id": 58,
-						"username": "19854573700",
-						"nickName": "测试三",
-						"userPhone": "19854573700",
-						"userType": 5,
-						"userState": 1,
-						"commercialNumber": "ZTWL_20220617111542006",
-						"createId": 18,
-						"createTime": "2022-06-21 15:26:00",
-						"roleId": 150,
-						"roleName": "全部权限",
-						"subUserId": 58,
-						"placeIdList": "5",
-						"synchronizationPlace": 0,
-						"ledger": 0,
-						"rate": 0
-					}
-				]
-				this.$refs.paging.complete(list);
-			},
-
-
-
-
-			async getRoleList() {
-				let role = await getSysRoles();
-				if (role.data.data.length) {
-					this.roleList = role.data.data;
+				if(this.activeItem == 1) {
+					subAccountController.getSysReleuceList({
+						page: pageNo,
+						size: pageSize,
+						search: this.searchValue
+					}).then(res => {
+						if(res.code == 200) {
+							this.$refs.paging.complete(res.data.dataList);
+						}
+					})
+				} else {
+					subAccountController.getSysRoles().then(res => {
+						if(res.code == 200) {
+							this.$refs.paging.complete(res.data);
+							this.roleList = res.data
+						}
+					})
 				}
 			},
-			async getAcountList() {
-				//子账号列表
-				this.loading = true;
-				let res = await getSysReleuceList({
-					search: encodeURIComponent(this.searchValue), //新
-					page: ++this.page,
-					size: 20,
-				});
-				this.loading = false;
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					if (res.data.data.records != null) {
-						if (res.data.data.records.length < 20) {
-							this.finished = true;
-						} else {
-							this.finished = false;
-						}
-						if (this.page > 1) {
-							this.dataList = [
-								...this.dataList,
-								...res.data.data.records,
-							];
-						} else {
-							this.dataList = res.data.data.records;
-						}
-						this.dataList.forEach((item) => {
-							item.userState = item.userState == 1;
-						});
+			getRoleList() {
+				subAccountController.getSysRoles().then(res => {
+					if(res.code == 200) {
+						this.roleList = res.data;
 					}
-				}
+				})
 			},
+			
 			//搜索
 			stratesSearch(search) {
-				this.page = 0;
 				this.searchValue = search;
-				this.getAcountList();
+				this.$refs.paging.reload();
 			},
 			//修改子用户状态
-			async editState(userId, userState) {
-				let res = await updateReleuceState({
+			editState(userId, userState) {
+				subAccountController.updateReleuceState({
 					id: userId, //子账户id
-					userState: userState ? 1 : 2, //用户状态（-1冻结/锁定 0弃用 1正常，2停用）
-				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.$toast.success("修改成功");
-				}
+					userState: userState == 1 ? 2 : 1, //用户状态（-1冻结/锁定 0弃用 1正常，2停用）
+				}).then(res => {
+					if (res.code == 200) {
+						this.$toast("修改成功");
+						this.$refs.paging.reload();
+					}
+				})
+			
 			},
 			//删除
 			deleteItem(id) {
-				this.$dialog
-					.confirm({
-						title: "确定要删除账号？",
-						message: "删除该账号将无法登录后台",
-						width: "270",
-						confirmButtonText: "删除",
+				this.$modal("删除该账号将无法登录后台", {title: '确定要删除账号？'}).then(() => {
+					//删除子账号
+					subAccountController.delSonUser({ subUserId: id}).then((res) => {
+						if (res.code == 200) {
+							this.$toast("删除成功~");
+							this.$refs.paging.reload();
+						}
 					})
-					.then(() => {
-						//删除子账号
-						delSonUser({
-								subUserId: id,
-							})
-							.then((res) => {
-								if (res.data.code == 0 || res.data.msg == "ok") {
-									this.$toast("删除成功~");
-									this.dataList = this.dataList.filter((item) => {
-										return item.id != id;
-									});
-								}
-							})
-							.catch((err) => {});
-					})
-					.catch(() => {});
+				})
 			},
+			//删除岗位角色
+			deleteJob(value) {
+				this.$modal("确定要删除岗位角色?").then(() => {
+					subAccountController.deleteSysRole({roleId: value}).then(res => {
+						if(res.code == 200) {
+							this.$toast("删除成功!")
+							this.$refs.paging.reload();
+						}
+					})
+				})
+			},
+			
 			calculatePlaceNum(placeIds) {
 				if (placeIds.charAt(placeIds.length - 1) == ",") {
 					placeIds = placeIds.substr(0, placeIds.length - 1);
 				}
 				return placeIds.split(",").length;
 			},
+			
+			goTo(type, params = {}) {
+				switch(type) {
+					case 'role':
+						this.$goTo("/pages/mainPackages/personal/subAccountManagement/children/createJobs", 'navigateTo', params);
+						break;
+					case 'account':
+						this.$goTo("/pages/mainPackages/personal/subAccountManagement/children/addAccount", 'navigateTo', params);
+						break;
+					case 'subAccount':
+						this.$goTo('/pages/mainPackages/home/separateAccounts/index');
+						break;
+				}
+			}
 		},
 	};
 </script>
@@ -457,8 +289,8 @@
 
 	.sub-account {
 		width: 100%;
-		flex: 1;
-		padding-bottom: 64px;
+		// flex: 1;
+		// padding-bottom: 64px;
 		overflow-y: auto;
 
 		.searchBox-wrapper {
@@ -621,46 +453,7 @@
 			}
 		}
 
-		.btn-bottom {
-			align-items: center;
-			background: #fff;
-			bottom: 0;
-			display: flex;
-			justify-content: center;
-			padding: 8px 12px;
-			position: fixed;
-			box-sizing: border-box;
-			width: 100%;
-			z-index: 1;
 
-			.share-money {
-				align-items: center;
-				color: #5241ff;
-				display: flex;
-				flex-direction: column;
-				font-size: 13px;
-				justify-content: center;
-				width: 100px;
-
-				img {
-					width: 20px;
-					height: 17.5px;
-				}
-			}
-
-			.create-btn {
-				background-color: #5241ff;
-				border-radius: 4px;
-				color: #fff;
-				font-size: 16px;
-				font-weight: 400;
-				height: 48px;
-				letter-spacing: -0.36px;
-				line-height: 48px;
-				text-align: center;
-				flex: 1;
-			}
-		}
 
 		// 岗位
 		.role-list {
@@ -711,6 +504,47 @@
 					}
 				}
 			}
+		}
+	}
+	
+	.btn-bottom {
+		align-items: center;
+		background: #fff;
+		bottom: 0;
+		display: flex;
+		justify-content: center;
+		padding: 8px 12px;
+		// position: fixed;
+		box-sizing: border-box;
+		width: 100%;
+		z-index: 1;
+	
+		.share-money {
+			align-items: center;
+			color: #5241ff;
+			display: flex;
+			flex-direction: column;
+			font-size: 13px;
+			justify-content: center;
+			width: 100px;
+	
+			img {
+				width: 20px;
+				height: 17.5px;
+			}
+		}
+	
+		.create-btn {
+			background-color: #5241ff;
+			border-radius: 4px;
+			color: #fff;
+			font-size: 16px;
+			font-weight: 400;
+			height: 48px;
+			letter-spacing: -0.36px;
+			line-height: 48px;
+			text-align: center;
+			flex: 1;
 		}
 	}
 </style>

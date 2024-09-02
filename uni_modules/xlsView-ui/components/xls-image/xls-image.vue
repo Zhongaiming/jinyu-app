@@ -1,5 +1,5 @@
 <template>
-	<image :src="imageUrl" :mode="mode" class="className"></image>
+	<image :src="imageUrl" :mode="mode" class="className" @click="clickMethod"></image>
 </template>
 
 <script>
@@ -25,6 +25,11 @@
 			const url = this.imageUrl.replace('undefined', '');
 			this.imageUrl = `${this.$baseUrl}${url}`;
 			// #endif
+		},
+		methods: {
+			clickMethod() {
+				this.$emit('clickMethod');
+			},
 		}
 	};
 </script>

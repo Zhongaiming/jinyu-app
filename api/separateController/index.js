@@ -53,21 +53,6 @@ export default class separateController {
 			data
 		})
 	}
-	// 分成设置操作日志
-	static getSeparateBillsLogPage(data) {
-		return http.request({
-			url: '/order/api/v1/admin/order/separateBillsLog/getSeparateBillsLogPage',
-			method: 'POST',
-			data
-		})
-	}
-	static getSeparateBillsLogDetail(data) {
-		return http.request({
-			url: '/order/api/v1/admin/order/separateBillsLog/getSeparateBillsLogDetail',
-			method: 'GET',
-			data
-		})
-	}
 	// 场地分账设置 
 	static getSeparateSetup(data) {
 		return http.request({
