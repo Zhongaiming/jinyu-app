@@ -1,14 +1,14 @@
 <template>
 	<view class="xls-order-detail">
-		<jy-navbar title="退款详情" bgColor="#f5f5f5"></jy-navbar>
+		<jy-navbar :title="order.refundMoney?'退款详情':'交易详情'" bgColor="#f5f5f5"></jy-navbar>
 		<view class="xls-main-wrapper">
 			<view class="xls-header-style"></view>
 			<view class="xls-content-style">
 				<view class="xls-order-detail-refund-state">
 					{{stateDict[order.refundState]}}
 				</view>
-				<view class="order_line"></view>
-				<view class="xls-order-detail-refund-price">
+				<view class="order_line" v-if="order.hasOwnProperty('refundState')"></view>
+				<view class="xls-order-detail-refund-price" v-if="order.hasOwnProperty('refundState')">
 					<view class="refund-price">
 						<view class="left">
 							退款金额
@@ -24,7 +24,7 @@
 				<view class="order_line"></view>
 
 				<view class="xls-order-detail-text-step">
-					退款流程
+					交易流程
 				</view>
 
 				<view class="xls-steps">
@@ -39,8 +39,9 @@
 					</view>
 				</view>
 				<view class="order_line"></view>
+				
 				<view class="xls-order-detail-text-step">
-					退款信息
+					交易信息
 				</view>
 				<view class="xls-order-style-price xls-pay-detail">
 					<image class="icon-image"
@@ -58,13 +59,13 @@
 						<view class="backColor">
 							¥{{ order.amountTotal }}
 						</view>
-						<view class="redColor">
+						<view class="redColor" v-if="order.hasOwnProperty('refundMoney')">
 							实退：¥{{ order.refundMoney }}
 						</view>
 					</view>
 				</view>
 
-				<view class="xls-order-detail-refund-price">
+				<view class="xls-order-detail-refund-price" v-if="order.hasOwnProperty('refundState')">
 					<view class="refund-price">
 						<view class="left">
 							订单编号
@@ -146,12 +147,12 @@
 					null: "其他"
 				},
 				refundDict: {
-					0: '出货失败退款',
-					1: '出货失败部分退款',
+					0: '出货失败，自动退款',
+					1: '出货失败，部分退款',
 					2: '人工退款（全额）',
-					3: '通讯失败退款',
-					4: '人工部分退款（部分商品）',
-					5: '人工部分退款（指定金额）',
+					3: '通讯失败，自动退款',
+					4: '人工退款（部分商品）',
+					5: '人工退款（指定金额）',
 					null: "其他"
 				},
 			}

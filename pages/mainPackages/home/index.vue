@@ -16,6 +16,9 @@
 	import {
 		appealController
 	} from '@/api/index.js';
+	import {
+		getDateAll
+	} from "@/plugins/utilityClass";
 	export default {
 		components: {
 			HomeHeader,
@@ -36,7 +39,10 @@
 				this.$goTo('/pages/loginAndReg/index')
 			},
 			getCoupleNum() {
-				appealController.appealNotHandleNum().then(res => {
+				appealController.appealNotHandleNum({
+					startTime: getDateAll(30),
+					endTime: getDateAll(0),
+				}).then(res => {
 					this.coupleNum = res.data;
 				})
 			},

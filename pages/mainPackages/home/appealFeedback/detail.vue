@@ -826,7 +826,6 @@
 
 			.textarea {
 				background: #fff;
-				border: 1px solid #edeef0;
 				border-radius: 4px;
 			}
 		}

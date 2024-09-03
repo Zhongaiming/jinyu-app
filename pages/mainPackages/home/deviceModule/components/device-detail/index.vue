@@ -1,7 +1,7 @@
 <template>
 	<!-- 设备详情 -->
 	<view>
-		<u-popup :show="showDetail" mode="bottom">
+		<u-popup :show="showDetail" mode="bottom" @close="showDetail = !showDetail">
 			<view class="detail-content">
 				<view class="top">
 					<view class="back" @click="showDetail = !showDetail">返回</view>
@@ -73,10 +73,9 @@
 							<view class="name">备注和编号</view>
 						</view>
 
-						<view v-show="decideType == '扭蛋机'" @click="railReset()">
+						<view v-if="decideType == '扭蛋机'" @click="railReset()">
 							<view class="icons-wrapper">
-								<image style="width: 25px;" :src="`${$baseUrl}appV4/device/reset.png`" alt=""
-									mode="widthFix" />
+								<xls-image style="width: 25px;" :src="`${$baseUrl}appV4/device/reset.png`" alt="" mode="widthFix" />
 							</view>
 							<view class="name">仓位重置</view>
 						</view>
@@ -112,8 +111,8 @@
 						</view>
 					</view>
 					<!-- 参数设置 -->
-					<view class="choose" @click="parameterSet" v-hasPermi="['app:device:index:parameter']"
-						v-if="decideType != '售货机'">
+					<view class="choose" @click="parameterSet" 
+						v-hasPermi="['app:device:index:parameter', 'app:shj:params:read']">
 						<view class="left">参数设置</view>
 						<view class="right">
 							<view class="port">接口板</view>
@@ -122,16 +121,8 @@
 							</view>
 						</view>
 					</view>
-					<!-- shj -->
-					<view class="choose" @click="parameterSet" v-else v-hasPermi="['app:shj:params:read']">
-						<view class="left">参数设置</view>
-						<view class="right">
-							<view class="port">接口板</view>
-							<view class="arrow">
-								<u-icon name="arrow-right" size="36" color="#bbb8b8" />
-							</view>
-						</view>
-					</view>
+					
+					
 					<!-- 礼品 -->
 					<view @click="
               $router.push({
@@ -224,17 +215,7 @@
 						</view>
 					</view>
 					<!-- 转移设备 -->
-					<view class="choose" @click="
-              $router.push({
-                path: '/deviceManagement/shiftDevice',
-                query: {
-                  deviceNumber,
-                  decideType,
-                  placeId: placeDeviceNum.placeId,
-                  placeName: placeDeviceNum.placeName,
-                },
-              })
-            " v-hasPermi="['app:device:index:shift']">
+					<view class="choose" @click="goTo('shift')" v-hasPermi="['app:device:index:shift']">
 						<view class="left">转移设备</view>
 						<view class="right">
 							<view class="text"></view>
@@ -243,6 +224,7 @@
 							</view>
 						</view>
 					</view>
+					
 					<!-- 解绑设备 -->
 					<!-- 大于 10 并且 售货机，隐藏解绑 -->
 					<view class="choose" v-if="!(longUntie > 10 && decideType == '售货机')" @click="deviceUntie"
@@ -255,12 +237,14 @@
 							</view>
 						</view>
 					</view>
+					
 					<!-- 禁用启用 -->
 					<view class="choose" @click="deviceDisable(1, placeDeviceNum.state)">
-						<view class="left" v-html="placeDeviceNum.state ? '禁用设备' : '启用设备'"></view>
+						<view class="left">{{placeDeviceNum.state ? '禁用设备' : '启用设备'}}</view>
 						<view class="right">
-							<view class="port disable" v-show="!placeDeviceNum.state"
-								v-html="!placeDeviceNum.state ? '已禁用' : ''"></view>
+							<view class="port disable" v-if="!placeDeviceNum.state">
+								{{!placeDeviceNum.state ? '已禁用' : ''}}
+							</view>
 							<view class="arrow">
 								<u-icon name="arrow-right" size="36" color="#bbb8b8" />
 							</view>
@@ -278,14 +262,7 @@
 					</view>
 
 					<!--上线离线时点 -->
-					<view @click="
-              $router.push({
-                name: 'ifOnline',
-                query: {
-                  deviceInfo: JSON.stringify(placeDeviceNum),
-                },
-              })
-            " v-hasPermi="['app:device:index:records']" class="choose">
+					<view @click="goTo('deviceOnlineRecord')" v-hasPermi="['app:device:index:records']" class="choose">
 						<view class="left">上线离线时间点</view>
 						<view class="right">
 							<view class="text"></view>
@@ -316,14 +293,14 @@
 				</view>
 
 				<view class="bottom-box">
-					<view class="bottom-name">
+					<view class="bottom-name" @click="beforeDoll">
 						<view class="name-left">
 							<span class="remark">机台编号</span>选填
 						</view>
 						<view class="name-right">
-							<u-field v-model="dollNumber" type="digit" placeholder="请输入机台编号" input-align="right"
-								maxlength="4" @focus="stopKeyborad" @click="beforeDoll" /><u-icon name="arrow"
-								color="#5241FF" />
+							<input v-model="dollNumber" type="number" placeholder="请输入机台编号"
+								maxlength="4" @focus="stopKeyborad" class="input" @click.native="beforeDoll"/>
+							<u-icon name="arrow-right" color="#5241FF" size="36" />
 						</view>
 					</view>
 					<view class="bottom-name" @click="clearDollNumber">
@@ -331,8 +308,8 @@
 							<span class="remark">清除机台编号</span>
 						</view>
 						<view class="name-right">
-							<u-field disabled />
-							<u-icon name="delete-o" color="red" size="22" />
+							<input disabled  class="input"/>
+							<u-icon name="trash" color="red" size="44" />
 						</view>
 					</view>
 
@@ -390,11 +367,8 @@
 				</view>
 
 				<view class="btn-box-wrapper">
-					<view class="btn" @click="
-              (dollEnterValue = ''),
-                (showDollNumber = !showDollNumber),
-                (showRemark = !showRemark)
-            ">
+					<view class="btn" 
+					@click="(dollEnterValue = ''),(showDollNumber = !showDollNumber),(showRemark = !showRemark)">
 						取消
 					</view>
 					<view class="btn confirm" @click="comfirmMethedRoll">确定</view>
@@ -472,9 +446,10 @@
 				</view>
 				<view class="state-content">
 					<view class="reason-wrapper">
-						<view class="list" v-for="rea in untieReason" :key="rea.id" :style="{'otherStyle':rea.state}"
-							@click="rea.state = !rea.state">
-							{{ rea.reason }}
+						<view class="list" v-for="reason in untieReason" :key="reason.id" 
+							:class="{'otherStyle':reason.state}"
+							@click="reason.state = !reason.state">
+							{{ reason.reason }}
 						</view>
 					</view>
 					<view class="other-wrapper">
@@ -487,7 +462,7 @@
 							的设备升级方案，升级热线服务时间：每天 9:00-21:00。
 						</view>
 						<view class="btn-content">
-							<a href="tel:4008073833" class="btn cancel">拨打设备升级热线</a>
+							<view class="btn cancel">拨打设备升级热线</view>
 							<view class="btn comfirm" @click="comfirmBinding">确定解绑</view>
 						</view>
 					</view>
@@ -499,7 +474,6 @@
 
 <script>
 	// import QrCanvas from "./qrCanvas.vue";
-	import QrCanvasRail from "../qr-canvas-rail/index.vue";
 	// import qrCanvasRailMini from "./qrCanvasRailMini.vue";
 	// import {
 	// 	deviceDetail,
@@ -515,7 +489,6 @@
 	// import {
 	// 	getRailCommodityList
 	// } from "@/utils/api/remoteBoot";
-	// import storage from "@/plugins/storage";
 	// import {
 	// 	getMachineNumber
 	// } from "@/utils/api/addDevice";
@@ -524,12 +497,13 @@
 	import {
 		deviceController
 	} from "@/api/index.js";
-
-
+	import QrCanvasRail from "../qr-canvas-rail/index.vue";
+	import cache from '@/common/cache.js';
+	
 	export default {
 		components: {
-			// QrCanvas,
 			QrCanvasRail,
+			// QrCanvas,
 			// qrCanvasRailMini
 		},
 		data() {
@@ -639,12 +613,183 @@
 			};
 		},
 		methods: {
+			//设备详情
+			async isShowdetail(deviceNumber) {
+				this.deviceNumber = deviceNumber;
+				this.fromType = "来自本身";
+				let devDetail = await deviceController.deviceDetail({
+					deviceNumber: this.deviceNumber
+				});
+				if (devDetail.code == 200) {
+					this.placeDeviceNum = devDetail.data;
+					this.remark = devDetail.data.remark;
+					this.dollNumber = devDetail.data.dollNumber ?
+						devDetail.dollNumber :
+						"";
+					this.dollNumber * 1 > 32 ?
+						(this.dollEnterValue = this.dollNumber) :
+						(this.activeItem = this.dollNumber);
+					this.decideType = this.placeDeviceNum.typeName;
+					if (
+						this.decideType == "娃娃机" ||
+						this.decideType == "兑币机" ||
+						this.decideType == "儿童类"
+					) {
+						this.getGiftinfo();
+					}
+				} else {
+					this.$toast(devDetail.message);
+					this.placeDeviceNum = [];
+				}
+				this.showDetail = !this.showDetail;
+				this.wwjByPlace();
+				//设备货道
+				return
+				let gash = await deviceController.getRailCommodityList({
+					deviceNumber: this.deviceNumber,
+				});
+				if (gash.code == 200) {
+					let railEgg = gash.data[0];
+					this.railNumber = railEgg.railNumber;
+					this.shippingSpace = railEgg.shippingSpace;
+				} else {
+					this.railNumber = "";
+					this.shippingSpace = "";
+				}
+				
+				let res = await api.agentUnbind({
+					deviceNumber: this.deviceNumber
+				});
+				if (res.code == 200) {
+					this.longUntie = res.data;
+				}
+			},
+			goTo(route) {
+				if(route == 'shift') {
+					this.$goTo("/pages/mainPackages/home/deviceModule/children/deviceShiftPage", "navigateTo", {
+						deviceNumber: this.deviceNumber,
+						decideType: this.decideType,
+						placeId: this.placeDeviceNum.placeId,
+						placeName: this.placeDeviceNum.placeName,
+					})
+					this.showDetail = !this.showDetail;
+					return
+				}
+				// 在线离线记录
+				this.$goTo("/pages/mainPackages/home/deviceModule/children/deviceOnlineRecord", "navigateTo", {
+					deviceInfo: this.placeDeviceNum
+				})
+			},
 			getClass(index) {
 				return this.disableList.includes(index) ?
 					'item-done' :
 					index == this.activeItem ?
 					'item-active' :
 					'item-option'
+			},
+			//禁用及同步提示
+			deviceDisable(params, state) {
+				if (params == 1) {
+					if (state) {
+						this.$modal("禁用设备后，用户将无法付款启动该设备。你可以通过“启用设备”来恢复使用，确定要禁用设备吗？", {
+								title: "温馨提示",
+							})
+							.then(() => {
+								this.startUsing();
+							})
+							.catch(() => {});
+					} else {
+						this.$modal("确定要启用该设备吗？", {
+								title: "温馨提示",
+							})
+							.then(() => {
+								this.startUsing();
+							})
+							.catch(() => {});
+					}
+				} else if (params == 2) {
+					this.$modal("请保持设备通电及网络连接正常，确认后将同步改设备货道和商品信息至机台?", {
+							title: "温馨提示",
+						})
+						.then(() => {})
+						.catch(() => {});
+				}
+			},
+			//禁用和启用设备
+			async startUsing() {
+				let res = await deviceController.editState({
+					deviceNumber: this.deviceNumber
+				});
+				if (res.code == 200) {
+					this.placeDeviceNum.state = !this.placeDeviceNum.state;
+					this.$emit("updatedDevice", "forbidden");
+				}
+			},
+			//解绑提示
+			deviceUntie() {
+				this.showDetail = !this.showDetail;
+				this.fromType = "来自本身";
+				this.$modal("您确定要解绑该设备吗？解绑后， 它将无法使用在线支付/启动等。", {
+						title: "温馨提示",
+						confirmColor: "#f73e3e",
+						confirmText: "解绑",
+					})
+					.then(() => {
+						this.deviceState = !this.deviceState;
+					})
+					.catch(() => {
+						this.showDetail = !this.showDetail;
+					});
+			},
+			//解绑方法
+			cancelMethed() {
+				this.deviceState = !this.deviceState;
+				if (this.fromType == "来自本身") {
+					this.showDetail = !this.showDetail;
+				} else if (this.fromType == "来自批量") {
+					this.$parent.manyBind();
+				}
+			},
+			pickerUntieReason() {
+				let reasonList = "";
+				this.untieReason.forEach((res) => {
+					if (res.state) {
+						reasonList += res.reason + ",";
+					}
+				});
+				return reasonList + this.otherReason;
+			},
+			//解绑设备
+			async comfirmBinding() {
+				let reason = this.pickerUntieReason();
+				if (!reason) {
+					return this.$toast("请您务必要告诉我们您解绑的原因~");
+				}
+				if (this.fromType == "来自本身") {
+					deviceController.editBinding({
+						deviceNumber: this.deviceNumber,
+						unbindingReason: reason,
+					}).then((res) => {
+						if (res.code == 200) {
+							this.deviceState = !this.deviceState;
+							this.$emit("updatedDevice", "unbundle");
+							this.$toast("解绑成功");
+						}
+					});
+				} else if (this.fromType == "来自批量") {
+					editBindingList({
+						deviceNumber: this.deviceNumber,
+						unbindingReason: reason,
+					}).then((res) => {
+						if (res.code == 200) {
+							this.deviceState = false;
+							this.$parent.page = 0;
+							this.$parent.onEarth = false;
+							this.$parent.getDevicelist();
+							this.$toast("解绑成功");
+						}
+					});
+				}
 			},
 			/**
 			 * @description: 仓位重置
@@ -656,22 +801,35 @@
 						confirmColor: "#5241FF",
 					})
 					.then(() => {
-						api.resetting({
+						deviceController.resetting({
 							deviceNumber: this.deviceNumber
 						}).then((res) => {
-							if (res.data.code == 0) {
-								this.$parent.page =
-									this.$parent.page > 0 ? this.$parent.page - 1 : 0;
-								this.$parent.getDevicelist();
+							if (res.code == 200) {
 								this.$toast("重置成功~");
+								this.$emit("updatedDevice", "unbundle");
 							}
 						});
 					})
 					.catch(() => {});
 			},
+			// === 备注 和 机台编号
+			// 已注册机台编号
 			stopKeyborad() {
 				uni.hideKeyboard();
-				// document.activeElement.blur();
+			},
+			wwjByPlace() {
+				deviceController.getMachineNumber({
+					placeId: this.placeDeviceNum.placeId
+				}).then((res) => {
+					if (res.code == 200) {
+						this.disableList = [];
+						res.data.map((item) => {
+							if (this.placeDeviceNum.dollNumber != item && item) {
+								this.disableList.push(item * 1);
+							}
+						});
+					}
+				});
 			},
 			//机台编号
 			chooseOption(params) {
@@ -724,192 +882,23 @@
 				this.showDollNumber = !this.showDollNumber;
 				this.showRemark = !this.showRemark;
 			},
-			//已注册机台编号
-			wwjByPlace() {
-				getMachineNumber({
-					placeId: this.placeDeviceNum.placeId
-				}).then((res) => {
-					if (res.code == 200) {
-						this.disableList = [];
-						res.data.data.map((item) => {
-							if (this.placeDeviceNum.dollNumber != item && item) {
-								this.disableList.push(item * 1);
-							}
-						});
-					}
-				});
-			},
-			//解绑方法
-			cancelMethed() {
-				this.deviceState = !this.deviceState;
-				if (this.fromType == "来自本身") {
-					this.showDetail = !this.showDetail;
-				} else if (this.fromType == "来自批量") {
-					this.$parent.manyBind();
-				}
-			},
-			//设备详情
-			async isShowdetail(deviceNumber) {
-				this.deviceNumber = deviceNumber;
-				this.fromType = "来自本身";
-				let devDetail = await deviceController.deviceDetail({
-					deviceNumber: this.deviceNumber
-				});
-				if (devDetail.code == 200) {
-					this.placeDeviceNum = devDetail.data;
-					this.remark = devDetail.data.remark;
-					this.dollNumber = devDetail.data.dollNumber ?
-						devDetail.dollNumber :
-						"";
-					this.dollNumber * 1 > 32 ?
-						(this.dollEnterValue = this.dollNumber) :
-						(this.activeItem = this.dollNumber);
-					this.decideType = this.placeDeviceNum.typeName;
-					if (
-						this.decideType == "娃娃机" ||
-						this.decideType == "兑币机" ||
-						this.decideType == "儿童类"
-					) {
-						this.getGiftinfo();
-					}
-				} else {
-					this.$toast(devDetail.message);
-					this.placeDeviceNum = [];
-				}
-				this.showDetail = !this.showDetail;
-				//设备货道
-				return
-				let gash = await deviceController.getRailCommodityList({
-					deviceNumber: this.deviceNumber,
-				});
-				if (gash.code == 200) {
-					let railEgg = gash.data[0];
-					this.railNumber = railEgg.railNumber;
-					this.shippingSpace = railEgg.shippingSpace;
-				} else {
-					this.railNumber = "";
-					this.shippingSpace = "";
-				}
-				this.wwjByPlace();
-				let res = await api.agentUnbind({
-					deviceNumber: this.deviceNumber
-				});
-				if (res.code == 200) {
-					this.longUntie = res.data;
-				}
-			},
-			//禁用及同步提示
-			deviceDisable(params, state) {
-				if (params == 1) {
-					if (state) {
-						this.$modal("禁用设备后，用户将无法付款启动该设备。你可以通过“启用设备”来恢复使用，确定要禁用设备吗？", {
-								title: "温馨提示",
-							})
-							.then(() => {
-								this.startUsing();
-							})
-							.catch(() => {});
-					} else {
-						this.$modal("确定要启用该设备吗？", {
-								title: "温馨提示",
-							})
-							.then(() => {
-								this.startUsing();
-							})
-							.catch(() => {});
-					}
-				} else if (params == 2) {
-					this.$modal("请保持设备通电及网络连接正常，确认后将同步改设备货道和商品信息至机台?", {
-							title: "温馨提示",
-						})
-						.then(() => {})
-						.catch(() => {});
-				}
-			},
-			//禁用和启用设备
-			async startUsing() {
-				let res = await editState({
-					deviceNumber: this.deviceNumber
-				});
-				if (res.code == 200) {
-					this.placeDeviceNum.state = !this.placeDeviceNum.state;
-					this.$emit("updatedDevice", "forbidden");
-				}
-			},
-			//解绑提示
-			deviceUntie() {
-				this.showDetail = !this.showDetail;
-				this.fromType = "来自本身";
-				this.$modal("您确定要解绑该设备吗？解绑后， 它将无法使用在线支付/启动等。", {
-						title: "温馨提示",
-						confirmColor: "#f73e3e",
-						confirmText: "解绑",
-					})
-					.then(() => {
-						this.deviceState = !this.deviceState;
-					})
-					.catch(() => {
-						this.showDetail = !this.showDetail;
-					});
-			},
-			pickerUntieReason() {
-				let reasonList = "";
-				this.untieReason.forEach((res) => {
-					if (res.state) {
-						reasonList += res.reason + ",";
-					}
-				});
-				return reasonList + this.otherReason;
-			},
-			//解绑设备
-			async comfirmBinding() {
-				let reason = this.pickerUntieReason();
-				if (!reason) {
-					return this.$toast("请您务必要告诉我们您解绑的原因~");
-				}
-				if (this.fromType == "来自本身") {
-					editBinding({
-						deviceNumber: this.deviceNumber,
-						unbindingReason: reason,
-					}).then((res) => {
-						if (res.code == 200) {
-							this.deviceState = !this.deviceState;
-							this.$emit("updatedDevice", "unbundle");
-							this.$toast("解绑成功");
-						}
-					});
-				} else if (this.fromType == "来自批量") {
-					editBindingList({
-						deviceNumber: this.deviceNumber,
-						unbindingReason: reason,
-					}).then((res) => {
-						if (res.code == 200) {
-							this.deviceState = false;
-							this.$parent.page = 0;
-							this.$parent.onEarth = false;
-							this.$parent.getDevicelist();
-							this.$toast("解绑成功");
-						}
-					});
-				}
-			},
 			//清除机台编号
 			clearDollNumber() {
 				this.$modal("您确定要清除当前设备的机台编号吗？", {
 						title: "温馨提示",
 					})
 					.then(() => {
-						this.loading();
-						updateMachineNumber({
+						deviceController.updateMachineNumber({
 							placeId: this.placeDeviceNum.placeId,
 							deviceNumber: this.placeDeviceNum.deviceNumber,
 							dollNumber: "",
 						}).then((res) => {
-							this.clearing();
 							if (res.code == 200) {
 								this.placeDeviceNum.dollNumber = "";
 								this.dollNumber = "";
-								this.$parent.deviceMsg.dollNumber = "";
+								this.$emit("updatedDevice", {
+									dollNumber: ""
+								});
 								this.$nextTick(() => {
 									this.$toast("清除成功~");
 								});
@@ -925,24 +914,22 @@
 				if (this.dollNumber == "") {
 					this.$toast("机台编号不能为空~");
 				}
-				this.loading();
-				let res = await editRemark({
+				let res = await deviceController.editRemark({
 					deviceNumber: this.placeDeviceNum.deviceNumber,
 					remark: this.remark,
 				});
-				let doll = await updateMachineNumber({
+				let doll = await deviceController.updateMachineNumber({
 					placeId: this.placeDeviceNum.placeId,
 					deviceNumber: this.placeDeviceNum.deviceNumber,
 					dollNumber: this.dollNumber,
 				});
-				this.clearing();
 				if (res.code == 200 && doll.code == 200) {
 					let remark = {
-						remark: this.remark
+						remark: this.remark,
+						dollNumber: this.dollNumber
 					};
 					this.placeDeviceNum.remark = this.remark;
 					this.placeDeviceNum.dollNumber = this.dollNumber;
-					this.$parent.deviceMsg.dollNumber = this.dollNumber;
 					this.$emit("updatedDevice", remark);
 					this.$nextTick(() => {
 						this.$toast("修改成功");
@@ -951,6 +938,42 @@
 					this.showRemark = !this.showRemark;
 				}
 			},
+			//shj 参数设置
+			async parameterSet() {
+				let deviceLogin = {
+					uuid: this.placeDeviceNum.uuid,
+					loginId: this.placeDeviceNum.deviceLoginId,
+					onlineState: this.placeDeviceNum.onlineState,
+				};
+				cache.setCache("deviceLogin", deviceLogin);
+				// if (this.decideType == "售货机") {
+				// 	this.$router.push({
+				// 		path: "/deviceManagement/shjParameter",
+				// 		query: {
+				// 			deviceNumber: this.deviceNumber,
+				// 		},
+				// 	});
+				// 	return 
+				// }
+				if (!this.placeDeviceNum.deviceLoginId)
+					return this.$modal("设备上报信息不全，请尝试断电重启设备！",{
+						title: "温馨提示",
+						confirmColor: "#5241FF",
+						showCancel: false
+					}).then(() => {});
+					
+				if (this.placeDeviceNum.onlineState) {
+					this.$goTo("/pages/mainPackages/home/deviceModule/children/deviceParamSet");
+				} else {
+					this.$modal("设备处于离线状态无法设置，请确保设备在线",{
+						title: "设置失败",
+						confirmColor: "#5241FF",
+						showCancel: false
+					}).then(() => {});
+				}
+			},
+
+			
 			//娃娃机修改单价
 			eidtPrice() {
 				if (this.currency == "") {
@@ -1009,42 +1032,6 @@
 						.catch((err) => {});
 				}
 			},
-			//shj 参数设置
-			async parameterSet() {
-				let deviceLogin = {
-					uuid: this.placeDeviceNum.uuid,
-					loginId: this.placeDeviceNum.deviceLoginId,
-					onlineState: this.placeDeviceNum.onlineState,
-				};
-				storage.setSion("deviceLogin", deviceLogin);
-
-				if (this.decideType == "售货机") {
-					return this.$router.push({
-						path: "/deviceManagement/shjParameter",
-						query: {
-							deviceNumber: this.deviceNumber,
-						},
-					});
-				}
-				if (!this.placeDeviceNum.deviceLoginId)
-					return this.$dialog({
-						title: "温馨提示",
-						message: "设备上报信息不全，请尝试断电重启设备！",
-						confirmButtonColor: "#5241FF",
-						width: 280,
-					}).then(() => {});
-				if (this.placeDeviceNum.onlineState) {
-					this.$router.push({
-						path: "/deviceManagement/parameterSetting",
-					});
-				} else {
-					this.$dialog({
-						title: "设置失败",
-						message: "设备处于离线状态无法设置，请确保设备\n在线",
-						confirmButtonColor: "#5241FF",
-					}).then(() => {});
-				}
-			},
 			/**
 			 * @description: 重启设备
 			 * @return {*}
@@ -1085,12 +1072,7 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
-
-	.otherStyle {
-		background: #5241FF;
-		color: #fff;
-	}
-
+	
 	.maxWidth {
 		max-width: 180px;
 		display: inline-block;
@@ -1293,7 +1275,7 @@
 
 	// 备注与机台号
 	.remark-content {
-		height: 100%;
+		height: 80vh;
 		width: 100%;
 		background-color: #f3f4f5;
 		overflow-y: auto;
@@ -1382,6 +1364,11 @@
 					color: #5241ff;
 					display: flex;
 					align-items: center;
+					
+					.input {
+						width: 100%;
+						text-align: right;
+					}
 				}
 			}
 
@@ -1719,6 +1706,7 @@
 				flex-wrap: wrap;
 				justify-content: space-between;
 				margin-top: 10px;
+				font-size: 13px;
 
 				.list {
 					background: #efeff4;
@@ -1728,6 +1716,11 @@
 					margin-bottom: 10px;
 					text-align: center;
 					width: 31%;
+				}
+				
+				.otherStyle {
+					background: #5241FF;
+					color: #fff;
 				}
 			}
 

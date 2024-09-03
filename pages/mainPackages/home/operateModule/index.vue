@@ -530,8 +530,9 @@
 	.arrows-bottom {
 		position: absolute;
 		top: 100%;
+		left: 0;
+		right: 0;
 		width: 100%;
-		max-width: 375px;
 		box-sizing: border-box;
 		height: 44px;
 		transition: height 0.2s;

@@ -25,10 +25,8 @@ if (process.env.NODE_ENV === 'development') {
 	// config.baseUrl = 'http://tianan.st88168.top:825'
 } else {
 	// 生产环境
-	// config.baseUrl = 'http://www.redorange.top:658'
 	config.baseUrl = 'https://xls.redorange.top'
 	config.proxyUrl = 'https://xls.redorange.top'
-	// config.baseUrl = 'http://tianan.st88168.top:825'
 }
 
 

@@ -1,13 +1,16 @@
 <template>
 	<view class="xls-order-detail">
 		<jy-navbar title="订单详情" bgColor="#f5f5f5"></jy-navbar>
-		<view class="xls-box-style" @click="goTo('refundDetail')" v-if="order.amountRefund && order.refundState == 1">
+		<view class="xls-box-style" @click="goTo('refundDetail')">
 			<view class="device-style">
-				<span>已退 ¥{{order.amountRefund}}</span>
-				<span class="state arrow">{{stateDict[order.state]}}</span>
+				<span v-if="order.amountRefund && order.refundState == 1">已退 ¥{{order.amountRefund}}</span>
+				<span v-else> ¥{{order.amountTotal}}</span>
+				<span class="state arrow" :style="[{color: stateColorDict[order.state]}]">
+					{{stateDict[order.state]}}
+				</span>
 			</view>
 			<view class="text-style">
-				{{order.refundTime}}
+				{{order.updateTime}}
 			</view>
 		</view>
 
@@ -59,15 +62,24 @@
 
 			<view class="price-list">
 				<view class="list">
+					<view class="uicon-wrapper" @click="double=!double">
+						<u-icon name="arrow-right-double" color="#c6c6c6" size="36" class="uicon" v-if="double"></u-icon>
+						<u-icon name="arrow-left-double" color="#c6c6c6" size="36" class="uicon" v-else></u-icon>
+					</view>
 					<span>需付款：</span>
 					<span class="text">¥{{ order.amount }}</span>
 				</view>
-				<view class="list">
+				<view class="list" v-if="double">
 					<span>实付款：</span>
 					<span class="text">¥{{ order.amountTotal }}</span>
 				</view>
-				<view class="list">
+				<view class="list" v-if="double">
+					<span>服务费：</span>
+					<span class="text">¥{{ getPrice(order) }}</span>
+				</view>
+				<view class="list" v-if="double">
 					<span>商户实收款：</span>
+					<!-- <span class="main-text">¥{{ getPrice(order) }}</span> -->
 					<span class="main-text">¥{{ order.commercialRealCollection }}</span>
 				</view>
 			</view>
@@ -76,7 +88,8 @@
 		<view class="xls-box-style">
 			<view class="record-detail-list">
 				<view class="title">
-					订单编号
+					<!-- 订单编号 -->
+					平台单号
 				</view>
 				<view class="value">
 					<view class="">
@@ -159,7 +172,7 @@
 				</view>
 			</view>
 
-			<view class="record-detail-list">
+			<!-- <view class="record-detail-list">
 				<view class="title">
 					平台单号
 				</view>
@@ -171,7 +184,7 @@
 				<view class="copy" @click="copyEvent(order.orderNo)">
 					复制
 				</view>
-			</view>
+			</view> -->
 
 			<view class="record-detail-list">
 				<view class="title">
@@ -272,7 +285,8 @@
 	} from '@/api/index.js';
 	import {
 		mapGetters
-	} from 'vuex'
+	} from 'vuex';
+	import suan from "@/plugins/floastCalculate.js";
 	export default {
 		data() {
 			return {
@@ -310,12 +324,12 @@
 					null: "#8c8c8c"
 				},
 				refundDict: {
-					0: '出货失败退款',
-					1: '出货失败部分退款',
+					0: '出货失败，自动退款',
+					1: '出货失败，部分退款',
 					2: '人工退款（全额）',
-					3: '通讯失败退款',
-					4: '人工部分退款（部分商品）',
-					5: '人工部分退款（指定金额）',
+					3: '通讯失败，自动退款',
+					4: '人工退款（部分商品）',
+					5: '人工退款（指定金额）',
 					null: "其他"
 				},
 				payTypeDict: {
@@ -324,6 +338,7 @@
 					2: '余额支付',
 					null: "其他"
 				},
+				double: false,
 			}
 		},
 		computed: {
@@ -383,6 +398,15 @@
 				document.body.removeChild(textarea);
 				this.$toast("复制成功");
 			},
+			// 服务费
+			getPrice(order) {
+				// deviceCommission 设备手续费
+				// agentServiceCharge 代理商服务费
+				// deviceServiceCharge 设备服务费	
+				const {deviceCommission, agentServiceCharge, deviceServiceCharge} = order;
+				const result = suan.addFloast((deviceCommission ?? 0), (agentServiceCharge ?? 0));
+				return suan.addFloast(result, (deviceServiceCharge ?? 0));
+			},
 		}
 	}
 </script>
@@ -405,8 +429,8 @@
 			right: 10rpx;
 			top: 50%;
 			transform: translateY(-50%) rotate(45deg);
-			border-right: 2rpx solid #52c41a;
-			border-top: 2rpx solid #52c41a;
+			border-right: 2rpx solid;
+			border-top: 2rpx solid;
 			width: 12rpx;
 			height: 12rpx;
 		}
@@ -419,7 +443,6 @@
 
 		&-text {
 			color: rgba(0, 0, 0, .85);
-
 			font-size: 30rpx;
 			font-weight: 500;
 		}
@@ -477,7 +500,19 @@
 
 			.list {
 				margin-bottom: 12rpx;
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				
+				.uicon-wrapper {
+					margin-right: 12rpx;
+					.uicon {
+						transform: rotate(90deg);
+					}
+				}
 			}
+			
+			
 
 			.main-text {
 				color: rgba(0, 0, 0, .85);
@@ -493,7 +528,7 @@
 		margin-bottom: 20rpx;
 
 		.title {
-			width: 156rpx;
+			width: 120rpx;
 			color: rgba(0, 0, 0, .45);
 			white-space: nowrap;
 		}
@@ -523,7 +558,7 @@
 			text-size-adjust: 100% !important;
 			text-align: right;
 			word-break: break-all;
-			margin-left: 40rpx;
+			margin-left: 20rpx;
 		}
 
 		.value-text {

@@ -231,4 +231,69 @@ export default class deviceController {
 			data
 		})
 	}
+	// 设备在线离线记录
+	static getOnlineList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/getOnlineList',
+			method: 'GET',
+			data
+		})
+	}
+	// 设备状态：禁用，启用
+	static editState(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/editState',
+			method: 'POST',
+			data
+		})
+	}
+	// 设备解绑
+	static editBinding(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/editBinding',
+			method: 'POST',
+			data
+		})
+	}
+	// 转移设备
+	static moveDevice(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/moveDevice',
+			method: 'POST',
+			data
+		})
+	}
+	// 仓位重置
+	static resetting(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/resetting',
+			method: 'POST',
+			data
+		})
+	}
+	// 备注 机台编号
+	static getMachineNumber(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/getMachineNumber',
+			method: 'GET',
+			data
+		})
+	}
+	// 修改设备备注和标签
+	static editRemark(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/editRemark',
+			method: 'POST',
+			data
+		})
+	}
+	// 修改机台编号
+	static updateMachineNumber(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/updateMachineNumber',
+			method: 'POST',
+			data
+		})
+	}
+	
 }

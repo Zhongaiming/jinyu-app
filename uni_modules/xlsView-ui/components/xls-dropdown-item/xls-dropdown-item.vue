@@ -4,32 +4,24 @@
 		</view>
 		<view class="zb-popup zb-popup--top zb-dropdown-item__content zb-popup-slide-top-leave-active"
 			:class="[{'content--visible_Y':mask}]">
-			<view style="min-height: 50px;">
-				 <slot></slot>
-
-				<!-- <view
-					class="zb-cell zb-cell--clickable zb-dropdown-item__option"
-					v-for="item,index in options"
-					:key="index"
-					@click.stop="clickCell(item)"
-				>
-				  <view class="zb-cell__title"
-						:class="[{
+			<view style="min-height: 50px;" v-if="custom">
+				<slot></slot>
+			</view>
+			<view style="min-height: 50px;" v-else>
+				<view class="zb-cell zb-cell--clickable zb-dropdown-item__option" v-for="item,index in options"
+					:key="index" @click.stop="clickCell(item)">
+					<view class="zb-cell__title" :class="[{
 						  'active-cell__title':mValue===item.value
-						}]"
-						:style="[{
+						}]" :style="[{
 						  color:mValue===item.value?activeColor:''
-						}]"
-				  >
-					<text>{{item.text}}</text>
-				  </view>
-				  <view class="zb-cell__value" v-if="mValue===item.value">
-					<text
-						class="iconfont icon-duihao active-icon"
-						:style="[{color:showWrap?activeColor:''}]"
-					></text>
-				  </view>
-				</view> -->
+						}]">
+						<text>{{item.text}}</text>
+					</view>
+					<view class="zb-cell__value" v-if="mValue===item.value">
+						<text class="iconfont icon-duihao active-icon"
+							:style="[{color:showWrap?activeColor:''}]"></text>
+					</view>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -41,6 +33,10 @@
 			virtualHost: true
 		},
 		props: {
+			custom: {
+				type: Boolean,
+				default: true
+			},
 			value: {
 				type: [String, Number],
 			},
@@ -59,7 +55,7 @@
 				type: String,
 				default: "title"
 			},
-			Badge:{
+			Badge: {
 				type: Boolean,
 				default: false
 			}
@@ -72,32 +68,10 @@
 		data() {
 			return {
 				zIndex: null,
-				activeColor: null,
+				activeColor: '#5241ff',
 				mask: false,
 				showWrap: false,
 				// title: "title",
-				boxList: [{
-						text: '001'
-					},
-					{
-						text: '001'
-					},
-					{
-						text: '001'
-					},
-					{
-						text: '001'
-					},
-					{
-						text: '001'
-					},
-					{
-						text: '001'
-					},
-					{
-						text: '001'
-					}
-				]
 			}
 		},
 		watch: {
@@ -188,7 +162,7 @@
 			clickCell(item) {
 				this.changeStatus(this, 'mask', 'showWrap', false)
 				if (item.value !== this.mValue) {
-					this.title = item.text
+					// this.title = item.text
 					this.$emit('update:modelValue', item.value);
 					this.$emit('input', item.value);
 				}
@@ -233,7 +207,7 @@
 		created() {
 			this.bindRelation()
 			let parentDropMenu = this.getDropdown()
-			this.activeColor = parentDropMenu.activeColor
+			// this.activeColor = parentDropMenu.activeColor
 			this.zIndex = parentDropMenu.zIndex
 		},
 		beforeDestroy() {
@@ -248,8 +222,6 @@
 </script>
 
 <style lang="scss" scoped>
-
-
 	.zb-dropdown-item {
 		position: fixed;
 		right: 0;

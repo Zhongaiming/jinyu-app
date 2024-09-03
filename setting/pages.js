@@ -86,6 +86,34 @@ const pages = [{
 		}
 	},
 	{
+		"path": "pages/mainPackages/home/deviceModule/children/deviceParamSet",
+		"name": "deviceParamSet",
+		"meta": {
+			"title": "设备参数设置"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/deviceModule/children/paramSetDetail",
+		"name": "paramSetDetail",
+		"meta": {
+			"title": "设备参数设置详情"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/deviceModule/children/deviceShiftPage",
+		"name": "deviceShiftPage",
+		"meta": {
+			"title": "设备转移"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/deviceModule/children/deviceOnlineRecord",
+		"name": "deviceOnlineRecord",
+		"meta": {
+			"title": "设备在线离线记录"
+		}
+	},
+	{
 		"path": "pages/mainPackages/home/deviceModule/deviceFault",
 		"name": "deviceModuleFault",
 		"meta": {

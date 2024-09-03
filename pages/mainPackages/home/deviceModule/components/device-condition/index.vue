@@ -24,12 +24,12 @@
 		<!-- 场地/设备类型 -->
 		<view class="place-type-wrapper">
 			<view class="item-style" v-hasPermi="['app:place:index']" @click="$refs.placeList.showPlacePopup(placeId)">
-				<span>{{ placeName }}</span>
+				<view class="text">{{ placeName }}</view>
 				<u-icon name="arrow-down-fill" color="#5c5858" size="26" class="icons" />
 			</view>
 			<view class="line" v-hasPermi="['app:place:index']"></view>
 			<view class="item-style" @click="showType = true">
-				<span>{{ deviceTypeName }}</span>
+				<view class="text">{{ deviceTypeName }}</view>
 				<u-icon name="arrow-down-fill" color="#5c5858" size="26" class="icons" />
 			</view>
 		</view>
@@ -320,19 +320,21 @@
 			background: #fff;
 
 			.item-style {
-				width: 100px;
-				max-width: 100px;
-				height: 45px;
-				font-size: 14px;
-				color: rgb(92, 88, 88);
-				text-align: center;
 				display: flex;
 				align-items: center;
-				line-height: 45px;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-
+				color: rgb(92, 88, 88);
+				
+				.text {
+					font-size: 14px;
+					width: 100px;
+					max-width: 100px;
+					text-align: center;
+					line-height: 45px;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+				
 				.icons {
 					// transform: rotate(90deg);
 					margin-left: 3px;

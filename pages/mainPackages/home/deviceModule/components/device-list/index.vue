@@ -19,8 +19,8 @@
 
 				<!-- 第二层 -->
 				<view class="device-list-second-device" :style="{'padding-bottom':item.deviceSwitch?'20rpx':''}">
-					<view v-for="(dev, itemIndex) in item.deviceList" :key="$getUniqueKey(dataIndex, itemIndex)" v-show="item.deviceSwitch"
-						:class="{'device-style': dev.typeName != '扭蛋机'}">
+					<view v-for="(dev, itemIndex) in item.deviceList" :key="$getUniqueKey(dataIndex, itemIndex)"
+						v-show="item.deviceSwitch" :class="{'device-style': dev.typeName != '扭蛋机'}">
 						<view class="device" @click="updataDevice(dev)">
 							<view class="left">
 								<view class="name">
@@ -48,14 +48,14 @@
 						</view>
 
 						<!-- 蛋仓统计 -->
-						<view v-show="railMethod(dev)">
+						<view v-if="railMethod(dev)" @click="closeShow(dev)">
 							<view class="group-box-dec">
-								<span @click="closeShow(dev)">共{{ dev.railNum }}个
+								<span>共{{ dev.railNum }}个
 									{{dev.typeName == "儿童类" ? "座位" : dev.typeName == "扭蛋机" ? "蛋仓" : "机位"}}
 									(在线:{{dev.onlineState == 1 && dev.deviceSignal > 0? dev.railOnlineNum: 0}}
 									离线:{{dev.onlineState == 1 && dev.deviceSignal > 0? dev.railOfflineNum: dev.railNum}})
 								</span>
-								<span @click="closeShow(dev)">
+								<span>
 									<u-icon name="arrow-down-fill" class="play" size="32" color="#8d8d8d"
 										v-show="dev.closeOrshow" />
 									<u-icon name="arrow-up-fill" class="playChang" size="32" color="#8d8d8d"
@@ -66,8 +66,8 @@
 
 						<!-- 第三层 -->
 						<view class="device-list-three-egg" v-if="dev.deviceRailList">
-							<view class="egg-item" v-for="(gash, gashIndex) in dev.deviceRailList" :key="$getUniqueKey(itemIndex, gashIndex)"
-								v-show="dev.closeOrshow">
+							<view class="egg-item" v-for="(gash, gashIndex) in dev.deviceRailList"
+								:key="$getUniqueKey(itemIndex, gashIndex)" v-show="dev.closeOrshow">
 
 								<view class="egg-count">
 									<view>{{ gash.shippingSpace }}/{{ gash.railNumber }}</view>
@@ -136,16 +136,28 @@
 			dataList: {
 				type: Array,
 				default: []
+			},
+			screen: {
+				type: Object,
+				default: () => {
+					return {}
+				}
+			}
+		},
+		data() {
+			return {
+				deviceMsg: {},
+				editEggMsg: {},
 			}
 		},
 		methods: {
 			disableMethod(dev) {
-				return ['娃娃机', '兑币机'].includes(dev.typeName) && dev.state === 0;
+				// return ['娃娃机', '兑币机'].includes(dev.typeName) && dev.state === 0;
+				return dev.state === 0;
 			},
 			railMethod(dev) {
 				return ['扭蛋机', '游戏类', '儿童类', '微抓机'].includes(dev.typeName) && dev.railNum;
 			},
-
 			//设备详情
 			async getRailDetail(item, type) {
 				if (item.deviceSwitch) {
@@ -154,12 +166,13 @@
 					this.$set(item, "deviceSwitch", true);
 				}
 				if (!item.deviceList || (item.deviceNum && !item.deviceList.length)) {
+					const screen = Object.fromEntries(
+						Object.entries(this.screen).filter(([key, value]) => value !== null && value !==
+							undefined && value !== '')
+					);
 					let res = await deviceController.getListDetails({
 						placeId: item.placeId,
-						// onlineState: this.screenList.onlineState,
-						// deviceType: this.screenList.deviceType
-						//   ? this.screenList.deviceType
-						//   : null,
+						...screen
 					});
 					if (res.code == 200) {
 						// 仓位排序
@@ -240,13 +253,30 @@
 				}
 				return this.quickSortDesc(left).concat(pivot, this.quickSortDesc(right));
 			},
-
-			// 
 			// 设备详情
 			updataDevice(dev) {
 				this.$refs.deviceDetailpopup.isShowdetail(dev.deviceNumber);
 				this.deviceMsg = dev;
 			},
+			//更新设备
+			updatedDevice(params) {
+				if (params.hasOwnProperty('remark')) {
+					this.deviceMsg.remark = params.remark;
+				}  
+				if (params.hasOwnProperty('dollNumber')) {
+					this.deviceMsg.dollNumber = params.dollNumber;
+				} 
+				if (params === "forbidden") {
+					this.deviceMsg.state = this.deviceMsg.state == 1 ? 0 : 1;
+				} 
+				if (params === "unbundle") {
+					this.$emit('bingClearDevice', {
+						type: params,
+						params: this.deviceMsg
+					})
+				}
+			},
+
 			//编辑蛋仓
 			showSetEgg(gash, dev) {
 				this.$refs.setting.changSet(

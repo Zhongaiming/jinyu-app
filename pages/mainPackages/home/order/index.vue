@@ -96,9 +96,13 @@
 
 					<u-line hairline></u-line>
 
-					<view class="xls-order-style-refund-reason" v-if="item.amountRefund">
+					<view class="xls-order-style-refund-reason" v-if="item.hasOwnProperty('refundType')">
 						{{refundDict[item.refundType]}}
 					</view>
+					
+					<!-- <view class="xls-order-style-refund-reason" v-if="item.hasOwnProperty('remark')">
+						{{item.remark}}
+					</view> -->
 
 					<view class="xls-order-style-button">
 						<!-- <view class="button">
@@ -170,11 +174,11 @@
 				},
 				refundDict: {
 					0: '出货失败，自动退款',
-					1: '出货失败部分退款',
+					1: '出货失败，部分退款',
 					2: '人工退款（全额）',
-					3: '通讯失败退款',
-					4: '人工部分退款（部分商品）',
-					5: '人工部分退款（指定金额）',
+					3: '通讯失败，自动退款',
+					4: '人工退款（部分商品）',
+					5: '人工退款（指定金额）',
 					null: "其他"
 				},
 				deviceTypeDict: {},

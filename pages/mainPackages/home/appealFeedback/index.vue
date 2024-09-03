@@ -184,7 +184,10 @@
 		},
 		methods: {
 			getCoupleNum() {
-				appealController.appealNotHandleNum().then(res => {
+				appealController.appealNotHandleNum({
+					startTime: getDateAll(30),
+					endTime: getDateAll(0),
+				}).then(res => {
 					this.coupleNum = res.data
 				})
 			},

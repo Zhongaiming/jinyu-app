@@ -203,7 +203,7 @@ export default class placeController {
 	static updatePlaceStaffList(data) {
 		return http.request({
 			url: '/merchant/api/v1/admin/merchant/CustomerServiceStaffPlace/updatePlaceStaffList',
-			method: 'PUT',
+			method: 'POST',
 			data
 		})
 	}

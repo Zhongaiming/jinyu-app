@@ -2,13 +2,17 @@
 	<z-paging ref="paging" v-model="dataList" @query="queryList">
 		<jy-navbar title="补货记录" bgColor="#f5f6f7" slot="top"></jy-navbar>
 		<view class="search-wrapper">
-			<!-- <view class="left">
-				<van-dropdown-menu active-color="#5241FF">
+			<view class="left">
+				<!-- <van-dropdown-menu active-color="#5241FF">
 					<van-dropdown-item v-model="value" :options="option" @change="alterState" />
-				</van-dropdown-menu>
-			</view> -->
-			<xls-image :src="`${$baseUrl}appV4/img/icons/search.png`" alt="" style="padding-right: 10px"
-				@click="alterSearch" class="image" />
+				</van-dropdown-menu>  -->
+				<xls-dropdown-menu ref="dropdown" class="dropdown-style">
+					<xls-dropdown-item name="1-1" :title="typeName" :options="option" v-model="value"
+						@change="alterState" :custom="false">
+					</xls-dropdown-item>
+				</xls-dropdown-menu>
+			</view>
+			<xls-image :src="`${$baseUrl}appV4/img/icons/search.png`" alt="" @click="alterSearch" class="image" />
 			<input type="text" :placeholder="'输入' + typeName" v-model="searchValue" @keyup.13="alterSearch"
 				@blur="searchByBlur" @confirm="alterSearch" />
 		</view>
@@ -28,37 +32,35 @@
 		<xls-place-radio ref="placeList" @getPlaceId="pickerPlace" showAllCheck></xls-place-radio>
 		<!-- calendar -->
 		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="onConfirm"></xls-calendar>
-		
-
 		<view v-for="(item, index) in dataList" :key="index" class="replen-wrapper">
 			<view class="list-item">
 				<p>
 					<span>补货设备</span><span>{{ item.deviceNumber }}-{{ item.shippingSpace }}-{{item.railNumber}}</span>
 				</p>
+				<!-- <p>
+					<span>补货前商品</span><span>{{ item.beforeCommodityName }}</span>
+				</p> -->
 				<p>
-					<span>补货场地</span><span>{{ item.placeName }}</span>
+					<span>补货商品</span><span>{{ item.afterCommodityName }}</span>
 				</p>
 				<p>
 					<span>补货数量</span>
-					<span :style="{color:item.nowQuantity<0?'red':''}">{{item.nowQuantity }}</span>
+					<span :style="{color:item.nowQuantity<0?'red':''}">{{item.nowQuantity}}</span>
 				</p>
 				<p>
-					<span>补货前商品</span><span>{{ item.beforeCommodityName }}</span>
+					<span>补货前库存</span><span>{{ item.rBeforeInventory }}</span>
 				</p>
 				<p>
-					<span>补货后商品</span><span>{{ item.afterCommodityName }}</span>
+					<span>补货后库存</span><span>{{ item.rAfterInventory }}</span>
 				</p>
 				<p>
-					<span>补货前容量</span><span>{{ item.rbeforeCapacity }}</span>
+					<span>补货前容量</span><span>{{ item.rBeforeCapacity }}</span>
 				</p>
 				<p>
-					<span>补货后容量</span><span>{{ item.rafterCapacity }}</span>
+					<span>补货后容量</span><span>{{ item.rAfterCapacity }}</span>
 				</p>
 				<p>
-					<span>补货前库存</span><span>{{ item.rbeforeInventory }}</span>
-				</p>
-				<p>
-					<span>补货后库存</span><span>{{ item.rafterInventory }}</span>
+					<span>补货场地</span><span>{{ item.placeName }}</span>
 				</p>
 				<p>
 					<span>补货操作人</span><span>{{ item.nickName }}</span>
@@ -80,7 +82,6 @@
 		getDateAll
 	} from "@/plugins/utilityClass";
 	export default {
-		
 		data() {
 			return {
 				dataList: [],
@@ -93,7 +94,7 @@
 				//开始结束时间
 				startTime: getDateAll(0),
 				endTime: getDateAll(0),
-				
+
 				//search
 				value: 0,
 				option: [{
@@ -107,10 +108,6 @@
 				],
 				typeName: "设备编号",
 				searchValue: null,
-				
-				
-				
-				
 			};
 		},
 		methods: {
@@ -151,10 +148,10 @@
 				this.endTime = endTime;
 				this.reset();
 			},
-			
 			//搜索
-			alterState(text) {
-				if (text) {
+			alterState(params) {
+				const {text, value} = params;
+				if (value === 1) {
 					this.typeName = "商品名称";
 				} else {
 					this.typeName = "设备编号";
@@ -168,9 +165,6 @@
 					this.reset();
 				}
 			},
-			
-			
-			
 		},
 	};
 </script>
@@ -208,7 +202,7 @@
 	.search-wrapper {
 		align-items: center;
 		background: #fff;
-		display: inline-flex;
+		display: flex;
 		height: 45px;
 		width: 100%;
 
@@ -235,7 +229,7 @@
 		input {
 			color: #333;
 			font-size: 13px;
-			width: 100%;
+			flex: 1;
 			padding-right: 12px;
 			box-sizing: border-box;
 			font-weight: 400;
@@ -252,24 +246,6 @@
 			color: #c5c5c5;
 			font-size: 13px;
 		}
-	}
-
-	::v-deep .van-dropdown-menu__bar {
-		height: 22px;
-		background: #fff;
-		box-shadow: 0 0 0 #fff;
-	}
-
-	::v-deep .van-dropdown-menu__title {
-		font-size: 13px;
-	}
-
-	::v-deep .van-popup--top {
-		top: 10px;
-	}
-
-	::v-deep .van-overlay {
-		top: 10px;
 	}
 
 	.replen-wrapper {

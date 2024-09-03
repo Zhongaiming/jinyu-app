@@ -1,7 +1,7 @@
 <template>
 	<z-paging ref="paging" v-model="dataList" @query="queryList">
 		<device-condition :count="count" @confirm="getScreen"></device-condition>
-		<device-list :dataList="dataList"></device-list>
+		<device-list :dataList="dataList" :screen="screen" @bingClearDevice="bingClearDevice"></device-list>
 		<xls-empty slot="empty"></xls-empty>
 		<!-- 批量 -->
 		<!-- <place-popup ref="placePopup"></place-popup> -->
@@ -42,6 +42,11 @@
 				dealWithNum: 0,
 			};
 		},
+		onShow() {
+			this.$nextTick(() => {
+				this.$refs.paging.refresh();
+			})
+		},
 		methods: {
 			getScreen(params) {
 				Object.assign(this.screen, params);
@@ -60,7 +65,7 @@
 					this.$hideLoading();
 					if(pageNo == 1&&res.data.List.length>0&&res.data.List.length<10) {
 						res.data.List.forEach(item => {
-							if(item.deviceList.length) {
+							if(item.deviceList&&item.deviceList.length) {
 								item['deviceSwitch'] = true
 							}
 						})
@@ -74,6 +79,9 @@
 					this.$hideLoading();
 					console.error('查询失败:', error);
 				});
+			},
+			bingClearDevice(type, params) {
+				this.$refs.paging.refresh();
 			},
 		},
 	}

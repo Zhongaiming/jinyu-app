@@ -255,7 +255,7 @@
 				},
 			};
 		},
-		async created() {
+		async onLoad() {
 			this.getMessagePushSet();
 			this.getWxSet();
 		},
