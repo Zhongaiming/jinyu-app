@@ -125,6 +125,7 @@ export default {
     numToCapital,
     toChinesNum,
     changeNumToHan,
+	formatAmount,
 }
 
 /*
@@ -308,5 +309,22 @@ const numToCapital = (num, type = '') => {
     return resultAr.reverse().join('')
 }
 
-  // 壹拾伍亿壹仟贰佰叁拾肆万伍仟陆佰柒拾贰
+// 壹拾伍亿壹仟贰佰叁拾肆万伍仟陆佰柒拾贰
 
+/**
+* 格式化金额为保留两位小数的字符串
+* @param {number|string} amount - 输入的金额
+* @returns {string} - 格式化后的金额
+*/
+function formatAmount(amount) {
+	// 将输入的金额转换为浮点数
+	const num = parseFloat(amount);
+
+	// 如果转换失败，则返回 '0.00'
+	if (isNaN(num)) {
+	  return '0.00';
+	}
+
+	// 使用 toFixed 方法保留两位小数
+	return num.toFixed(2);
+}

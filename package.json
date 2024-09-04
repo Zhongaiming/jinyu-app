@@ -10,7 +10,8 @@
     "qrcanvas": "^3.1.2",
     "sass": "^1.72.0",
     "sass-loader": "^14.1.1",
-    "vue-i18n": "^9.2.2"
+    "vue-i18n": "^9.2.2",
+    "weixin-jsapi": "^1.1.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -79,6 +79,9 @@
 	import {
 		orderController
 	} from "@/api/index.js";
+	import {
+		mapState
+	} from "vuex";
 	export default {
 		data() {
 			return {
@@ -113,31 +116,13 @@
 					},
 				],
 				stateActive: null,
-				stateDict: {
-					'-1': "已退款",
-					0: "待支付",
-					1: "已支付",
-					2: "退款中",
-					3: "退款成功",
-					4: "退款失败",
-					5: "已取消",
-					6: "已关闭",
-					7: "待结算",
-					null: "其他"
-				},
-				stateColorDict: {
-					'-1': "#f5222d",
-					0: "#5241ff",
-					1: "#52c41a",
-					2: "#f5222d",
-					3: "#f5222d",
-					4: "#f5222d",
-					5: "#f5222d",
-					6: "#8c8c8c",
-					7: "#8c8c8c",
-					null: "#8c8c8c"
-				}
 			}
+		},
+		computed: {
+			...mapState('config', [
+				'stateColorDict',
+				'stateDict',
+			])
 		},
 		onLoad(option) {
 			this.tabActive = JSON.parse(option.params).params;

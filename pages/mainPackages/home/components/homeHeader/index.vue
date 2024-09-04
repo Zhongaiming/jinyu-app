@@ -76,44 +76,26 @@
 
 <script>
 	import AnswerQuest from "./answerQuest";
-	import { orderController } from "@/api/index.js";
-	import { getDateAll } from "@/plugins/utilityClass.js";
 	export default {
 		name: "homeHeader",
 		components: {
 			AnswerQuest
 		},
-		data() {
-			return {
-				total: {
-					totalInsertCoins: "",
-					outPresentNum: "",
-					totalInsertCoins: "",
-				},
-			};
-		},
-		created() {
-			this.getTotalTodayIncome();
+		props: {
+			total: {
+				type: Object,
+				default: () => {
+					return {
+						totalInsertCoins: "",
+						outPresentNum: "",
+						totalInsertCoins: "",
+					}
+				}
+			}
 		},
 		methods: {
 			goTo(route) {
-				this.$goTo(`/pages/mainPackages/home/${route}/index`)
-			},
-			//总收益
-			async getTotalTodayIncome() {
-				let nullLocal = {
-					totalInsertCoins: "",
-					outPresentNum: "",
-					totalInsertCoins: "",
-				};
-				orderController.getTotalTodayIncome({
-					startTime: getDateAll(0),
-					endTime: getDateAll(0)
-				}).then(res => {
-					if(res.code === 200) {
-						this.total = res.data
-					}
-				})
+				this.$goTo(`/pages/mainPackages/home/${route}/index`);
 			},
 		},
 	};

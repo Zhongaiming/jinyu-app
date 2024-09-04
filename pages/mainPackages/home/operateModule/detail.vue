@@ -11,9 +11,9 @@
 					<span class="date-str">{{getText()}}</span>
 					<span class="total-income" style="display: flex; flex-direction: column; text-align: right">
 						<span class="Jtop-txt">{{ detailList.placeTotalIncome}}<span class="unit">元</span></span>
-						<span class="bottom-txt cm-hidden" style="color: #bababa; font-size: 12px">
+						<!-- <span class="bottom-txt cm-hidden" style="color: #bababa; font-size: 12px">
 							(含服务费:<span v-html="detailList.commission ? detailList.commission : '0.00'"></span>元)
-						</span>
+						</span> -->
 					</span>
 				</view>
 				<!-- type -->
@@ -149,12 +149,6 @@
 </template>
 
 <script>
-	// import {
-	// 	getPlaceIncomeDetail,
-	// 	getDeviceTypeIncomeDetail,
-	// 	getPlaceDeviceByTypeInfo,
-	// } from "@/utils/api/earningStat";
-	// import DeviceTypesingle from "@/components/commonComps/deviceTypesingle";
 	import {
 		getDateAll
 	} from "@/plugins/utilityClass";

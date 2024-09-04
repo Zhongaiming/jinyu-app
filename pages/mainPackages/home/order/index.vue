@@ -9,14 +9,14 @@
 				<view class="xls-order-header">
 					<view class="xls-order-place text-over">
 						<u-icon name="map" color="#5241ff" size="24"></u-icon>
-						<span class="place">{{item.placeName}}</span>
-						<span>|</span>
-						<span class="time">{{item.createTime}}</span>
+						<text class="place">{{item.placeName}}</text>
+						<text>|</text>
+						<text class="time">{{item.createTime}}</text>
 					</view>
 
 					<view class="xls-order-place refund-price text-over"
 						v-if="item.amountRefund && item.refundState == 1">
-						<span class="time">已退 ¥{{item.amountRefund}}</span>
+						<text class="time">已退 ¥{{item.amountRefund}}</text>
 					</view>
 				</view>
 
@@ -27,13 +27,13 @@
 						</image>
 						<view class="right-wrapper">
 							<view class="device-style">
-								<span> {{ deviceTypeDict[item.deviceType] }}{{ item.deviceNumber }}</span>
+								<text> {{ deviceTypeDict[item.deviceType] }}{{ item.deviceNumber }}</text>
 								<!-- 交易状态 -->
-								<span class="state"
-									:style="[{color: stateColorDict[item.state]}]">{{stateDict[item.state]}}</span>
+								<text class="state"
+									:style="[{color: stateColorDict[item.state]}]">{{stateDict[item.state]}}</text>
 							</view>
 							<view class="order-number">
-								<span>{{ item.orderNo }}</span>
+								<text>{{ item.orderNo }}</text>
 								<view class="base-copy" @click="copyEvent(item.orderNo)">
 									<svg viewBox="0 0 1024 1024" fill="currentColor" width="1em" height="1em">
 										<path
@@ -62,8 +62,8 @@
 						<image class="icon-image" :src="item.url" mode="widthFix" v-if="item.url"></image>
 						<image class="icon-image" :src="`${$baseUrl}appV4/common/wechat.png`" mode="widthFix" v-else>
 						</image>
-						<span class="member-name">{{ item.memberName || "***" }}</span>
-						<span class="member-number">ID:{{ item.memberNumber }}</span>
+						<text class="member-name">{{ item.memberName || "***" }}</text>
+						<text class="member-number">ID:{{ item.memberNumber }}</text>
 						<view class="base-copy" @click="copyEvent(item.memberNumber)">
 							<svg viewBox="0 0 1024 1024" fill="currentColor" width="1em" height="1em">
 								<path
@@ -90,7 +90,7 @@
 							共1件商品
 						</view>
 						<view class="accout">
-							实收款：¥{{ item.bankCardAmount }}
+							付款：¥{{ item.bankCardAmount }}
 						</view>
 					</view>
 
@@ -99,10 +99,14 @@
 					<view class="xls-order-style-refund-reason" v-if="item.hasOwnProperty('refundType')">
 						{{refundDict[item.refundType]}}
 					</view>
-					
-					<!-- <view class="xls-order-style-refund-reason" v-if="item.hasOwnProperty('remark')">
-						{{item.remark}}
-					</view> -->
+
+					<view class="xls-order-style-refund-reason" v-if="item.hasOwnProperty('remark')">
+						<text class="text">{{item.remark}}</text>
+					</view>
+
+					<view class="xls-order-style-refund-reason" v-if="item.hasOwnProperty('amountCoupon')">
+						<text class="text">{{amountCouponTypeDict[item.amountCouponType]}}{{item.amountCoupon}}</text>
+					</view>
 
 					<view class="xls-order-style-button">
 						<!-- <view class="button">
@@ -134,65 +138,33 @@
 		getDateAll
 	} from "@/plugins/utilityClass";
 	import xlsOrderScreenVue from './components/xls-order-screen.vue';
+	import {
+		mapState
+	} from "vuex";
 	export default {
 		components: {
 			xlsOrderScreenVue
 		},
+		computed: {
+			...mapState('config', [
+				'typeDict',
+				'stateDict',
+				'stateColorDict',
+				'refundDict',
+				'amountCouponTypeDict',
+			])
+		},
 		data() {
 			return {
-				typeDict: {
-					1: "充值余币",
-					2: "设备启动",
-					3: "余币购买",
-					4: "余额购买",
-					5: "充值余额",
-					null: "其他类型"
-				},
-				stateDict: {
-					'-1': "已退款",
-					0: "待支付",
-					1: "已支付",
-					2: "退款中",
-					3: "退款成功",
-					4: "退款失败",
-					5: "已取消",
-					6: "已关闭",
-					7: "待结算",
-					null: "其他"
-				},
-				stateColorDict: {
-					'-1': "#f5222d",
-					0: "#5241ff",
-					1: "#52c41a",
-					2: "#f5222d",
-					3: "#f5222d",
-					4: "#f5222d",
-					5: "#f5222d",
-					6: "#8c8c8c",
-					7: "#8c8c8c",
-					null: "#8c8c8c"
-				},
-				refundDict: {
-					0: '出货失败，自动退款',
-					1: '出货失败，部分退款',
-					2: '人工退款（全额）',
-					3: '通讯失败，自动退款',
-					4: '人工退款（部分商品）',
-					5: '人工退款（指定金额）',
-					null: "其他"
-				},
 				deviceTypeDict: {},
 				dataList: [],
 				params: {
 					startTime: getDateAll(0),
 					endTime: getDateAll(0),
-				}
+				},
 			}
 		},
 		onLoad(option) {
-			// if (option.params) {
-			// 	console.log("传参", JSON.parse(option.params))
-			// }
 			this.getDeviceTypeList();
 		},
 		onShow() {
@@ -227,7 +199,7 @@
 				})
 			},
 			goTo(order, route) {
-				if(route === 'remote') {
+				if (route === 'remote') {
 					this.$goTo("/pages/mainPackages/home/remote/operate", "navigateTo", {
 						railNumber: order.railNumber,
 						shippingSpace: order.shippingSpace,
@@ -422,6 +394,14 @@
 			background: #fff7e6;
 			border-radius: 4rpx;
 			text-align: center;
+
+			.text {
+				display: inline-block;
+				max-width: 600rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
 		}
 	}
 </style>

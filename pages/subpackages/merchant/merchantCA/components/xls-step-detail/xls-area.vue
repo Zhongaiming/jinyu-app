@@ -41,13 +41,14 @@
 				}
 			},
 			changeHandler(params) {
+				let _this = this;
 				uni.$u.debounce(async function() {
 					const {
 						columnIndex,
 						index,
 						value,
 						// 微信小程序无法将picker实例传出来，只能通过ref操作
-						picker = this.$refs.uPicker
+						picker = _this.$refs.uPicker
 					} = params
 
 					if (columnIndex === 0) {

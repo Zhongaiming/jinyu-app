@@ -2,13 +2,13 @@
 	<view class="xls-device-binging">
 		<view class="xls-device-binging-content">
 			<image :src="`${$baseUrl}appV4/remoteBoot/scan-icon.png`" alt="" mode="widthFix" class="image" />
-			<view v-if="operatetype">
-				<view class="btn-box primary" @click="launchScan()">扫码注册</view>
-				<view class="btn-box primary" @click="headerEnter()">手动注册</view>
+			<view v-if="showOperatetype">
+				<view class="btn-box primary" @click="launchScan(1)">扫码注册</view>
+				<view class="btn-box primary" @click="headerEnter(1)">手动注册</view>
 			</view>
-			<view v-else>
-				<view class="btn-box primary" @click="launchScan()">扫码绑定</view>
-				<view class="btn-box primary" @click="headerEnter()">手动绑定</view>
+			<view>
+				<view class="btn-box primary" @click="launchScan(0)">扫码绑定</view>
+				<view class="btn-box primary" @click="headerEnter(0)">手动绑定</view>
 			</view>
 
 			<view class="btn-box default" @click="goTo">
@@ -69,13 +69,20 @@
 	import {
 		deviceController
 	} from "@/api/index.js";
+	import {
+		getInfo
+	} from "@/common/auth.js";
 	import bingLegalNorm from "./components/bing-legal-norm/index.vue";
+	// #ifdef H5
+	import wx from "weixin-jsapi";
+	// #endif
 	export default {
 		components: {
 			bingLegalNorm
 		},
 		data() {
 			return {
+				showOperatetype: false,
 				operatetype: 0, // 0 普通  1 ztwl
 				operatePopup: false, //手动
 				device: {
@@ -85,13 +92,14 @@
 				deviceTypeList: [],
 				deviceInfo: {},
 				// ===
-				deviceUuidStr: "",
 				resultPopup: false, //注册结果提示
 				result: {},
 
 			};
 		},
-		async created() {
+		onLoad() {
+			const {commercialNumber, userType} = getInfo();
+			this.showOperatetype = 'ZTWL_20240816162905521'===commercialNumber&&userType==4;
 			this.getTypeList();
 		},
 		methods: {
@@ -198,7 +206,8 @@
 				}
 			},
 			//手动
-			headerEnter() {
+			headerEnter(force) {
+				this.operatetype = force;
 				this.device = {
 					deviceType: "",
 					deviceUuid: "",
@@ -217,17 +226,16 @@
 
 			// 扫一扫
 			launchScan(force) {
+				this.operatetype = force;
 				if (
 					!/MicroMessenger/.test(window.navigator.userAgent) &&
 					!/AlipayClient/.test(window.navigator.userAgent)
 				) {
 					//支付宝或微信
-					return this.$dialog.alert({
+					return this.$modal("请使用微信/支付宝或在应用内浏览器打开程序",{
 						title: "温馨提示",
-						message: "请使用微信/支付宝或在应用内浏览器打开程序",
-						confirmButtonText: "我知道了",
-						confirmButtonColor: "#5241FF",
-						width: "270",
+						confirmText: "我知道了",
+						showCancel: false
 					});
 				}
 				let that = this;
@@ -241,30 +249,24 @@
 								//https://mv3.ztuwl.com/g/?key=30000023-1-1
 								//https://mv3.ztuwl.com/g/?key=30000026
 								let data = res.resultStr;
-								that.deviceUuidStr = data;
 								if (data.indexOf("key=") > -1) {
-									that.deviceUuid = data.split("key=")[1].split("-")[0];
+									that.device.deviceUuid = data.split("key=")[1].split("-")[0];
 								} else if (data.indexOf("IMEI:") > -1) {
 									//IMEI:863488051068487,MAC:C8C2C640B9E3
 									let imei = data.split(",")[0].split(":")[1];
-									that.deviceUuid = imei;
+									that.device.deviceUuid = imei;
 								} else {
-									that.deviceUuid = data;
+									that.device.deviceUuid = data;
 								}
-								if (force == 1) {
-									//查询信息
-									that.getDeviceInfo(that.deviceUuid);
+								if (that.operatetype) {
+									// 注册
+									// that.addDeviceByuuid();--uuid有限制
+									// that.resultPopupByuuid();
+									that.ztwlBingDevice = false;
+									that.operatePopup = true;
 								} else {
-									if (that.operatetype) {
-										// 注册
-										// that.addDeviceByuuid();--uuid有限制
-										// that.resultPopupByuuid();
-										that.ztwlBingDevice = false;
-										that.operatePopup = true;
-									} else {
-										//查询
-										that.getDeviceInfo(that.deviceUuid);
-									}
+									//查询
+									that.getDeviceInfo();
 								}
 							},
 							fail: function(res) {},

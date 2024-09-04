@@ -38,7 +38,6 @@ export default class merchantController {
 		})
 	}
 
-
 	// 银行开户许可证识别
 	static recognizeBankAccountLicense(data) {
 		return http.request({

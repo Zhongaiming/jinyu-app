@@ -68,8 +68,7 @@
 				</view>
 			</view>
 		</view>
-		
-		
+		<xls-empty slot="empty"></xls-empty>
 		<!-- 底部按钮 -->
 		<template slot="bottom">
 			<view v-show="activeItem == 1">

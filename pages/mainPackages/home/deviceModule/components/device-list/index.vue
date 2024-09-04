@@ -261,13 +261,14 @@
 			//更新设备
 			updatedDevice(params) {
 				if (params.hasOwnProperty('remark')) {
-					this.deviceMsg.remark = params.remark;
+					this.$set(this.deviceMsg, 'remark', params.remark);
 				}  
 				if (params.hasOwnProperty('dollNumber')) {
-					this.deviceMsg.dollNumber = params.dollNumber;
+					this.$set(this.deviceMsg, 'dollNumber', params.dollNumber);
 				} 
 				if (params === "forbidden") {
-					this.deviceMsg.state = this.deviceMsg.state == 1 ? 0 : 1;
+					const state = this.deviceMsg.state == 1 ? 0 : 1;
+					this.$set(this.deviceMsg, 'state', state);
 				} 
 				if (params === "unbundle") {
 					this.$emit('bingClearDevice', {

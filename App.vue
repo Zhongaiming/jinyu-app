@@ -2,25 +2,36 @@
 	// #ifdef APP-PLUS
 	import APPUpdate from '@/uni_modules/zhouWei-APPUpdate/js_sdk/appUpdate.js'
 	// #endif
-	
+	// #ifdef H5
+	import wx from "weixin-jsapi";
+	import {
+		baseController
+	} from '@/api/index.js';
+	// #endif
 	export default {
 		onLaunch: function() {
+			// 微信公众号
+			// #ifdef H5
+			if (/MicroMessenger/.test(window.navigator.userAgent)) {
+				this.getWxConfig();
+			}
+			// #endif
 			// 动态菜单需要隐藏系统自带菜单
 			// #ifdef APP-PLUS
 			APPUpdate()
 			uni.getPushClientId({
 				success: (res) => {
 					let push_clientid = res.cid
-					console.log('客户端推送标识:',push_clientid)
+					console.log('客户端推送标识:', push_clientid)
 				},
 				fail(err) {
 					console.log(err)
 				}
 			})
 			uni.onPushMessage((res) => {
-				console.log("收到推送消息：",res) //监听推送消息
+				console.log("收到推送消息：", res) //监听推送消息
 			})
-			
+
 			// plus.push.addEventListener("click", function(msg) {
 			// 	console.log(msg);
 			// 	uni.switchTab({
@@ -35,11 +46,37 @@
 			// this.getQuanxian()
 			// #endif
 		},
-		onShow: function() {
-		},
-		onHide: function() {
-		},
+		onShow: function() {},
+		onHide: function() {},
 		methods: {
+			//获取微信公众号权限
+			async getWxConfig() {
+				let address = window.location.href;
+				let url = address.substring(0, address.indexOf("#"));
+				let res = await baseController.getJsApi({
+					url
+				});
+				const {
+					appId,
+					timestamp,
+					nonceStr,
+					signature
+				} = res.data;
+				wx.config({
+					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，
+					// 可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					appId: appId, // 必填，公众号的唯一标识
+					timestamp: timestamp, // 必填，生成签名的时间戳
+					nonceStr: nonceStr, // 必填，生成签名的随机串
+					signature: signature, // 必填，签名，见附录1
+					jsApiList: ["scanQRCode"],
+				});
+				wx.error(function(res) {
+					// config信息验证失败会执行error函数，
+					// 如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，
+					// 也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+				});
+			},
 			getQuanxian() {
 				let platform = uni.getSystemInfoSync().platform; //首先判断app是安卓还是ios
 				console.log(platform);
@@ -124,6 +161,7 @@
 		background-color: #F6F6F6;
 		font-family: "Microsoft JhengHei", "Microsoft YaHei";
 	}
+
 	/*每个页面公共css */
 	/* 导入图标字体 */
 	* {
@@ -132,19 +170,24 @@
 		margin: 0;
 		// direction: rtl;
 	}
-	
+
 	.Center {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
+
 	.text-over {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
+
 	// #ifdef H5
-	uni-image { pointer-events: auto; }
+	uni-image {
+		pointer-events: auto;
+	}
+
 	// #endif
 
 	@import '@/uni_modules/uview-ui/index.scss';

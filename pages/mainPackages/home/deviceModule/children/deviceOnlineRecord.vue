@@ -83,10 +83,12 @@
 		},
 		methods: {
 			getList() {
+				this.$loading();
 				deviceController.getOnlineList({
 						deviceNumber: this.deviceTypeInfo.deviceNumber,
 					})
 					.then((res) => {
+						this.$hideLoading();
 						if (res.code == 200) {
 							this.deviceInfo = res.data;
 							this.deviceInfo.onlineList.forEach((element) => {

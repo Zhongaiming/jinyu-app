@@ -3,17 +3,17 @@
 		<jy-navbar title="订单详情" bgColor="#f5f5f5"></jy-navbar>
 		<view class="xls-box-style" @click="goTo('refundDetail')">
 			<view class="device-style">
-				<span v-if="order.amountRefund && order.refundState == 1">已退 ¥{{order.amountRefund}}</span>
-				<span v-else> ¥{{order.amountTotal}}</span>
-				<span class="state arrow" :style="[{color: stateColorDict[order.state]}]">
+				<text v-if="order.amountRefund && order.refundState == 1">已退 ¥{{formatAmount(order.amountRefund)}}</text>
+				<text v-else> ¥{{formatAmount(order.amountTotal)}}</text>
+				<text class="state arrow" :style="[{color: stateColorDict[order.state]}]">
 					{{stateDict[order.state]}}
-				</span>
+				</text>
 			</view>
 			<view class="text-style">
 				{{order.updateTime}}
 			</view>
 		</view>
-
+ 
 		<view class="xls-box-style">
 			<view class="xls-order-detail-text">
 				{{order.placeName}}
@@ -42,7 +42,7 @@
 					mode="widthFix"></image>
 				<view class="price-center">
 					<view class="">
-						{{ order.shopPrice }}元1局
+						{{ formatAmount(order.shopPrice) }}元1局
 					</view>
 					<view class="">
 						x1
@@ -50,10 +50,10 @@
 				</view>
 				<view class="price-right">
 					<view class="backColor">
-						¥{{ order.amount }}
+						¥{{ formatAmount(order.amount) }}
 					</view>
 					<view class="redColor">
-						实付：¥{{ order.amountTotal }}
+						实付：¥{{ formatAmount(order.amountTotal) }}
 					</view>
 				</view>
 			</view>
@@ -66,21 +66,20 @@
 						<u-icon name="arrow-right-double" color="#c6c6c6" size="36" class="uicon" v-if="double"></u-icon>
 						<u-icon name="arrow-left-double" color="#c6c6c6" size="36" class="uicon" v-else></u-icon>
 					</view>
-					<span>需付款：</span>
-					<span class="text">¥{{ order.amount }}</span>
+					<text>付款：</text>
+					<text class="text">¥{{ formatAmount(order.amount) }}</text>
 				</view>
 				<view class="list" v-if="double">
-					<span>实付款：</span>
-					<span class="text">¥{{ order.amountTotal }}</span>
+					<text>实付款：</text>
+					<text class="text">¥{{ formatAmount(order.amountTotal) }}</text>
+				</view>
+				<view class="list" v-if="double && getPrice(order)">
+					<text>服务费：</text>
+					<text class="text">¥{{ formatAmount(getPrice(order)) }}</text>
 				</view>
 				<view class="list" v-if="double">
-					<span>服务费：</span>
-					<span class="text">¥{{ getPrice(order) }}</span>
-				</view>
-				<view class="list" v-if="double">
-					<span>商户实收款：</span>
-					<!-- <span class="main-text">¥{{ getPrice(order) }}</span> -->
-					<span class="main-text">¥{{ order.commercialRealCollection }}</span>
+					<text>商户实收款：</text>
+					<text class="main-text">¥{{ formatAmount(order.commercialRealCollection) }}</text>
 				</view>
 			</view>
 		</view>
@@ -142,7 +141,7 @@
 				</view>
 				<view class="value">
 					<view class="">
-						¥{{ order.amount }}
+						¥{{ formatAmount(order.amount) }}
 					</view>
 				</view>
 			</view>
@@ -258,7 +257,7 @@
 					出礼名称
 				</view>
 				<view class="value-text">
-					<span v-if="order.barCode">{{ order.barCode }}-</span>
+					<text v-if="order.hasOwnProperty('barCode')">{{ order.barCode }}-</text>
 					{{ order.commodityName }}
 				</view>
 			</view>
@@ -284,60 +283,14 @@
 		orderController
 	} from '@/api/index.js';
 	import {
-		mapGetters
+		mapGetters,
+		mapState
 	} from 'vuex';
 	import suan from "@/plugins/floastCalculate.js";
 	export default {
 		data() {
 			return {
 				order: {},
-				typeDict: {
-					1: "充值余币",
-					2: "设备启动",
-					3: "余币购买",
-					4: "余额购买",
-					5: "充值余额",
-					null: "其他类型"
-				},
-				stateDict: {
-					'-1': "已退款",
-					0: "待支付",
-					1: "已支付",
-					2: "退款中",
-					3: "退款成功",
-					4: "退款失败",
-					5: "已取消",
-					6: "已关闭",
-					7: "待结算",
-					null: "其他"
-				},
-				stateColorDict: {
-					'-1': "#f5222d",
-					0: "#5241ff",
-					1: "#52c41a",
-					2: "#f5222d",
-					3: "#f5222d",
-					4: "#f5222d",
-					5: "#f5222d",
-					6: "#8c8c8c",
-					7: "#8c8c8c",
-					null: "#8c8c8c"
-				},
-				refundDict: {
-					0: '出货失败，自动退款',
-					1: '出货失败，部分退款',
-					2: '人工退款（全额）',
-					3: '通讯失败，自动退款',
-					4: '人工退款（部分商品）',
-					5: '人工退款（指定金额）',
-					null: "其他"
-				},
-				payTypeDict: {
-					0: '微信支付',
-					1: '支付宝支付',
-					2: '余额支付',
-					null: "其他"
-				},
 				double: false,
 			}
 		},
@@ -345,6 +298,13 @@
 			...mapGetters([
 				'deviceTypeList',
 				'deviceTypeDict'
+			]),
+			...mapState('config', [
+				'typeDict',
+				'stateDict',
+				'stateColorDict',
+				'refundDict',
+				'payTypeDict',
 			])
 		},
 		onLoad(option) {
@@ -406,6 +366,9 @@
 				const {deviceCommission, agentServiceCharge, deviceServiceCharge} = order;
 				const result = suan.addFloast((deviceCommission ?? 0), (agentServiceCharge ?? 0));
 				return suan.addFloast(result, (deviceServiceCharge ?? 0));
+			},
+			formatAmount(num) {
+				return suan.formatAmount(num);
 			},
 		}
 	}

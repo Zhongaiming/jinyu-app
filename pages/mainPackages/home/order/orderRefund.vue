@@ -136,6 +136,9 @@
 				})
 			},
 			confirmMethod() {
+				if(!this.refundAmount) {
+					return this.$toast("请先输入退款金额");
+				}
 				if (this.refundAmount * 100 > this.order.amountTotal * 100) {
 					return this.$toast("退款金额不能超过实付金额！！")
 				}

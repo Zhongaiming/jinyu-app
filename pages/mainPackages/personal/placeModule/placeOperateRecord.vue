@@ -1,7 +1,7 @@
 <template>
 	<z-paging ref="paging" v-model="dataList" @query="queryList">
 		<view slot="top" class="xls-place-operate-record">
-			<jy-navbar title="场地操作记录" bgColor="#f5f6f7"></jy-navbar>
+			<jy-navbar :title="`${fromType == 'Place'?'场地':'分账场地'}操作记录`" bgColor="#f5f6f7"></jy-navbar>
 			<view class="search-style">
 				<view class="search-style-main">
 					<view class="left">
@@ -84,7 +84,8 @@
 				placeController[`get${this.fromType}LogPage`]({
 					page: pageNo,
 					size: pageSize,
-					search: this.searchValue
+					// search: this.searchValue,
+					placeName: this.searchValue
 				}).then(res => {
 					if(this.fromType == 'Place') {
 						this.$refs.paging.complete(res.data);

@@ -28,4 +28,16 @@ export default class baseController {
 			data
 		})
 	}
+	
+	// 微信的
+	static getJsApi(data) {
+		return http.request({
+			url: '/member/api/v1/admin/MemberPayWechat/jsApi',
+			method: 'GET',
+			data,
+			custom: {
+				isToken: true
+			}
+		})
+	}
 }

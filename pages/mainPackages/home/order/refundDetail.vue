@@ -4,8 +4,11 @@
 		<view class="xls-main-wrapper">
 			<view class="xls-header-style"></view>
 			<view class="xls-content-style">
-				<view class="xls-order-detail-refund-state">
-					{{stateDict[order.refundState]}}
+				<view class="xls-order-detail-refund-state" v-if="order.hasOwnProperty('refundState')">
+					{{refundStateDict[order.refundState]}}
+				</view>
+				<view class="xls-order-detail-refund-state" v-else>
+					{{stateDict[order.state]}}
 				</view>
 				<view class="order_line" v-if="order.hasOwnProperty('refundState')"></view>
 				<view class="xls-order-detail-refund-price" v-if="order.hasOwnProperty('refundState')">
@@ -18,7 +21,7 @@
 						</view>
 					</view>
 					<view class="text">
-						已退还至您的账户
+						{{refundStateDesDict[order.refundState]}}
 					</view>
 				</view>
 				<view class="order_line"></view>
@@ -135,27 +138,22 @@
 	import {
 		orderController
 	} from '@/api/index.js';
+	import {
+		mapState
+	} from "vuex";
 	export default {
 		data() {
 			return {
-				order: {},
-				stateDict: {
-					'-1': "退款异常",
-					0: "退款失败",
-					1: "退款成功",
-					2: "退款中",
-					null: "其他"
-				},
-				refundDict: {
-					0: '出货失败，自动退款',
-					1: '出货失败，部分退款',
-					2: '人工退款（全额）',
-					3: '通讯失败，自动退款',
-					4: '人工退款（部分商品）',
-					5: '人工退款（指定金额）',
-					null: "其他"
-				},
+				order: {},	
 			}
+		},
+		computed: {
+			...mapState('config', [
+				'refundStateDict',
+				'refundStateDesDict',
+				'refundDict',
+				'stateDict',
+			])
 		},
 		onLoad(option) {
 			if (option.params) {
@@ -180,6 +178,7 @@
 				if (data.code = 200) {
 					const name = data.data.refundCommercialUserName ? data.data.refundCommercialUserName : '系统退款';
 					this.order['refundCommercialUserName'] = name;
+					this.order['state'] = data.data.state;
 				}
 			},
 		}

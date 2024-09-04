@@ -12,11 +12,11 @@
 					<text class="text">公众号消息</text>
 				</view>
 				<view class="qrcode-wrapper">
-					<image :src="`${$baseUrl}appV4/img/icons/Official-Accounts.jpg`" alt="" mode="widthFix"
+					<xls-image :src="`${$baseUrl}appV4/img/icons/Official-Accounts.jpg`" alt="" mode="widthFix"
 						class="image" />
 				</view>
 				<view class="is-bind-wechat">
-					<image :src="`${$baseUrl}appV4/image/other/succss.png`" alt="" class="choose-img" mode="widthFix" />
+					<xls-image :src="`${$baseUrl}appV4/image/other/succss.png`" alt="" class="choose-img" mode="widthFix" />
 					<text class="text-text">第一步：关注公众号</text>
 				</view>
 			</view>
@@ -26,17 +26,17 @@
 				<view class="qrcode-wrapper qrcode-img">
 					<!-- <vue-qr ref="Qrcode" :text="qsUrl" qid="testQrId"> </vue-qr> -->
 					<canvas canvas-id="qrcode" style="width: 360rpx; height: 360rpx;" class="canvas-style"></canvas>
+					<xls-image :src="uQrcodeUrl" style="width: 360rpx; height: 360rpx;" v-if="uQrcodeUrl"></xls-image>
 				</view>
 				<view class="is-bind-wechat">
-					<image :src="`${$baseUrl}appV4/image/other/succss.png`" alt="" class="choose-img" />
+					<xls-image :src="`${$baseUrl}appV4/image/other/succss.png`" alt="" class="choose-img" />
 					<text class="text-text">第二步：绑定接收消息微信</text>
 				</view>
 				<view class="text-wapper">
-					<p class="text-text" v-show="wechatSet.acount">
+					<p class="text-text" v-if="wechatSet.nickName">
 						微信已设置—
-						<image :src="wechatSet.img" alt="" /><text>{{
-              wechatSet.nickName
-            }}</text>
+						<xls-image :src="wechatSet.img" alt="" class="img" />
+						<text>{{wechatSet.nickName}}</text>
 						<text v-show="wechatSet.acount > 1">等{{ wechatSet.acount }}个微信</text>
 					</p>
 					<view class="text">如需修改已绑定的微信，请扫码重新绑定</view>
@@ -98,6 +98,7 @@
 					acount: 0,
 					img: "",
 				},
+				uQrcodeUrl: "",
 			};
 		},
 		onLoad() {
@@ -114,7 +115,7 @@
 			},
 			async getOfficial() {
 				const {commercialNumber} = getInfo();
-				this.qsUrl = `https://mv3.ztuwl.com/GZH/?commercialNumber=${commercialNumber}`;
+				this.qsUrl = `https://mv3.ztuwl.com/GZHV4/?commercialNumber=${commercialNumber}`;
 				this.qrFun();
 			},
 			/** 生成二维码 */
@@ -127,7 +128,9 @@
 					margin: 10,
 					backgroundColor: '#ffffff',
 					foregroundColor: '#000000',
-					success: res => {}
+					success: res => {
+						this.uQrcodeUrl = res;
+					}
 				})
 			},
 		},
@@ -183,6 +186,13 @@
 				margin-bottom: 5px;
 				display: flex;
 				justify-content: center;
+				position: relative;
+				
+				.canvas-style {
+					position: absolute;
+					left: 0;
+					z-index: -10;
+				}
 
 				.image {
 					margin: auto;
@@ -226,7 +236,7 @@
 				align-items: center;
 				justify-content: center;
 
-				img {
+				.img {
 					width: 30px;
 					height: 30px;
 					border-radius: 50%;

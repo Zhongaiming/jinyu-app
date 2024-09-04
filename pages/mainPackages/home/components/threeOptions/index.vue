@@ -4,16 +4,27 @@
 			:class="item.class" @click="goTo(item.route)">
 			<image :src="item.imgUrl" alt="" class="xls-three-image" mode="widthFix" />
 			<view class="xls-three-title">{{item.title}}</view>
-			<view class="xls-three-subheading">{{item.subheading}}</view>
+			<view class="xls-three-subheading" v-if="item.id === 0">
+				在线 {{getNum(device.deviceOnlineNum)}} / {{getNum(device.deviceNum)}} 台
+			</view>
+			<view class="xls-three-subheading" v-else>{{item.subheading}}</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import {
-		deviceController
-	} from "@/api/index.js";
 	export default {
+		props: {
+			device: {
+				type: Object,
+				default: () => {
+					return {
+						deviceOnlineNum: 0,
+						deviceNum: 0
+					}
+				}
+			}
+		},
 		data() {
 			return {
 				dataList: [{
@@ -46,18 +57,12 @@
 				]
 			};
 		},
-		mounted() {
-			deviceController.getDeviceNum().then(res => {
-				const {
-					deviceOnlineNum,
-					deviceNum
-				} = res.data;
-				this.dataList[0].subheading = `在线 ${deviceOnlineNum} / ${deviceNum} 台`
-			})
-		},
 		methods: {
 			goTo(route) {
 				this.$goTo(route)
+			},
+			getNum(params) {
+				return params ?? 0;
 			}
 		},
 	};
