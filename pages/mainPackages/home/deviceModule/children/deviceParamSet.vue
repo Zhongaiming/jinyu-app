@@ -34,13 +34,6 @@
 </template>
 
 <script>
-	// import {
-	// 	getRedisList,
-	// 	getTerminal,
-	// 	sendCmd,
-	// 	queryParam,
-	// 	updateValue,
-	// } from "@/utils/api/open";
 	import cache from '@/common/cache.js';
 	import {
 		deviceController
@@ -56,8 +49,8 @@
 			return {
 				basicParams: [],
 				terminalList: [],
-				uuid: "861714055498251",
-				loginId: "8250",
+				uuid: "",
+				loginId: "",
 			};
 		},
 		async onLoad() {
@@ -66,12 +59,16 @@
 				this.uuid = option.uuid;
 				this.loginId = option.loginId;
 			}
-			return
-			let params = qs.stringify({
-				// productKey: "a1RrYPsjzAn",
-				productKey: "a1eUldLZaNe",
+			// let params = qs.stringify({
+			// 	productKey: "a1RrYPsjzAn",
+			// 	// productKey: "a1eUldLZaNe",
+			// 	imei: this.uuid,
+			// });
+			let params = {
+				productKey: "a1RrYPsjzAn",
+				// productKey: "a1eUldLZaNe",
 				imei: this.uuid,
-			});
+			};
 			let res = await deviceController.queryParam(params);
 			this.getBoardList();
 			this.getTer();
@@ -150,8 +147,8 @@
 						deviceController.sendCmd({
 							cmd: "06" * 1, //基础 06 终端 53
 							date: array,
-							// productKey: "a1RrYPsjzAn",
-							productKey: "a1eUldLZaNe",
+							productKey: "a1RrYPsjzAn",
+							// productKey: "a1eUldLZaNe",
 							imei: this.uuid,
 							loginId: this.loginId * 1,
 						}).then((res) => {

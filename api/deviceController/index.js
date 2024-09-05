@@ -296,4 +296,67 @@ export default class deviceController {
 		})
 	}
 	
+	// === 设备参数 ===
+	//从redis获取数据
+	static getRedisList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/openParameterSet/redisList',
+			method: 'GET',
+			data,
+			custom: {
+				isToken: true
+			}
+		})
+	}
+	// 自定义命令发送给设备
+	static sendCmd(data) {
+	    return http.request({
+	        url: '/device/api/v1/admin/device/openParameterSet/updateValue',
+	        method: 'POST',
+	        data,
+	        timeout: 60 * 1000
+	    })
+	}
+	// 设备基础参数查询
+	static queryParam(data) {
+	    return http.request({
+	        url: "/device/api/v1/admin/device/iot/queryparam",
+	        method: "GET",
+	        data,
+			custom: {
+				isToken: true,
+				// header: {
+				// 	"Content-Type": 'application/x-www-form-urlencoded',
+				// }
+			}
+	    })
+	}
+	// 获取终端
+	static getTerminal(data) {
+	    return http.request({
+	        url: '/device/api/v1/admin/device/openTerminalSetSet/list',
+	        method: 'GET',
+	        data,
+			custom: {
+				isToken: true
+			}
+	    })
+	}
+	// 自定义终端命令 查询、修改
+	static updateValue(data) {
+	    return http.request({
+	        url: '/device/api/v1/admin/device/openTerminalSetSet/updateValue',
+	        method: 'POST',
+	        data,
+	        timeout: 60 * 1000
+	    })
+	}
+	// 根据终端的id查询他的数据
+	static getRedisOne(data) {
+	    return http.request({
+	        url: '/device/api/v1/admin/device/openTerminalSetSet/redisOne',
+	        method: 'GET',
+	        data,
+	    })
+	}
 }

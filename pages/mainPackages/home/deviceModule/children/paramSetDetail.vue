@@ -22,11 +22,6 @@
 </template>
 
 <script>
-	// import {
-	// 	sendCmd,
-	// 	getRedisOne,
-	// 	updateValue
-	// } from "@/utils/api/open";
 	import {
 		deviceController
 	} from "@/api/index.js";
@@ -111,7 +106,6 @@
 				this.terParams.openProjectVo[index].arr =
 					item.arr == item.bools.open ? item.bools.close : item.bools.open;
 			},
-			
 			//设置自定义参数
 			async setParams() {
 				this.$modal("修改后将无法恢复，确定要保存修改吗？",{

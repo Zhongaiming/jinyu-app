@@ -12,7 +12,8 @@
 				<view class="xls-remember-style">
 					<text>记住密码？</text>
 					<checkbox-group @change="changeMethod">
-						<checkbox value="remember" :checked="rememberNb" style="transform:scale(0.8)" />
+						<checkbox value="remember" :checked="rememberNb" style="transform:scale(0.8)"
+							activeBorderColor="#5241ff" iconColor="#5241ff"/>
 					</checkbox-group>
 				</view>
 
@@ -36,21 +37,22 @@
 	} from '@/api/index.js';
 	import {
 		getLoginInfo,
-		setLoginInfo
+		setLoginInfo,
+		removeLoginInfo,
 	} from "@/common/auth.js";
 	import md5 from "js-md5";
 	export default {
 		data() {
 			return {
 				login: {
-					username: "19854573708",
-					password: "123456"
+					username: "",
+					password: ""
 				},
 				rememberNb: true,
 				loginSwitch: false,
 			}
 		},
-		created() {
+		mounted() {
 			this.getInfo();
 		},
 		methods: {
@@ -81,8 +83,8 @@
 				this.$store.dispatch('user/login', params).then(res => {
 					this.loginSwitch = false;
 					if(res.code === 200) {
+						this.setInfo();
 						setTimeout(() =>{
-							// this.setInfo();
 							// this.$toast(this.$t('login.loginSuccess'), 2000);
 							this.$goTab();
 							// this.$hideLoading();
@@ -94,27 +96,21 @@
 				if (!this.rememberNb) {
 					this.login.username = "";
 					this.login.password = "";
-					uni.removeStorageSync("at_username");
-					uni.removeStorageSync("at_password");
+					removeLoginInfo();
 					return
 				}
 				try {
-					let info = {
-						username: this.login.username,
-						password: this.login.password,
-						rememberNb: this.login.rememberNb
-					}
-					uni.setStorageSync("at_username", this.login.username);
-					uni.setStorageSync("at_password", this.login.password);
+					const {username, password} = this.login;
+					setLoginInfo(username, password);
 				} catch (e) {
 					// error
 				}
 			},
 			getInfo() {
 				try {
-					// let info = getLoginInfo();
-					// this.login.username = info.username;
-					// this.login.password = info.password;
+					const {username, password} = getLoginInfo();
+					this.login.username = username;
+					this.login.password = password;
 				} catch (e) {
 					// error
 				}
@@ -122,7 +118,6 @@
 			goTo() {
 				this.$goTo('/pages/loginAndReg/xlsRegister')
 			}
-
 		}
 	}
 </script>
