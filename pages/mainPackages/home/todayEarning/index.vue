@@ -31,13 +31,13 @@
 				<view class="item-main-style">
 					<view class="main-t-box border">
 						<view class="main-text-style text-price">
-							{{ onlineIncome.onlinePayIncome || 0 }}<span class="unit">元</span>
+							{{ $formatAmount(onlineIncome.onlinePayIncome) }}<span class="unit">元</span>
 						</view>
 					</view>
 					<view class="main-t-box">
 						<view class="main-text-style unit border-right">
 							笔单价
-							<p>{{ onlineIncome.onlinePaySinglePayAmount || 0 }}元</p>
+							<p>{{ $formatAmount(onlineIncome.onlinePaySinglePayAmount) }}元</p>
 						</view>
 					</view>
 				</view>
@@ -110,13 +110,13 @@
 				<view class="item-main-style">
 					<view class="main-t-box border">
 						<view class="main-text-style text-price">
-							{{ cashIncome.cashPayIncome || 0 }}<span class="unit">元</span>
+							{{ $formatAmount(cashIncome.cashPayIncome) }}<span class="unit">元</span>
 						</view>
 					</view>
 					<view class="main-t-box">
 						<view class="main-text-style unit border-right">
 							笔单价
-							<p>{{ cashIncome.cashPaySinglePayAmount || 0 }}元</p>
+							<p>{{ $formatAmount(cashIncome.cashPaySinglePayAmount || 0) }}元</p>
 						</view>
 					</view>
 				</view>

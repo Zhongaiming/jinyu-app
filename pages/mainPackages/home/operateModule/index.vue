@@ -19,13 +19,13 @@
 					<view class="main-con box-sizing">
 						注：为腾出数据空间加速查询性能，系统今后仅支持查询最近半年的历史数据（当前时间可查询
 						<span class="mark">2021-10</span>月起的数据),
-						请您定时记录数据到本地,以免超期无法查询。您还可以用电脑登录https
+						请您定时记录数据到本地,以免超期无法查询。您还可以用电脑登录https 
 					</view>
 				</view> -->
 				<view class="condition-panel">
 					<view class="condition-main">
 						<view class="time-list box-sizing">
-							<view class="label-btn box-sizing man-left" :style="index == 0 ? { margin: 0 } : ''"
+							<view class="label-btn box-sizing man-left" :style="{margin:index==0?0:''}"
 								:class="{active: activeTime == item.id}" @click="quickTime(item.id)"
 								v-for="(item, index) in timeList" :key="item.id">
 								{{ item.time }}
@@ -83,7 +83,7 @@
 						<view class="place" v-html="item.placeName ? item.placeName : item.deviceTypeName"></view>
 						<view class="count">{{ item.deviceNum }}台</view>
 						<view class="orderNumber" v-html="item.transactionsNum ? item.transactionsNum : '0'"></view>
-						<view class="income">{{ item.totalIncome }}元</view>
+						<view class="income">{{ $formatAmount(item.totalIncome) }}元</view>
 						<u-icon name="arrow-right" size="36" color="#c6c6c6" class="icon-arrow" />
 					</view>
 				</view>
@@ -107,7 +107,7 @@
 							<span class="top">
 								<span>合计</span>:&nbsp;
 								<span>
-									{{ earnStar.totalIncome}}
+									{{ $formatAmount(earnStar.totalIncome)}}
 									<span class="unit">元</span>&nbsp;
 									<!-- <span class="service-charge">
 										(含服务费{{earnStar.onlinePayTotalCommission? "¥" + earnStar.onlinePayTotalCommission: "¥0.00"}}元)
@@ -116,26 +116,26 @@
 							</span>
 						</p>
 						<view class="desc">
-							预计{{ earnStar.cashPayIncome }}<span class="unit">元</span>在机器钱箱中，现金支付请以实际线下统计为准
+							预计{{ $formatAmount(earnStar.cashPayIncome) }}<span class="unit">元</span>在机器钱箱中，现金支付请以实际线下统计为准
 						</view>
 					</view>
 					<view class="income-list text-over">
 						<view class="item-wrap">
 							<view class="label">在线支付</view>
 							<view class="price">
-								{{ earnStar.onlinePayIncome }}<span class="nit">元</span>
+								{{ $formatAmount(earnStar.onlinePayIncome) }}<span class="nit">元</span>
 							</view>
 						</view>
 						<view class="item-wrap side-border">
 							<view class="label">现金支付</view>
 							<view class="price">
-								{{ earnStar.cashPayIncome }}<span class="nit">元</span>
+								{{ $formatAmount(earnStar.cashPayIncome) }}<span class="nit">元</span>
 							</view>
 						</view>
 						<view class="item-wrap">
 							<view class="label">补贴总额</view>
 							<view class="price">
-								{{ earnStar.subsidyIncome }}<span class="nit">元</span>
+								{{ $formatAmount(earnStar.subsidyIncome) }}<span class="nit">元</span>
 							</view>
 						</view>
 					</view>
@@ -160,14 +160,14 @@
 								</span>
 							</view>
 							<view class="value">
-								{{ earnStar.outPresentNum }}个/{{earnStar.outPresentTotalPrice}}元
+								{{ earnStar.outPresentNum }}个/{{$formatAmount(earnStar.outPresentTotalPrice)}}元
 							</view>
 						</view>
 					</view>
 				</view>
 			</view>
 
-			<view class="detail-list-panel"  style="padding: 0 0 60px 0;">
+			<view class="detail-list-panel">
 				<view class="entry" v-for="(item, index) in dataList" :key="index">
 					<view class="site-detail-link"
 						@click="goEarnDetail(item.placeName ? item.placeId : item.deviceTypeId)">
@@ -179,7 +179,7 @@
 								<span class="count" v-show="item.placeName">{{ item.deviceNum }}台</span>
 							</view>
 							<span class="money text-over">
-								<span class="text">合计：</span>{{ item.totalIncome }}
+								<span class="text">合计：</span>{{ $formatAmount(item.totalIncome) }}
 								<span class="unit">元</span>
 							</span>
 						</view>
@@ -189,16 +189,16 @@
 									<span class="field">在线支付</span>
 									<span class="value">
 										<span class="num">出币{{ item.onlinePayInsertCoins }}个,</span>
-										{{ item.onlinePayIncome}}<span class="unit">元</span></span>
+										{{ $formatAmount(item.onlinePayIncome)}}<span class="unit">元</span></span>
 								</view>
 								<view class="info-row">
 									<span class="field">平台补贴</span>
-									<span class="value">{{ item.subsidyIncome }}<span class="unit">元</span><u-icon
+									<span class="value">{{ $formatAmount(item.subsidyIncome) }}<span class="unit">元</span><u-icon
 											name="arrow-right" size="36" color="#c6c6c6" class="arrows" /></span>
 								</view>
 								<view class="info-row">
 									<span class="field">现金支付</span>
-									<span class="value">{{ item.cashPayIncome}}<span class="unit">元</span></span>
+									<span class="value">{{ $formatAmount(item.cashPayIncome)}}<span class="unit">元</span></span>
 								</view>
 							</view>
 							<view class="info-part">
@@ -214,7 +214,7 @@
 								<view class="one-footer">
 									<span class="field">商品消耗</span>
 									<span class="right-txt">{{ item.commodityCount }}<span
-											class="unit">个</span>{{ item.commodityTotalAmount}}<span
+											class="unit">个</span>{{ $formatAmount(item.commodityTotalAmount)}}<span
 											class="unit">元</span></span>
 								</view>
 								<view class="count">
@@ -232,6 +232,7 @@
 						</view>
 					</view> -->
 				</view>
+				<view style="padding: 0 0 60px 0;"></view>
 			</view>
 		</view>
 		<!-- 为空 -->
@@ -398,7 +399,7 @@
 			//跳转详情页
 			goEarnDetail(params) {
 				let detailArguments = []
-				if (this.typeName == "设备类型") {
+				if (this.typeName == "设备类型" || this.typeName == "已选0种设备类型") {
 					let placeId = "place";
 					detailArguments = [params, this.startTime, this.endTime, placeId]
 				} else {
@@ -485,11 +486,6 @@
 				this.getParams();
 			},
 			//设备类型
-			// changDeviceType(params) {
-			// 	this.typeName = params.typeName;
-			// 	this.deviceTypeId = params.deviceTypeId;
-			// 	this.getParams();
-			// },
 			changDeviceType(params) {
 				const {
 					deviceTypeText,

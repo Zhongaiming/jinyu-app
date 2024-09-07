@@ -11,7 +11,7 @@
 					mode="widthFix"></image>
 				<view class="price-center">
 					<view class="">
-						{{ order.shopPrice }}元1局
+						{{ $formatAmount(order.shopPrice) }}元1局
 					</view>
 					<view class="">
 						x1
@@ -19,10 +19,10 @@
 				</view>
 				<view class="price-right">
 					<view class="backColor">
-						¥{{ order.amount }}
+						¥{{ $formatAmount(order.amount) }}
 					</view>
 					<view class="redColor">
-						实付：¥{{ order.amountTotal }}
+						实付：¥{{ $formatAmount(order.amountTotal) }}
 					</view>
 				</view>
 			</view>
@@ -31,7 +31,7 @@
 			<view class="refund-content-title">
 				退款金额
 				<view class="refund-content-titleTips">
-					（不超过{{ order.amountTotal }}元）
+					（不超过{{ $formatAmount(order.amountTotal) }}元）
 				</view>
 			</view>
 			<view class="refund-content">
@@ -40,7 +40,7 @@
 					<input v-model="refundAmount" placeholder="输入退款金额" type="number" class="refund-content_input_qV_cV">
 				</view>
 				<view class="refund-content_btn_ZFgj" @click="() => {
-					refundAmount = order.amountTotal
+					refundAmount = order.amountTotal/100
 				}">全额退</view>
 			</view>
 			<view class="order_line"></view>

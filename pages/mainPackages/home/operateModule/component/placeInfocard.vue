@@ -7,7 +7,7 @@
 						<span class="place-name" v-html="item.placeName ? item.placeName : item.deviceTypeName"></span>
 						<span class="count" v-show="item.placeName">{{ item.deviceNum }}台</span>
 						<span class="money text-over">
-							<span class="text">合计：</span>{{ item.totalIncome }}
+							<span class="text">合计：</span>{{ $formatAmount(item.totalIncome) }}
 							<span class="unit">元</span>
 						</span>
 					</view>
@@ -17,16 +17,16 @@
 								<span class="field">在线支付</span>
 								<span class="value">
 									<span class="num">出币{{ item.onlinePayInsertCoins }}个,</span>
-									{{ item.onlinePayIncome }}<span class="unit">元</span></span>
+									{{ $formatAmount(item.onlinePayIncome) }}<span class="unit">元</span></span>
 							</view>
 							<view class="info-row">
 								<span class="field">平台补贴</span>
-								<span class="value">{{ item.subsidyIncome }}<span class="unit">元</span><u-icon
+								<span class="value">{{ $formatAmount(item.subsidyIncome) }}<span class="unit">元</span><u-icon
 										name="arrow-right" size="18" color="#c6c6c6" class="icon-arrow" /></span>
 							</view>
 							<view class="info-row">
 								<span class="field">现金支付</span>
-								<span class="value">{{ item.cashPayIncome }}<span class="unit">元</span></span>
+								<span class="value">{{ $formatAmount(item.cashPayIncome) }}<span class="unit">元</span></span>
 							</view>
 							<view class="info-row">
 								<span class="field">实际出币数</span>
@@ -45,15 +45,13 @@
 						<view class="info-part">
 							<view class="one-footer">
 								<span class="field">商品消耗</span>
-								<span class="right-txt">{{ item.commodityCount }}<span class="unit">个</span>{{ item.commodityTotalAmount
-                  }}<span class="unit">元</span></span>
+								<span class="right-txt">{{ item.commodityCount }}<span class="unit">个</span>
+								{{ $formatAmount(item.commodityTotalAmount)}}<span class="unit">元</span></span>
 							</view>
 							<view class="count">
-								出礼比例<span v-html="
-                    item.outPresentProportion
-                      ? item.outPresentProportion + '/1'
-                      : '0/0'
-                  "></span>
+								出礼比例<span>
+									{{item.outPresentProportion? item.outPresentProportion + '/1': '0/0'}}
+								</span>
 							</view>
 						</view>
 					</view>

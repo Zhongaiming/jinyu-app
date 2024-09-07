@@ -5,6 +5,7 @@ import "@/common/pageRouter.js"
 import "@/common/message.js"
 import store from '@/store'
 import "@/common/public.js"
+import AmountFormatter from '@/directive/amountFormatter';
 
 // #ifndef VUE3
 import Vue from 'vue'
@@ -39,7 +40,7 @@ Vue.use(uView)
 
 import commonMixin from '@/mixins/index.js'
 Vue.mixin(commonMixin)
-
+Vue.use(AmountFormatter)
 // 注册全局组件
 import jyTabbar from './components/jy-tabbar/jyTabbar.vue'
 import jyNavbar from '@/components/jy-navbar/jyNavbar.vue'

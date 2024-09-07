@@ -16,7 +16,7 @@
 
 					<view class="xls-order-place refund-price text-over"
 						v-if="item.amountRefund && item.refundState == 1">
-						<text class="time">已退 ¥{{item.amountRefund}}</text>
+						<text class="time">已退 ¥{{$formatAmount(item.amountRefund)}}</text>
 					</view>
 				</view>
 
@@ -78,10 +78,10 @@
 							src="https://asset.leyaoyao.com/merchant-order-center/static/d0da3593648b2c25b3ca.png"
 							mode="widthFix"></image>
 						<view class="price-center">
-							{{ item.shopPrice }}元1局 {{ item.commodityName }}
+							{{ $formatAmount(item.shopPrice) }}元1局 {{ item.commodityName }}
 						</view>
 						<view class="price-right">
-							¥{{ item.totalReceivables }}
+							¥{{ $formatAmount(item.totalReceivables) }}
 						</view>
 					</view>
 
@@ -90,7 +90,7 @@
 							共1件商品
 						</view>
 						<view class="accout">
-							付款：¥{{ item.bankCardAmount }}
+							付款：¥{{ $formatAmount(item.bankCardAmount) }}
 						</view>
 					</view>
 
@@ -176,7 +176,6 @@
 		},
 		methods: {
 			getCondition(params) {
-				console.log('params', params)
 				this.params = params;
 				this.$refs.orderPaging.reload(true);
 			},

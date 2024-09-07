@@ -27,7 +27,7 @@
 				</view>
 				
 				<view class="num-info">
-					{{ item.amount }}<span class="small">元</span><br />
+					{{ $formatAmount(item.amount) }}<span class="small">元</span><br />
 					<!-- <span class="has-refund back" v-show="item.state == -1">有退款</span>
 					<span class="has-refund stay" v-show="item.state == 0">待支付</span>
 					<span class="has-refund" v-show="item.state == 1">交易完成</span> -->
@@ -40,7 +40,7 @@
 			<view class="entry-bd" v-show="tabActive != 3">
 				<view class="info-row" v-if="item.amountRefund">
 					<span class="field">退款金额</span>
-					<span class="value text-over redColor">已退￥{{ item.amountRefund }}</span>
+					<span class="value text-over redColor">已退￥{{ $formatAmount(item.amountRefund) }}</span>
 				</view>
 				<view class="info-row">
 					<span class="field">设备类型</span>

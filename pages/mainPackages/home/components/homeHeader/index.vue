@@ -6,7 +6,7 @@
 			<!-- 收益 -->
 			<view class="xls-header-main-right-wrapper" v-hasPermi="['app:today:index']">
 				<view class="price-wrapper" @click="goTo('todayEarning')">
-					<span class="price">{{total.totalIncome || "0.00"}}</span>
+					<span class="price">{{$formatAmount(total.totalIncome)}}</span>
 					<span class="unit">元</span>
 				</view>
 				<view class="acount-wrapper">

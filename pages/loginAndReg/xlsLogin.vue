@@ -23,9 +23,9 @@
 					@click="loginMethod"></u-button>
 					
 			</form>
-			<view class="xls-register-wrapper" @click="goTo">
+			<view class="xls-register-wrapper">
 				<xls-image :src="`${$baseUrl}login_image/register.png`" alt="" class="image"
-					mode="widthFix" />
+					mode="widthFix" @clickMethod="goTo"/>
 			</view>
 		</view>
 	</view>

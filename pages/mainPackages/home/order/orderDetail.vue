@@ -3,8 +3,8 @@
 		<jy-navbar title="订单详情" bgColor="#f5f5f5"></jy-navbar>
 		<view class="xls-box-style" @click="goTo('refundDetail')">
 			<view class="device-style">
-				<text v-if="order.amountRefund && order.refundState == 1">已退 ¥{{formatAmount(order.amountRefund)}}</text>
-				<text v-else> ¥{{formatAmount(order.amountTotal)}}</text>
+				<text v-if="order.amountRefund && order.refundState == 1">已退 ¥{{$formatAmount(order.amountRefund)}}</text>
+				<text v-else> ¥{{$formatAmount(order.amountTotal)}}</text>
 				<text class="state arrow" :style="[{color: stateColorDict[order.state]}]">
 					{{stateDict[order.state]}}
 				</text>
@@ -42,7 +42,7 @@
 					mode="widthFix"></image>
 				<view class="price-center">
 					<view class="">
-						{{ formatAmount(order.shopPrice) }}元1局
+						{{ $formatAmount(order.shopPrice) }}元1局
 					</view>
 					<view class="">
 						x1
@@ -50,10 +50,10 @@
 				</view>
 				<view class="price-right">
 					<view class="backColor">
-						¥{{ formatAmount(order.amount) }}
+						¥{{ $formatAmount(order.amount) }}
 					</view>
 					<view class="redColor">
-						实付：¥{{ formatAmount(order.amountTotal) }}
+						实付：¥{{ $formatAmount(order.amountTotal) }}
 					</view>
 				</view>
 			</view>
@@ -67,19 +67,19 @@
 						<u-icon name="arrow-left-double" color="#c6c6c6" size="36" class="uicon" v-else></u-icon>
 					</view>
 					<text>付款：</text>
-					<text class="text">¥{{ formatAmount(order.amount) }}</text>
+					<text class="text">¥{{ $formatAmount(order.amount) }}</text>
 				</view>
 				<view class="list" v-if="double">
 					<text>实付款：</text>
-					<text class="text">¥{{ formatAmount(order.amountTotal) }}</text>
+					<text class="text">¥{{ $formatAmount(order.amountTotal) }}</text>
 				</view>
 				<view class="list" v-if="double && getPrice(order)">
 					<text>服务费：</text>
-					<text class="text">¥{{ formatAmount(getPrice(order)) }}</text>
+					<text class="text">¥{{ $formatAmount(getPrice(order)) }}</text>
 				</view>
 				<view class="list" v-if="double">
 					<text>商户实收款：</text>
-					<text class="main-text">¥{{ formatAmount(order.commercialRealCollection) }}</text>
+					<text class="main-text">¥{{ $formatAmount(order.commercialRealCollection) }}</text>
 				</view>
 			</view>
 		</view>
@@ -141,7 +141,7 @@
 				</view>
 				<view class="value">
 					<view class="">
-						¥{{ formatAmount(order.amount) }}
+						¥{{ $formatAmount(order.amount) }}
 					</view>
 				</view>
 			</view>
@@ -366,9 +366,6 @@
 				const {deviceCommission, agentServiceCharge, deviceServiceCharge} = order;
 				const result = suan.addFloast((deviceCommission ?? 0), (agentServiceCharge ?? 0));
 				return suan.addFloast(result, (deviceServiceCharge ?? 0));
-			},
-			formatAmount(num) {
-				return suan.formatAmount(num);
 			},
 		}
 	}

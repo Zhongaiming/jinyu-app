@@ -17,7 +17,7 @@
 							退款金额
 						</view>
 						<view class="right">
-							￥ {{order.refundMoney}} 元
+							￥ {{$formatAmount(order.refundMoney)}} 元
 						</view>
 					</view>
 					<view class="text">
@@ -52,7 +52,7 @@
 						mode="widthFix"></image>
 					<view class="price-center">
 						<view class="">
-							{{ order.amountTotal }}元1局
+							{{ $formatAmount(order.amountTotal) }}元1局
 						</view>
 						<view class="">
 							x1
@@ -60,10 +60,10 @@
 					</view>
 					<view class="price-right">
 						<view class="backColor">
-							¥{{ order.amountTotal }}
+							¥{{ $formatAmount(order.amountTotal) }}
 						</view>
 						<view class="redColor" v-if="order.hasOwnProperty('refundMoney')">
-							实退：¥{{ order.refundMoney }}
+							实退：¥{{ $formatAmount(order.refundMoney) }}
 						</view>
 					</view>
 				</view>

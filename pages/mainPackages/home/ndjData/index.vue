@@ -14,7 +14,8 @@
 						</view>
 						<view class="data-item">
 							<p class="data">
-								{{eggEarnMsg.onlinePayAmount?keepFixed(eggEarnMsg.onlinePayAmount):0}}
+								<!-- {{eggEarnMsg.onlinePayAmount?keepFixed(eggEarnMsg.onlinePayAmount):0}} -->
+								{{$formatAmount(eggEarnMsg.onlinePayAmount)}}
 							</p>
 							<p class="title Center">在线支付(元)</p>
 						</view>
@@ -170,7 +171,7 @@
 							<!-- 出货数 -->
 							<td class="tex-center" v-if="listType == 1">
 								<p>
-									<span style="max-width: 60px">{{item.outPresentCount}}</span>
+									<span style="max-width: 60px">{{item.outPresentCount||0}}</span>
 								</p>
 							</td>
 							<!-- 现有库存 -->
@@ -182,7 +183,7 @@
 							<!-- 投币单价 -->
 							<td class="tex-center" v-if="listType == 1">
 								<p>
-									<span style="max-width: 60px">{{ item.price }}</span>
+									<span style="max-width: 60px">{{ $formatAmount(item.price) }}</span>
 								</p>
 							</td>
 							<!-- 日期 -->
@@ -195,27 +196,28 @@
 							<td class="tex-center">
 								<p>
 									<span
-										style="max-width: 60px">{{listType == 1?item.offlineOutTokenCount:item.offline_count || 0}}</span>
+										style="max-width: 60px">{{listType == 1?(item.offlineOutTokenCount||0):(item.offline_count||0)}}</span>
 								</p>
 							</td>
 							<!-- 线上投币 -->
 							<td class="tex-center">
 								<p>
 									<span
-										style="max-width: 60px">{{listType==1?item.onlineOutTokenCount:item.online_count}}</span>
+										style="max-width: 60px">{{listType==1?(item.onlineOutTokenCount||0):(item.online_count||0)}}</span>
 								</p>
 							</td>
 							<!-- 在线支付 -->
 							<td class="tex-center">
 								<p>
-									<span
-										style="max-width: 70px">{{listType == 1?item.orderMoney||0:item.amount_total||0}}</span>
+									<span style="max-width: 70px">
+										{{listType == 1?$formatAmount(item.orderMoney):$formatAmount(item.amount_total)}}
+									</span>
 								</p>
 							</td>
 							<!-- 出货数 -->
 							<td class="tex-center" v-if="listType == 2">
 								<p>
-									<span style="max-width: 60px">{{item.out_present_count}}</span>
+									<span style="max-width: 60px">{{item.out_present_count||0}}</span>
 								</p>
 							</td>
 							<!-- 货道号 -->
@@ -241,7 +243,6 @@
 </template>
 
 <script>
-	// import TopChoose from "../gashComps/topChoose";
 	import {
 		deviceDataController
 	} from "@/api/index.js";
@@ -253,7 +254,6 @@
 	export default {
 		components: {
 			DeriveWatch,
-			// TopChoose,
 		},
 		data() {
 			return {

@@ -10,7 +10,7 @@
 				<view class="date-info">
 					<span class="date-str">{{getText()}}</span>
 					<span class="total-income" style="display: flex; flex-direction: column; text-align: right">
-						<span class="Jtop-txt">{{ detailList.placeTotalIncome}}<span class="unit">元</span></span>
+						<span class="Jtop-txt">{{ $formatAmount(detailList.placeTotalIncome)}}<span class="unit">元</span></span>
 						<!-- <span class="bottom-txt cm-hidden" style="color: #bababa; font-size: 12px">
 							(含服务费:<span v-html="detailList.commission ? detailList.commission : '0.00'"></span>元)
 						</span> -->
@@ -51,12 +51,12 @@
 							<span class="status" v-show="!dev.moveState">已转移</span>
 						</view>
 						<view class="right" @click="isShowfoldOrno(dev)" style="display: flex;align-items: center;">
-							合计: {{ dev.deviceIncome }}<span class="unit">元</span>
+							合计: {{ $formatAmount(dev.deviceIncome) }}<span class="unit">元</span>
 							<span>
 								<u-icon name="arrow-up" size="36" color="#d1d1d1" class="icons"
-									v-show="!dev.isShowfold" />
+									v-if="!dev.isShowfold" />
 								<u-icon name="arrow-down" size="36" color="#d1d1d1" class="icons"
-									v-show="dev.isShowfold" />
+									v-else />
 							</span>
 						</view>
 					</view>
@@ -64,28 +64,28 @@
 						场地：{{ dev.placeName }}
 					</view>
 				</view>
-				<view v-show="dev.isShowfold">
+				<view v-if="dev.isShowfold">
 					<view class="type-info" v-for="(egg, index) in dev.simpleDeviceRailIncomeInfoVoList" :key="index">
 						<view class="list-item">
 							<view class="machine-info">
 								<span class="name">{{ egg.deviceNumber }}-{{ egg.railSpace }}/{{egg.railNumber}}</span>
 							</view>
 							<!-- shj -->
-							<view class="flexbox" v-show="dev.deviceTypeName == '售货机'">
+							<view class="flexbox" v-if="dev.deviceTypeName == '售货机'">
 								<view class="flex-2">
-									<view>线上合计付款{{ egg.onlinePayAmount || "0.00" }}元</view>
-									<view>购买{{ egg.commodityTotalAmount || "0.00" }}元</view>
+									<view>线上合计付款{{ $formatAmount(egg.onlinePayAmount) }}元</view>
+									<view>购买{{ $formatAmount(egg.commodityTotalAmount) }}元</view>
 								</view>
 								<view class="flex">
 									<view>出货{{ egg.commodityCount || "0" }}个</view>
 								</view>
 								<view class="flex">
 									<view>现金支付</view>
-									<view>{{ egg.cashPayAmount || "0" }}个</view>
+									<view>{{ $formatAmount(egg.cashPayAmount) }}个</view>
 								</view>
 							</view>
 							<!-- wwj --><!-- ndj -->
-							<view class="flexbox" v-show="dev.deviceTypeName == '娃娃机' || '扭蛋机'">
+							<view class="flexbox" v-if="dev.deviceTypeName == '娃娃机' || '扭蛋机'">
 								<view class="flex">
 									<view>{{ egg.totalInsertCoins || "0" }}个</view>
 									<view>
@@ -94,27 +94,26 @@
 								</view>
 								<view class="flex">
 									<view>
-										出礼比例<span
-											v-html="egg.outPresentProportion > 0? egg.outPresentProportion + '/1':'0/0'"></span>
+										出礼比例<span>{{egg.outPresentProportion > 0? egg.outPresentProportion + '/1':'0/0'}}</span>
 									</view>
 									<view>
-										{{ egg.commodityCount || "0" }}个,{{egg.commodityTotalAmount || "0.00"}}元
+										{{ egg.commodityCount || "0" }}个,{{$formatAmount(egg.commodityTotalAmount)}}元
 									</view>
 								</view>
 							</view>
 							<!-- dbj -->
-							<view class="flexbox" v-show="dev.deviceTypeName == '兑币机'">
+							<view class="flexbox" v-if="dev.deviceTypeName == '兑币机'">
 								<view class="flex">
 									<view>线上收益</view>
-									<view>{{ egg.onlinePayAmount || "0.00" }}元</view>
+									<view>{{ $formatAmount(egg.onlinePayAmount) }}元</view>
 								</view>
 								<view class="flex">
 									<view>补贴额</view>
-									<view>{{ egg.subsidyAmount || "0.00" }}元</view>
+									<view>{{ $formatAmount(egg.subsidyAmount) }}元</view>
 								</view>
 								<view class="flex">
 									<view>现金支付</view>
-									<view>{{ egg.cashPayAmount || "0.00" }}元</view>
+									<view>{{ $formatAmount(egg.cashPayAmount) }}元</view>
 								</view>
 								<view class="flex">
 									<view>实际出币</view>
@@ -122,14 +121,14 @@
 								</view>
 							</view>
 							<!-- ylc -->
-							<view class="flexbox" v-show="dev.deviceTypeName == '游乐车'">
+							<view class="flexbox" v-if="dev.deviceTypeName == '游乐车'">
 								<view class="flex">
 									<view>线上收益</view>
-									<view>{{ egg.onlinePayAmount || "0.00" }}元</view>
+									<view>{{ $formatAmount(egg.onlinePayAmount) }}元</view>
 								</view>
 								<view class="flex">
 									<view>现金支付</view>
-									<view>{{ egg.cashPayAmount || "0.00" }}元</view>
+									<view>{{ $formatAmount(egg.cashPayAmount) }}元</view>
 								</view>
 								<view class="flex">
 									<view>线上投币</view>
@@ -142,7 +141,7 @@
 					</view>
 				</view>
 			</view>
-			<xls-empty v-show="!placeDeviceList.length"></xls-empty>
+			<xls-empty v-if="!placeDeviceList.length"></xls-empty>
 		</view>
 		<xls-device-type-radio ref="deviceType" @changDeviceType="changDeviceType"></xls-device-type-radio>
 	</view>
