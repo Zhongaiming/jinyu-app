@@ -93,10 +93,10 @@
 				deviceNo: "",
 				deviceInfo: {
 					bindingState: 0,
-					uuid: "869734050203177",
-					deviceNumber: "30000020",
+					uuid: "",
+					deviceNumber: "",
 					deviceType: 2,
-					typeName: "扭蛋机",
+					typeName: "",
 				},
 				disableList: [],
 				havePlace: true,

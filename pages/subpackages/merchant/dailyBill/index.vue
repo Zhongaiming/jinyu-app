@@ -5,7 +5,7 @@
 			<view class="header">
 				<view class="header-left">
 					<p class="day">{{ dataTxt }}</p>
-					<p class="income" v-html="'总收益:' + (monthInfo ? monthInfo : '0.00') + '元'"></p>
+					<p class="income">总收益:{{$formatAmount(monthInfo)}} 元</p>
 				</view>
 				<view class="header-right" @click="personDatetime = !personDatetime">
 					<xls-image :src="`${$baseUrl}appV4/authentications/week.png`" alt="" class="btn-icon" />
@@ -50,13 +50,13 @@
 							<view class="list-item content-title" :class="{'table-open-line':isClose}"
 								v-for="(item, index) in dataList.slice(0, lengthAll)" :key="index">
 								<span class="talbe-column table-total"
-									:class="{'table-open':isClose}">{{ item.totalIncome }}</span>
+									:class="{'table-open':isClose}">{{ $formatAmount(item.totalIncome) }}</span>
 								<span class="talbe-column table-pay-income"
-									:class="{'table-open':isClose}">{{ item.onlineIncome }}
+									:class="{'table-open':isClose}">{{ $formatAmount(item.onlineIncome) }}
 									<view class="linear" v-show="!isClose"></view>
 								</span>
-								<span class="talbe-column table-open" v-show="isClose">{{item.subsidyIncome}}</span>
-								<span class="talbe-column table-open" v-show="isClose">{{item.cashIncome}}</span>
+								<span class="talbe-column table-open" v-show="isClose">{{$formatAmount(item.subsidyIncome)}}</span>
+								<span class="talbe-column table-open" v-show="isClose">{{$formatAmount(item.cashIncome)}}</span>
 								<span class="talbe-column table-detail" v-hasPermi="['app:payBag:index:bill:resvied']"
 									@click="getEarn(item.date, item.onlineIncome)"><span
 										class="earn-info">查看</span></span>

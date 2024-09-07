@@ -19,15 +19,7 @@
 				<!-- orderStatus INIT已接收 DOING处理中  DONE成功 FAILED失败 MANUAL人工处理 -->
 				<span class="header-right status-success" v-if="obj.orderStatus == 'DONE'">收益已到账</span>
 				<span class="header-right status-failed" v-else-if="obj.orderStatus == 'FAILED'">失败</span>
-				<span class="header-right status-base" v-else>{{
-          obj.orderStatus == "INIT"
-            ? "已接收"
-            : obj.orderStatus == "DOING"
-            ? "处理中"
-            : obj.orderStatus == "MANUAL"
-            ? "人工处理"
-            : "其他"
-        }}</span>
+				<span class="header-right status-base" v-else>{{orderStatusDict[obj.orderStatus]}}</span>
 			</view>
 			<view class="line-cell-wrapper" v-if="obj.reason">
 				<span>原因</span>
@@ -74,15 +66,15 @@
 			</view>
 			<view class="line-cell-wrapper">
 				<span>收益金额</span>
-				<view class="cell-value">{{ voList.totalAmount }}</view>
+				<view class="cell-value">{{ $formatAmount(voList.totalAmount) }}</view>
 			</view>
 			<view class="line-cell-wrapper">
 				<span>分账金额</span>
-				<view class="cell-value">{{ voList.separateMoneySum }}</view>
+				<view class="cell-value">{{ $formatAmount(voList.separateMoneySum) }}</view>
 			</view>
 			<view class="line-cell-wrapper">
 				<span>手续费</span>
-				<view class="cell-value">{{ voList.charge }}</view>
+				<view class="cell-value">{{ $formatAmount(voList.charge) }}</view>
 			</view>
 			<view class="line-cell-wrapper">
 				<span>收款人</span>
@@ -164,6 +156,12 @@
 				obj: {},
 				voList: {},
 				settleDate: "",
+				orderStatusDict: {
+					"INIT": "已接收",
+					"DOING": "处理中",
+					"MANUAL": "人工处理",
+					undefined: "其他"
+				},
 			};
 		},
 		async onLoad(option) {

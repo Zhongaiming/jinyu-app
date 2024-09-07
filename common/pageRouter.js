@@ -23,9 +23,9 @@ Vue.prototype.$goTo = function(path, openType = 'navigateTo', params = {}, anima
 
 }
 
-Vue.prototype.$goBack = function() {
+Vue.prototype.$goBack = function(value = 1) {
 	uni.navigateBack({
-		delta: 1
+		delta: value
 	})
 }
 

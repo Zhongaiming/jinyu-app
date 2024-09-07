@@ -17,7 +17,7 @@
 			</view>
 		</view>
 		<view class="list-content">
-			<view class="items" v-for="(item, index) in dataList" :key="index" @click="goCoupleDetail(item)">
+			<view class="items" v-for="(item, index) in dataList" :key="$getUniqueKey(index, 'datalist')" @click="goCoupleDetail(item)">
 				<view class="item-top">
 					<view class="left">
 						<image :src="`${$baseUrl}appV4/remoteBoot/pay.jpg`" alt="" class="image"
@@ -50,20 +50,20 @@
 			<view class="filter-popup">
 				<view class="status-title">处理状态</view>
 				<view class="status-content">
-					<span class="border" v-for="(item, index) in conductorStateList" :key="index"
+					<span class="border" v-for="(item, index) in conductorStateList" :key="$getUniqueKey(index, 'StateList')"
 						:class="{'checked':conductorState == item.id}" @click="conductorState = item.id">{{ item.name
               }}<span class="no-handler-status" v-show="index == 1">{{coupleNum}}</span></span>
 				</view>
 				<view class="status-title">反馈类型</view>
 				<view class="status-content">
-					<span class="border" v-for="(item, index) in feedbackTypeList" :key="index"
+					<span class="border" v-for="(item, index) in feedbackTypeList" :key="$getUniqueKey(index, 'feedbackTypeList')"
 						:class="{'checked':feedbackType == item.id}" @click="feedbackType = item.id">{{ item.name }}
 					</span>
 				</view>
 
 				<view class="status-title status">来源渠道</view>
 				<view class="status-content">
-					<span class="border" v-for="(item, index) in sourceTypeList" :key="index"
+					<span class="border" v-for="(item, index) in sourceTypeList" :key="$getUniqueKey(index, 'sourceTypeList')"
 						:class="{'checked':sourceType == item.id}" @click="sourceType = item.id">{{ item.name }}</span>
 				</view>
 

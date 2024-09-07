@@ -1,6 +1,7 @@
 'use strict';  
 const uniPush = uniCloud.getPushManager({  
-appId: "__UNI__F2C6000"  
+// appId: "__UNI__F2C6000"
+appId: "__UNI__AE5E931"
 })
 
 exports.main = async (event) => { 

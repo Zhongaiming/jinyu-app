@@ -2,28 +2,21 @@
 	<!-- 参数设置 -->
 	<view class="amend-parameter">
 		<!-- 4/5 枚举型 字符型-->
-		<u-popup :show="showBoolen" mode="bottom">
-			<view class="main-content-set" v-if="params.dataType == 4">
-				<u-picker :columns="paramsList" title="" show-toolbar @confirm="confirmMethed"
-					@cancel="showBoolen = false" :default-index="defaultIndex" />
-			</view>
-			<view class="main-content-set" v-if="params.dataType == 5">
-				<u-picker :columns="paramsList" title="" show-toolbar @confirm="confirmMethed"
-					@cancel="showBoolen = false" :default-index="defaultIndex" />
-			</view>
-		</u-popup>
+		<u-picker :show="showBoolen" :columns="[paramsList]" title="" show-toolbar @confirm="confirmMethed"
+			@cancel="showBoolen = false" :default-index="[defaultIndex]" keyName="text" itemHeight="88" confirmColor="#5241ff"/>
 		<!-- 2/3 整数型 浮点型-->
 		<u-popup :show="showNumber" mode="center" round>
 			<view class="number-wrapper" v-if="showNumber">
 				<view class="mui-popup-inner">
 					<view class="mui-popup-text">{{ params.functionName }}</view>
 					<view class="mui-numbox-input Center">
-						<u-stepper v-if="params.dataType == 2" v-model="activeValue" input-width="134px"
-							button-size="36px" :integer="params.dataType == 2" :min="params.ints.valueRangeStart"
-							:max="params.ints.valueRangeEnd" />
-						<u-stepper v-if="params.dataType == 3" v-model="activeValue" input-width="134px"
+						<!-- :integer="params.dataType == 2" -->
+						<u-number-box v-if="params.dataType == 2" v-model="activeValue" input-width="100px"
+							button-size="36px" :min="params.ints.valueRangeStart"
+							:max="params.ints.valueRangeEnd" iconStyle="fontSize: 17px"/>
+						<u-number-box v-if="params.dataType == 3" v-model="activeValue" input-width="100px"
 							button-size="36px" step="0.1" :min="params.floats.valueRangeStart"
-							:max="params.floats.valueRangeEnd" />
+							:max="params.floats.valueRangeEnd" iconStyle="fontSize: 17px"/>
 					</view>
 					<view class="mui-popup-text" v-if="params.dataType == 2">
 						输入范围为{{ params.ints.valueRangeStart }}-{{params.ints.valueRangeEnd}}
@@ -77,7 +70,9 @@
 				this.showNumber = false;
 				if (item.dataType == 4) {
 					item.openParameterSetEnum.forEach((items, index) => {
-						if (items.enumValueNumerical == item.arr) this.defaultIndex = index;
+						if (items.enumValueNumerical == item.arr) {
+							this.defaultIndex = index;
+						}
 						let obj = {
 							text: `${items.enumValueDescribe}`,
 							id: items.enumValueNumerical,
@@ -108,8 +103,9 @@
 				}
 			},
 			//4/5
-			confirmMethed(picker, value) {
-				this.activeValue = this.paramsList[value].id;
+			confirmMethed(params) {
+				const {indexs} = params;
+				this.activeValue = this.paramsList[indexs[0]].id;
 				this.confrimSet();
 			},
 			//2/3/4/5

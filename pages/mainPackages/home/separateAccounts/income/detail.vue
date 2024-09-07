@@ -21,17 +21,17 @@
 		<view class="detail-wrapper-list">
 			<view class="table-content-panel p-text" v-for="(item, index) in detailList" :key="index">
 				<view class="cell w-table">{{ item.placeName }}</view>
-				<view class="cell">{{ item.amountTotal }}</view>
-				<view class="cell">{{ item.separateMoney }}</view>
-				<view class="cell">{{ item.proportion }}%</view>
+				<view class="cell">{{ $formatAmount(item.amountTotal) }}</view>
+				<view class="cell">{{ $formatAmount(item.separateMoney) }}</view>
+				<view class="cell">{{ item.proportion/100 }}%</view>
 			</view>
 			<xls-bottom v-if="detailList.length" />
 			<xls-empty v-else />
 		</view>
 		<view class="table-content-panel s-table-bom-panel">
 			<view class="cell">合计</view>
-			<view class="cell">{{ amountTotal }}</view>
-			<view class="cell">{{ separateMoney }}</view>
+			<view class="cell">{{ $formatAmount(amountTotal) }}</view>
+			<view class="cell">{{ $formatAmount(separateMoney) }}</view>
 			<view class="cell"></view>
 		</view>
 	</view>

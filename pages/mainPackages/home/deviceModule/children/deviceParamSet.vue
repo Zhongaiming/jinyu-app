@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="device-param__page">
 		<xls-jy-navbar title="设备参数"></xls-jy-navbar>
 		<view class="ter-main-wrapper">
 			<!-- 基础参数 -->
@@ -24,7 +24,7 @@
 				{{ item.functionName }}
 			</view>
 		</view>
-		
+		<xls-bottom v-if="basicParams.length"></xls-bottom>
 		<view class="btn-wrapper" v-if="basicParams.length">
 			<view class="re-fresh" @click="refresh()">刷新</view>
 			<view class="bottom-btn" @click="setParams()">保存设置</view>
@@ -76,7 +76,7 @@
 		methods: {
 			//刷新
 			refresh() {
-				// this.$router.go(0);
+				this.$goBack(0);
 			},
 			//处理数据类型
 			dealWith(item) {
@@ -121,7 +121,7 @@
 					cmd: "5",
 				});
 				if (res.code == 200) {
-					this.basicParams = res.data.data;
+					this.basicParams = res.data;
 				}
 			},
 			//布尔型
@@ -210,6 +210,9 @@
 </script>
 
 <style lang="scss" scoped>
+	.device-param__page {
+		padding-bottom: 60px;
+	}
 	.ter-main-wrapper {
 		.ter-item-style {
 			border-bottom: 1px solid #e6e6e6;

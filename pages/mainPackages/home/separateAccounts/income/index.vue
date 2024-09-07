@@ -40,10 +40,10 @@
 					{{ item.nickName }}
 				</view>
 				<view class="title-cell" v-show="accountType != 3">
-					{{ item.separateAmount }}
+					{{ $formatAmount(item.separateAmount) }}
 				</view>
 				<view class="title-cell" v-show="accountType == 3">
-					{{ item.separateMoney }}
+					{{ $formatAmount(item.separateMoney) }}
 				</view>
 				<view class="title-cell" v-show="accountType == 1" v-html="'查看'" style="color: #5241FF"
 					@click="goToDetail(item)"></view>
@@ -51,7 +51,7 @@
 		</view>
 		<view class="all-wrapper">
 			<view class="cell">合计</view>
-			<view class="cell s-total">{{ allCount }}</view>
+			<view class="cell s-total">{{ $formatAmount(allCount) }}</view>
 			<view class="cell" v-show="accountType == 1"></view>
 		</view>
 		<!-- person -->

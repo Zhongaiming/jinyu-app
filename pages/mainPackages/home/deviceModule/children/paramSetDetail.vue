@@ -52,7 +52,9 @@
 			this.getParams();
 		},
 		methods: {
-			refresh() {},
+			refresh() {
+				this.$goBack(0);
+			},
 			//根据终端的id查询他的数据
 			async getParams() {
 				let msg = await deviceController.updateValue({

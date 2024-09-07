@@ -12,7 +12,7 @@
 				<view class="reason-wrapper">
 					<u-radio-group v-model="pickerReason" class="reason-group">
 						<u-radio :name="item.id" class="reason-radio-item" iconSize="32" labelSize="36" size="38"
-							activeColor="#5241FF" v-for="(item, index) in reasonList" :key="index"
+							activeColor="#5241FF" v-for="(item, index) in reasonList" :key="$getUniqueKey(index, 'radio')"
 							@change="responseContent = item.resMsg">{{ item.resTitle}}</u-radio>
 					</u-radio-group>
 					<textarea placeholder="请输入具体协商情况,至少10个字 ，此留言将直接同步消费者。" v-model="responseContent"
@@ -51,7 +51,7 @@
 				<view class="reason-wrapper">
 					<u-radio-group v-model="pickerReasonZFB" class="reason-group">
 						<u-radio :name="item.id" class="reason-radio-item" iconSize="32" labelSize="36" size="38"
-							activeColor="#5241FF" v-for="(item, index) in reasonListZFB" :key="index"
+							activeColor="#5241FF" v-for="(item, index) in reasonListZFB" :key="$getUniqueKey(index, 'reason')"
 							@change="responseContent = item.resMsg">{{item.resTitle }}</u-radio>
 					</u-radio-group>
 					<textarea placeholder="请输入具体协商情况,至少10个字 ，此留言将直接同步消费者。" v-model="responseContent"
@@ -125,7 +125,7 @@
 			<!-- 协商历史 -微信 -->
 			<view class="egotiate-history" v-if="coupleDetail.sourceType == 1">
 				<view class="big-title">协商历史</view>
-				<view class="content-info" v-for="(item, index) in historyList" :key="index">
+				<view class="content-info" v-for="(item, index) in historyList" :key="$getUniqueKey(index, 'history')">
 					<view class="left">
 						<span class="head"><span class="point"></span></span>
 						<span class="line"></span>
@@ -146,7 +146,7 @@
 							</view>
 						</view>
 						<view class="images-wrapper" v-if="item.complaintImageUrl">
-							<xls-image v-for="(items, index) in changeParse(item.complaintImageUrl)" :key="index" :src="items"
+							<xls-image v-for="(items, index) in changeParse(item.complaintImageUrl)" :key="$getUniqueKey(index, 'image')" :src="items"
 								alt="" @clickMethod="imgView(JSON.parse(item.complaintImageUrl), index)" class="image"/>
 						</view>
 					</view>
@@ -155,7 +155,7 @@
 			<!-- 协商历史 -长回复系统 -->
 			<view class="egotiate-history" v-if="coupleDetail.sourceType==2&&historyList.length">
 				<view class="big-title">协商历史</view>
-				<view v-for="(item, index) in historyList" :key="index">
+				<view v-for="(item, index) in historyList" :key="$getUniqueKey(index, 'list')">
 					<!-- 投诉 -->
 					<view class="content-info" v-if="item.problemDescription">
 						<view class="left">
@@ -272,8 +272,6 @@
 </template>
 
 <script>
-	// import { ImagePreview } from "vant";
-	// import api from "@/utils/api/couple";
 	import qs from "qs";
 	import {
 		appealController
