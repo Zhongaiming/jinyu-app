@@ -85,6 +85,8 @@
 			getList() {
 				this.$loading();
 				deviceController.getOnlineList({
+						page: 1,
+						size: 30,
 						deviceNumber: this.deviceTypeInfo.deviceNumber,
 					})
 					.then((res) => {

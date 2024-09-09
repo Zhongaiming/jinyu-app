@@ -54,29 +54,31 @@
 			};
 		},
 		async onLoad() {
-			let option = cache.getCache("deviceLogin");
-			if (option.uuid) {
-				this.uuid = option.uuid;
-				this.loginId = option.loginId;
-			}
-			// let params = qs.stringify({
-			// 	productKey: "a1RrYPsjzAn",
-			// 	// productKey: "a1eUldLZaNe",
-			// 	imei: this.uuid,
-			// });
-			let params = {
-				productKey: "a1RrYPsjzAn",
-				// productKey: "a1eUldLZaNe",
-				imei: this.uuid,
-			};
-			let res = await deviceController.queryParam(params);
-			this.getBoardList();
-			this.getTer();
+			this.refresh();
+			console.log("===", uni)
 		},
 		methods: {
 			//刷新
-			refresh() {
-				this.$goBack(0);
+			async refresh() {
+				this.$loading();
+				let option = cache.getCache("deviceLogin");
+				if (option.uuid) {
+					this.uuid = option.uuid;
+					this.loginId = option.loginId;
+				}
+				// let params = qs.stringify({
+				// 	productKey: "a1RrYPsjzAn",
+				// 	// productKey: "a1eUldLZaNe",
+				// 	imei: this.uuid,
+				// });
+				let params = {
+					productKey: "a1RrYPsjzAn",
+					// productKey: "a1eUldLZaNe",
+					imei: this.uuid,
+				};
+				let res = await deviceController.queryParam(params);
+				this.getBoardList();
+				this.getTer();
 			},
 			//处理数据类型
 			dealWith(item) {
@@ -120,6 +122,7 @@
 					imei: this.uuid,
 					cmd: "5",
 				});
+				this.$hideLoading();
 				if (res.code == 200) {
 					this.basicParams = res.data;
 				}

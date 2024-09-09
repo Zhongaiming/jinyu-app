@@ -62,11 +62,11 @@
 							</view>
 							<view class="data-container">
 								<view class="data-list">
-									<view class="number">{{ item.totalPay }}</view>
+									<view class="number">{{ $formatAmount(item.totalPay) }}</view>
 									<view class="name"><span>累计支付(元)</span></view>
 								</view>
 								<view class="data-list">
-									<view class="number">{{ item.balance }}</view>
+									<view class="number">{{ $formatAmount(item.balance) }}</view>
 									<view class="name"><span>余额(元)</span></view>
 								</view>
 								<view class="data-list">

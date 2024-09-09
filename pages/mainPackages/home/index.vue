@@ -32,7 +32,7 @@
 			return {
 				coupleNum: 0,
 				total: {},
-				device: {}
+				device: {},
 			}
 		},
 		onShow() {

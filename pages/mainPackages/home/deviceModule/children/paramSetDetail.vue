@@ -35,7 +35,7 @@
 				terParams: {
 					functionName: "",
 				},
-				uuid: "861714055498251",
+				uuid: "",
 				cmd: "19",
 				id: "52",
 				set: "63",
@@ -49,14 +49,15 @@
 				this.cmd = cmd;
 				this.set = set;
 			}
-			this.getParams();
+			this.refresh();
 		},
 		methods: {
 			refresh() {
-				this.$goBack(0);
+				this.getParams();
 			},
 			//根据终端的id查询他的数据
 			async getParams() {
+				this.$loading();
 				let msg = await deviceController.updateValue({
 					id: this.id,
 					date: null,
@@ -70,6 +71,7 @@
 					id: this.id, //终端的id
 					cmd: this.cmd,
 				});
+				this.$hideLoading();
 				if (res.code == 200) {
 					this.terParams = res.data;
 				}

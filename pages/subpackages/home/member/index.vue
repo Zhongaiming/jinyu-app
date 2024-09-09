@@ -25,20 +25,17 @@
 											<view class="top">
 												<view class="icon-image icon">
 													<!-- item.platformState  1 微信  2 支付宝 -->
-													<image :src="`${$baseUrl}appV4/member/Alipay.png`" alt=""
+													<xls-image :src="`${$baseUrl}appV4/member/Alipay.png`" alt=""
 														class="img" v-if="item.memberOpenid * 1 > 0" />
-													<image :src="`${$baseUrl}appV4/member/WeChat2.png`" alt=""
+													<xls-image :src="`${$baseUrl}appV4/member/WeChat2.png`" alt=""
 														class="img" v-else />
 												</view>
 												<view class="nickname">{{ item.name }}</view>
 											</view>
 											<view class="desc">
-												<span>最近消费:
-													{{
-				                    item.recentConsumption * 1
-				                      ? item.recentConsumption + "天前"
-				                      : "今天"
-				                  }}</span>
+												<span>
+													最近消费:{{item.recentConsumption*1?item.recentConsumption+"天前":"今天"}}
+												</span>
 											</view>
 										</view>
 										<view class="other-info">
@@ -51,11 +48,11 @@
 								</view>
 								<view class="data-container">
 									<view class="data-list">
-										<view class="number">{{ item.totalPay }}</view>
+										<view class="number">{{ $formatAmount(item.totalPay) }}</view>
 										<view class="name"><span>累计支付(元)</span></view>
 									</view>
 									<view class="data-list">
-										<view class="number">{{ item.balance }}</view>
+										<view class="number">{{ $formatAmount(item.balance) }}</view>
 										<view class="name"><span>余额(元)</span></view>
 									</view>
 									<view class="data-list">

@@ -105,15 +105,15 @@
 
         <div class="statis-statistics">
           <div class="statis-item">
-            <div class="statis-money">{{ orderDetail.cumulativeRecharge }}</div>
+            <div class="statis-money">{{ $formatAmount(orderDetail.cumulativeRecharge) }}</div>
             <div class="statis-title">累计充值(元)</div>
           </div>
           <div class="statis-item">
-            <div class="statis-money">{{ orderDetail.startPayment }}</div>
+            <div class="statis-money">{{ $formatAmount(orderDetail.startPayment) }}</div>
             <div class="statis-title">启动支付(元)</div>
           </div>
           <div class="statis-item">
-            <div class="statis-money">{{ orderDetail.balancePayment }}</div>
+            <div class="statis-money">{{ $formatAmount(orderDetail.balancePayment) }}</div>
             <div class="statis-title">余额支付(元)</div>
           </div>
           <div class="statis-item">

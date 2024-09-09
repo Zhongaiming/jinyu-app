@@ -55,6 +55,7 @@
 					</u-form-item>
 					<view style="margin: 40rpx 0;">
 						<u-button shape="circle" color="linear-gradient(.25turn, #5241ff, 40%, #7063ff)"
+							:loading="loginSwitch" :disabled="loginSwitch" loadingText="注册中"
 							@click="registerSubmit">{{$t('login.registerNow')}}</u-button>
 					</view>
 				</u--form>
@@ -94,7 +95,8 @@
 					code: '',
 					password: '',
 					confirmPassword: ''
-				}
+				},
+				loginSwitch: false,
 			}
 		},
 		computed: {
@@ -144,7 +146,6 @@
 			// #ifdef MP
 			this.$refs.registerRef.setRules(this.registerRules)
 			// #endif
-
 		},
 		methods: {
 			codeChange(text) {
@@ -192,6 +193,7 @@
 				this.$goTo('/pages/loginAndReg/xlsLogin', 'redirectTo')
 			},
 			registerSubmit() {
+				this.loginSwitch = true;
 				this.$refs.registerRef.validate().then(res => {
 					this.$nextTick(() => {
 						if (this.registerForm.password === this.registerForm.confirmPassword) {
@@ -216,14 +218,18 @@
 							// 	}
 							// }
 							loginAndRegController.registerUser(params).then(res => {
+								this.loginSwitch = false
 								if (res.code === 200) {
 									this.$toast(this.$t('login.registerSuccess'), 2000)
 									setTimeout(() => {
 										this.gotoLogin();
 									}, 2000)
 								}
+							}).catch(() => {
+								this.loginSwitch = false
 							})
 						} else {
+							this.loginSwitch = false
 							this.$toast(this.$t('login.twoPasswordDifferent'))
 						}
 					})

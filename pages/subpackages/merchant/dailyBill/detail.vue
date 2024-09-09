@@ -77,6 +77,10 @@
 				<view class="cell-value">{{ $formatAmount(voList.charge) }}</view>
 			</view>
 			<view class="line-cell-wrapper">
+				<span>服务费</span>
+				<view class="cell-value">{{ $formatAmount(voList.serviceCharge) }}</view>
+			</view>
+			<view class="line-cell-wrapper">
 				<span>收款人</span>
 				<view class="cell-value">{{ obj.accountName }}</view>
 			</view>
@@ -185,6 +189,7 @@
 						title: "到账时间",
 						confirmText: "我知道了",
 						confirmColor: "#5241FF",
+						showCancel: false
 					})
 					.then(() => {});
 			},
@@ -229,7 +234,7 @@
 			width: 91%;
 
 			.main-header {
-				border-bottom: 1px solid #c8c7cc;
+				border-bottom: 1px solid #dfdee3;
 				border-top-left-radius: 15px;
 				border-top-right-radius: 15px;
 				background: #fff;

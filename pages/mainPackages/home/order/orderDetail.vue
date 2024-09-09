@@ -275,6 +275,8 @@
 				</view>
 			</view>
 		</view>
+		
+		<!-- <xls-member-welfare /> -->
 	</view>
 </template>
 

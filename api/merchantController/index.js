@@ -37,6 +37,30 @@ export default class merchantController {
 			data
 		})
 	}
+	
+	
+	// 获取开户银行信息(新)
+	static getBankList2(data) {
+		return http.request({
+			url: '/pay/api/v1/admin/pay/bank/getBankList',
+			method: 'GET',
+			data
+		})
+	}
+	// 获取开户支行数据
+	static getSubbranchBankList(data) {
+		return http.request({
+			url: '/pay/api/v1/admin/pay/bank/getSubbranchBankList',
+			method: 'GET',
+			data,
+			custom: {
+				header: {
+					"Content-Type": "application/x-www-form-urlencoded"
+				}
+			}
+		})
+	}
+
 
 	// 银行开户许可证识别
 	static recognizeBankAccountLicense(data) {
@@ -80,7 +104,23 @@ export default class merchantController {
 			data
 		})
 	}
-
+	
+	// 获取省数据
+	static getProvinceList() {
+		return http.request({
+			url: '/pay/api/v1/admin/pay/bank/getProvinceList',
+			method: 'GET'
+		})
+	}
+	// 获取市数据
+	static getCityList(data) {
+		return http.request({
+			url: '/pay/api/v1/admin/pay/bank/getCityList',
+			method: "GET",
+			data
+		})
+	}
+	
 	// 进件
 	static hlbEntryApply(data) {
 		return http.request({

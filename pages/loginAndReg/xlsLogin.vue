@@ -28,6 +28,7 @@
 					mode="widthFix" @clickMethod="goTo"/>
 			</view>
 		</view>
+		
 	</view>
 </template>
 

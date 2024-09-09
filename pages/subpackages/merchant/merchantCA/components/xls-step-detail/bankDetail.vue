@@ -67,7 +67,7 @@
 </template>
 
 <script>
-	import xlsAreaVue from './xls-area.vue';
+	import xlsAreaVue from './xls-area2.vue';
 	import xlsBankVue from './xls-bank.vue';
 	export default {
 		props: {
@@ -93,6 +93,9 @@
 					priatePublic: "TOPRIVATE", //// TOPRIVATE 对私 TOPUBLIC 对公
 					accountAddress: "",
 					linkPhone: "", //联系人号码 结算银行卡绑定手机号
+					
+					bankProvCode: '', // 选中开户银行编号
+					cityCode: '' // 选中开户地址市级编号
 				},
 				placeholderStyle: "fontSize: 28rpx;opacity: .7",
 				prefixIconStyle: {
@@ -152,24 +155,46 @@
 				this.$refs.xlsArea.pickerAddressItem();
 			},
 			getAreaMethod(params) {
-				console.log(params)
 				const {
+					indexs,
 					columnIndex,
 					value,
 					values
 				} = params
+				this.second.cityCode = value[1].addressCode;
 				this.second.bankProv = value[0].addressNames;
 				this.second.bankCity = value[1].addressNames;
 				this.second.accountAddress = value
 					.map((option) => option.addressNames)
 					.join(" ");
+					
+				this.second.bankBranch = ''
+				this.second.bankCode = ''
 			},
 			pickerBank(type) {
-				this.$refs.simplifyBank.openSimplifyBank(type);
+				if(type == 'Bank') {
+					console.log(111, this.second.cityCode)
+					console.log(222, this.second.bankProvCode)
+					if(this.second.cityCode && this.second.bankProvCode) {
+						let params = {
+							cityCode: this.second.cityCode,
+							bankProvCode: this.second.bankProvCode,
+						}
+						this.$refs.simplifyBank.openSimplifyBank(type, params);
+					} else {
+						this.$toast("请先填写完整开户地区和开户银行！")
+					}
+				} else {
+					this.$refs.simplifyBank.openSimplifyBank(type);
+				}
 			},
 			getSimplifyBank(params) {
 				if (params.type === 'Simplify') {
-					return this.second.bankName = params.bankName;
+					this.second.bankBranch = '';
+					this.second.bankCode = '';
+					this.second.bankProvCode = params.bank_code;
+					this.second.bankName = params.bankName;
+					return;
 				}
 				this.second.bankBranch = params.bankName;
 				this.second.bankCode = params.subBankCode;
@@ -185,7 +210,7 @@
 						bankBranch: updateParams.bankBranch, //支行名称
 						bankCode: updateParams.bankCode, //结算银行支行联行号 说明(必传
 						priatePublic: updateParams.priatePublic || "TOPRIVATE", //// TOPRIVATE 对私 TOPUBLIC 对公
-						accountAddress: `${updateParams.bankProv} ${updateParams.bankCity}`,
+						accountAddress: updateParams.bankProv && updateParams.bankCity ? `${updateParams.bankProv} ${updateParams.bankCity}` : '',
 						linkPhone: updateParams.linkPhone, //联系人号码 结算银行卡绑定手机号
 					};
 					Object.assign(this.second, requiredParams);

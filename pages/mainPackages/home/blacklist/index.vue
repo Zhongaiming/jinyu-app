@@ -70,7 +70,7 @@
 							</view>
 							<view class="item value-text">
 								<!-- <span>{{'--'}}元</span>  -->
-								<span>{{ memberDetail.totalPay }}元</span>
+								<span>{{ $formatAmount(memberDetail.totalPay) }}元</span>
 								<span>{{ memberDetail.totalCoins }}个</span>
 								<!-- <span>{{'--'}}元</span> -->
 							</view>
@@ -82,7 +82,7 @@
 							</view>
 							<view class="item value-text">
 								<span>{{ memberDetail.currency }}个</span>
-								<span>{{ memberDetail.balance }}元</span>
+								<span>{{ $formatAmount(memberDetail.balance) }}元</span>
 								<!-- <span>{{'积分'}}</span> -->
 							</view>
 						</view>

@@ -7,7 +7,7 @@
 						<view class="sides" @click.stop="bankPopup = false">
 							<image :src="`${$baseUrl}appV4/img/back-small.png`" class="image" />
 						</view>
-						<view class="title">开户{{type == "Simplify"?"银行":"支行"}}</view>
+						<view class="title">开户银行</view>
 						<view class="null-sides">
 							<!-- <image :src="`${$baseUrl}appV4/img/icons/home.png`" class="Img" /> -->
 						</view>
@@ -47,33 +47,20 @@
 				dataList: [],
 				type: "Simplify", // Simplify Bank
 				searchValue: "",
-				bankCode: '',
-				cityCode: ''
 			};
 		},
 		methods: {
 			queryList(pageNo, pageSize) {
 				const value = encodeURIComponent(this.searchValue);
-				if(this.type == 'Simplify') {
-					merchantController.getBankList2({
-						pageNo: pageNo,
-						pageSize: pageSize,
-						bankType: 2,
-						simplify: value,
-					}).then(res => {
-						this.$refs.bankPaging.complete(res.data);
-					})
-				} else {
-					merchantController.getSubbranchBankList({
-						pageNo: pageNo,
-						pageSize: pageSize,
-						bankCode: this.bankCode,
-						cityCode: this.cityCode,
-						keyWord: value
-					}).then(res => {
-						this.$refs.bankPaging.complete(res.data.subList);
-					})
-				}
+				merchantController[`get${this.type}List`]({
+					pageNo: pageNo,
+					pageSize: pageSize,
+					bankName: value,
+					simplify: value,
+					city: ""
+				}).then(res => {
+					this.$refs.bankPaging.complete(res.data.dataList);
+				})
 			},
 			searchMethod() {
 				if (!this.searchValue) {
@@ -85,18 +72,13 @@
 					}
 				})
 			},
-			openSimplifyBank(type, params = {}) {
-				if(type == 'Bank') {
-					this.bankCode = params.bankProvCode
-					this.cityCode = params.cityCode
-				}
+			openSimplifyBank(type) {
 				this.type = type;
 				this.bankPopup = true;
 			},
 			pickSimplify(bank) {
 				bank['type'] = this.type;
 				this.bankPopup = false;
-				this.searchValue = '';
 				this.$emit('getSimplifyBank', bank);
 			},
 		},
