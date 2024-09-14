@@ -7,6 +7,7 @@ const getters = {
 	info: state => state.user.info,
 	deviceTypeList: state => state.config.deviceTypeList,
 	deviceTypeDict: state => state.config.deviceTypeDict,
+	deviceTypeIdList: state => state.config.deviceTypeIdList,
 }
 
 

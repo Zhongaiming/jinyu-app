@@ -23,7 +23,7 @@
 				<view class="cell w-table">{{ item.placeName }}</view>
 				<view class="cell">{{ $formatAmount(item.amountTotal) }}</view>
 				<view class="cell">{{ $formatAmount(item.separateMoney) }}</view>
-				<view class="cell">{{ item.proportion/100 }}%</view>
+				<view class="cell">{{ item.proportion }}%</view>
 			</view>
 			<xls-bottom v-if="detailList.length" />
 			<xls-empty v-else />

@@ -351,7 +351,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.condition-screening-wrapper {
 		width: 100%;
 

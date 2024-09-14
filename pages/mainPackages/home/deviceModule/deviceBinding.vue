@@ -30,7 +30,7 @@
 			<view class="item-cell item-cell-other-price" v-if="[1, 6].includes(deviceInfo.deviceType)">
 				<view>单价(币/次)</view>
 				<view class="right-value">
-					<u-number-box v-model="bingDeviceInfo.price" integer inputWidth="116" buttonSize="66" />
+					<u-number-box v-model="bingDeviceInfo.price" integer inputWidth="116" buttonSize="66" iconStyle="fontSize: 17px"/>
 				</view>
 			</view>
 			<view class="item-cell item-cell-other wwj" v-if="[1, 6].includes(deviceInfo.deviceType)">
@@ -47,9 +47,9 @@
 			<view class="btn primary" @click="bingDevice">提交注册</view>
 		</view>
 
-		<!-- <crane-machine @getRailNumber="getRailNumber"
-			v-if="deviceInfo.typeName == '娃娃机' || deviceInfo.typeName == '儿童类'" ref="number" /> -->
-		<xls-place-radio ref="placeList" @getPlaceId="pickerPlace"></xls-place-radio>
+		<crane-machine @getRailNumber="getRailNumber" :disableList="disableList"
+			v-if="deviceInfo.typeName == '娃娃机' || deviceInfo.typeName == '儿童类'" ref="number" />
+		<xls-place-radio ref="placeList" @getPlaceId="pickerPlace" :defaultPicker="true"></xls-place-radio>
 
 		<!-- 输入机台编号 -->
 		<u-popup v-model="serialNumber" round>
@@ -79,14 +79,18 @@
 	import {
 		deviceController
 	} from "@/api/index.js";
+	import craneMachine from "./components/crane-machine/crane-machine.vue";
 	export default {
+		components: {
+			craneMachine
+		},
 		data() {
 			return {
 				bingDeviceInfo: {
 					placeName: "",
 					placeId: "",
 					railNumber: "",
-					price: "",
+					price: 1,
 				},
 				serialNumber: false,
 				deviceEnterNo: "",
@@ -110,6 +114,7 @@
 		methods: {
 			pickerPlace(place) {
 				Object.assign(this.bingDeviceInfo, place);
+				this.wwjByPlace();
 			},
 			//绑定设备
 			async bingDevice() {
@@ -146,13 +151,12 @@
 					this.deviceInfo.typeName == "娃娃机" ||
 					this.deviceInfo.typeName == "儿童类"
 				) {
-					getMachineNumber({
+					deviceController.getMachineNumber({
 						placeId: this.bingDeviceInfo.placeId
-					}).then(
-						(res) => {
-							if (res.data.code == 0 || res.data.msg == "ok") {
+					}).then(res => {
+							if (res.code == 200) {
 								this.disableList = [];
-								res.data.data.map((item) => {
+								res.data.map((item) => {
 									this.disableList.push(item * 1);
 								});
 							}
@@ -226,6 +230,7 @@
 			bottom: 0;
 			right: 0;
 			background-color: #efeff4;
+			z-index: 9999;
 
 			.btn {
 				padding-top: 22rpx;

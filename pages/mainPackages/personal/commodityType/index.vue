@@ -102,12 +102,14 @@
 				this.$refs.paging.reload();
 			},
 			queryList(pageNo, pageSize) {
-				commodityController[`get${this.list[this.current].value}`]({
+				const params = {
+					dtoFilter: {},
 					pageParam: {
 						pageNum: pageNo,
 						pageSize: pageSize
 					}
-				}).then(res => {
+				}
+				commodityController[`get${this.list[this.current].value}`](params).then(res => {
 					this.$refs.paging.complete(res.data.dataList);
 				})
 			},

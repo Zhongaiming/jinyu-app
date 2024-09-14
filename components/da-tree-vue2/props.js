@@ -12,7 +12,7 @@ export default {
    */
   themeColor: {
     type: String,
-    default: '#007aff',
+    default: '#5241ff',
   },
   /**
    * 是否开启多选，默认单选

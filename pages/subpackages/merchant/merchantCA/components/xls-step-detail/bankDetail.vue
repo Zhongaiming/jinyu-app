@@ -69,6 +69,9 @@
 <script>
 	import xlsAreaVue from './xls-area2.vue';
 	import xlsBankVue from './xls-bank.vue';
+	import {
+		merchantController
+	} from "@/api/index.js";
 	export default {
 		props: {
 			merchantType: {
@@ -93,9 +96,8 @@
 					priatePublic: "TOPRIVATE", //// TOPRIVATE 对私 TOPUBLIC 对公
 					accountAddress: "",
 					linkPhone: "", //联系人号码 结算银行卡绑定手机号
-					
-					bankProvCode: '', // 选中开户银行编号
-					cityCode: '' // 选中开户地址市级编号
+					bankProvCode: "", //选中开户银行编号
+					cityCode: "", //选中开户地址市级编号
 				},
 				placeholderStyle: "fontSize: 28rpx;opacity: .7",
 				prefixIconStyle: {
@@ -173,8 +175,6 @@
 			},
 			pickerBank(type) {
 				if(type == 'Bank') {
-					console.log(111, this.second.cityCode)
-					console.log(222, this.second.bankProvCode)
 					if(this.second.cityCode && this.second.bankProvCode) {
 						let params = {
 							cityCode: this.second.cityCode,
@@ -194,10 +194,18 @@
 					this.second.bankCode = '';
 					this.second.bankProvCode = params.bank_code;
 					this.second.bankName = params.bankName;
+					merchantController.getSubbranchBankList({
+						pageNo: 1,
+						pageSize: 10,
+						bankCode:  this.second.bankProvCode,
+						cityCode: this.second.cityCode,
+						keyWord: ''
+					})
 					return;
 				}
 				this.second.bankBranch = params.bankName;
-				this.second.bankCode = params.subBankCode;
+				// this.second.bankCode = params.subBankCode;
+				this.second.bankCode = params.branch_id;
 			},
 			openPopup(updateParams) {
 				if (updateParams) {
@@ -212,6 +220,8 @@
 						priatePublic: updateParams.priatePublic || "TOPRIVATE", //// TOPRIVATE 对私 TOPUBLIC 对公
 						accountAddress: updateParams.bankProv && updateParams.bankCity ? `${updateParams.bankProv} ${updateParams.bankCity}` : '',
 						linkPhone: updateParams.linkPhone, //联系人号码 结算银行卡绑定手机号
+						bankProvCode: updateParams.bankProvCode, //选中开户银行编号
+						cityCode: updateParams.cityCode //选中开户地址市级编号
 					};
 					Object.assign(this.second, requiredParams);
 					this.detailPopup = !this.detailPopup;

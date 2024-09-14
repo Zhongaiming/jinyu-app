@@ -3,9 +3,6 @@
 		<jy-navbar title="补货记录" bgColor="#f5f6f7" slot="top"></jy-navbar>
 		<view class="search-wrapper">
 			<view class="left">
-				<!-- <van-dropdown-menu active-color="#5241FF">
-					<van-dropdown-item v-model="value" :options="option" @change="alterState" />
-				</van-dropdown-menu>  -->
 				<xls-dropdown-menu ref="dropdown" class="dropdown-style">
 					<xls-dropdown-item name="1-1" :title="typeName" :options="option" v-model="value"
 						@change="alterState" :custom="false">

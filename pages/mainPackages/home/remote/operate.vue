@@ -61,8 +61,8 @@
 					<view class="childStep">
 						<view class="main-box">
 							<view class="stepper">
-								<u-number-box v-model="valueStep" input-width="60px" button-size="35px" min="1" max="100"
-									integer iconStyle="fontSize: 32rpx" />
+								<u-number-box v-model="valueStep" input-width="60px" button-size="35px" min="1"
+									max="100" integer iconStyle="fontSize: 32rpx" />
 							</view>
 						</view>
 						<view style="margin-left: 30px; color: red">数值范围 1~99</view>
@@ -98,10 +98,11 @@
 			</p>
 		</view>
 		<!-- 设备 -->
-		<u-popup :show="pickerDevice" mode="bottom">
+		<u-popup :show="pickerDevice" mode="bottom" @close="pickerDevice=false">
 			<view class="popup-content">
-				<view class="titleP">选择设备</view>
-				<view v-if="deviceOrplace">
+				<view class="device-header-style">
+					<view class="titleP">选择设备</view>
+					
 					<view class="outSide">
 						<view class="mainB">
 							<view class="title-txt">{{deviceOrplace?'选择场地':'选择设备'}}</view>
@@ -111,28 +112,28 @@
 						</view>
 						<u-icon name="arrow-right" size="32" color="#969799" class="right-icons" />
 					</view>
-				
-					<view style="height: 12px; background: #e6e4fe"></view>
-				
-					<view class="outSide-other" v-for="(dev, index) in deviceList" :key="index" @click="pickDevice(dev)">
-						<view class="mainB">
-							<view class="title-txt" :style="{ color:dev.deviceNumber==enterValue?'#5241FF':''}">
-								{{ dev.typeName }}{{ dev.deviceNumber }}
-							</view>
-							<view :style="{background:dev.onlineState?'#07c160':'#ee0a24'}" class="demo">
-								<span>{{dev.onlineState ? '在线' : '离线'}}</span>
-							</view>
-						</view>
-						<view class="remark" v-if="dev.remark">备注：{{ dev.remark }}</view>
-					</view>
-					<xls-empty v-if="!deviceList.length" text="场地无该类型设备"></xls-empty>
 				</view>
+
+				<view style="height: 12px; background: #e6e4fe"></view>
+
+				<view class="outSide-other" v-for="(dev, index) in deviceList" :key="index" @click="pickDevice(dev)">
+					<view class="mainB">
+						<view class="title-txt" :style="{ color:dev.deviceNumber==enterValue?'#5241FF':''}">
+							{{ dev.typeName }}{{ dev.deviceNumber }}
+						</view>
+						<view :style="{background:dev.onlineState?'#07c160':'#ee0a24'}" class="demo">
+							<span>{{dev.onlineState ? '在线' : '离线'}}</span>
+						</view>
+					</view>
+					<view class="remark" v-if="dev.remark">备注：{{ dev.remark }}</view>
+				</view>
+				<xls-empty v-if="!deviceList.length" text="场地无该类型设备"></xls-empty>
 			</view>
 		</u-popup>
 		<!-- 场地 -->
 		<place-list @pitchonPlace="pitchonPlace" ref="placelist" />
 		<!-- 货道 -->
-		<u-popup :show="railCommodity" mode="bottom">
+		<u-popup :show="railCommodity" mode="bottom" @close="railCommodity=false">
 			<view class="popup-content">
 				<view class="header">
 					<span @click="railCommodity = !railCommodity">取消</span>
@@ -143,7 +144,8 @@
 				<view class="rail-content">
 					<view class="rail-item" v-for="(rail, index) in railList" :key="index" @click="pickRail(rail)">
 						<view class="checkbox">
-							<u-icon name="checkmark-circle-fill" size="40" color="#5241FF" v-if="activeRail == rail.railNumber" />
+							<u-icon name="checkmark-circle-fill" size="40" color="#5241FF"
+								v-if="activeRail == rail.railNumber" />
 							<u-icon name="checkmark-circle" size="40" color="#cacbce" v-else />
 						</view>
 						<xls-image :src="rail.commodityImg" alt="" class="img" />
@@ -172,8 +174,8 @@
 	// 	getEggDeviceRailInfo,
 	// 	getRailInfo,
 	// } from "@/utils/api/device";
-	import PlaceList from "./components/place-list-rato.vue";
 	// import api from "@/utils/shjApi";
+	import PlaceList from "./components/place-list-rato.vue";
 	import {
 		deviceController
 	} from '@/api/index.js';
@@ -295,7 +297,7 @@
 					});
 				}
 			},
-			// id == 5 ?  '兑币机' :  id == 4 ? '售货机' : id == 3 ? '游乐车' : id == 2 ? '扭蛋机' : '娃娃机';
+
 			async getTypePlace() {
 				if (!this.deviceTypeId) {
 					return this.$toast("请返回上一级，选择设备类型后操作~");
@@ -337,13 +339,13 @@
 
 			//场地设备查询
 			async pickPlace() {
-				let qes = await getDeviceListByPlaceDeviceType({
+				let qes = await deviceController.getDeviceListByPlaceDeviceType({
 					deviceTypeId: this.deviceTypeId,
 					placeId: this.placeId,
 				});
-				if (qes.data.code == 0 || qes.data.msg == "ok") {
-					if (qes.data.data.length) {
-						this.deviceList = qes.data.data;
+				if (qes.code == 200) {
+					if (qes.data.length) {
+						this.deviceList = qes.data;
 					} else {
 						this.deviceList = [];
 					}
@@ -406,6 +408,7 @@
 			},
 			//上分
 			async upperPoints() {
+				this.$loading();
 				//售货机
 				if (this.deviceTypeId == 4) {
 					this.shjStart();
@@ -421,34 +424,36 @@
 			async wwjStart() {
 				if (!this.pickDeviceDetail.deviceNumber) {
 					this.$toast("请选择设备~");
+					this.$hideLoading();
 					return "badRequest";
 				}
 				if (!this.valueStep) {
 					this.$toast("请输入次数~");
+					this.$hideLoading();
 					return "badRequest";
 				}
-				let rail = await getRailCommodityList({
+				let rail = await deviceController.getRailCommodityList({
 					deviceNumber: this.pickDeviceDetail.deviceNumber,
 				});
-				let currency = rail.data.data[0].currency;
+				let currency = rail.data[0].currency;
 				//设备详情
-				let dev = await deviceDetail({
+				let dev = await deviceController.deviceDetail({
 					deviceNumber: this.pickDeviceDetail.deviceNumber,
 				});
-				let device = dev.data.data;
+				let device = dev.data;
 				if (device.uuid) {
 					this.uuid = device.uuid;
 				}
 				let points =
 					this.valueStep * device.currency * 1 || this.valueStep * currency * 1;
-				console.log(this.valueStep, device.currency, currency);
 				//wwj/dbj
-				let res = await addPoints({
+				let res = await deviceController.addPoints({
 					uuid: this.uuid,
 					deviceNumber: this.pickDeviceDetail.deviceNumber,
 					points: points,
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				this.$hideLoading();
+				if (res.code == 200) {
 					this.$toast("上分成功");
 				}
 			},
@@ -456,10 +461,11 @@
 			async shjStart() {
 				if (!this.pickDeviceDetail.deviceNumber) {
 					this.$toast("请选择设备~");
+					this.$hideLoading();
 					return "badRequest";
 				}
 				//设备详情
-				let res = await deviceDetail({
+				let res = await deviceController.deviceDetail({
 					deviceNumber: this.pickDeviceDetail.deviceNumber,
 				});
 				let device = res.data.data;
@@ -467,7 +473,7 @@
 					this.uuid = device.uuid;
 				}
 				let info = this.pickDeviceDetail;
-				let vending = await addVendingPoints({
+				let vending = await deviceController.addVendingPoints({
 					uuid: this.uuid,
 					deviceNumber: info.deviceNumber,
 					railNumber: info.railNumber,
@@ -475,7 +481,8 @@
 					startType: this.startType,
 					points: 1,
 				});
-				if (vending.data.code == 0 || vending.data.msg == "ok") {
+				this.$hideLoading();
+				if (vending.code == 200) {
 					this.$toast("上分成功");
 				}
 			},
@@ -483,6 +490,7 @@
 			async ndjStart() {
 				if (!this.pickDeviceDetail.deviceNumber) {
 					this.$toast("请选择设备~");
+					this.$hideLoading();
 					return "badRequest";
 				}
 				//设备详情
@@ -494,7 +502,8 @@
 					this.uuid = device.uuid;
 				}
 				if (device.onlineState != 1) {
-					return this.$modal("设备离线，无法启动~",{
+					this.$hideLoading();
+					return this.$modal("设备离线，无法启动~", {
 							title: "温馨提示",
 							confirmText: "我知道了",
 							confirmColor: "#5241FF",
@@ -506,10 +515,12 @@
 				}
 				if (!this.pickDeviceDetail.railNumber) {
 					this.$toast("请选择仓位~");
+					this.$hideLoading();
 					return "badRequest";
 				}
 				if (!this.pickDeviceDetail.shippingSpace) {
 					this.$toast("请选择子设备~");
+					this.$hideLoading();
 					return "badRequest";
 				}
 				let gash;
@@ -520,8 +531,8 @@
 						shippingSpace: this.pickDeviceDetail.shippingSpace,
 						railNumber: this.pickDeviceDetail.railNumber,
 					});
-				} 
-				
+				}
+
 				// else {
 				// 	gash = await getRailInfo({
 				// 		deviceNumber: this.pickDeviceDetail.deviceNumber,
@@ -531,7 +542,8 @@
 				let eggDevice = gash.data;
 				let info = this.pickDeviceDetail;
 				if (eggDevice.railState != 0) {
-					return this.$modal("子设备离线，无法启动~",{
+					this.$hideLoading();
+					return this.$modal("子设备离线，无法启动~", {
 							title: "温馨提示",
 							title: "温馨提示",
 							confirmText: "我知道了",
@@ -549,6 +561,7 @@
 					shippingSpace: info.shippingSpace,
 					points: this.valueStep * eggDevice.currency,
 				});
+				this.$hideLoading();
 				if (Egg.code == 200) {
 					this.$toast("上分成功");
 				}
@@ -907,6 +920,13 @@
 		width: 100%;
 		max-height: 1000rpx;
 		height: 60vh;
+		position: relative;
+		overflow-y: auto;
+		
+		.device-header-style {
+			position: sticky;
+			top: 0;
+		}
 
 		.header {
 			align-items: center;

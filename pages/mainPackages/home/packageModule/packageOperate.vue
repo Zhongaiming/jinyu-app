@@ -151,7 +151,7 @@
 				<view class="tab-header-box">
 					<span class="discount">套餐</span>
 					<span class="status Center">套餐类型 | 套餐状态
-						<u-icon name="question" color="#5241FF" size="34" @click="$refs.coinNotice.showNotice()"
+						<u-icon name="question-circle" color="#5241FF" size="34" @click="$refs.coinNotice.showNotice()"
 							style="margin-left: 8px" /></span>
 					<span class="operate">操作</span>
 				</view>
@@ -723,7 +723,7 @@
 				<view class="universal-list">
 					<view class="item" :style="{color:activeDeviceTypeId==3?'#5241FF':''}">
 						<view @click="activeDevice(1)">
-							<view class="iconfont"><u-icon name="question" size="24" /></view>
+							<view class="iconfont"><u-icon name="question-circle" size="24" /></view>
 							<view class="name">游乐车</view>
 							<view class="number">m台</view>
 						</view>

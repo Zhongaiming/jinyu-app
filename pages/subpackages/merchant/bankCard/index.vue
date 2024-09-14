@@ -6,17 +6,7 @@
 				<view class="panel-hd enter-state">
 					<span>商户信息</span>
 					<span class="state" :class="[getClass]">
-						{{
-		          bankCardInfo.entryStatus === "INIT"
-		            ? "待审核"
-		            : bankCardInfo.entryStatus === "OVERRULE"
-		            ? "申请驳回"
-		            : bankCardInfo.entryStatus === "AUDITED"
-		            ? "审核通过"
-		            : bankCardInfo.entryStatus === "DOING"
-		            ? "审核中"
-		            : "未知状态"
-		        }}
+						{{entryStatusDict[bankCardInfo.entryStatus]}}
 					</span>
 				</view>
 				<view class="panel-bd">
@@ -44,18 +34,10 @@
 					<view class="cm-input-row">
 						<span class="field">有效期限</span>
 						<view class="value" v-if="bankCardInfo.merchantType == 'PERSON'">
-							{{
-		            `${strString(bankCardInfo.idCardStartDate)} 至 ${strString(
-		              bankCardInfo.idCardEndDate
-		            )}`
-		          }}
+							{{`${strString(bankCardInfo.idCardStartDate)} 至 ${strString(bankCardInfo.idCardEndDate)}`}}
 						</view>
 						<view class="value" v-else>
-							{{
-		            `${strString(bankCardInfo.businessDateStart)} 至 ${strString(
-		              bankCardInfo.businessDateLimit
-		            )}`
-		          }}
+							{{`${strString(bankCardInfo.businessDateStart)} 至 ${strString(bankCardInfo.businessDateLimit)}`}}
 						</view>
 					</view>
 					<view class="cm-input-row" v-show="bankCardInfo.merchantType == 'ENTERPRISE'">
@@ -79,7 +61,6 @@
 					<view class="cm-input-row">
 						<span class="field">地区</span>
 						<view class="value">
-							<!-- {{region}} -->
 							{{ `${bankCardInfo.bankProv} ${bankCardInfo.bankCity}` }}
 						</view>
 					</view>
@@ -92,53 +73,41 @@
 					<view class="cm-input-row">
 						<span class="field">认证时间</span>
 						<view class="value">
-							{{ pickerTime(bankCardInfo.createTime) }}
+							{{ bankCardInfo.createTime }}
 						</view>
 					</view>
 				</view>
 				<view class="panel-hd">结算信息</view>
 				<view class="panel-bd">
 					<view class="cm-input-row">
-						<span class="field" v-html="
-		            bankCardInfo.merchantType == 'ENTERPRISE'
-		              ? '法人姓名'
-		              : '持卡人姓名'
-		          "></span>
+						<span class="field">
+							{{bankCardInfo.merchantType=='ENTERPRISE'?'法人姓名':'持卡人姓名'}}
+						</span>
 						<view class="value">
 							<input type="text" name="type" class="text-over" placeholder="请选择"
 								:class="{'cm-unclickable':!canEnter}" v-model="bankCardInfo.legalPerson" />
 						</view>
 					</view>
 					<view class="cm-input-row">
-						<span class="field" v-html="
-		            bankCardInfo.merchantType == 'ENTERPRISE'
-		              ? '法人证件号'
-		              : '身份证号'
-		          "></span>
+						<span class="field">
+							{{bankCardInfo.merchantType=='ENTERPRISE'?'法人证件号':'身份证号'}}
+						</span>
 						<view class="value">
 							{{ bankCardInfo.legalPersonId }}
 						</view>
 					</view>
 					<view class="cm-input-row">
-						<span class="field" v-html="
-		            bankCardInfo.merchantType == 'ENTERPRISE'
-		              ? '法人证件期限'
-		              : '证件期限'
-		          "></span>
+						<span class="field">
+							{{bankCardInfo.merchantType=='ENTERPRISE'?'法人证件期限':'证件期限'}}
+						</span>
 						<view class="value">
-							{{
-		            `${strString(bankCardInfo.idCardStartDate)} 至 ${strString(
-		              bankCardInfo.idCardEndDate
-		            )}`
-		          }}
+							{{`${strString(bankCardInfo.idCardStartDate)} 至 ${strString(bankCardInfo.idCardEndDate)}`}}
 						</view>
 					</view>
 					<view class="cm-input-row">
-						<span class="field" v-html="
-		            bankCardInfo.merchantType == 'ENTERPRISE'
-		              ? '许可证账号'
-		              : '银行卡账号'
-		          "></span>
+						<span class="field">
+							{{bankCardInfo.merchantType == 'ENTERPRISE'?'许可证账号':'银行卡账号'}}
+						</span>
 						<view class="value">
 							{{ bankCardInfo.accountNo }}
 						</view>
@@ -211,31 +180,21 @@
 							<view class="handle-wrap" @click="imgView(images.lepUrla)">
 								<img :src="images.lepUrla" alt="" />
 							</view>
-							<p v-html="
-		              bankCardInfo.merchantType == 'ENTERPRISE'
-		                ? '法人证件正面'
-		                : '身份证正面'
-		            "></p>
+							<p>
+								{{bankCardInfo.merchantType=='ENTERPRISE'?'法人证件正面':'身份证正面'}}
+							</p>
 						</view>
 						<view class="cm-upload-handle">
 							<view class="handle-wrap" @click="imgView(images.lepUrlb)">
 								<img :src="images.lepUrlb" alt="" />
 							</view>
-							<p v-html="
-		              bankCardInfo.merchantType == 'ENTERPRISE'
-		                ? '法人证件背面'
-		                : '身份证背面'
-		            "></p>
+							<p>{{bankCardInfo.merchantType=='ENTERPRISE'?'法人证件背面':'身份证背面'}}</p>
 						</view>
 						<view class="cm-upload-handle">
 							<view class="handle-wrap" @click="imgView(images.cardPhoto)">
 								<img :src="images.cardPhoto" alt="" />
 							</view>
-							<p v-html="
-		              bankCardInfo.merchantType == 'ENTERPRISE'
-		                ? '开户许可证'
-		                : '银行卡正面'
-		            "></p>
+							<p>{{bankCardInfo.merchantType=='ENTERPRISE'?'开户许可证':'银行卡正面'}}</p>
 						</view>
 					</view>
 					<view class="one-content second-content">
@@ -250,12 +209,7 @@
 								<img :src="images.img" alt="" />
 							</view>
 							<p>门头照片</p>
-							<p class="link-btn" @click="
-		              $router.push({
-		                path: '/realNameattesta/identityExample',
-		                query: { item: 1 },
-		              })
-		            ">
+							<p class="link-btn" @click="goTo">
 								查看示例
 							</p>
 						</view>
@@ -264,12 +218,7 @@
 								<img :src="images.innerimg" alt="" />
 							</view>
 							<p>设备照片</p>
-							<p class="link-btn" @click="
-		              $router.push({
-		                path: '/realNameattesta/identityExample',
-		                query: { item: 1 },
-		              })
-		            ">
+							<p class="link-btn" @click="goTo">
 								查看示例
 							</p>
 						</view>
@@ -278,12 +227,7 @@
 								<img :src="images.enterimg" alt="" />
 							</view>
 							<p>设备周边环境（含设备）照片</p>
-							<p class="link-btn" @click="
-		              $router.push({
-		                path: '/realNameattesta/identityExample',
-		                query: { item: 1 },
-		              })
-		            ">
+							<p class="link-btn" @click="goTo">
 								查看示例
 							</p>
 						</view>
@@ -301,9 +245,25 @@
 	import {
 		merchantController
 	} from '@/api/index.js';
+	import {
+		copyEvent
+	} from "@/plugins/formUtils";
 	export default {
 		data() {
 			return {
+				entryStatusDict: {
+					"INIT": "待审核",
+					"OVERRULE": "申请驳回",
+					"AUDITED": "审核通过",
+					"DOING": "审核中",
+					undefined: "未知状态"
+				},
+				merchantTypeDict: {
+					"ENTERPRISE": "企业商户",
+					"PERSON": "个人商户",
+					"INviewIDUALBISS": "个体工商户",
+					undefined: "未设置"
+				},
 				canEnter: false,
 				dialoguePopup: false,
 				bankCardInfo: [],
@@ -337,38 +297,12 @@
 			this.bankCardInfo = res.data;
 			this.images = res.data.images;
 			let type = this.bankCardInfo.merchantType;
-			let com;
 			//商户类型：ENTERPRISE：企业商户，INviewIDUALBISS：个体工商户，PERSON：个人商户
-			type == "ENTERPRISE" ?
-				(com = "企业商户") :
-				type == "PERSON" ?
-				(com = "个人商户") :
-				type == "INviewIDUALBISS" ?
-				(com = "个体工商户") :
-				"未设置";
-			this.companyType = `${com}`;
+			this.companyType = this.merchantTypeDict[type];
 			//  法人证件类型 ID身份证 PAS护照 PASTW台胞证 PASHK港澳通行证  身份证类型
-			let ID = this.bankCardInfo.lepCardType ?
-				this.bankCardInfo.lepCardType :
-				"ID";
-			let car;
-			ID == "ID" ?
-				(car = "身份证") :
-				ID == "PAS" ?
-				(car = "护照") :
-				ID == "PASTW" ?
-				(car = "台胞证") :
-				ID == "PASHK" ?
-				(car = "台胞证") :
-				"未设置";
-			this.lepCardType =
-				this.bankCardInfo.merchantType == "PERSON" ?
-				"居民身份证" :
-				"营业执照";
+			this.lepCardType=this.bankCardInfo.merchantType=="PERSON"?"居民身份证":"营业执照";
 			//  地区
 			this.region = this.bankCardInfo.bankProv + this.bankCardInfo.bankCity;
-			// this.region = this.bankCardInfo.contactProvince + this.bankCardInfo.contactCity + this.bankCardInfo.contactDistrict
-			// }
 		},
 		methods: {
 			strString(strs) {
@@ -385,22 +319,21 @@
 				}
 				return string;
 			},
-			//加8小时
-			pickerTime(timeString) {
-				if (!timeString) return null;
-				let date = new Date(new Date(timeString).getTime() + 8 * 60 * 60 * 1000);
-				var y = date.getFullYear();
-				var m = date.getMonth() + 1;
-				m = m < 10 ? "0" + m : m;
-				var d = date.getDate();
-				d = d < 10 ? "0" + d : d;
-				var h = date.getHours();
-				h = h < 10 ? "0" + h : h;
-				var minute = date.getMinutes();
-				var second = date.getSeconds();
-				minute = minute < 10 ? "0" + minute : minute;
-				second = second < 10 ? "0" + second : second;
-				return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
+			//copy-会员ID
+			copyMemberId(memberId) {
+				copyEvent(memberId);
+			},
+			imgView(urlList) {
+				uni.previewImage({
+					current: 0,
+					urls: [urlList]
+				})
+			},
+			goTo() {
+				// this.$router.push({
+				// 	path: '/realNameattesta/identityExample',
+				// 	query: { item: 1 },
+				// })
 			},
 		}
 	}

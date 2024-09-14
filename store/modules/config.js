@@ -5,6 +5,7 @@ import {
 const getDefaultState = () => {
 	return {
 		deviceTypeList: [],
+		deviceTypeIdList: [],
 		deviceTypeDict: {},
 		// 订单相关字典
 		typeDict: {
@@ -89,6 +90,9 @@ const mutations = {
 	SET_TYPE: (state, list) => {
 		state.deviceTypeList = list;
 	},
+	SET_TYPE_ID: (state, list) => {
+		state.deviceTypeIdList = list;
+	},
 	SET_DICT: (state, dict) => {
 		state.deviceTypeDict = dict;
 	}
@@ -103,7 +107,6 @@ const actions = {
 		if (state.deviceTypeList.length > 0) {
 			return Promise.resolve(); // 返回一个已解决的 Promise，不再发起请求
 		}
-
 		return new Promise((resolve, reject) => {
 			deviceController.getDeviceTypeLists().then(res => {
 				const {
@@ -113,9 +116,12 @@ const actions = {
 				if (code === 200) {
 					commit('SET_TYPE', data);
 					let dict = {};
+					let typeId = [];
 					data.forEach(item => {
 						dict[item.id] = item.typeName;
+						typeId.push(item.id);
 					});
+					commit('SET_TYPE_ID', typeId);
 					commit('SET_DICT', dict);
 					resolve(res);
 				} else {

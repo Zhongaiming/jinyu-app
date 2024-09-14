@@ -238,7 +238,7 @@
 		}
 
 		.bgCass1 {
-			@include bg-image('appV4/place_image/delete.png');
+			@include bg-image('appV4/place_image/add.png');
 		}
 
 		.bgCass2 {

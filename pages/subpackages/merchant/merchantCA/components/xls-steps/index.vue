@@ -37,7 +37,7 @@
 					current: 3,
 				}, {
 					id: 4,
-					text: '经营信息',
+					text: '信息审核',
 					current: 4,
 				}, {
 					id: 5,

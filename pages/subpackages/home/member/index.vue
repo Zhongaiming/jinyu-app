@@ -64,9 +64,9 @@
 						</view>
 					</view>
 				</view>
-				<xls-empty slot="empty" />
 			</u-checkbox-group>
 		</view>
+		<xls-empty slot="empty" />
 	</z-paging>
 </template>
 

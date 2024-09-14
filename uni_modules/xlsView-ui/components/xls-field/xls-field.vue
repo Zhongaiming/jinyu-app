@@ -1,11 +1,11 @@
 <template>
 	<view class="xls-cell xls-field">
-		<view class="xls-cell__title xls-field__label">
+		<view class="xls-cell__title xls-field__label" v-if="label">
 			<text>{{label}}</text>
 		</view>
 		<view class="xls-cell__value xls-field__value">
 			<view class="xls-field__body">
-				<input :name="name" :type="type" @focus="onFocus" @blur="onBlur" @input="onInput"
+				<input :name="name" :value="val" :type="type" @focus="onFocus" @blur="onBlur" @input="onInput"
 					@confirm="onConfirm" :placeholder="placeholder" :placeholder-style="placeholderStyle"
 					:disabled="disabled || readonly" class="xls-field__control" />
 			</view>
@@ -63,7 +63,6 @@
 				type: String,
 				default: ''
 			},
-			// #endif
 			trim: {
 				type: Boolean,
 				default: true
@@ -208,6 +207,7 @@
 	    text-align: right;
 	    vertical-align: middle;
 	    word-wrap: break-word;
+		flex: 1;
 	}
 	
 	.xls-field__value {

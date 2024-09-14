@@ -18,7 +18,6 @@
 		<xls-three-step :current="current" :merchantType="merchant.merchantType" @nextStepMethod="nextStepMethod"
 			@lastStep="lastStep" ref="threeStep"></xls-three-step>
 		<xls-four-step :current="current"></xls-four-step>
-
 	</view>
 </template>
 

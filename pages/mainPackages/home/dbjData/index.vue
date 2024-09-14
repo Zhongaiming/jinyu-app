@@ -1,65 +1,57 @@
 <template>
-	<div class="data-dbj-wrapper">
+	<view class="data-dbj-wrapper">
 		<xls-jy-navbar title="兑币机数据" bgColor="#f5f6f7"></xls-jy-navbar>
 		<!-- <ConditionScreening @getParams="getParams" ref="screen" /> -->
-		<div class="list-header">
-			<div class="header-title">兑币机数据</div>
-			<div class="header-right">
-				<div @click="$router.push('/dataDbj/DbjHistory')">历史数据</div>
-				<div class="header-btn" @click="$refs.screen.getExcelUrl()" v-hasPermi="['app:dbj:index:export']">
+		<!-- <xls-quick-date @getCondition="getCondition"></xls-quick-date> -->
+		<view class="list-header">
+			<view class="header-title">兑币机数据</view>
+			<view class="header-right">
+				<view @click="$router.push('/dataDbj/DbjHistory')">历史数据</view>
+				<view class="header-btn" @click="$refs.screen.getExcelUrl()" v-hasPermi="['app:dbj:index:export']">
 					想要导出数据
 					<u-icon name="question-circle" size="30" color="#5241ff" />
-				</div>
-			</div>
-		</div>
+				</view>
+			</view>
+		</view>
+
 		<!-- 数据列表 -->
-		<div class="list-content">
-			<div class="list-block" v-for="(item, key, dataIndex) of dataList" :key="dataIndex" @click="
-            $router.push({
-              path: '/dataDbj/DbjDataDetail',
-              query: {
-                deviceNumber: key,
-                placeName: item[0].placeName,
-                index: $refs.screen.pickerTime,
-                startTime: $refs.screen.startTime,
-                endTime: $refs.screen.endTime,
-              },
-            })
-          ">
-				<div class="block-title">
-					<div class="main-title">兑币机 {{ key }}</div>
-					<div class="sub-title">
+		<view class="list-content">
+			<view class="list-block" v-for="(item, key, dataIndex) of dataList" :key="dataIndex" @click="goTo">
+				<view class="block-title">
+					<view class="main-title">兑币机 {{ key }}</view>
+					<view class="sub-title">
 						{{ item[0].placeName }}
-					</div>
-				</div>
-				<div class="block-row-box">
-					<div class="block-row" v-for="(list, itemIndex) in item" :key="$getUniqueKey(dataIndex, itemIndex)">
-						<div class="block-cell">
-							<div class="cell-top">
+					</view>
+				</view>
+				<view class="block-row-box">
+					<view class="block-row" v-for="(list, itemIndex) in item"
+						:key="$getUniqueKey(dataIndex, itemIndex)">
+						<view class="block-cell">
+							<view class="cell-top">
 								兑币类型
 								<u-icon name="question-circle" size="30" color="#5241ff" v-if="0" />
-							</div>
-							<div class="cell-bottom">{{ typeDict[list.exchangeType] || "其他类型" }}</div>
-						</div>
-						<div class="block-cell">
-							<div class="cell-top">取币总数</div>
-							<div class="cell-bottom">{{ list.exchangeNumber }}</div>
-						</div>
-						<div class="block-cell">
-							<div class="cell-top">出币总数</div>
-							<div class="cell-bottom">{{ list.outPresentNumber }}</div>
-						</div>
-						<div class="block-cell">
-							<div class="cell-top">启动金额</div>
-							<div class="cell-bottom">{{ list.exchangeBalance }}</div>
-						</div>
-					</div>
-				</div>
-			</div>
+							</view>
+							<view class="cell-bottom">{{ typeDict[list.exchangeType] || "其他类型" }}</view>
+						</view>
+						<view class="block-cell">
+							<view class="cell-top">取币总数</view>
+							<view class="cell-bottom">{{ list.exchangeNumber }}</view>
+						</view>
+						<view class="block-cell">
+							<view class="cell-top">出币总数</view>
+							<view class="cell-bottom">{{ list.outPresentNumber }}</view>
+						</view>
+						<view class="block-cell">
+							<view class="cell-top">启动金额</view>
+							<view class="cell-bottom">{{ list.exchangeBalance }}</view>
+						</view>
+					</view>
+				</view>
+			</view>
 			<xls-bottom v-if="JSON.stringify(dataList) != '{}'" />
 			<xls-empty v-else />
-		</div>
-	</div>
+		</view>
+	</view>
 
 </template>
 
@@ -81,133 +73,7 @@
 					5: "口碑核销",
 					6: "抖音核销",
 				},
-				dataList: {
-					"30001102": [{
-						"exchangeType": 1,
-						"exchangeNumber": 3,
-						"outPresentNumber": 0,
-						"exchangeBalance": 3,
-						"placeId": 1082,
-						"placeName": "中土物联-513"
-					}],
-					"30001103": [{
-							"exchangeType": 1,
-							"exchangeNumber": 2,
-							"outPresentNumber": 1,
-							"exchangeBalance": 2,
-							"placeId": 1082,
-							"placeName": "中土物联-513"
-						},
-						{
-							"exchangeType": 7,
-							"exchangeNumber": 50,
-							"outPresentNumber": 50,
-							"exchangeBalance": 194,
-							"placeId": 1082,
-							"placeName": "中土物联-513"
-						}
-					],
-					"30001111": [{
-						"exchangeType": 7,
-						"exchangeNumber": 52,
-						"outPresentNumber": 52,
-						"exchangeBalance": 52,
-						"placeId": 1082,
-						"placeName": "中土物联-513"
-					}],
-					"30001118": [{
-							"exchangeType": 1,
-							"exchangeNumber": 11,
-							"outPresentNumber": 0,
-							"exchangeBalance": 11,
-							"placeId": 1082,
-							"placeName": "中土物联-513"
-						},
-						{
-							"exchangeType": 7,
-							"exchangeNumber": 22,
-							"outPresentNumber": 22,
-							"exchangeBalance": 23,
-							"placeId": 1082,
-							"placeName": "中土物联-513"
-						}
-					],
-					"30001120": [{
-							"exchangeType": 1,
-							"exchangeNumber": 4,
-							"outPresentNumber": 2,
-							"exchangeBalance": 4,
-							"placeId": 1082,
-							"placeName": "中土物联-513"
-						},
-						{
-							"exchangeType": 7,
-							"exchangeNumber": 52,
-							"outPresentNumber": 52,
-							"exchangeBalance": 52,
-							"placeId": 1082,
-							"placeName": "中土物联-513"
-						}
-					],
-					"30001303": [{
-						"exchangeType": 1,
-						"exchangeNumber": 3,
-						"outPresentNumber": 0,
-						"exchangeBalance": 3,
-						"placeId": 1082,
-						"placeName": "中土物联-513"
-					}],
-					"30001448": [{
-							"exchangeType": 1,
-							"exchangeNumber": 21,
-							"outPresentNumber": 20,
-							"exchangeBalance": 13.03,
-							"placeId": 1082,
-							"placeName": "中土物联-513"
-						},
-						{
-							"exchangeType": 7,
-							"exchangeNumber": 19,
-							"outPresentNumber": 19,
-							"exchangeBalance": 19,
-							"placeId": 1082,
-							"placeName": "中土物联-513"
-						}
-					],
-					"30003160": [{
-						"exchangeType": 1,
-						"exchangeNumber": 2,
-						"outPresentNumber": 0,
-						"exchangeBalance": 2,
-						"placeId": 1082,
-						"placeName": "中土物联-513"
-					}],
-					"30003161": [{
-							"exchangeType": 1,
-							"exchangeNumber": 4,
-							"outPresentNumber": 1,
-							"exchangeBalance": 4,
-							"placeId": 1082,
-							"placeName": "中土物联-513"
-						},
-						{
-							"exchangeType": 7,
-							"exchangeNumber": 5,
-							"outPresentNumber": 5,
-							"exchangeBalance": 6,
-							"placeId": 1082,
-							"placeName": "中土物联-513"
-						}
-					],
-					"30003162": [{
-						"exchangeType": 1,
-						"exchangeNumber": 1,
-						"outPresentNumber": 1,
-						"exchangeBalance": 1,
-						"placeId": 1082,
-						"placeName": "中土物联-513"
-					}]
-				},
+				dataList: {},
 			};
 		},
 		// created() {
@@ -216,8 +82,31 @@
 		// 	});
 		// },
 		methods: {
+			getCondition(result) {
+				const {
+					startTime,
+					endTime,
+					placeIdList
+				} = result;
+				this.startTime = startTime;
+				this.endTime = endTime;
+				this.placeId = placeIdList;
+				this.$refs.ndjPaging.reload();
+			},
 			getParams(data) {
 				this.getList(data);
+			},
+			goTo() {
+				this.$router.push({
+					path: '/dataDbj/DbjDataDetail',
+					query: {
+						deviceNumber: key,
+						placeName: item[0].placeName,
+						index: $refs.screen.pickerTime,
+						startTime: $refs.screen.startTime,
+						endTime: $refs.screen.endTime,
+					}
+				})
 			},
 			async getList(data) {
 				this.loading();

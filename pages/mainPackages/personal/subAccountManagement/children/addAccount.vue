@@ -141,9 +141,7 @@
 						this.sonAccountInfo,
 						this.sonAccount,
 					);
-					console.log(12121212, this.sonAccount)
 					this.jobName = this.sonAccountInfo.roleName;
-					console.log(11111111, this.jobName, this.sonAccountInfo)
 					// this.sonAccountInfo.username =
 					//   this.sonAccountInfo.username + "(不可编辑)";
 					if (
@@ -218,7 +216,7 @@
 				if (this.sonAccount) {
 					operation = await subAccountController.updateSysRelevanceList({
 						id: this.sonAccountInfo.id,
-						roleIds: this.sonAccountInfo.roleId, //修改岗位角色
+						roleId: this.sonAccountInfo.roleId, //修改岗位角色
 						password: this.sonAccountInfo.password == "**ztwl**" ?
 							null : md5(this.sonAccountInfo.password), //修改密码
 						nickName: this.sonAccountInfo.nickName, //修改昵称
@@ -241,7 +239,6 @@
 						separateBillsId: this.separateBillsId, //分账人id  list
 					});
 				}
-				console.log(2121212, operation)
 				if (operation.code == 200) {
 
 					setTimeout(() => {
@@ -254,6 +251,9 @@
 			},
 			inputMethod(value) {
 				let _this = this;
+				if(value === 'zt') {
+					return _this.sonAccountInfo.username = '';
+				} 
 				if (value.startsWith('zt')) {
 					_this.sonAccountInfo.username = value;
 				} else {

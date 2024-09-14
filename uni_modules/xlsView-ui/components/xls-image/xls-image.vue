@@ -22,8 +22,10 @@
 		mounted() {
 			this.imageUrl = this.src;
 			// #ifdef MP
-			const url = this.imageUrl.replace('undefined', '');
-			this.imageUrl = `${this.$baseUrl}${url}`;
+			if(this.imageUrl.includes('undefined')) {
+				const url = this.imageUrl.replace('undefined', '');
+				this.imageUrl = `${this.$baseUrl}${url}`;
+			}
 			// #endif
 		},
 		methods: {

@@ -84,10 +84,10 @@
 				<span>收款人</span>
 				<view class="cell-value">{{ obj.accountName }}</view>
 			</view>
-			<view class="line-cell-wrapper">
+			<!-- <view class="line-cell-wrapper">
 				<span>收款账号</span>
 				<view class="cell-value">{{ obj.accountNo }}</view>
-			</view>
+			</view> -->
 			<view class="line-cell-wrapper">
 				<span>到账时间</span>
 				<view class="cell-value">{{ obj.completeDate }}</view>

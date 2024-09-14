@@ -55,8 +55,10 @@
 									:class="{'table-open':isClose}">{{ $formatAmount(item.onlineIncome) }}
 									<view class="linear" v-show="!isClose"></view>
 								</span>
-								<span class="talbe-column table-open" v-show="isClose">{{$formatAmount(item.subsidyIncome)}}</span>
-								<span class="talbe-column table-open" v-show="isClose">{{$formatAmount(item.cashIncome)}}</span>
+								<span class="talbe-column table-open"
+									v-show="isClose">{{$formatAmount(item.subsidyIncome)}}</span>
+								<span class="talbe-column table-open"
+									v-show="isClose">{{$formatAmount(item.cashIncome)}}</span>
 								<span class="talbe-column table-detail" v-hasPermi="['app:payBag:index:bill:resvied']"
 									@click="getEarn(item.date, item.onlineIncome)"><span
 										class="earn-info">查看</span></span>
@@ -64,14 +66,15 @@
 						</view>
 					</view>
 				</view>
-				<p class="list-more" @click="
-              dataList.length > 10 && lengthAll == 10
+				<p class="list-more" v-if="dataList.length" @click="
+				dataList.length > 10 && lengthAll == 10
                 ? (lengthAll = dataList.length + 1)
                 : dataList.length == lengthAll - 1
                 ? $toast('本月已全部加载~')
                 : ''">
 					查看更多
 				</p>
+				<xls-empty v-else></xls-empty>
 			</view>
 		</view>
 		<!--日期 -->

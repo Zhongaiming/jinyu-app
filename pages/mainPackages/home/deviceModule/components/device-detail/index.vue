@@ -124,28 +124,19 @@
 					
 					
 					<!-- 礼品 -->
-					<view @click="
-              $router.push({
-                name: 'GoodsSet',
-                query: {
-                  deviceNumber,
-                  shippingSpace,
-                  railNumber,
-                  typeName: decideType,
-                },
-              })
-            ">
+					<view @click="goTo('commoditySetWwj')">
 						<view class="choose" v-show="
-                decideType == '娃娃机' ||
-                decideType == '兑币机' ||
-                decideType == '儿童类'
-              ">
+							decideType == '娃娃机' ||
+							decideType == '兑币机' ||
+							decideType == '儿童类'
+						  ">
 							<view class="left">礼品</view>
 							<view class="right">
 								<view class="text">
-									<view>
-										<span
-											class="text-over maxWidth">{{ giftInfo.commodityName }}</span>-{{ giftInfo.price }}元/个
+									<view class="gift-info__style">
+										<span class="text-over maxWidth">
+											{{ giftInfo.commodityName }}
+										</span>-{{ giftInfo.price }}元/个
 									</view>
 									<view>剩余{{ giftInfo.railRepertory }}个</view>
 								</view>
@@ -157,13 +148,13 @@
 					</view>
 					<!-- 补货管理 shj -->
 					<view class="choose" @click="
-              $router.push({
-                path: '/deviceManagement/replenishment',
-                query: {
-                  deviceNumber,
-                },
-              })
-            " v-hasPermi="['app:shj:replenish:read']" v-if="decideType == '售货机'">
+					  $router.push({
+						path: '/deviceManagement/replenishment',
+						query: {
+						  deviceNumber,
+						},
+					  })
+					" v-hasPermi="['app:shj:replenish:read']" v-if="decideType == '售货机'">
 						<view class="left">补货管理</view>
 						<view class="right">
 							<view class="text"></view>
@@ -174,13 +165,13 @@
 					</view>
 					<!-- 货道管理 shj -->
 					<view class="choose" @click="
-              $router.push({
-                path: '/deviceManagement/cargoWay',
-                query: {
-                  deviceNumber,
-                },
-              })
-            " v-show="decideType == '售货机'" v-hasPermi="['app:shj:rail:read']">
+					  $router.push({
+						path: '/deviceManagement/cargoWay',
+						query: {
+						  deviceNumber,
+						},
+					  })
+					" v-show="decideType == '售货机'" v-hasPermi="['app:shj:rail:read']">
 						<view class="left">货道管理</view>
 						<view class="right">
 							<view class="text"></view>
@@ -201,11 +192,11 @@
 					</view>
 					<!-- 批量复制 shj -->
 					<view class="choose" v-show="decideType == '售货机'" v-hasPermi="['app:shj:copy:oper']" @click="
-              $router.push({
-                path: '/deviceManagement/batchCopy',
-                query: { deviceNumber, placeId: placeDeviceNum.placeId },
-              })
-            ">
+					  $router.push({
+						path: '/deviceManagement/batchCopy',
+						query: { deviceNumber, placeId: placeDeviceNum.placeId },
+					  })
+					">
 						<view class="left">批量复制</view>
 						<view class="right">
 							<view class="text"></view>
@@ -665,6 +656,17 @@
 				}
 			},
 			goTo(route) {
+				if(route == 'commoditySetWwj') {
+					this.showDetail = false;
+					this.$goTo("/pages/mainPackages/home/deviceModule/children/commoditySetWwj", "navigateTo", {
+						deviceNumber: this.deviceNumber,
+						typeName: this.decideType,
+						shippingSpace: this.shippingSpace,
+						railNumber: this.railNumber,
+						commodityName: this.giftInfo.commodityName
+					})
+					return
+				}
 				if(route == 'shift') {
 					this.$goTo("/pages/mainPackages/home/deviceModule/children/deviceShiftPage", "navigateTo", {
 						deviceNumber: this.deviceNumber,
@@ -982,7 +984,7 @@
 				if (this.price == "") {
 					return this.$toast("单价不能为空或者零~");
 				}
-				editCurrency({
+				deviceController.editCurrency({
 						deviceNumber: this.deviceNumber,
 						currency: this.currency * 1,
 						price: this.price ? this.price : null,
@@ -1007,26 +1009,26 @@
 			//礼品信息--娃娃机 /兑币机 / 儿童类
 			getGiftinfo() {
 				if (this.decideType == "娃娃机") {
-					getDeviceCommodityInfo({
+					deviceController.getDeviceCommodityInfo({
 							deviceNumber: this.deviceNumber,
 						})
 						.then((res) => {
 							this.clearGiftInfo();
-							if (res.data.data) {
-								this.giftInfo = res.data.data;
+							if (res.data) {
+								this.giftInfo = res.data;
 							}
 						})
 						.catch((err) => {});
 				} else {
-					getEggDeviceRailInfo({
+					deviceController.getEggDeviceRailInfo({
 							deviceNumber: this.deviceNumber,
 							shippingSpace: 1,
 							railNumber: 1,
 						})
 						.then((res) => {
 							this.clearGiftInfo();
-							if (res.data.data) {
-								this.giftInfo = res.data.data;
+							if (res.data) {
+								this.giftInfo = res.data;
 							}
 						})
 						.catch((err) => {});
@@ -1246,6 +1248,11 @@
 			.right {
 				display: flex;
 				align-items: center;
+				
+				.gift-info__style {
+					display: flex;
+					align-items: center;
+				}
 
 				.arrow {
 					margin: 0 0 0 8px;
@@ -1581,6 +1588,8 @@
 				line-height: 44px;
 				text-align: right;
 				margin-bottom: 12px;
+				display: flex;
+				align-items: center;
 
 				.input {
 					color: #262626;
@@ -1590,9 +1599,11 @@
 					border: 0;
 					text-align: center;
 					width: 80px;
+					flex: 1;
 				}
 
 				.unit {
+					display: inline-block;
 					color: #262626;
 					font-size: 16px;
 					padding-right: 6px;

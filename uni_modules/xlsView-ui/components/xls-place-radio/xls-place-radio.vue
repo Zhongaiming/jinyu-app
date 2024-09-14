@@ -8,7 +8,7 @@
 				<view class="right-count" v-if="showRight">{{ placeTotal }}个</view>
 			</view>
 			<xls-search placeholder="请输入场地名称" marLeft="-5.5em" @confirm="searchMethod"></xls-search>
-			<view class="place-wrapper">
+			<view class="place-wrapper" v-if="dataList.length">
 				<view class="place-item" @click="pickerPlace(-1)" v-if="showAllCheck">
 					<view class="place-main">
 						<span :style="{color:placeActive==-1?'#5241FF':''} ">全部场地</span>
@@ -25,7 +25,7 @@
 				</view>
 				<xls-bottom></xls-bottom>
 			</view>
-			<xls-empty v-show="!dataList.length"></xls-empty>
+			<xls-empty v-else></xls-empty>
 		</view>
 	</u-popup>
 </template>
@@ -48,6 +48,10 @@
 				type: Boolean,
 				default: false,
 			},
+			defaultPicker: {
+				type: Boolean,
+				default: false,
+			}
 		},
 		data() {
 			return {
@@ -65,7 +69,11 @@
 			async getList() {
 				let res = await placeController.getPlaceDeviceList();
 				if (res.code == 200) {
-					this.dataList = res.data
+					this.dataList = res.data;
+					if(this.defaultPicker) {
+						const defaultPlace = this.dataList.length?this.dataList[0]:{};
+						this.$emit("getPlaceId", defaultPlace);
+					}
 				}
 			},
 			searchMethod(search) {

@@ -41,7 +41,7 @@
 						</view>
 						<view class="right-switch">
 							<u-switch size="50" :value="item.userState == 1 ? true : false"
-								@change="editState(item.id, item.userState)" active-color="#5241FF" />
+								@change="editState(item)" active-color="#5241FF" />
 						</view>
 					</view>
 					<view class="handle-btn">
@@ -63,7 +63,7 @@
 					<p class="name">{{ role.roleName }}</p>
 					<view class="right">
 						<text class="one" v-hasPermi="['app:account:index:editjob']" @click="goTo('role', {jobs: role.roleName, roleId: role.roleId})">权限查看</text>
-						<text style="color: red;margin-right: 25rpx;" @click="deleteJob(role.roleId)">删除</text>
+						<text style="color: red;margin-right: 25rpx;" v-hasPermi="['app:account:index:deletejob']" @click="deleteJob(role.roleId)">删除</text>
 					</view>
 				</view>
 			</view>
@@ -186,17 +186,17 @@
 				this.$refs.paging.reload();
 			},
 			//修改子用户状态
-			editState(userId, userState) {
+			editState(params) {
+				const {id, userState} = params;
 				subAccountController.updateReleuceState({
-					id: userId, //子账户id
+					id: id, //子账户id
 					userState: userState == 1 ? 2 : 1, //用户状态（-1冻结/锁定 0弃用 1正常，2停用）
 				}).then(res => {
 					if (res.code == 200) {
 						this.$toast("修改成功");
-						this.$refs.paging.reload();
+						params.userState = userState == 1 ? 2 : 1;
 					}
 				})
-			
 			},
 			//删除
 			deleteItem(id) {

@@ -114,6 +114,13 @@ const pages = [{
 		}
 	},
 	{
+		"path": "pages/mainPackages/home/deviceModule/children/commoditySetWwj",
+		"name": "commoditySetWwj",
+		"meta": {
+			"title": "类娃娃机设备设置商品"
+		}
+	},
+	{
 		"path": "pages/mainPackages/home/deviceModule/deviceFault",
 		"name": "deviceModuleFault",
 		"meta": {

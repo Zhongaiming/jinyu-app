@@ -72,8 +72,8 @@
 					}
 					this.$refs.paging.complete(res.data.List);
 					this.count = {
-						online: res.data.online.onlineNums,
-						offline: res.data.offline.offlineNums
+						online: res.data.online.onlineNums??0,
+						offline: res.data.offline.offlineNums??0
 					}
 				}).catch(error => {
 					this.$hideLoading();

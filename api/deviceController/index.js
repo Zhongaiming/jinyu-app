@@ -60,12 +60,18 @@ export default class deviceController {
 			data
 		})
 	}
-	
-	
 	// 设备查询
 	static getListTwo(data) {
 		return http.request({
 			url: '/device/api/v1/admin/device/device/getListTwo',
+			method: 'GET',
+			data
+		})
+	}
+	// 设备查询
+	static getList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/getList',
 			method: 'GET',
 			data
 		})
@@ -101,6 +107,15 @@ export default class deviceController {
 		return http.request({
 			url: '/device/api/v1/admin/device/device/getOrderQR',
 			method: 'GET',
+			data
+		})
+	}
+	
+	// 娃娃机设置单价
+	static editCurrency(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/editCurrency',
+			method: 'POST',
 			data
 		})
 	}
@@ -296,6 +311,15 @@ export default class deviceController {
 		})
 	}
 	
+	// 娃娃机
+	static getDeviceCommodityInfo(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/getDeviceCommodityInfo',
+			method: 'GET',
+			data
+		})
+	}
+	
 	// === 设备参数 ===
 	//从redis获取数据
 	static getRedisList(data) {
@@ -355,6 +379,23 @@ export default class deviceController {
 	static getRedisOne(data) {
 	    return http.request({
 	        url: '/device/api/v1/admin/device/openTerminalSetSet/redisOne',
+	        method: 'GET',
+	        data,
+	    })
+	}
+	
+	// 修改设备类型以及货道(pc端接口)
+	static updateFromPc(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceType/updateFromPc',
+			method: 'POST',
+			data
+		})
+	}
+	// 重启设备
+	static restartDevice(data) {
+	    return http.request({
+	        url: '/device/api/v1/admin/device/iot/restart',
 	        method: 'GET',
 	        data,
 	    })

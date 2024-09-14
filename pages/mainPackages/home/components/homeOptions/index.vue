@@ -6,16 +6,13 @@
 			</view>
 			<view class="xls-options-list-content">
 				<view class="xls-options-list-main" v-for="item in option.dataList" :key="item.id"
-					v-hasPermi="[...item.permissions]" @click="goTo(item)">
+					v-hasPermi="[...item.permissions]" @click="goTo(item)" v-if="getTypeShow(item)">
 					<view class="xls-options-list-image">
 						<image class="image" :src="item.imgUrl" mode="widthFix"></image>
-						<span class="status" v-if="item.status">{{item.status}}</span>
+						<span class="status" v-if="item.id==42&&coupleNum>0">{{coupleNum}}</span>
 					</view>
 					<view class="xls-options-list-main-text">
 						{{item.title}}
-					</view>
-					<view class="no-handler-status" v-if="item.id==42&&coupleNum>0">
-						{{ coupleNum }}
 					</view>
 				</view>
 			</view>
@@ -24,6 +21,9 @@
 </template>
 
 <script>
+	import {
+		mapGetters
+	} from 'vuex';
 	export default {
 		name: "homeOptions",
 		props: {
@@ -31,6 +31,11 @@
 				type: Number,
 				default: 0
 			}
+		},
+		computed: {
+			...mapGetters([
+				'deviceTypeIdList'
+			])
 		},
 		data() {
 			return {
@@ -165,6 +170,7 @@
 							permissions: ['app:ndj:index'],
 							status: 0,
 							result: 0,
+							deviceType: 2
 						},
 						// {
 						// 	id: 34,
@@ -174,14 +180,15 @@
 						// 	permissions: ['app:pay:index'],
 						// 	status: 0
 						// },
-						// {
-						// 	id: 35,
-						// 	title: '兑币机数据',
-						// 	imgUrl: `${this.$baseUrl}homeImages/threeList/dbj.png`,
-						// 	route: '/pages/mainPackages/home/dbjData/index',
-						// 	permissions: ['app:dbj:index:read'],
-						// 	status: 0
-						// },
+						{
+							id: 35,
+							title: '兑币机数据',
+							imgUrl: `${this.$baseUrl}homeImages/threeList/dbj.png`,
+							route: '/pages/mainPackages/home/dbjData/index',
+							permissions: ['app:dbj:index:read'],
+							status: 0,
+							deviceType: 5,
+						},
 						// {
 						// 	id: 36,
 						// 	title: '美团核销',
@@ -246,6 +253,14 @@
 		methods: {
 			goTo(route) {
 				this.$goTo(route.route, undefined, route.params)
+			},
+			getTypeShow(item) {
+				const filtrationList = [33, 35];
+				if(!filtrationList.includes(item.id)) {
+					return true
+				} else {
+					return this.deviceTypeIdList.includes(item.deviceType)
+				}
 			}
 		}
 	}
@@ -315,20 +330,4 @@
 		}
 	}
 	
-	.no-handler-status {
-	  background: #ff4747;
-	  border-radius: 14rpx 14rpx 14rpx 8rpx;
-	  box-sizing: content-box;
-	  color: #fff;
-	  font-size: 20rpx;
-	  font-weight: 400;
-	  height: 24rpx;
-	  line-height: 24rpx;
-	  min-width: 24rpx;
-	  padding: 0 5rpx;
-	  position: absolute;
-	  text-align: center;
-	  top: 10rpx;
-	  right: 6rpx;
-	}
 </style>

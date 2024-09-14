@@ -17,7 +17,7 @@
 						<view class="input-content">
 							<image :src="`${$baseUrl}appV4/common/search.png`" alt="" class="search-icon" />
 							<input type="text" v-model="searchValue" @keyup.13="searchMethod" placeholder="请输入关键词"
-								class="search-input" />
+								class="search-input" @confirm="searchMethod" />
 							<view class="confirm-btn" @click="searchMethod">确定</view>
 						</view>
 					</view>
@@ -64,6 +64,7 @@
 						this.$refs.bankPaging.complete(res.data);
 					})
 				} else {
+					this.$loading();
 					merchantController.getSubbranchBankList({
 						pageNo: pageNo,
 						pageSize: pageSize,
@@ -71,7 +72,10 @@
 						cityCode: this.cityCode,
 						keyWord: value
 					}).then(res => {
+						this.$hideLoading();
 						this.$refs.bankPaging.complete(res.data.subList);
+					}).catch(err => {
+						this.$hideLoading();
 					})
 				}
 			},

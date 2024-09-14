@@ -8,7 +8,10 @@ import {
 }
 from "@/common/auth.js"
 
-import {loginAndRegController, userController} from '@/api/index.js'
+import {
+	loginAndRegController,
+	userController
+} from '@/api/index.js'
 
 const getDefaultState = () => {
 	return {
@@ -46,17 +49,37 @@ const mutations = {
 }
 
 const actions = {
-	login({ commit }, userInfo, current) {
+	login({
+		commit
+	}, userInfo, current) {
 		return new Promise((resolve, reject) => {
-			if(userInfo.current === undefined) {
+			if (userInfo.current === undefined) {
 				loginAndRegController.loginXls(userInfo).then(res => {
-					const { data, code } = res
-					if(code == 200) {
+					const {
+						data,
+						code
+					} = res
+					if (code == 200) {
 						// 存储token
 						commit('SET_TOKEN', data)
 						userController.getInfo().then(res => {
-							const { data, code } = res
-							if(code == 200) {
+							const {
+								data,
+								code
+							} = res
+							if (code == 200) {
+								const {
+									userType
+								} = data
+								if (userType == 5) {
+									let filterList = ['app:payBag:index:authenticate',
+										'app:account:index', 'app:account:index:read',
+										'app:payBag:index:bank'
+									]
+									data.permissions = data.permissions.filter(item => !
+										filterList
+										.includes(item))
+								}
 								commit('SET_INFO', data)
 								commit('SET_PERMISSIONS', data.permissions)
 							}
@@ -70,24 +93,31 @@ const actions = {
 				let params = {
 					code: userInfo.code,
 				}
-				
+
 				if (uni.$u.test.contains(userInfo.username, '@')) {
 					params.email = userInfo.username
 				} else {
 					params.phone = userInfo.username
 				}
 				loginAndRegController.emailLogin(params).then(res => {
-					const { data, code }  = res
-					if(code === 200) {
+					const {
+						data,
+						code
+					} = res
+					if (code === 200) {
 						// 存储token
 						commit('SET_TOKEN', data.tokenData)
-						commit('SET_INFO', {nickname: data.nickname, userId: data.userId, permission: 1})
+						commit('SET_INFO', {
+							nickname: data.nickname,
+							userId: data.userId,
+							permission: 1
+						})
 						resolve(res)
 					}
 				})
-				
+
 			}
-			
+
 		})
 	},
 }

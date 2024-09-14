@@ -68,7 +68,7 @@
 						<u-switch v-model="commodity.openSourceMaterial" active-color="#5241FF" size="50" />
 					</u-form-item>
 					<u-form-item borderBottom>
-						<u-upload :previewFullImage="true" :fileList="image.specificationList" name="specification"
+						<u-upload :previewFullImage="true" :fileList="image.commoditySourceMaterialList" name="commoditySourceMaterial"
 							@afterRead="afterRead" @delete="deletePic" :maxCount="5" width="160"
 							height="160"></u-upload>
 					</u-form-item>
@@ -104,8 +104,7 @@
 					commodityId: "",
 					commodityImg: "",
 					commodityName: "",
-					commoditySourceMaterial: "",
-					commoditySpecificationsId: "", // 屏幕展示素材(图片地址，最多五份，不同图片url用，分割开)
+					commoditySpecificationsId: "", // 商品规格id
 					commodityTypeId: "",
 					commodityTypeName: "",
 					costPrice: "",
@@ -113,7 +112,8 @@
 					createUserId: "",
 					ipId: "",
 					openSourceMaterial: false, // 是否开启屏幕展示素材（0：关闭 1：开启），默认关闭
-					suggestRetailPrice: "",
+					commoditySourceMaterial: "",// 屏幕展示素材(图片地址，最多五份，不同图片url用，分割开)
+					suggestRetailPrice: "", 
 					updateTime: "",
 					updateUserId: ""
 				},
@@ -180,7 +180,7 @@
 				},
 				image: {
 					commodityImgList: [],
-					specificationList: [],
+					commoditySourceMaterialList: [],
 				},
 				detail: false,
 			};
@@ -195,6 +195,7 @@
 		methods: {
 			initialMethod() {
 				commodityController.getSpecification({
+					dtoFilter: {},
 					pageParam: {
 						pageNum: 1,
 						pageSize: 10000
@@ -203,6 +204,7 @@
 					this.$refs.specificationSelect.initialData(res.data.dataList);
 				})
 				commodityController.getBrand({
+					dtoFilter: {},
 					pageParam: {
 						pageNum: 1,
 						pageSize: 10000
@@ -211,6 +213,7 @@
 					this.$refs.brandSelect.initialData(res.data.dataList);
 				})
 				commodityController.getIp({
+					dtoFilter: {},
 					pageParam: {
 						pageNum: 1,
 						pageSize: 10000
@@ -230,10 +233,21 @@
 							.commodity
 							.commodityImg);
 					}
+					if (this.commodity.commoditySourceMaterial) {
+						const arr = this.commodity.commoditySourceMaterial.split(',')
+						arr.forEach(url => {
+							this.image.commoditySourceMaterialList.push({
+								status: 'success', // uploading
+								message: '上传成功', // 上传中
+								url
+							})
+						})
+					}
 				})
 			},
 			getCommodityType() {
 				commodityController.getCommodityType({
+					dtoFilter: {},
 					pageParam: {
 						pageNum: 1,
 						pageSize: 10000
@@ -253,7 +267,9 @@
 			},
 			clickBtn() {
 				this.detail = !this.detail;
-				this.initialMethod();
+				setTimeout(() => {
+					this.initialMethod();
+				}, 200)
 			},
 			async afterRead(event) {
 				const {
@@ -267,14 +283,13 @@
 					message: '上传中'
 				})
 				let res = await uploadFilePromise(file)
-				this.image[`${name}List`] = []
-				this.image[`${name}List`].push({
+				const item = {
 					status: 'success',
 					message: '上传成功',
 					url: res.data.downloadUri
-				})
+				}
+				this.$set(this.image[`${name}List`], this.image[`${name}List`].length - 1, item);
 				this.commodity[`${name}`] = res.data.downloadUri;
-
 			},
 			deletePic(event) {
 				const {
@@ -287,6 +302,9 @@
 			confirmMethod() {
 				let params = JSON.parse(JSON.stringify(this.commodity));
 				params.openSourceMaterial = params.openSourceMaterial ? 1 : 0;
+				if(this.image.commoditySourceMaterialList.length) {
+					params.commoditySourceMaterial=this.image.commoditySourceMaterialList.map(item => item.url).join(',');
+				}
 				this.$refs.commodityForm.validate().then(res => {
 					if (this.commodity.commodityId) {
 						commodityController.updateCommodity({
@@ -305,7 +323,6 @@
 							this.$goBack();
 						})
 					}
-
 				}).catch(errors => {
 					this.$toast('请补全信息~')
 				})

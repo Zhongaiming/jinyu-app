@@ -35,6 +35,9 @@
 				device: {},
 			}
 		},
+		onLoad() {
+			this.$store.dispatch('config/getList');
+		},
 		onShow() {
 			this.getCoupleNum();
 			this.getTotalTodayIncome();

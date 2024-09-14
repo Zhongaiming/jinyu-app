@@ -22,9 +22,9 @@
 
 				<view class="xls-order-style">
 					<view class="xls-order-style-header">
-						<image class="icon-image" :src="`${$baseUrl}appV4/common/${item.payType==0?'wechat':'pay'}.png`"
+						<xls-image class="icon-image" :src="`${$baseUrl}appV4/common/${item.payType==0?'wechat':'pay'}.png`"
 							mode="widthFix">
-						</image>
+						</xls-image>
 						<view class="right-wrapper">
 							<view class="device-style">
 								<text> {{ deviceTypeDict[item.deviceType] }}{{ item.deviceNumber }}</text>
@@ -161,6 +161,17 @@
 				params: {
 					startTime: getDateAll(0),
 					endTime: getDateAll(0),
+				},
+				payTypeDict: {
+					0: 'wechat',
+					1: 'pay',
+				},
+				type: {
+					1: '充值余币',
+					2: '设备启动',
+					3: '余币购买',
+					4: '余额购买',
+					5: '充值余额',
 				},
 			}
 		},

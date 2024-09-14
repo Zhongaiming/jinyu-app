@@ -2,7 +2,7 @@
 	<view class="xls-remote-page">
 		<xls-jy-navbar title="操作记录" :showRight="false"></xls-jy-navbar>
 		<view class="content">
-			<u-radio-group v-if="deviceTypeList" v-model="deviceTypeId">
+			<u-radio-group v-model="deviceTypeId">
 				<view class="item-box box-sizing">
 					<view class="item box-sizing" v-for="(item, index) in deviceTypeList" :key="index"
 						@click="pickDeviceType(item, index)">
@@ -11,9 +11,9 @@
 					</view>
 				</view>
 			</u-radio-group>
-			<xls-empty v-else />
 		</view>
-		<xls-bottom />
+		<xls-bottom v-if="deviceTypeList.length"/>
+		<xls-empty v-else />
 		<view class="btnB">
 			<view class="link" v-hasPermi="['app:remoteboot:index:records']" @click="goTo">
 				远程启动记录 >>

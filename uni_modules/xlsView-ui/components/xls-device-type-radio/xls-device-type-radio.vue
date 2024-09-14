@@ -23,7 +23,7 @@
 				</view>
 				<xls-bottom></xls-bottom>
 			</view>
-			xls-emp
+			<xls-empty v-else></xls-empty>
 			<view class="modal-footer" @click="showDeviceType = !showDeviceType">
 				<view class="cancel-btn">关闭</view>
 			</view>
@@ -44,7 +44,7 @@
 			clickOverlay: {
 				type: Boolean,
 				default: true,
-			},
+			}
 		},
 		data() {
 			return {

@@ -54,9 +54,9 @@
 					<p class="card-text bank-card bad bank-info">{{bankList.length}} 张</p>
 					<p class="right-sign">&gt;</p>
 				</view>
-				<!-- 实名认证 v-else-->
+				<!-- 实名认证 -->
 				<view class="card-list" v-hasPermi="['app:payBag:index:authenticate']" @click="goTo('merchantCA')"
-					>
+					v-else>
 					<image :src="`${$baseUrl}appV4/authentications/check.png`" alt="" class="card-icon"
 						mode="widthFix" />
 					<p class="card-text card-con">实名认证</p>
@@ -65,7 +65,7 @@
 					<p class="right-sign">&gt;</p>
 				</view>
 				<!-- 认证记录 -->
-				<view class="card-list" @click="goTo('authentication')">
+				<view class="card-list" @click="goTo('authentication')" v-hasPermi="['app:payBag:index:authenticate']">
 					<image :src="`${$baseUrl}appV4/authentications/card.png`" alt="" class="card-icon"
 						mode="widthFix" />
 					<p class="card-text card-con">认证记录</p>
@@ -95,8 +95,7 @@
 			return {
 				userType: 0,
 				bankList: [],
-				walletBagInfo: [],
-
+				walletBagInfo: {},
 			};
 		},
 		beforeCreate() {

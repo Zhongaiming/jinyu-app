@@ -98,12 +98,25 @@
 			};
 		},
 		onLoad() {
-			const {commercialNumber, userType} = getInfo();
-			this.showOperatetype = 'ZTWL_20240816162905521'===commercialNumber&&userType==4;
+			const {
+				commercialNumber,
+				userType
+			} = getInfo();
+			this.showOperatetype = 'ZTWL_20240816162905521' === commercialNumber && userType == 4;
 			this.getTypeList();
 		},
 		methods: {
 			goTo() {
+				// deviceController.updateFromPc({
+				// 	dto: {
+				// 		deviceNumber: "30003298",
+				// 		deviceType: 1
+				// 	}
+				// })
+				// deviceController.restartDevice({
+				// 	// imei: "867303073884231",
+				// 	imei: "861714055498251" // 30003300
+				// })
 				this.$goTab();
 			},
 			getImage(id) {
@@ -188,7 +201,12 @@
 				if (res.code == 200) {
 					this.operatePopup = false;
 					this.resultPopup = true;
-					let result = res.data;
+					let result;
+					if(res.hasOwnProperty('data')) {
+						result = res.data;
+					} else {
+						result = res.message;
+					}
 					//res.data.data.indexOf('DEVICE_EXISTS_DATA_RESET' > 0 )
 					if (typeof result == "string" || typeof result == "String") {
 						this.result["type"] = "重置";
@@ -220,6 +238,7 @@
 				this.$modal(msg, {
 						confirmText: "我知道了",
 						confirmColor: "#5241FF",
+						showCancel: false
 					})
 					.then(() => {});
 			},
@@ -232,7 +251,7 @@
 					!/AlipayClient/.test(window.navigator.userAgent)
 				) {
 					//支付宝或微信
-					return this.$modal("请使用微信/支付宝或在应用内浏览器打开程序",{
+					return this.$modal("请使用微信/支付宝或在应用内浏览器打开程序", {
 						title: "温馨提示",
 						confirmText: "我知道了",
 						showCancel: false
