@@ -39,6 +39,12 @@
 		placeController
 	} from "@/api/index.js";
 	export default {
+		props: {
+			deviceType: {
+				type: [String, Number],
+				default: ''
+			}
+		},
 		data() {
 			return {
 				showPlace: false,
@@ -54,9 +60,20 @@
 		},
 		methods: {
 			async getPlace() {
-				let res = await placeController.getPlaceDeviceList();
-				if (res.code == 200) {
-					this.placeList = res.data;
+				if(this.deviceType) {
+					placeController.getPlaceListByDeviceType({
+						deviceType: this.deviceType
+					}).then(res => {
+						if (res.code == 200) {
+							this.placeList = res.data;
+						}
+					}).catch(err => {})
+				} else {
+					placeController.getPlaceDeviceList().then(res => {
+						if (res.code == 200) {
+							this.placeList = res.data;
+						}
+					}).catch(err => {})
 				}
 			},
 			//搜索

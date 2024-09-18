@@ -31,7 +31,7 @@
 		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId" v-if="placeCheck === 'checkbox'"></xls-place-checkbox>
 		<xls-place-radio ref="placelist" @getPlaceId="getPlaceId" v-else showAllCheck></xls-place-radio>
 		<!-- calendar -->
-		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="getCalender"></xls-calendar>
+		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="getCalender" :defaultDate="[params.startTime, params.endTime]"></xls-calendar>
 	</view>
 </template>
 
@@ -88,6 +88,7 @@
 			getCalender(date) {
 				const [startTime, endTime] = date;
 				this.pickerTime = false;
+				this.activeBtn = -1;
 				this.params.date = `${startTime} 至 ${endTime}`;
 				this.params.startTime = startTime;
 				this.params.endTime = endTime;

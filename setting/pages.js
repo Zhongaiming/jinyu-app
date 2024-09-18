@@ -327,6 +327,20 @@ const pages = [{
 			"title": "兑币机数据"
 		}
 	},
+	{
+		"path": "pages/mainPackages/home/dbjData/children/dbjDataDetail",
+		"name": "dbjDataDetail",
+		"meta": {
+			"title": "兑币机数据详情"
+		}
+	},
+	{
+		"path": "pages/mainPackages/home/dbjData/children/dbjHistory",
+		"name": "dbjHistory",
+		"meta": {
+			"title": "兑币机历史数据"
+		}
+	},
 	// 自动分账
 	{
 		"path": "pages/mainPackages/home/separateAccounts/index",

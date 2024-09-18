@@ -280,4 +280,13 @@ export default class placeController {
 			data
 		})
 	}
+	
+	// 设备类型包含的场地
+	static getPlaceListByDeviceType(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/place/salesAirport',
+			method: "GET",
+			data
+		})
+	}
 }

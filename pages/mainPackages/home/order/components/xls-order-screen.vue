@@ -150,7 +150,7 @@
 		<xls-device-type-checkbox ref="deviceType" @getDeviceType="getDeviceType"></xls-device-type-checkbox>
 		<!-- calendar -->
 		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" 
-			@confirm="getCalender" :minDate="minDate"
+			@confirm="getCalender" :minDate="minDate" :defaultDate="[params.startTime, params.endTime]"
 		></xls-calendar>
 	</view>
 </template>
@@ -372,7 +372,7 @@
 						startDate.setHours(0, 0, 0, 0);
 						break;
 					case 5: // 近1个月内
-						startDate = new Date(now.setMonth(now.getMonth() - 1));
+						startDate = new Date(now.setMonth(now.getMonth()));
 						startDate.setDate(1);
 						startDate.setHours(0, 0, 0, 0);
 						break;

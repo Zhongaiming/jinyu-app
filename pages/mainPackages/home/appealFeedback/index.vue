@@ -83,7 +83,7 @@
 			</view>
 		</u-popup>
 		<!-- 日历 -->
-		<xls-calendar :show="showDate" @close="() => { showDate = false }" @confirm="onConfirm"></xls-calendar>
+		<xls-calendar :show="showDate" @close="() => { showDate = false }" @confirm="onConfirm" :defaultDate="[startTime, endTime]"></xls-calendar>
 	</z-paging>
 </template>
 

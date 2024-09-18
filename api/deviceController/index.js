@@ -129,7 +129,7 @@ export default class deviceController {
 		})
 	}
 	// 查询扭蛋机货道信息
-	// 货道商品信息列表
+	// 货道商品信息
 	static getEggDeviceRailInfo(data) {
 		return http.request({
 			url: '/device/api/v1/admin/device/deviceRail/getEggDeviceRailInfo',

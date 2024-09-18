@@ -189,24 +189,26 @@
 							status: 0,
 							deviceType: 5,
 						},
-						// {
-						// 	id: 36,
-						// 	title: '美团核销',
-						// 	imgUrl: `${this.$baseUrl}homeImages/threeList/meituan.png`,
-						// 	route: '/Meituan',
-						// 	permissions: ['app:meituan:index:read'],
-						// 	status: 0,
-						// 	result: 0,
-						// },
-						// {
-						// 	id: 37,
-						// 	title: '抖音核销',
-						// 	imgUrl: `${this.$baseUrl}homeImages/threeList/meituan.png`,
-						// 	route: '/Douyin/index',
-						// 	permissions: 'app:meituan:index:read',
-						// 	status: 0,
-						// 	result: 0,
-						// }
+						{
+							id: 36,
+							title: '美团核销',
+							imgUrl: `${this.$baseUrl}homeImages/threeList/meituan.png`,
+							route: '/pages/subpackages/home/meituanWriteOff/add',
+							permissions: ['app:meituan:index:read'],
+							status: 0,
+							result: 0,
+							deviceType: 5,
+						},
+						{
+							id: 37,
+							title: '抖音核销',
+							imgUrl: `${this.$baseUrl}homeImages/threeList/meituan.png`,
+							route: '/pages/subpackages/home/douyinWriteOff/index',
+							permissions: 'app:meituan:index:read',
+							status: 0,
+							result: 0,
+							deviceType: 5,
+						}
 					]
 				}, {
 					id: 4,

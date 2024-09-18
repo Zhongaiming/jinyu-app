@@ -12,7 +12,7 @@
 				<view class="header-btn" v-if="text == 'detail'" @click="getExcelUrl"
 					v-hasPermi="['app:dbj:index:export']">
 					想要导出数据
-					<van-icon name="question-o" size="16" class="icon" />
+					<u-icon name="question-circle" size="32" class="icon" />
 				</view>
 			</view>
 			<!-- 时间 -->
@@ -22,44 +22,44 @@
 					<view class="time-section" :class="{'On-right':text == 'history'}">
 						{{ date }}
 					</view>
-					<van-icon name="arrow" size="18" color="#c6c6c6" />
+					<u-icon name="arrow-right" size="36" color="#c6c6c6" />
 				</view>
 			</view>
 			<!-- 场地 -->
 			<view class="cond-item-content" v-if="text == 'history' || text == 'index'">
 				<view class="left-wrapper">场地</view>
-				<view class="right-wrapper" @click="$refs.placelist.showPlacePopup()">
+				<view class="right-wrapper" @click="openPopup">
 					<view class="time-section" :class="{'On-right':text == 'history'}">
 						{{ placeName }}
 					</view>
-					<van-icon name="arrow" size="18" color="#c6c6c6" />
+					<u-icon name="arrow-right" size="36" color="#c6c6c6" />
 				</view>
 			</view>
-			<van-calendar v-model="showDate" type="range" allow-same-day @confirm="confirmMethod" :max-range="180"
-				range-prompt="只能查询半年的数据" :min-date="minDate" :max-date="maxDate" :round="false" color="#5241FF" />
+			
+				
 			<!-- 出币 -->
 			<view class="cond-item-content" v-if="text == 'detail' && $parent.activeName == 2">
-				<van-dropdown-menu active-color="#5241FF">
-					<van-dropdown-item title="出币类型" ref="place">
+				<u-dropdown-menu active-color="#5241FF">
+					<u-dropdown-item title="出币类型" ref="place">
 						<view class="item-wrapper-list">
-							<van-cell v-for="(item, index) in coinList" :key="index" :title="item.name"
+							<u-cell v-for="(item, index) in coinList" :key="index" :title="item.name"
 								:value="payType == item.id ? '✔' : ''" @click="confirmCheck(item.id, 'left')" />
 							<on-earth />
 						</view>
-					</van-dropdown-item>
-					<van-dropdown-item title="出币结果" ref="pay">
+					</u-dropdown-item>
+					<u-dropdown-item title="出币结果" ref="pay">
 						<view class="item-wrapper-list">
-							<van-cell v-for="(item, index) in resultList" :key="index" :title="item.name"
+							<u-cell v-for="(item, index) in resultList" :key="index" :title="item.name"
 								:value="payResult == item.id ? '✔' : ''" @click="confirmCheck(item.id, 'rigth')" />
 						</view>
-					</van-dropdown-item>
-				</van-dropdown-menu>
+					</u-dropdown-item>
+				</u-dropdown-menu>
 			</view>
 			<!-- 导出 -->
 			<view class="cond-item-content" v-if="text == 'history'">
 				<view class="Bleft-wrapper">
 					温馨提示
-					<van-icon name="warning-o" size="18" @click="$refs.explain.downExplain = true" />
+					<u-icon name="warning-o" size="18" @click="$refs.explain.downExplain = true" />
 				</view>
 				<view class="right-wrapper" :class="{'On-right':text == 'history'}"
 					v-hasPermi="['app:dbj:index:export']">
@@ -68,11 +68,14 @@
 			</view>
 		</view>
 		<!-- 导出数据 -->
-		<DownData ref="data" />
-		<DownEcexl ref="down" />
+		<!-- <DownData ref="data" /> -->
+		<!-- <DownEcexl ref="down" /> -->
+		<!-- <ExplainPage ref="explain" /> -->
 		<!-- 兑币机场地 -->
-		<CustomList ref="placelist" @getPlaceId="getPlaceId" :deviceType="5" />
-		<ExplainPage ref="explain" />
+		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId" :deviceType="5" ></xls-place-checkbox>
+		<xls-calendar :show="showDate" @close="() => { showDate = false }" 
+			@confirm="getCalender" :defaultDate="[startTime, endTime]">
+		</xls-calendar>
 	</view>
 </template>
 
@@ -80,20 +83,18 @@
 	import {
 		getDateAll
 	} from "@/plugins/utilityClass";
-	import DownEcexl from "./downExcel.vue";
-	import DownData from "./downData.vue";
-	import ExplainPage from "./explainPage.vue";
 	import moment from "moment";
-	import CustomList from "@/components/shj/customShjList.vue";
-	import api from "@/utils/dbjApi";
+	// import DownEcexl from "./downExcel.vue";
+	// import DownData from "./downData.vue";
+	// import ExplainPage from "./explainPage.vue";
+	// import api from "@/utils/dbjApi";
 	export default {
 		name: "conditionScreening",
-		components: {
-			DownEcexl,
-			DownData,
-			CustomList,
-			ExplainPage
-		},
+		// components: {
+		// 	DownEcexl,
+		// 	DownData,
+		// 	ExplainPage
+		// },
 		props: {
 			text: {
 				type: String,
@@ -102,6 +103,8 @@
 		},
 		data() {
 			return {
+				/** 搜索 */
+				searchValue: null,
 				/** 快捷时间 */
 				pickerTime: -1,
 				timeList: [{
@@ -128,13 +131,6 @@
 				/** 选择日期 */
 				date: getDateAll(0) + "\u2002今天",
 				showDate: false,
-				minDate: new Date(
-					new Date().getFullYear() - 1,
-					new Date().getMonth(),
-					new Date().getDate()
-				),
-				maxDate: new Date(getDateAll(0)),
-				/** 开始结束时间 */
 				startTime: getDateAll(0),
 				endTime: getDateAll(0),
 				/** 场地 */
@@ -196,8 +192,6 @@
 						name: "出币失败"
 					},
 				],
-				/** 搜索 */
-				searchValue: null,
 				/** 导出 **/
 				historyUrl: "",
 				indexUrl: "",
@@ -209,68 +203,68 @@
 				this.searchValue = search ? search : null;
 				this.get();
 			},
+			/** 兑币机场地 */
+			openPopup() {
+				this.$refs.placelist.showPlacePopup(this.placeId)
+			},
+			getPlaceId(place) {
+				if (place[1].length == 1) {
+					this.placeName = `${place[0][0]}`;
+				} else {
+					this.placeName = place[1].length ?
+						`已选中(${place[1].length})个场地` :
+						"全部场地";
+				}
+				this.placeId = place[1].length?String(place[1]):"";
+				this.get();
+			},
 			/** 快捷时间 */
 			quickTime(id) {
+			    const getRange = (startDate, endDate) => [
+			        moment().startOf(startDate).format("YYYY-MM-DD"),
+			        moment().endOf(endDate).format("YYYY-MM-DD")
+			    ];
+			
+			    // 获取今天的日期
+			    const today = moment().format("YYYY-MM-DD");
+			    
+			    // 处理时间范围
+			    let date;
+			    switch (id) {
+			        case 0: // 今天
+			        case 4: // 自定义范围，默认为今天
+			            date = [today, today];
+			            break;
+			        case 1: // 昨天
+			            date = [moment().subtract(1, "days").format("YYYY-MM-DD"), today];
+			            break;
+			        case 2: // 本周
+			            date = getRange("week", "week");
+			            break;
+			        case 3: // 本月
+			            date = getRange("month", "day");
+			            break;
+			        default:
+			            date = [today, today];
+			            break;
+			    }
 				this.pickerTime = id;
-				var date = [];
-				switch (id) {
-					case 0:
-						date = [getDateAll(1), getDateAll(1)];
-						break;
-					case 1:
-						date = [getDateAll(2), getDateAll(2)];
-						break;
-					case 2:
-						date = [
-							moment().startOf("week").add(1, "days").format("YYYY-MM-DD"),
-							moment().endOf("week").add(1, "days").format("YYYY-MM-DD"),
-						];
-						break;
-					case 3:
-						date = [
-							moment().startOf("month").format("YYYY-MM-DD"),
-							moment().startOf("day").format("YYYY-MM-DD"),
-						];
-						break;
-					case 4:
-						date = [getDateAll(0), getDateAll(0)];
-						break;
-					default:
-						date = [getDateAll(0), getDateAll(0)];
-						break;
-				}
-				this.startTime = date[0];
-				this.endTime = date[1];
-				this.date = date[0] + " 至 " + date[1];
-				this.get();
-			},
-			/** 选择日期 */
-			formatDate(date) {
-				return `${date.getFullYear()}-${
-        date.getMonth() + 1 < 10
-          ? "0" + (date.getMonth() + 1)
-          : date.getMonth() + 1
-      }-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`;
+			    this.startTime = date[0];
+			    this.endTime = date[1];
+			    this.date = `${date[0]} 至 ${date[1]}`;
+			    this.get();
 			},
 			/** 确定日期 */
-			confirmMethod(date) {
-				const [start, end] = date;
+			getCalender(date) {
+				const [startTime, endTime] = date;
 				this.showDate = false;
 				this.pickerTime = -1;
-				this.date = `${this.formatDate(start)} 至 ${this.formatDate(end)}`;
-				this.startTime = this.formatDate(start);
-				this.endTime = this.formatDate(end);
+				this.date = `${startTime} 至 ${endTime}`;
+				this.startTime = startTime;
+				this.endTime = endTime;
 				this.get();
 			},
-			/** 兑币机场地 */
-			getPlaceId(place) {
-				this.placeName = place[1].length ?
-					"已选(" + place[1].length + ")个场地" :
-					"全部场地";
-
-				this.placeId = place[1].length ? place[1] : [];
-				this.get();
-			},
+			
 			/** 出币类型 结果 */
 			confirmCheck(id, type) {
 				if (type == "left") {
@@ -284,39 +278,40 @@
 			},
 			/** 传参 */
 			get() {
-				let data;
-				if (this.text == "index") {
-					data = {
-						startTime: `${this.startTime} 00:00:00`,
-						endTime: `${this.endTime} 23:59:59`,
-						placeId: this.placeId,
-						search: this.searchValue,
-					};
-				} else if (this.text == "detail") {
-					//result 出币结果 exchangeType 取币类型
-					if (this.$parent.activeName == 1) {
-						data = {
-							startTime: `${this.startTime} 00:00:00`,
-							endTime: `${this.endTime} 23:59:59`,
-						};
-					} else {
-						data = {
-							startTime: `${this.startTime} 00:00:00`,
-							endTime: `${this.endTime} 23:59:59`,
-							result: this.payResult,
-							exchangeType: this.payType,
-						};
-					}
-				} else if (this.text == "history") {
-					data = {
-						startTime: `${this.startTime}`,
-						endTime: `${this.endTime}`,
-						placeIds: this.placeId.length ? String(this.placeId) : null,
-					};
-				}
-
-				this.$emit("getParams", data);
+			    // 基础数据
+			    const baseData = {
+			        startTime: `${this.startTime} 00:00:00`,
+			        endTime: `${this.endTime} 23:59:59`,
+					pickerTime: this.pickerTime
+			    };
+			
+			    // 处理特定类型的数据
+			    let data;
+			
+			    if (this.text === "index") {
+			        data = {
+			            ...baseData,
+			            placeId: this.placeId,
+			            search: this.searchValue,
+			        };
+			    } else if (this.text === "detail") {
+			        data = baseData;
+			        if (this.$parent.activeName !== 1) {
+			            data.result = this.payResult;
+			            data.exchangeType = this.payType;
+			        }
+			    } else if (this.text === "history") {
+			        data = {
+			            startTime: this.startTime,
+			            endTime: this.endTime,
+			            placeIds: this.placeId.length ? String(this.placeId) : null,
+			        };
+			    }
+			
+			    // 触发事件
+			    this.$emit("getParams", data);
 			},
+			
 			/** 导出数据 */
 			async getExcelUrl(data) {
 				let params = {
@@ -455,16 +450,16 @@
 		}
 	}
 
-	::v-deep .van-dropdown-menu {
+	::v-deep .u-dropdown-menu {
 		flex: 1;
 
-		.van-dropdown-menu__bar {
+		.u-dropdown-menu__bar {
 			height: 32px;
 			box-shadow: 0 0 0 rgba(100, 101, 102, 0);
 		}
 	}
 
-	::v-deep .van-cell__value {
+	::v-deep .u-cell__value {
 		color: #5241ff;
 	}
 </style>

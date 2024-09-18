@@ -22,7 +22,26 @@ const subPackages = [
 			{
 				"path": "member/account",
 				"name": "账户余币、余额"
-			}
+			},
+			// 抖音核销
+			{
+				"path": "douyinWriteOff/index",
+				"name": "抖音核销"
+			},
+			{
+				"path": "douyinWriteOff/children/meal",
+				"name": "创建团购套餐"
+			},
+			{
+				"path": "douyinWriteOff/children/mealDetail",
+				"name": "团购套餐详情"
+			},
+			// 美团核销
+			{
+				"path": "meituanWriteOff/add",
+				"name": "美团店铺"
+			},
+			
 		]
 	},
 	{

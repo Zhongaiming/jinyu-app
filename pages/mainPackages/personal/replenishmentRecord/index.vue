@@ -28,7 +28,7 @@
 		<!-- place -->
 		<xls-place-radio ref="placeList" @getPlaceId="pickerPlace" showAllCheck></xls-place-radio>
 		<!-- calendar -->
-		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="onConfirm"></xls-calendar>
+		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="onConfirm" :defaultDate="[startTime, endTime]"></xls-calendar>
 		<view v-for="(item, index) in dataList" :key="index" class="replen-wrapper">
 			<view class="list-item">
 				<p>

@@ -75,7 +75,8 @@
 
 						<view v-if="decideType == '扭蛋机'" @click="railReset()">
 							<view class="icons-wrapper">
-								<xls-image style="width: 25px;" :src="`${$baseUrl}appV4/device/reset.png`" alt="" mode="widthFix" />
+								<xls-image style="width: 25px;" :src="`${$baseUrl}appV4/device/reset.png`" alt=""
+									mode="widthFix" />
 							</view>
 							<view class="name">仓位重置</view>
 						</view>
@@ -111,7 +112,7 @@
 						</view>
 					</view>
 					<!-- 参数设置 -->
-					<view class="choose" @click="parameterSet" 
+					<view class="choose" @click="parameterSet"
 						v-hasPermi="['app:device:index:parameter', 'app:shj:params:read']">
 						<view class="left">参数设置</view>
 						<view class="right">
@@ -121,8 +122,8 @@
 							</view>
 						</view>
 					</view>
-					
-					
+
+
 					<!-- 礼品 -->
 					<view @click="goTo('commoditySetWwj')">
 						<view class="choose" v-show="
@@ -215,7 +216,7 @@
 							</view>
 						</view>
 					</view>
-					
+
 					<!-- 解绑设备 -->
 					<!-- 大于 10 并且 售货机，隐藏解绑 -->
 					<view class="choose" v-if="!(longUntie > 10 && decideType == '售货机')" @click="deviceUntie"
@@ -228,7 +229,7 @@
 							</view>
 						</view>
 					</view>
-					
+
 					<!-- 禁用启用 -->
 					<view class="choose" @click="deviceDisable(1, placeDeviceNum.state)">
 						<view class="left">{{placeDeviceNum.state ? '禁用设备' : '启用设备'}}</view>
@@ -289,8 +290,8 @@
 							<span class="remark">机台编号</span>选填
 						</view>
 						<view class="name-right">
-							<input v-model="dollNumber" type="number" placeholder="请输入机台编号"
-								maxlength="4" @focus="stopKeyborad" class="input" @click.native="beforeDoll"/>
+							<input v-model="dollNumber" type="number" placeholder="请输入机台编号" maxlength="4"
+								@focus="stopKeyborad" class="input" @click.native="beforeDoll" />
 							<u-icon name="arrow-right" color="#5241FF" size="36" />
 						</view>
 					</view>
@@ -299,7 +300,7 @@
 							<span class="remark">清除机台编号</span>
 						</view>
 						<view class="name-right">
-							<input disabled  class="input"/>
+							<input disabled class="input" />
 							<u-icon name="trash" color="red" size="44" />
 						</view>
 					</view>
@@ -358,8 +359,8 @@
 				</view>
 
 				<view class="btn-box-wrapper">
-					<view class="btn" 
-					@click="(dollEnterValue = ''),(showDollNumber = !showDollNumber),(showRemark = !showRemark)">
+					<view class="btn"
+						@click="(dollEnterValue = ''),(showDollNumber = !showDollNumber),(showRemark = !showRemark)">
 						取消
 					</view>
 					<view class="btn confirm" @click="comfirmMethedRoll">确定</view>
@@ -437,9 +438,8 @@
 				</view>
 				<view class="state-content">
 					<view class="reason-wrapper">
-						<view class="list" v-for="reason in untieReason" :key="reason.id" 
-							:class="{'otherStyle':reason.state}"
-							@click="reason.state = !reason.state">
+						<view class="list" v-for="reason in untieReason" :key="reason.id"
+							:class="{'otherStyle':reason.state}" @click="reason.state = !reason.state">
 							{{ reason.reason }}
 						</view>
 					</view>
@@ -490,7 +490,7 @@
 	} from "@/api/index.js";
 	import QrCanvasRail from "../qr-canvas-rail/index.vue";
 	import cache from '@/common/cache.js';
-	
+
 	export default {
 		components: {
 			QrCanvasRail,
@@ -635,7 +635,6 @@
 				this.showDetail = !this.showDetail;
 				this.wwjByPlace();
 				//设备货道
-				return
 				let gash = await deviceController.getRailCommodityList({
 					deviceNumber: this.deviceNumber,
 				});
@@ -647,16 +646,16 @@
 					this.railNumber = "";
 					this.shippingSpace = "";
 				}
-				
-				let res = await api.agentUnbind({
-					deviceNumber: this.deviceNumber
-				});
-				if (res.code == 200) {
-					this.longUntie = res.data;
-				}
+
+				// let res = await api.agentUnbind({
+				// 	deviceNumber: this.deviceNumber
+				// });
+				// if (res.code == 200) {
+				// 	this.longUntie = res.data;
+				// }
 			},
 			goTo(route) {
-				if(route == 'commoditySetWwj') {
+				if (route == 'commoditySetWwj') {
 					this.showDetail = false;
 					this.$goTo("/pages/mainPackages/home/deviceModule/children/commoditySetWwj", "navigateTo", {
 						deviceNumber: this.deviceNumber,
@@ -667,7 +666,7 @@
 					})
 					return
 				}
-				if(route == 'shift') {
+				if (route == 'shift') {
 					this.$goTo("/pages/mainPackages/home/deviceModule/children/deviceShiftPage", "navigateTo", {
 						deviceNumber: this.deviceNumber,
 						decideType: this.decideType,
@@ -958,24 +957,22 @@
 				// 	return 
 				// }
 				if (!this.placeDeviceNum.deviceLoginId)
-					return this.$modal("设备上报信息不全，请尝试断电重启设备！",{
+					return this.$modal("设备上报信息不全，请尝试断电重启设备！", {
 						title: "温馨提示",
 						confirmColor: "#5241FF",
 						showCancel: false
 					}).then(() => {});
-					
+
 				if (this.placeDeviceNum.onlineState) {
 					this.$goTo("/pages/mainPackages/home/deviceModule/children/deviceParamSet");
 				} else {
-					this.$modal("设备处于离线状态无法设置，请确保设备在线",{
+					this.$modal("设备处于离线状态无法设置，请确保设备在线", {
 						title: "设置失败",
 						confirmColor: "#5241FF",
 						showCancel: false
 					}).then(() => {});
 				}
 			},
-
-			
 			//娃娃机修改单价
 			eidtPrice() {
 				if (this.currency == "") {
@@ -1027,8 +1024,8 @@
 						})
 						.then((res) => {
 							this.clearGiftInfo();
-							if (res.data) {
-								this.giftInfo = res.data;
+							if (res.code == 200) {
+								Object.assign(this.giftInfo, res.data)
 							}
 						})
 						.catch((err) => {});
@@ -1074,7 +1071,7 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
-	
+
 	.maxWidth {
 		max-width: 180px;
 		display: inline-block;
@@ -1248,7 +1245,7 @@
 			.right {
 				display: flex;
 				align-items: center;
-				
+
 				.gift-info__style {
 					display: flex;
 					align-items: center;
@@ -1371,7 +1368,7 @@
 					color: #5241ff;
 					display: flex;
 					align-items: center;
-					
+
 					.input {
 						width: 100%;
 						text-align: right;
@@ -1728,7 +1725,7 @@
 					text-align: center;
 					width: 31%;
 				}
-				
+
 				.otherStyle {
 					background: #5241FF;
 					color: #fff;

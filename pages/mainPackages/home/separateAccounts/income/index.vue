@@ -78,7 +78,7 @@
 		<!-- place -->
 		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
 		<!-- time -->
-		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="getCalender"></xls-calendar>
+		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="getCalender" :defaultDate="[startTime, endTime]"></xls-calendar>
 	</view>
 </template>
 

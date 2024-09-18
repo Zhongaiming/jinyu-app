@@ -1,13 +1,12 @@
 <template>
 	<view class="data-dbj-wrapper">
 		<xls-jy-navbar title="兑币机数据" bgColor="#f5f6f7"></xls-jy-navbar>
-		<!-- <ConditionScreening @getParams="getParams" ref="screen" /> -->
-		<!-- <xls-quick-date @getCondition="getCondition"></xls-quick-date> -->
+		<ConditionScreening @getParams="getParams" ref="screen" />
 		<view class="list-header">
 			<view class="header-title">兑币机数据</view>
 			<view class="header-right">
-				<view @click="$router.push('/dataDbj/DbjHistory')">历史数据</view>
-				<view class="header-btn" @click="$refs.screen.getExcelUrl()" v-hasPermi="['app:dbj:index:export']">
+				<view @click="goTo('dbjHistory', {})">历史数据</view>
+				<view class="header-btn" @click="getExcelUrl" v-hasPermi="['app:dbj:index:export']">
 					想要导出数据
 					<u-icon name="question-circle" size="30" color="#5241ff" />
 				</view>
@@ -16,7 +15,8 @@
 
 		<!-- 数据列表 -->
 		<view class="list-content">
-			<view class="list-block" v-for="(item, key, dataIndex) of dataList" :key="dataIndex" @click="goTo">
+			<view class="list-block" v-for="(item, key, dataIndex) of dataList" :key="dataIndex"
+				@click="goTo('dbjDataDetail', item[0], key)">
 				<view class="block-title">
 					<view class="main-title">兑币机 {{ key }}</view>
 					<view class="sub-title">
@@ -56,12 +56,14 @@
 </template>
 
 <script>
-	// import ConditionScreening from "./conditionScreening.vue";
-	// import api from "@/utils/dbjApi";
+	import ConditionScreening from "./components/conditionScreening.vue";
+	import {
+		deviceDataController
+	} from "@/api/index.js";
 	export default {
 		name: "dataDbj",
 		components: {
-			// ConditionScreening
+			ConditionScreening
 		},
 		data() {
 			return {
@@ -74,48 +76,46 @@
 					6: "抖音核销",
 				},
 				dataList: {},
+				params: {},
 			};
 		},
-		// created() {
-		// 	this.$nextTick(() => {
-		// 		this.$refs.screen.quickTime(4);
-		// 	});
-		// },
+		mounted() {
+			this.$nextTick(() => {
+				this.$refs.screen.quickTime(4);
+			});
+		},
 		methods: {
-			getCondition(result) {
-				const {
-					startTime,
-					endTime,
-					placeIdList
-				} = result;
-				this.startTime = startTime;
-				this.endTime = endTime;
-				this.placeId = placeIdList;
-				this.$refs.ndjPaging.reload();
-			},
-			getParams(data) {
-				this.getList(data);
-			},
-			goTo() {
-				this.$router.push({
-					path: '/dataDbj/DbjDataDetail',
-					query: {
-						deviceNumber: key,
-						placeName: item[0].placeName,
-						index: $refs.screen.pickerTime,
-						startTime: $refs.screen.startTime,
-						endTime: $refs.screen.endTime,
-					}
-				})
-			},
 			async getList(data) {
-				this.loading();
-				let res = await api.getDbjData(data);
-				this.clearing();
-				if (res.data.code == 200) {
-					this.dataList = res.data.data;
+				this.$loading();
+				let res = await deviceDataController.getDbjData({
+					ndjDataVo: data
+				});
+				this.$hideLoading();
+				if (res.code == 200) {
+					this.dataList = res.data;
 				}
 			},
+			getParams(data) {
+				Object.assign(this.params, data)
+				this.getList(data);
+			},
+			goTo(route, item, key) {
+				let params = {};
+				if (item.hasOwnProperty('placeName')) {
+					params = {
+						deviceNumber: key,
+						placeName: item.placeName,
+						pickerTime: this.params.pickerTime,
+						startTime: this.params.startTime,
+						endTime: this.params.endTime,
+					}
+				}
+				this.$goTo(`/pages/mainPackages/home/dbjData/children/${route}`, "navigateTo", params)
+			},
+			getExcelUrl() {
+				this.$refs.screen.getExcelUrl();
+			},
+
 		},
 	};
 </script>

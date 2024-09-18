@@ -255,7 +255,7 @@
 				<view class="btn" @click="answerQuest = !answerQuest"></view>
 			</view>
 		</u-popup>
-		<xls-calendar :show="showDate" @close="() => { showDate = false }" @confirm="getCalender"></xls-calendar>
+		<xls-calendar :show="showDate" @close="() => { showDate = false }" @confirm="getCalender" :defaultDate="[startTime, endTime]"></xls-calendar>
 		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
 		<xls-device-type-checkbox ref="deviceType" @getDeviceType="changDeviceType"></xls-device-type-checkbox>
 	</z-paging>

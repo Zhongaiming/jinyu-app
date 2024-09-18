@@ -52,7 +52,10 @@ export default class deviceDataController {
 			data
 		})
 	}
-	//根据场地查询设备列表
+	/**
+	 * 根据场地查询设备列表
+	 * @param {Object} data
+	 */
 	static outPresentDeviceList(data) {
 		return http.request({
 			url: '/order/api/v1/admin/commodity/outPresentWater/outPresentDeviceList',
@@ -61,4 +64,48 @@ export default class deviceDataController {
 		})
 	}
 	
+	/**
+	 * 兑币机数据
+	 * @param {Object} data
+	 */
+	static getDbjData(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getDbjData',
+			method: 'POST',
+			data
+		})
+	}
+	/**
+	 * 历史详情
+	 * @param {Object} data
+	 */
+	static getDbjDataSum(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getDbjDataSum',
+			method: 'POST',
+			data
+		})
+	}
+	/**
+	 * 兑币机明细
+	 * @param {Object} data
+	 */
+	static getDbjInfo(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/getDbjInfo',
+			method: 'POST',
+			data
+		})
+	}
+	/**
+	 * 兑币机数据导出
+	 * @param {Object} data
+	 */
+	static createDownloadFilesUrl(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/createDownloadFilesUrl',
+			method: 'POST',
+			data
+		})
+	}
 }
