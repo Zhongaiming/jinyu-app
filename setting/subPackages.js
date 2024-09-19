@@ -41,7 +41,47 @@ const subPackages = [
 				"path": "meituanWriteOff/add",
 				"name": "美团店铺"
 			},
-			
+			// 售货机模块
+			{
+				"path": "shjModule/shjStock/index",
+				"name": "缺货备货"
+			},
+			{
+				"path": "shjModule/shjStock/detail",
+				"name": "缺货备货详情"
+			},
+			{
+				"path": "shjModule/shjAnalyse/index",
+				"name": "数据分析"
+			},
+			{
+				"path": "shjModule/shjReplenishment/index",
+				"name": "补货管理"
+			},
+			{
+				"path": "shjModule/shjReplenishment/replenishment",
+				"name": "补货管理操作"
+			},
+			{
+				"path": "shjModule/shjGrounding/index",
+				"name": "商品上架"
+			},
+			{
+				"path": "shjModule/shjClassify/index",
+				"name": "商品分类"
+			},
+			{
+				"path": "shjModule/shjParameter/index",
+				"name": "机台参数设置列表"
+			},
+			{
+				"path": "shjModule/shjCargoWay/index",
+				"name": "货道管理"
+			},
+			{
+				"path": "shjModule/shjBatchCopy/index",
+				"name": "批量设备选择"
+			},
 		]
 	},
 	{

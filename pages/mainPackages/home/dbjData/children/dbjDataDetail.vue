@@ -2,13 +2,16 @@
 	<view class="dbj-data-wrapper">
 		<xls-jy-navbar title="兑币机数据详情" bgColor="#f5f6f7"></xls-jy-navbar>
 		<view class="header-wrapper">
-			<view class="main-title">兑币机 {{ $route.query.deviceNumber }}</view>
-			<view class="sub-title">{{ $route.query.placeName }}</view>
+			<view class="main-title">兑币机 {{ paramsReceived.deviceNumber }}</view>
+			<view class="sub-title">{{ paramsReceived.placeName }}</view>
 		</view>
+		
 		<!-- <van-tabs v-model="activeName" color="#5241ff" class="tab-style" @change="changeActiveName">
 			<van-tab title="分日数据" :name="1"></van-tab>
 			<van-tab title="取币明细" :name="2"></van-tab>
 		</van-tabs> -->
+		
+		
 		<ConditionScreening text="detail" @getParams="getParams" ref="screen" />
 
 		<view class="list-content" v-show="activeName == 1">
@@ -77,7 +80,9 @@
 		},
 		data() {
 			return {
+				// 
 				activeName: 1,
+				// 
 				dataObj: {},
 				dataList: [],
 				load: false,

@@ -1,7 +1,6 @@
 <template>
 	<z-paging ref="orderPaging" v-model="dataList" @query="queryList">
 		<view slot="top">
-			<!-- <jy-navbar title="订单列表"></jy-navbar> -->
 			<xls-order-screen-vue @getCondition="getCondition" :screen="params"></xls-order-screen-vue>
 		</view>
 		<view class="xls-order-list">
@@ -78,7 +77,7 @@
 							src="https://asset.leyaoyao.com/merchant-order-center/static/d0da3593648b2c25b3ca.png"
 							mode="widthFix"></image>
 						<view class="price-center">
-							{{ $formatAmount(item.shopPrice) }}元1局 {{ item.commodityName }}
+							{{ $formatAmount(item.shopPrice) }}元 {{ item.commodityName }}
 						</view>
 						<view class="price-right">
 							¥{{ $formatAmount(item.totalReceivables) }}

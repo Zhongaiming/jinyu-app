@@ -1,6 +1,6 @@
 <template>
 	<view class="xls-options">
-		<view class="xls-options-list" v-for="option in dataList" :key="option.id">
+		<view class="xls-options-list" v-for="option in dataList" :key="option.id" v-if="getModuleShow(option)">
 			<view class="xls-options-list-title" v-hasPermi="[...option.permissions]" v-if="option.title">
 				{{option.title}}
 			</view>
@@ -85,58 +85,58 @@
 						// }
 					]
 				}, 
-				// {
-				// 	id: 2,
-				// 	title: '售货机',
-				// 	permissions: ['app:shj:statistics:read', 'app:shj:stockUp:read', 'app:shj:data:read',
-				// 		'app:shj:replenish:read', 'app:shj:commodity:read'
-				// 	],
-				// 	dataList: [{
-				// 			id: 21,
-				// 			title: '出货统计',
-				// 			imgUrl: `${this.$baseUrl}homeImages/secondList/one.png`,
-				// 			route: '/pages/mainPackages/home/shipmentStatistics/index',
-				// 			params: {
-				// 				deviceType: 4
-				// 			},
-				// 			permissions: ['app:shj:statistics:read'],
-				// 			status: 0
-				// 		},
-				// 		// {
-				// 		// 	id: 22,
-				// 		// 	title: '缺货备货',
-				// 		// 	imgUrl: `${this.$baseUrl}homeImages/secondList/two.png`,
-				// 		// 	route: '/shjStock',
-				// 		// 	permissions: ['app:shj:stockUp:read'],
-				// 		// 	status: 0
-				// 		// },
-				// 		{
-				// 			id: 23,
-				// 			title: '数据分析',
-				// 			imgUrl: `${this.$baseUrl}homeImages/secondList/three.png`,
-				// 			route: '/shjAnalyse',
-				// 			permissions: ['app:shj:data:read'],
-				// 			status: 0
-				// 		},
-				// 		{
-				// 			id: 24,
-				// 			title: '补货管理',
-				// 			imgUrl: `${this.$baseUrl}homeImages/secondList/four.png`,
-				// 			route: '/shjReplenishment',
-				// 			permissions: ['app:shj:replenish:read'],
-				// 			status: 0
-				// 		},
-				// 		{
-				// 			id: 25,
-				// 			title: '商品管理',
-				// 			imgUrl: `${this.$baseUrl}homeImages/secondList/five.png`,
-				// 			// route: '/pages/mainPackages/home/commodity/shjCommodity',
-				// 			route: '/pages/mainPackages/home/commodity/index',
-				// 			permissions: ['app:shj:commodity:read'],
-				// 			status: 0
-				// 		}
-				// 	]
-				// }, 
+				{
+					id: 2,
+					title: '售货机',
+					permissions: ['app:shj:statistics:read', 'app:shj:stockUp:read', 'app:shj:data:read',
+						'app:shj:replenish:read', 'app:shj:commodity:read'
+					],
+					deviceType: 4,
+					dataList: [{
+							id: 21,
+							title: '出货统计',
+							imgUrl: `${this.$baseUrl}homeImages/secondList/one.png`,
+							route: '/pages/mainPackages/home/shipmentStatistics/index',
+							params: {
+								deviceType: 4
+							},
+							permissions: ['app:shj:statistics:read'],
+							status: 0
+						},
+						{
+							id: 22,
+							title: '缺货备货',
+							imgUrl: `${this.$baseUrl}homeImages/secondList/two.png`,
+							route: '/pages/subpackages/home/shjModule/shjStock/index',
+							permissions: ['app:shj:stockUp:read'],
+							status: 0
+						},
+						{
+							id: 23,
+							title: '数据分析',
+							imgUrl: `${this.$baseUrl}homeImages/secondList/three.png`,
+							route: '/pages/subpackages/home/shjModule/shjAnalyse/index',
+							permissions: ['app:shj:data:read'],
+							status: 0
+						},
+						{
+							id: 24,
+							title: '补货管理',
+							imgUrl: `${this.$baseUrl}homeImages/secondList/four.png`,
+							route: '/pages/subpackages/home/shjModule/shjReplenishment/index',
+							permissions: ['app:shj:replenish:read'],
+							status: 0
+						},
+						{
+							id: 25,
+							title: '商品管理',
+							imgUrl: `${this.$baseUrl}homeImages/secondList/five.png`,
+							route: '/pages/mainPackages/home/commodity/index',
+							permissions: ['app:shj:commodity:read'],
+							status: 0
+						}
+					]
+				}, 
 				{
 					id: 3,
 					title: '礼品机',
@@ -255,6 +255,14 @@
 		methods: {
 			goTo(route) {
 				this.$goTo(route.route, undefined, route.params)
+			},
+			getModuleShow(item) {
+				const filtrationList = [2];
+				if(!filtrationList.includes(item.id)) {
+					return true
+				} else {
+					return this.deviceTypeIdList.includes(item.deviceType)
+				}
 			},
 			getTypeShow(item) {
 				const filtrationList = [33, 35];

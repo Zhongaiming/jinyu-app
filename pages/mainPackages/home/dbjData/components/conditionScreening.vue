@@ -35,31 +35,29 @@
 					<u-icon name="arrow-right" size="36" color="#c6c6c6" />
 				</view>
 			</view>
-			
-				
 			<!-- 出币 -->
 			<view class="cond-item-content" v-if="text == 'detail' && $parent.activeName == 2">
-				<u-dropdown-menu active-color="#5241FF">
-					<u-dropdown-item title="出币类型" ref="place">
+				<xls-dropdown-menu active-color="#5241FF">
+					<xls-dropdown-item title="出币类型" ref="place" name="1">
 						<view class="item-wrapper-list">
 							<u-cell v-for="(item, index) in coinList" :key="index" :title="item.name"
 								:value="payType == item.id ? '✔' : ''" @click="confirmCheck(item.id, 'left')" />
 							<on-earth />
 						</view>
-					</u-dropdown-item>
-					<u-dropdown-item title="出币结果" ref="pay">
+					</xls-dropdown-item>
+					<xls-dropdown-item title="出币结果" ref="pay" name="2">
 						<view class="item-wrapper-list">
 							<u-cell v-for="(item, index) in resultList" :key="index" :title="item.name"
 								:value="payResult == item.id ? '✔' : ''" @click="confirmCheck(item.id, 'rigth')" />
 						</view>
-					</u-dropdown-item>
-				</u-dropdown-menu>
+					</xls-dropdown-item>
+				</xls-dropdown-menu>
 			</view>
 			<!-- 导出 -->
 			<view class="cond-item-content" v-if="text == 'history'">
 				<view class="Bleft-wrapper">
 					温馨提示
-					<u-icon name="warning-o" size="18" @click="$refs.explain.downExplain = true" />
+					<u-icon name="info-circle" size="36" @click="$refs.explain.downExplain = true" />
 				</view>
 				<view class="right-wrapper" :class="{'On-right':text == 'history'}"
 					v-hasPermi="['app:dbj:index:export']">
@@ -68,9 +66,9 @@
 			</view>
 		</view>
 		<!-- 导出数据 -->
-		<!-- <DownData ref="data" /> -->
-		<!-- <DownEcexl ref="down" /> -->
-		<!-- <ExplainPage ref="explain" /> -->
+		<DownData ref="data" />
+		<DownEcexl ref="down" />
+		<ExplainPage ref="explain" />
 		<!-- 兑币机场地 -->
 		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId" :deviceType="5" ></xls-place-checkbox>
 		<xls-calendar :show="showDate" @close="() => { showDate = false }" 
@@ -84,17 +82,19 @@
 		getDateAll
 	} from "@/plugins/utilityClass";
 	import moment from "moment";
-	// import DownEcexl from "./downExcel.vue";
-	// import DownData from "./downData.vue";
-	// import ExplainPage from "./explainPage.vue";
-	// import api from "@/utils/dbjApi";
+	import {
+		deviceDataController
+	} from "@/api/index.js";
+	import DownEcexl from "./downExcel.vue";
+	import DownData from "./downData.vue";
+	import ExplainPage from "./explainPage.vue";
 	export default {
 		name: "conditionScreening",
-		// components: {
-		// 	DownEcexl,
-		// 	DownData,
-		// 	ExplainPage
-		// },
+		components: {
+			DownEcexl,
+			DownData,
+			ExplainPage
+		},
 		props: {
 			text: {
 				type: String,
@@ -329,15 +329,15 @@
 						null, //详情时 必填！！！！
 					placeId: this.placeId.length ? String(this.placeId) : null, // 只用于详情！！！！！
 				};
-				this.loading();
-				let res = await api.createDownloadFilesUrl(params);
-				this.clearing();
-				if (res.data.code == 0) {
+				this.$loading();
+				let res = await deviceDataController.createDownloadFilesUrl({param: params});
+				this.$hideLoading();
+				if (res.code == 200) {
 					if (this.text == "history") {
-						this.historyUrl = res.data.data;
+						this.historyUrl = res.data;
 						this.$refs.data.downloadData = true;
 					} else {
-						this.indexUrl = res.data.data;
+						this.indexUrl = res.data;
 						this.$refs.down.downloadEcexl = true;
 					}
 				}

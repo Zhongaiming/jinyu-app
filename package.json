@@ -5,6 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "axios": "^0.21.0",
+    "echarts": "^5.0.0",
     "js-md5": "^0.7.3",
     "jsencrypt": "^3.3.2",
     "moment": "^2.29.4",

@@ -81,7 +81,7 @@
 		},
 		mounted() {
 			this.$nextTick(() => {
-				this.$refs.screen.quickTime(4);
+				this.$refs.screen.quickTime(3);
 			});
 		},
 		methods: {

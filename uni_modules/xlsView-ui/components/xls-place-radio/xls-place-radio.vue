@@ -51,6 +51,10 @@
 			defaultPicker: {
 				type: Boolean,
 				default: false,
+			},
+			deviceType: {
+				type: [String, Number],
+				default: ''
 			}
 		},
 		data() {
@@ -67,13 +71,28 @@
 		},
 		methods: {
 			async getList() {
-				let res = await placeController.getPlaceDeviceList();
-				if (res.code == 200) {
-					this.dataList = res.data;
-					if(this.defaultPicker) {
-						const defaultPlace = this.dataList.length?this.dataList[0]:{};
-						this.$emit("getPlaceId", defaultPlace);
-					}
+				if(this.deviceType) {
+					placeController.getPlaceListByDeviceType({
+						deviceType: this.deviceType
+					}).then(res => {
+						if (res.code == 200) {
+							this.dataList = res.data;
+							if(this.defaultPicker) {
+								const defaultPlace = this.dataList.length?this.dataList[0]:{};
+								this.$emit("getPlaceId", defaultPlace);
+							}
+						}
+					}).catch(err => {})
+				} else {
+					placeController.getPlaceDeviceList().then(res => {
+						if (res.code == 200) {
+							this.dataList = res.data;
+							if(this.defaultPicker) {
+								const defaultPlace = this.dataList.length?this.dataList[0]:{};
+								this.$emit("getPlaceId", defaultPlace);
+							}
+						}
+					}).catch(err => {})
 				}
 			},
 			searchMethod(search) {

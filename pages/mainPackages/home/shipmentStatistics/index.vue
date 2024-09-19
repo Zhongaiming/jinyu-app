@@ -9,9 +9,9 @@
 		</view>
 		<xls-list-vue :dataList="dataList" :giftCount="giftCount" :params="params"></xls-list-vue>
 		<xls-empty slot="empty"></xls-empty>
-		<!-- <view class="btn" @click="goTo" v-if="deviceType != 4" slot="bottom">
+		<view class="btn" @click="goTo" v-if="deviceType != 4" slot="bottom">
 			<span>商品设置</span>
-		</view> -->
+		</view>
 	</z-paging>
 </template>
 
@@ -58,19 +58,21 @@
 					startTime: this.params.startTime,
 					endTime: this.params.endTime,
 					...(this.params.search && { search: encodeURIComponent(this.params.search) }),
-					...(this.params.placeIdList && { placeId: this.params.placeIdList })
+					...(this.params.placeIdList && { placeId: this.params.placeIdList }),
+					...(this.deviceType && { deviceType: this.deviceType })
 				};
 				deviceDataController.getPresentList({
 					page: pageNo,
 					size: pageSize,
 					...params
 				}).then(res => {
-					this.giftCount = res.data.outPresentData;
-					this.$refs.dataPaging.complete(res.data.outPresentPlaceList);
+					if(res.code == 200) {
+						this.giftCount = res.data.outPresentData;
+						this.$refs.dataPaging.complete(res.data.outPresentPlaceList);
+					}
 				})
 			},
 			goTo() {
-				return
 				this.$goTo();
 			},
 			scrollXls(e) {

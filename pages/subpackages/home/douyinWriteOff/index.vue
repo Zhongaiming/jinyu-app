@@ -95,8 +95,9 @@
 			<view class="outSide">
 				<view class="data" @click="showDate = !showDate">
 					<view><span>时间</span></view>
-					<view>
-						<span class="date">{{ date }}</span><u-icon name="arrow" size="18" color="#a0a0a0" />
+					<view class="value">
+						<span class="date">{{ date }}</span>
+						<u-icon name="arrow-right" size="36" color="#a0a0a0" />
 					</view>
 				</view>
 			</view>
@@ -108,8 +109,9 @@
 			<view class="outSide">
 				<view class="data" @click="MerchantPopup = true">
 					<view><span>抖音商户</span></view>
-					<view>
-						<span class="date">{{ Merchant }}</span><u-icon name="arrow" size="18" color="#a0a0a0" />
+					<view class="value">
+						<span class="date">{{ Merchant }}</span>
+						<u-icon name="arrow-right" size="36" color="#a0a0a0" />
 					</view>
 				</view>
 			</view>
@@ -117,8 +119,9 @@
 			<view class="outSide" v-show="tabIndex == 3">
 				<view class="data" @click="coinPopup = true">
 					<view><span>出币结果</span></view>
-					<view>
-						<span class="date">{{ coinResult }}</span><u-icon name="arrow" size="18" color="#a0a0a0" />
+					<view class="value">
+						<span class="date">{{ coinResult }}</span>
+						<u-icon name="arrow-right" size="36" color="#a0a0a0" />
 					</view>
 				</view>
 			</view>
@@ -767,7 +770,11 @@
 				justify-content: space-between;
 				font-size: 16px;
 				color: #666;
-
+				
+				.value {
+					display: flex;
+					align-items: center;
+				}
 				.date {
 					margin-right: 8px;
 					color: #5241ff;

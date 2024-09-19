@@ -16,26 +16,26 @@
 								{{ placeDeviceNum.typeName }}{{ placeDeviceNum.deviceNumber }}
 							</view>
 							<view class="price" v-show="decideType == '娃娃机' || decideType == '儿童类'">
-								(<span
-									v-show="decideType == '儿童类'">{{ placeDeviceNum.price }}元/次_</span>{{ placeDeviceNum.currency }}币/次)
+								(<span v-show="decideType == '儿童类'">{{ placeDeviceNum.price }}元/次_</span>{{ placeDeviceNum.currency }}币/次)
 							</view>
 						</view>
 						<view class="remarks">备注:{{ placeDeviceNum.remark }}</view>
 						<view class="address">
-							地址:<span v-show="
-                  placeDeviceNum.placeDetails &&
-                  placeDeviceNum.placeDetails.length < 10
-                ">{{ placeDeviceNum.province }}{{ placeDeviceNum.city }}</span>
-							{{ placeDeviceNum.region }}{{ placeDeviceNum.placeDetails }}【{{
-                placeDeviceNum.placeName
-              }}】
+							地址:
+							<span v-show="
+							  placeDeviceNum.placeDetails &&
+							  placeDeviceNum.placeDetails.length < 10
+							">
+								{{ placeDeviceNum.province }}{{ placeDeviceNum.city }}
+							</span>
+							{{ placeDeviceNum.region }}{{ placeDeviceNum.placeDetails }}【{{placeDeviceNum.placeName}}】
 						</view>
 					</view>
 					<view class="record-wrapper" v-show="decideType == '售货机'" @click="
-              (dollNumber = placeDeviceNum.dollNumber),
-                (showRemark = !showRemark),
-                (showDetail = !showDetail)
-            ">
+					  (dollNumber = placeDeviceNum.dollNumber),
+						(showRemark = !showRemark),
+						(showDetail = !showDetail)
+					">
 						<image :src="`${$baseUrl}appV4/device/remark.png`" alt="" mode="widthFix" />
 						<span>备注</span>
 					</view>
@@ -50,22 +50,22 @@
 							<view class="name">生成二维码</view>
 						</view>
 						<view @click="
-                (currency = placeDeviceNum.currency),
-                  (price = placeDeviceNum.price),
-                  (unitPrice = !unitPrice),
-                  (showDetail = !showDetail)
-              " v-show="decideType == '娃娃机' || decideType == '儿童类'">
-							<view class="icons-wrapper">
+							(currency = placeDeviceNum.currency),
+							  (price = placeDeviceNum.price),
+							  (unitPrice = !unitPrice),
+							  (showDetail = !showDetail)
+						  " v-show="decideType == '娃娃机' || decideType == '儿童类'">
+										<view class="icons-wrapper">
 								<image :src="`${$baseUrl}appV4/device/price.png`" alt="" mode="widthFix" />
 							</view>
 							<view class="name">单价</view>
 						</view>
 
 						<view @click="
-                (dollNumber = placeDeviceNum.dollNumber),
-                  (showRemark = !showRemark),
-                  (showDetail = !showDetail)
-              " v-show="decideType != '售货机'">
+							(dollNumber = placeDeviceNum.dollNumber),
+							  (showRemark = !showRemark),
+							  (showDetail = !showDetail)
+						  " v-show="decideType != '售货机'">
 							<view class="icons-wrapper">
 								<!-- <u-icon name="records" size="28" /> -->
 								<image :src="`${$baseUrl}appV4/device/label.png`" alt="" mode="widthFix" />
@@ -81,14 +81,7 @@
 							<view class="name">仓位重置</view>
 						</view>
 
-						<view v-show="decideType == '售货机'" @click="
-                $router.push({
-                  path: '/deviceManagement/shjGrounding',
-                  query: {
-                    deviceNumber,
-                  },
-                })
-              " v-hasPermi="['app:shj:grounding:read']">
+						<view v-show="decideType == '售货机'" @click="goToShj('')" v-hasPermi="['app:shj:grounding:read']">
 							<view class="icons-wrapper">
 								<!-- <u-icon name="shop-collect-o" size="28" /> -->
 								<image :src="`${$baseUrl}appV4/device/re_shop.png`" alt="" mode="widthFix" />
@@ -97,13 +90,13 @@
 						</view>
 
 						<view v-show="decideType == '售货机'" @click="
-                $router.push({
-                  path: '/deviceManagement/shjClassify',
-                  query: {
-                    deviceNumber,
-                  },
-                })
-              ">
+							$router.push({
+							  path: '/deviceManagement/shjClassify',
+							  query: {
+								deviceNumber,
+							  },
+							})
+						  ">
 							<view class="icons-wrapper">
 								<!-- <u-icon name="apps-o" size="28" /> -->
 								<image :src="`${$baseUrl}appV4/device/classify.png`" alt="" mode="widthFix" />
@@ -128,7 +121,6 @@
 					<view @click="goTo('commoditySetWwj')">
 						<view class="choose" v-show="
 							decideType == '娃娃机' ||
-							decideType == '兑币机' ||
 							decideType == '儿童类'
 						  ">
 							<view class="left">礼品</view>
@@ -635,17 +627,17 @@
 				this.showDetail = !this.showDetail;
 				this.wwjByPlace();
 				//设备货道
-				let gash = await deviceController.getRailCommodityList({
-					deviceNumber: this.deviceNumber,
-				});
-				if (gash.code == 200) {
-					let railEgg = gash.data[0];
-					this.railNumber = railEgg.railNumber;
-					this.shippingSpace = railEgg.shippingSpace;
-				} else {
-					this.railNumber = "";
-					this.shippingSpace = "";
-				}
+				// let gash = await deviceController.getRailCommodityList({
+				// 	deviceNumber: this.deviceNumber,
+				// });
+				// if (gash.code == 200) {
+				// 	let railEgg = gash.data[0];
+				// 	this.railNumber = railEgg.railNumber;
+				// 	this.shippingSpace = railEgg.shippingSpace;
+				// } else {
+				// 	this.railNumber = "";
+				// 	this.shippingSpace = "";
+				// }
 
 				// let res = await api.agentUnbind({
 				// 	deviceNumber: this.deviceNumber
@@ -1059,6 +1051,17 @@
 							.catch(() => {});
 					})
 					.catch(() => {});
+			},
+			/**
+			 * shj
+			 */
+			goToShj(route) {
+				$router.push({
+				  path: '/deviceManagement/shjGrounding',
+				  query: {
+				    deviceNumber,
+				  },
+				})
 			},
 		},
 	};

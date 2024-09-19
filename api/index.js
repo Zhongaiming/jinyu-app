@@ -14,6 +14,7 @@ import deviceDataController from './deviceDataController/index.js'
 import appealController from './appealController/index.js'
 import subAccountController from './subAccountController/index.js'
 import writeOffController from './writeOffController/index.js'
+import shjController from './deviceController/shjIndex.js'
 
 export {
 	loginAndRegController,
@@ -32,4 +33,5 @@ export {
 	appealController,
 	subAccountController,
 	writeOffController,
+	shjController,
 }
