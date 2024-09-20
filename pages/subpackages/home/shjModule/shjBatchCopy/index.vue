@@ -1,6 +1,6 @@
 <template>
 	<view class="batchCopy-wrapper">
-		<top-nav>批量设备选择</top-nav>
+		<xls-jy-navbar title="批量设备选择" bgColor="#f5f6f7"></xls-jy-navbar>
 		<view class="batchCopy-content">
 			<!-- 选择 -->
 			<view class="module-title">设备复制内容:</view>

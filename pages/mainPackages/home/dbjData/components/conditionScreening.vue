@@ -9,7 +9,7 @@
 					:class="[{'active-time':pickerTime == item.id}]" @click="quickTime(item.id)">
 					{{ item.time }}
 				</view>
-				<view class="header-btn" v-if="text == 'detail'" @click="getExcelUrl"
+				<view class="header-btn" v-if="text == 'detail' && activeName == 1" @click="getExcelUrl"
 					v-hasPermi="['app:dbj:index:export']">
 					想要导出数据
 					<u-icon name="question-circle" size="32" class="icon" />
@@ -36,20 +36,11 @@
 				</view>
 			</view>
 			<!-- 出币 -->
-			<view class="cond-item-content" v-if="text == 'detail' && $parent.activeName == 2">
-				<xls-dropdown-menu active-color="#5241FF">
-					<xls-dropdown-item title="出币类型" ref="place" name="1">
-						<view class="item-wrapper-list">
-							<u-cell v-for="(item, index) in coinList" :key="index" :title="item.name"
-								:value="payType == item.id ? '✔' : ''" @click="confirmCheck(item.id, 'left')" />
-							<on-earth />
-						</view>
+			<view class="cond-item-content" v-if="text == 'detail' && activeName == 2">
+				<xls-dropdown-menu ref="dropdown">
+					<xls-dropdown-item title="出币类型" name="1-1" :options="coinList" v-model="payType" :custom="false" @change="get()">
 					</xls-dropdown-item>
-					<xls-dropdown-item title="出币结果" ref="pay" name="2">
-						<view class="item-wrapper-list">
-							<u-cell v-for="(item, index) in resultList" :key="index" :title="item.name"
-								:value="payResult == item.id ? '✔' : ''" @click="confirmCheck(item.id, 'rigth')" />
-						</view>
+					<xls-dropdown-item title="出币结果" name="2-2" :options="resultList" v-model="payResult" :custom="false" @change="get()">
 					</xls-dropdown-item>
 				</xls-dropdown-menu>
 			</view>
@@ -66,8 +57,8 @@
 			</view>
 		</view>
 		<!-- 导出数据 -->
-		<DownData ref="data" />
-		<DownEcexl ref="down" />
+		<DownData ref="data" :historyUrl="historyUrl"/>
+		<DownEcexl ref="down" :indexUrl="indexUrl" />
 		<ExplainPage ref="explain" />
 		<!-- 兑币机场地 -->
 		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId" :deviceType="5" ></xls-place-checkbox>
@@ -100,6 +91,10 @@
 				type: String,
 				default: "index", // detail history
 			},
+			activeName: {
+				type: [String, Number],
+				default: ''
+			}
 		},
 		data() {
 			return {
@@ -140,56 +135,56 @@
 				payType: null,
 				// 取币类型兑币类型：1、直接购买 2、会员取币，3远程启动，4美团核销，5口碑核销，6.抖音核销 7线下购买
 				coinList: [{
-						id: null,
-						name: "全部类型"
+						value: null,
+						text: "全部类型"
 					},
 					{
-						id: 1,
-						name: "直接购买"
+						value: 1,
+						text: "直接购买"
 					},
 					{
-						id: 2,
-						name: "会员取币"
+						value: 2,
+						text: "会员取币"
 					},
 					{
-						id: 3,
-						name: "远程启动"
+						value: 3,
+						text: "远程启动"
 					},
 					{
-						id: 4,
-						name: "美团核销"
+						value: 4,
+						text: "美团核销"
 					},
 					{
-						id: 5,
-						name: "口碑核销"
+						value: 5,
+						text: "口碑核销"
 					},
 					{
-						id: 6,
-						name: "抖音核销"
+						value: 6,
+						text: "抖音核销"
 					},
 					{
-						id: 7,
-						name: "线下购买"
+						value: 7,
+						text: "线下购买"
 					},
 				],
 				/** 出币结果 */
 				payResult: null,
 				// 0正在出币，1出币成功，2出币失败
 				resultList: [{
-						id: null,
-						name: "全部结果"
+						value: null,
+						text: "全部结果"
 					},
 					{
-						id: 0,
-						name: "正在出币"
+						value: 0,
+						text: "正在出币"
 					},
 					{
-						id: 1,
-						name: "出币成功"
+						value: 1,
+						text: "出币成功"
 					},
 					{
-						id: 2,
-						name: "出币失败"
+						value: 2,
+						text: "出币失败"
 					},
 				],
 				/** 导出 **/
@@ -264,18 +259,6 @@
 				this.endTime = endTime;
 				this.get();
 			},
-			
-			/** 出币类型 结果 */
-			confirmCheck(id, type) {
-				if (type == "left") {
-					this.payType = id;
-					this.$refs.place.toggle(false);
-				} else {
-					this.payResult = id;
-					this.$refs.pay.toggle(false);
-				}
-				this.get();
-			},
 			/** 传参 */
 			get() {
 			    // 基础数据
@@ -296,7 +279,7 @@
 			        };
 			    } else if (this.text === "detail") {
 			        data = baseData;
-			        if (this.$parent.activeName !== 1) {
+			        if (this.activeName !== 1) {
 			            data.result = this.payResult;
 			            data.exchangeType = this.payType;
 			        }

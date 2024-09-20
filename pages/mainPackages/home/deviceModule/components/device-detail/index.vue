@@ -16,7 +16,8 @@
 								{{ placeDeviceNum.typeName }}{{ placeDeviceNum.deviceNumber }}
 							</view>
 							<view class="price" v-show="decideType == '娃娃机' || decideType == '儿童类'">
-								(<span v-show="decideType == '儿童类'">{{ placeDeviceNum.price }}元/次_</span>{{ placeDeviceNum.currency }}币/次)
+								(<span
+									v-show="decideType == '儿童类'">{{ placeDeviceNum.price }}元/次_</span>{{ placeDeviceNum.currency }}币/次)
 							</view>
 						</view>
 						<view class="remarks">备注:{{ placeDeviceNum.remark }}</view>
@@ -55,7 +56,7 @@
 							  (unitPrice = !unitPrice),
 							  (showDetail = !showDetail)
 						  " v-show="decideType == '娃娃机' || decideType == '儿童类'">
-										<view class="icons-wrapper">
+							<view class="icons-wrapper">
 								<image :src="`${$baseUrl}appV4/device/price.png`" alt="" mode="widthFix" />
 							</view>
 							<view class="name">单价</view>
@@ -81,7 +82,8 @@
 							<view class="name">仓位重置</view>
 						</view>
 
-						<view v-show="decideType == '售货机'" @click="goToShj('')" v-hasPermi="['app:shj:grounding:read']">
+						<view v-show="decideType == '售货机'" @click="goToShj('shjGrounding')"
+							v-hasPermi="['app:shj:grounding:read']">
 							<view class="icons-wrapper">
 								<!-- <u-icon name="shop-collect-o" size="28" /> -->
 								<image :src="`${$baseUrl}appV4/device/re_shop.png`" alt="" mode="widthFix" />
@@ -89,14 +91,7 @@
 							<view class="name">商品上架</view>
 						</view>
 
-						<view v-show="decideType == '售货机'" @click="
-							$router.push({
-							  path: '/deviceManagement/shjClassify',
-							  query: {
-								deviceNumber,
-							  },
-							})
-						  ">
+						<view v-show="decideType == '售货机'" @click="goToShj('shjClassify')">
 							<view class="icons-wrapper">
 								<!-- <u-icon name="apps-o" size="28" /> -->
 								<image :src="`${$baseUrl}appV4/device/classify.png`" alt="" mode="widthFix" />
@@ -140,14 +135,8 @@
 						</view>
 					</view>
 					<!-- 补货管理 shj -->
-					<view class="choose" @click="
-					  $router.push({
-						path: '/deviceManagement/replenishment',
-						query: {
-						  deviceNumber,
-						},
-					  })
-					" v-hasPermi="['app:shj:replenish:read']" v-if="decideType == '售货机'">
+					<view class="choose" @click="goToShj('shjReplenishment')" v-hasPermi="['app:shj:replenish:read']"
+						v-if="decideType == '售货机'">
 						<view class="left">补货管理</view>
 						<view class="right">
 							<view class="text"></view>
@@ -157,14 +146,8 @@
 						</view>
 					</view>
 					<!-- 货道管理 shj -->
-					<view class="choose" @click="
-					  $router.push({
-						path: '/deviceManagement/cargoWay',
-						query: {
-						  deviceNumber,
-						},
-					  })
-					" v-show="decideType == '售货机'" v-hasPermi="['app:shj:rail:read']">
+					<view class="choose" @click="goToShj('shjCargoWay')" v-show="decideType == '售货机'"
+						v-hasPermi="['app:shj:rail:read']">
 						<view class="left">货道管理</view>
 						<view class="right">
 							<view class="text"></view>
@@ -184,12 +167,8 @@
 						</view>
 					</view>
 					<!-- 批量复制 shj -->
-					<view class="choose" v-show="decideType == '售货机'" v-hasPermi="['app:shj:copy:oper']" @click="
-					  $router.push({
-						path: '/deviceManagement/batchCopy',
-						query: { deviceNumber, placeId: placeDeviceNum.placeId },
-					  })
-					">
+					<view class="choose" v-show="decideType == '售货机'" v-hasPermi="['app:shj:copy:oper']"
+						@click="goToShj('shjBatchCopy')">
 						<view class="left">批量复制</view>
 						<view class="right">
 							<view class="text"></view>
@@ -939,15 +918,10 @@
 					onlineState: this.placeDeviceNum.onlineState,
 				};
 				cache.setCache("deviceLogin", deviceLogin);
-				// if (this.decideType == "售货机") {
-				// 	this.$router.push({
-				// 		path: "/deviceManagement/shjParameter",
-				// 		query: {
-				// 			deviceNumber: this.deviceNumber,
-				// 		},
-				// 	});
-				// 	return 
-				// }
+				if (this.decideType == "售货机") {
+					this.goToShj('shjParameter')
+					return
+				}
 				if (!this.placeDeviceNum.deviceLoginId)
 					return this.$modal("设备上报信息不全，请尝试断电重启设备！", {
 						title: "温馨提示",
@@ -1056,11 +1030,13 @@
 			 * shj
 			 */
 			goToShj(route) {
-				$router.push({
-				  path: '/deviceManagement/shjGrounding',
-				  query: {
-				    deviceNumber,
-				  },
+				let routeUrl = `/pages/subpackages/home/shjModule/${route}/index`
+				if (route === 'shjReplenishment') {
+					routeUrl = `/pages/subpackages/home/shjModule/${route}/replenishment`
+				}
+				this.$goTo(routeUrl, "navigateTo", {
+					deviceNumber: this.deviceNumber,
+					placeId: this.placeDeviceNum.placeId
 				})
 			},
 		},

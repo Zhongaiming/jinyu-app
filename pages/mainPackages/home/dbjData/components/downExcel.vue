@@ -19,7 +19,7 @@
 			</view>
 			<view class="share-btn">
 				<!-- <view class="btn left">直接下载</view> -->
-				<view class="btn right" @click="copyMemberId($parent.indexUrl)">复制下载链接</view>
+				<view class="btn right" @click="copyMemberId(indexUrl)">复制下载链接</view>
 			</view>
 		</view>
 	</u-popup>
@@ -31,6 +31,12 @@
 	} from "@/plugins/formUtils";
 	export default {
 		name: "downExcel",
+		props: {
+			indexUrl: {
+				type: String,
+				default: ''
+			}
+		},
 		data() {
 			return {
 				downloadEcexl: false,

@@ -1,93 +1,69 @@
 <template>
-	<view class="dbj-data-wrapper">
+	<z-paging ref="detailPaging" v-model="dataList" @query="queryList">
 		<xls-jy-navbar title="兑币机数据详情" bgColor="#f5f6f7"></xls-jy-navbar>
 		<view class="header-wrapper">
 			<view class="main-title">兑币机 {{ paramsReceived.deviceNumber }}</view>
 			<view class="sub-title">{{ paramsReceived.placeName }}</view>
 		</view>
-		
-		<!-- <van-tabs v-model="activeName" color="#5241ff" class="tab-style" @change="changeActiveName">
-			<van-tab title="分日数据" :name="1"></van-tab>
-			<van-tab title="取币明细" :name="2"></van-tab>
-		</van-tabs> -->
-		
-		
-		<ConditionScreening text="detail" @getParams="getParams" ref="screen" />
+
+		<xls-tabs :options="options" v-model="activeName" class="tab-style" @change="changeActiveName"></xls-tabs>
+
+		<ConditionScreening text="detail" @getParams="getParams" ref="screen" :activeName="activeName"/>
 
 		<view class="list-content" v-show="activeName == 1">
-			<view class="list-block margin10" v-for="(item, key, index) of dataObj" :key="index">
+			<view class="list-block margin10" v-for="(item, dataIndex) in dataList" :key="dataIndex">
 				<view class="block-title">
-					<view class="main-title">{{ key }}</view>
+					<view class="main-title">{{ item.exchangeDate }}</view>
 				</view>
-				<view class="block-row-box">
-					<view class="block-row" v-for="(list, index) in item" :key="index">
-						<view class="block-cell">
-							<view class="cell-top">
-								兑币类型
-								<van-icon name="question-o" size="15" class="icon" v-if="0" />
-							</view>
-							<view class="cell-bottom">{{ exchangeTypeDict[list.exchangeType] }}</view>
-						</view>
-						<view class="block-cell">
-							<view class="cell-top">取币总数</view>
-							<view class="cell-bottom">{{ list.exchangeNumber }}</view>
-						</view>
-						<view class="block-cell">
-							<view class="cell-top">出币总数</view>
-							<view class="cell-bottom">{{ list.outPresentNumber }}</view>
-						</view>
-						<view class="block-cell">
-							<view class="cell-top">启动金额</view>
-							<view class="cell-bottom">{{ list.exchangeBalance }}</view>
-						</view>
+				<data-details-vue :item="item"></data-details-vue>
+			</view>
+		</view>
+
+		<view class="list-wrapper" v-show="activeName == 2">
+			<view class="list-block" v-for="(item, index) in dataList" :key="index">
+				<view class="block-left">
+					<view class="type-name">{{ exchangeTypeDict[item.exchangeType] }}</view>
+					<view class="coins-detail">
+						取币:{{ item.exchangeNumber }} | 实出:{{ item.outPresentNumber }}
 					</view>
+				</view>
+				<view class="block-right">
+					<view class="status-text">{{ exchangeResultDict[item.exchangeResult] }}</view>
+					<view class="time">{{ item.exchangeTime }}</view>
 				</view>
 			</view>
 		</view>
 
-		<!-- <van-list v-model="load" :finished="onEarth" finished-text="没有更多了" @load="getInfo(params)"
-			v-show="activeName == 2">
-			<view class="list-wrapper">
-				<view class="list-block" v-for="(item, index) in dataList" :key="index">
-					<view class="block-left">
-						<view class="type-name">{{ exchangeTypeDict[list.exchangeType] }}</view>
-						<view class="coins-detail">
-							取币:{{ item.exchangeNumber }} | 实出:{{ item.outPresentNumber }}
-						</view>
-					</view>
-					<view class="block-right">
-						<view class="status-text">{{ exchangeResultDict[item.exchangeResult] }}</view>
-						<view class="time">{{ item.exchangeTime }}</view>
-					</view>
-				</view>
-			</view>
-		</van-list> -->
-		
-		<xls-bottom v-if="JSON.stringify(dataObj) != '{}' && activeName == 1" />
-		<xls-empty v-if="(JSON.stringify(dataObj) == '{}' && activeName == 1)||(!dataList.length && activeName == 2)" />
-	</view>
+		<xls-empty slot="empty" />
+	</z-paging>
 </template>
 
 <script>
 	import ConditionScreening from "../components/conditionScreening.vue";
+	import dataDetailsVue from "../components/dataDetails.vue";
 	import {
 		deviceDataController
 	} from "@/api/index.js";
 	export default {
 		name: "dbjDetail",
 		components: {
-			ConditionScreening
+			ConditionScreening,
+			dataDetailsVue
 		},
 		data() {
 			return {
-				// 
+				// tabs
 				activeName: 1,
-				// 
-				dataObj: {},
+				options: [{
+						key: 1,
+						value: "分日数据",
+					},
+					{
+						key: 2,
+						value: "取币明细",
+					},
+				],
 				dataList: [],
-				load: false,
-				onEarth: false,
-				page: 0,
 				params: {},
 				paramsReceived: {},
 				exchangeTypeDict: {
@@ -128,47 +104,38 @@
 				});
 			},
 			getParams(data) {
-				this.params = Object.assign({
-						deviceNumber: this.$route.query.deviceNumber
-					},
-					data
-				);
+				const obj = {
+					deviceNumber: this.paramsReceived.deviceNumber
+				}
+				Object.assign(this.params, obj);
+				Object.assign(this.params, data);
+				this.$refs.detailPaging.reload();
+			},
+			queryList(pageNo, pageSize) {
 				if (this.activeName == 1) {
-					this.getData(this.params);
+					deviceDataController.getDbjData({
+						ndjDataVo: {
+							page: pageNo,
+							size: pageSize,
+							...this.params
+						}
+					}).then(res => {
+						if (res.code == 200) {
+							this.$refs.detailPaging.complete(res.data.dataList);
+						}
+					})
 				} else {
-					this.page = 0;
-					this.getInfo(this.params);
-				}
-			},
-			async getInfo(data) {
-				let page = {
-					page: ++this.page,
-					size: 20,
-				};
-				let params = Object.assign(page, data);
-				this.load = true;
-				this.$loading();
-				let res = await deviceDataController.getDbjInfo(params);
-				this.$hideLoading();
-				this.load = false;
-				if (res.code == 200) {
-					// this.onEarth = res.data.data.records.length < 20;
-					this.onEarth = res.data.length < 20;
-					if (this.page > 1) {
-						this.dataList = [...this.dataList, ...res.data];
-					} else {
-						this.dataList = res.data;
-					}
-				}
-			},
-			async getData(data) {
-				this.$loading();
-				let res = await deviceDataController.getDbjData({
-					ndjDataVo: data
-				});
-				this.$hideLoading();
-				if (res.code == 200) {
-					this.dataObj = res.data;
+					deviceDataController.getDbjInfo({
+						dataVo: {
+							page: pageNo,
+							size: pageSize,
+							...this.params
+						}
+					}).then(res => {
+						if (res.code == 200) {
+							this.$refs.detailPaging.complete(res.data.dataList);
+						}
+					})
 				}
 			},
 		},
@@ -177,70 +144,65 @@
 
 <style lang="scss" scoped>
 	@import '../index.scss';
-	
-	.dbj-data-wrapper {
-		width: 100%;
-		position: relative;
 
-		.tab-style {
-			position: sticky;
-			top: 48px;
-			z-index: 1000;
+	.tab-style {
+		position: sticky;
+		top: 44px;
+		z-index: 1000;
+	}
+
+	.header-wrapper {
+		padding: 16px;
+		vertical-align: middle;
+
+		.main-title {
+			font-size: 16px;
+			font-weight: 700;
 		}
 
-		.header-wrapper {
-			padding: 16px;
-			vertical-align: middle;
-
-			.main-title {
-				font-size: 16px;
-				font-weight: 700;
-			}
-
-			.sub-title {
-				color: #81909a;
-				font-family: AppleSystemUIFont;
-				font-size: 12px;
-				margin-top: 2px;
-			}
+		.sub-title {
+			color: #81909a;
+			font-family: AppleSystemUIFont;
+			font-size: 12px;
+			margin-top: 2px;
 		}
+	}
 
-		.list-wrapper {
-			padding: 10px 16px;
+	.list-wrapper {
+		padding: 10px 16px;
 
-			.list-block {
-				padding: 10px;
-				background: #fff;
-				border-radius: 8px;
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
+		.list-block {
+			padding: 10px;
+			background: #fff;
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
 
-				.block-left {
-					flex: 1;
+			.block-left {
+				flex: 1;
 
-					.type-name {
-						font-size: 14px;
-						font-weight: 700;
-					}
-
-					.coins-detail {
-						color: #7d919b;
-						font-size: 12px;
-						margin-top: 2px;
-					}
+				.type-name {
+					font-size: 14px;
+					font-weight: 700;
 				}
 
-				.block-right {
-					flex: 1;
-					font-size: 14px;
-					text-align: right;
+				.coins-detail {
+					color: #7d919b;
+					font-size: 12px;
+					margin-top: 2px;
+				}
+			}
 
-					.time {
-						color: #7d919b;
-						font-size: 12px;
-						margin-top: 2px;
-					}
+			.block-right {
+				flex: 1;
+				font-size: 14px;
+				text-align: right;
+
+				.time {
+					color: #7d919b;
+					font-size: 12px;
+					margin-top: 2px;
 				}
 			}
 		}

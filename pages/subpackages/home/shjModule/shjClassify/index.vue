@@ -1,6 +1,6 @@
 <template>
 	<view class="shj-classify">
-		<nav-bar>商品分类设置</nav-bar>
+		<xls-jy-navbar title="商品分类设置" bgColor="#f5f6f7"></xls-jy-navbar>
 		<view class="classify-wrapper">
 			<view class="classify-switch-wrapper">
 				<span>商品分类开启</span>
@@ -54,7 +54,7 @@
 				<view class="handle-button save-button" @click="confirmMethed">保存</view>
 			</view>
 		</u-popup>
-		<shj-commodity @getShjCommodity="getShjCommodity" ref="commodity" />
+		<!-- <shj-commodity @getShjCommodity="getShjCommodity" ref="commodity" /> -->
 	</view>
 </template>
 
@@ -68,9 +68,9 @@
 	// import ShjCommodity from "./components/shjCommodity.vue";
 	export default {
 		name: "shj-classify",
-		components: {
-			ShjCommodity
-		},
+		// components: {
+		// 	ShjCommodity
+		// },
 		data() {
 			return {
 				classifySwitch: false,

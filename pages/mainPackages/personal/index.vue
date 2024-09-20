@@ -188,15 +188,14 @@
 		},
 		created() {
 			this.loginInfo = getInfo();
-			// 获取当前app的版本
-			const systemInfo = uni.getSystemInfoSync();
 			// #ifdef H5
+			const systemInfo = uni.getSystemInfoSync();
 			this.version_number = systemInfo.appVersion;
 			// #endif
 			// #ifdef APP
+			const systemInfo = uni.getSystemInfoSync();
 			this.version_number = systemInfo.appWgtVersion;
 			// #endif
-			// 条件编辑只在微信小程序显示
 			// #ifdef MP-WEIXIN
 			const accountInfo = wx.getAccountInfoSync();
 			this.version_number = accountInfo.miniProgram.version // 小程序 版本号

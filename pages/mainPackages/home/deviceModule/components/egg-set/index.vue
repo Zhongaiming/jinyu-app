@@ -486,10 +486,6 @@
 				}
 			},
 
-
-
-
-
 			//商品列表--更改商品
 			getCommodity() {
 				this.showSetting = !this.showSetting;
@@ -507,10 +503,6 @@
 				this.showSetting = !this.showSetting;
 			},
 			
-			
-			
-			
-
 			//获取商品
 			async getComlist() {
 				let res = await getList({

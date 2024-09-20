@@ -1,6 +1,5 @@
 <template>
   <view>
-    <view id="parameterSetting">
 	  <xls-jy-navbar title="机台参数设置列表" bgColor="#f5f6f7"></xls-jy-navbar>
       <view class="setting">
         <view class="left">业务类型设置</view>
@@ -10,7 +9,7 @@
         >
           <view class="deviceName">{{ business.businessTypeName }}</view>
           <view class="arrow">
-            <u-icon name="arrow" size="18px" color="rgb(187, 184, 184)" />
+            <u-icon name="arrow-right" size="36" color="#bbb8b8" />
           </view>
         </view>
       </view>
@@ -28,7 +27,7 @@
       <view class="setting">
         <view class="left">自动退款</view>
         <view class="right">
-          <u-switch v-model="automaticRefund" active-color="#5241FF" />
+          <u-switch v-model="automaticRefund" active-color="#5241FF" size="50"/>
         </view>
       </view>
 
@@ -42,7 +41,7 @@
       <view class="setting">
         <view class="left">随机货道</view>
         <view class="right">
-          <u-switch v-model="shipmentSequence" active-color="#5241FF" />
+          <u-switch v-model="shipmentSequence" active-color="#5241FF" size="50"/>
         </view>
       </view>
 
@@ -58,7 +57,7 @@
       <view class="setting">
         <view class="left">商品多选<span class="cart">购物车模式</span></view>
         <view class="right">
-          <u-switch v-model="shoppingCartMode" active-color="#5241FF" />
+          <u-switch v-model="shoppingCartMode" active-color="#5241FF" size="50"/>
         </view>
       </view>
 
@@ -90,7 +89,6 @@
 
       <!-- <shjbusinType ref="typeList" @itemclick="itemclick" /> -->
     </view>
-  </view>
 </template>
 
 <script>
@@ -174,11 +172,10 @@ export default {
       let parameter = storage.getSion("deviceLogin");
       if (parameter.onlineState) {
         if (!parameter.loginId) {
-          return this.$dialog({
+          return this.$modal("设备上报信息不全，请尝试断电重启设备！",{
             title: "温馨提示",
-            message: "设备上报信息不全，请尝试断电重启设备！",
-            confirmButtonColor: "#5241FF",
-            width: 280,
+            confirmColor: "#5241FF",
+			showCancel: false
           }).then(() => {});
         } else {
           this.$router.push({
@@ -186,11 +183,10 @@ export default {
           });
         }
       } else {
-        return this.$dialog({
+        return this.$modal("设备处于离线状态无法设置，请确保设备在线",{
           title: "温馨提示",
-          message: "设备处于离线状态无法设置，请确保设备在线",
-          confirmButtonColor: "#5241FF",
-          width: "270",
+          confirmColor: "#5241FF",
+		  showCancel: false
         }).then(() => {});
       }
     },
@@ -211,16 +207,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-#parameterSetting {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 999;
-  background: #f0eff5;
-}
+<style lang="scss" scoped>
 .setting {
   height: 50px;
   background: #fff;
@@ -236,6 +223,8 @@ export default {
     flex: 1;
     display: flex;
     justify-content: flex-end;
+	align-items: center;
+	
     .deviceName {
       color: #5241ff;
     }

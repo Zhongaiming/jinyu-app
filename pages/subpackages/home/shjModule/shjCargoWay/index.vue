@@ -1,6 +1,6 @@
 <template>
 	<view id="cargoWay">
-		<nav-bar>货道管理</nav-bar>
+		<xls-jy-navbar title="货道管理" bgColor="#f5f6f7"></xls-jy-navbar>
 		<view class="top-notice-wrapper">
 			<u-icon name="bullhorn-o" size="18" color="#f7770f" />
 			<span>该设置将影响货道布局，请在厂家指导下操作！</span>
@@ -172,9 +172,9 @@
 	// import suan from "@/plugins/floastCalculate";
 	export default {
 		name: "cargoWay",
-		components: {
-			BatchSetting
-		},
+		// components: {
+		// 	BatchSetting
+		// },
 		data() {
 			return {
 				showEdit: false,

@@ -8,7 +8,7 @@
 				{{ item.text }}
 			</view>
 		</view>
-		
+
 		<!-- 门店管理 -->
 		<view v-show="tabIndex == 1">
 			<xls-search @confirm="stratesSearch" placeholder="搜索抖音门店名称" marLeft="-6.0em"></xls-search>
@@ -22,7 +22,7 @@
 										<view class="cell-title">
 											<span>{{ item.accountName }}</span>
 										</view>
-										<u-checkbox checked-color="#5241FF" :name="item.id" icon-size="20px" 
+										<u-checkbox checked-color="#5241FF" :name="item.id" icon-size="20px"
 											@click="allCheckStore =storeCheckGroup.length == MerchantList.length">
 										</u-checkbox>
 									</view>
@@ -39,7 +39,7 @@
 											{{ MerchantList.length }})</span>
 									</u-checkbox>
 								</u-checkbox-group>
-								<view class="btn" 
+								<view class="btn"
 									@click="$refs.storeCheckGroup.toggleAll(false),(allCheckStore = false)">
 									重置
 								</view>
@@ -48,20 +48,21 @@
 						</view>
 					</xls-dropdown-item>
 				</xls-dropdown-menu>
-				
+
 				<view class="right-wrapper">
 					<view @click="storePopup = true">关联门店</view>
 					<view class="marginl20" @click="newTuanGou">新建团购套餐</view>
 				</view>
 			</view>
-			
+
 			<!-- 门店管理 -->
 			<view class="store-list-wrapper">
 				<view class="store-style" v-for="item in storeList" :key="item.id"
 					@click="clickMeal(item.poiName, item.id)">
 					<view class="name">{{ item.poiName }}</view>
 					<view class="address">
-						<span class="state" v-if="item.status == 0">停用</span><span class="state bad" v-else>正常</span>
+						<span class="state" v-if="item.status == 0">停用</span>
+						<span class="state bad" v-else>正常</span>
 						<span>{{ item.address }}</span>
 					</view>
 					<view class="item">
@@ -80,9 +81,7 @@
 			<xls-bottom v-show="storeList.length" />
 			<xls-empty v-show="!storeList.length"></xls-empty>
 		</view>
-		
-		
-		
+
 		<!-- 核销统计 -->
 		<view v-show="tabIndex != 1">
 			<view class="btnList">
@@ -126,8 +125,7 @@
 				</view>
 			</view>
 
-			<xls-search @confirm="stratesSearch" placeholder="搜索抖音门店名称、场地名称、设备编号"
-				marLeft="-11.0em"></xls-search>
+			<xls-search @confirm="stratesSearch" placeholder="搜索抖音门店名称、场地名称、设备编号" marLeft="-11.0em"></xls-search>
 
 			<view class="total-wrapper" v-show="tabIndex == 2">
 				<view class="title">合计</view>
@@ -263,7 +261,7 @@
 								<view class="cell-title">
 									<span>{{ item.accountName }}</span>
 								</view>
-								<u-checkbox checked-color="#5241FF" :name="item.id" icon-size="20px" 
+								<u-checkbox checked-color="#5241FF" :name="item.id" icon-size="20px"
 									@click="allCheckCount=storeCheckCountGroup.length == MerchantList.length">
 								</u-checkbox>
 							</view>
@@ -294,9 +292,10 @@
 		getTime,
 		getDateAll
 	} from "@/plugins/utilityClass";
-	// import moment from "moment";
-	// import api from "@/utils/meituan";
-	import {writeOffController} from "@/api/index.js"
+	import moment from "moment";
+	import {
+		writeOffController
+	} from "@/api/index.js"
 
 	export default {
 		data() {
@@ -315,12 +314,12 @@
 						text: "核销记录"
 					},
 				],
-				
+
 				// 门店
 				allCheckStore: [],
 				allCheckCount: false,
 				storeList: [],
-				
+
 				storeCheckGroup: [],
 				storeCheckCountGroup: [],
 				storePopup: false,
@@ -395,12 +394,31 @@
 				},
 			};
 		},
-		created() {
-			// this.onChange(3);
+		onLoad() {
+			this.onChange(3);
 			// this.getDyShopInfo();
-			// this.getDyAccountInfo();
+			this.getDyAccountInfo();
 		},
 		methods: {
+			// 核销统计、核销记录
+			async summaryDouyin() {
+				let res = await writeOffController.summaryDouyin(this.params);
+				if (res.code == 200) {
+					this.count = res.data;
+				}
+			},
+			// 查询所有门店
+			async getDyShopInfo() {
+				let res = await writeOffController.getDyShopInfo({
+					search: this.searchValue ? encodeURIComponent(this.searchValue) : null,
+					shopIds: this.storeCheckGroup.length ?
+						String(this.storeCheckGroup) : null,
+				});
+				if (res.code == 200) {
+					this.storeList = res.data;
+				}
+			},
+			
 			/** 输入搜索 */
 			stratesSearch(search) {
 				this.searchValue = search ? search : null;
@@ -416,9 +434,9 @@
 			//日期格式
 			formatDate(date) {
 				return `${date.getFullYear()}-${date.getMonth() + 1 < 10
-        ? "0" + (date.getMonth() + 1)
-        : date.getMonth() + 1
-        }-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`;
+				? "0" + (date.getMonth() + 1)
+				: date.getMonth() + 1
+				}-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`;
 			},
 			//选择日期
 			onConfirm(date) {
@@ -499,34 +517,17 @@
 				if (poiId == "") {
 					return this.$toast("请输入门店编号");
 				}
-				let res = await api.taskSubmit({
+				let res = await writeOffController.taskSubmit({
 					poiId
 				});
-				if (res.data.code == 0) {
+				if (res.code == 200) {
 					this.storePopup = false;
 					this.$toast("添加成功~");
 					this.poiId = "";
 				}
 			},
-			// 查询所有门店
-			async getDyShopInfo() {
-				let res = await api.getDyShopInfo({
-					search: this.searchValue ? encodeURIComponent(this.searchValue) : null,
-					shopIds: this.storeCheckGroup.length ?
-						String(this.storeCheckGroup) :
-						null,
-				});
-				if (res.data.code == 0) {
-					this.storeList = res.data.data;
-				}
-			},
-			// 核销统计、核销记录
-			async summaryDouyin() {
-				let res = await api.summaryDouyin(this.params);
-				if (res.data.code == 0) {
-					this.count = res.data.data;
-				}
-			},
+			
+			
 			// 套餐详情
 			clickMeal(poiName, id) {
 				this.$router.push({
@@ -539,7 +540,7 @@
 			},
 			// 抖音商户
 			async getDyAccountInfo() {
-				let res = await api.getDyAccountInfo();
+				let res = await writeOffController.getDyAccountInfo();
 				if (res.data.code == 0) {
 					this.MerchantList = res.data.data;
 				}
@@ -770,11 +771,12 @@
 				justify-content: space-between;
 				font-size: 16px;
 				color: #666;
-				
+
 				.value {
 					display: flex;
 					align-items: center;
 				}
+
 				.date {
 					margin-right: 8px;
 					color: #5241ff;

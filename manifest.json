@@ -107,7 +107,7 @@
             "proxy" : {
                 "^/appV4" : {
                     // "target" : "http://8.138.24.164:659",
-                    "target" : "https://xls.redorange.top",
+                    "target" : "http://42w35y.natappfree.cc",
                     "changeOrigin" : true,
                     "secure" : true,
                     "pathRewrite" : {

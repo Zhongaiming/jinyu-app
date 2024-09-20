@@ -19,6 +19,8 @@ if (process.env.NODE_ENV === 'development') {
 	// config.proxyUrl = 'https://apiv4.ztuwl.com'
 	// config.baseUrl = 'https://xls.redorange.top'
 	// config.proxyUrl = 'https://xls.redorange.top'
+	// config.baseUrl = 'http://inxuz4.natappfree.cc'
+	// config.proxyUrl = 'http://inxuz4.natappfree.cc'
 	// config.baseUrl = 'http://192.168.0.114:8006' // 潮
 	// config.baseUrl = 'http://192.168.0.59:8006' // 畅
 	// config.baseUrl = 'http://192.168.0.33:8006' // 健

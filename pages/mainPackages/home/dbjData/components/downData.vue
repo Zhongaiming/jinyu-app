@@ -5,11 +5,11 @@
 			<view class="title">导出数据</view>
 
 			<p class="text-content">
-				{{ $parent.historyUrl }}
+				{{ historyUrl }}
 			</p>
 
 			<view class="share-btn">
-				<view class="btn right" @click="copyMemberId($parent.historyUrl)">
+				<view class="btn right" @click="copyMemberId(historyUrl)">
 					一键复制
 				</view>
 			</view>
@@ -26,6 +26,12 @@
 	} from "@/plugins/formUtils";
 	export default {
 		name: "downData",
+		props: {
+			historyUrl: {
+				type: String,
+				default: ''
+			}
+		},
 		data() {
 			return {
 				downloadData: false,

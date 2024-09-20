@@ -18,7 +18,8 @@ const http = new Request({
 	timeout: 30000,
 	header: {
 		"Content-Type": "application/json",
-		"Access-Control-Allow-Origin": "*"
+		"Access-Control-Allow-Origin": "*",
+		"version": getVersion()
 	}
 })
 
@@ -36,7 +37,6 @@ http.interceptors.request.use(config => {
 	if (reqConfig.whiteList.indexOf(config.url) == -1) {
 		if (!token) {
 			// 跳转到登录页重新登录
-			console.log("token跳转111")
 			// Vue.prototype.$goTo('/pages/loginAndReg/login', 'reLaunch')
 		} else {
 			if (!config.custom.isToken) {
@@ -107,5 +107,24 @@ http.interceptors.response.use(response => {
 
 	return Promise.resolve(error.data)
 })
+
+
+function getVersion() {
+	let version_number;
+	// #ifdef H5
+	const systemInfo = uni.getSystemInfoSync();
+	version_number = systemInfo.appVersion;
+	// #endif
+	// #ifdef APP
+	const systemInfo = uni.getSystemInfoSync();
+	version_number = systemInfo.appWgtVersion;
+	// #endif
+	// #ifdef MP-WEIXIN
+	const accountInfo = wx.getAccountInfoSync();
+	version_number = accountInfo.miniProgram.version // 小程序 版本号
+	console.log(accountInfo.miniProgram.version, '小程序版本号')
+	// #endif
+	return version_number
+}
 
 export default http
