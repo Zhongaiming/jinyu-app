@@ -15,7 +15,7 @@
 				<view class="block-title">
 					<view class="main-title">{{ item.exchangeDate }}</view>
 				</view>
-				<data-details-vue :item="item"></data-details-vue>
+				<data-details-vue :item="item" @illustrateMethod="illustrateMethod"></data-details-vue>
 			</view>
 		</view>
 
@@ -33,7 +33,7 @@
 				</view>
 			</view>
 		</view>
-
+		<data-illustrate-vue ref="illustrate" text="detail"></data-illustrate-vue>
 		<xls-empty slot="empty" />
 	</z-paging>
 </template>
@@ -41,6 +41,7 @@
 <script>
 	import ConditionScreening from "../components/conditionScreening.vue";
 	import dataDetailsVue from "../components/dataDetails.vue";
+	import dataIllustrateVue from "../components/dataIllustrate.vue";
 	import {
 		deviceDataController
 	} from "@/api/index.js";
@@ -48,7 +49,8 @@
 		name: "dbjDetail",
 		components: {
 			ConditionScreening,
-			dataDetailsVue
+			dataDetailsVue,
+			dataIllustrateVue
 		},
 		data() {
 			return {
@@ -137,6 +139,9 @@
 						}
 					})
 				}
+			},
+			illustrateMethod(type) {
+				this.$refs.illustrate.showMethod(type)
 			},
 		},
 	};

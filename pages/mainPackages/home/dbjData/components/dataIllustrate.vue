@@ -1,9 +1,9 @@
 <template>
 	<u-popup :show="show" round="20" mode="center">
 		<view class="data-illustrate">
-			<view class="data-illustrate__title">收益数据说明</view>
+			<view class="data-illustrate__title">{{type === 'income'?'收益数据说明':'取币说明'}}</view>
 			<view class="data-illustrate__content">
-				<ul>
+				<ul v-if="type === 'income' && text === 'index'">
 					<li>
 						在线支付：用户通过微信、支付宝进行在线支付的金额，等于充值支付+线上启动
 					</li>
@@ -14,7 +14,7 @@
 						线上启动：用户通过微信，支付宝直接启动设备所支付的金额
 					</li>
 				</ul>
-				<ul>
+				<ul v-if="type === 'income' && text === 'detail'">
 					<li>
 						充值支付收益：用户通过微信，支付宝充值所支付的金额
 					</li>
@@ -25,7 +25,7 @@
 						在线支付收益：用户通过微信、支付宝进行在线支付产生的收益，包括充值支付+线上启动金额
 					</li>
 				</ul>
-				<ul>
+				<ul v-if="type === 'number'">
 					<li>
 						充值币数:为该设备在该时间段内线上充值的币数量
 					</li>
@@ -47,9 +47,22 @@
 <script>
 	export default {
 		name: "dataIllustrate",
+		props: {
+			text: {
+				type: String,
+				default: 'index'
+			}
+		},
 		data() {
 			return {
 				show: false,
+				type: ''
+			}
+		},
+		methods: {
+			showMethod(type) {
+				this.type = type
+				this.show = !this.show
 			}
 		}
 	}
@@ -58,7 +71,7 @@
 <style lang="scss" scoped>
 	.data-illustrate {
 		width: 560rpx;
-		padding: 48rpx 24rpx 32rpx 48rpx;
+		padding: 48rpx 24rpx 32rpx 56rpx;
 		
 		&__title {
 			width: 100%;

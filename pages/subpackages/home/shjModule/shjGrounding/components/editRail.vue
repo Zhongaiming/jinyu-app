@@ -1,7 +1,7 @@
 <template>
   <view>
     <!-- 货道编辑 -->
-    <u-popup v-model="railEdit" position="bottom" :style="{ height: '60%' }">
+    <u-popup :show="railEdit" mode="bottom" @close="railEdit=false">
       <view class="edit-cargoroad">
         <view class="popup-header">
           <span @click="railEdit = false">取消</span>
@@ -55,16 +55,16 @@
         </view>
       </view>
     </u-popup>
-    <shj-commodity ref="commodity" @getShjCommodity="getShjCommodity" />
+    <!-- <shj-commodity ref="commodity" @getShjCommodity="getShjCommodity" /> -->
   </view>
 </template>
 
 <script>
-import ShjCommodity from "./shjCommodity.vue";
+// import ShjCommodity from "./shjCommodity.vue";
 // import api from "@/utils/shjApi";
 export default {
   name: "editRail",
-  components: { ShjCommodity },
+  // components: { ShjCommodity },
   data() {
     return {
       railEdit: false,
@@ -108,7 +108,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .edit-cargoroad {
   background: #fff;
   width: 100%;

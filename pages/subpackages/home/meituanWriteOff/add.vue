@@ -1,173 +1,173 @@
 <template>
-	<div class="MeituanCAVerification">
+	<view class="MeituanCAVerification">
 		<xls-jy-navbar title="美团店信息填写"></xls-jy-navbar>
 		<!-- 店铺 -->
-		<div class="main-wrapper-mt" v-for="(obj, index) in storeList" :key="index">
-			<div class="shop-title" v-if="storeList.length < 2">美团店信息填写</div>
-			<div class="shop-title" v-else>
+		<view class="main-wrapper-mt" v-for="(obj, index) in storeList" :key="index">
+			<view class="shop-title" v-if="storeList.length < 2">美团店信息填写</view>
+			<view class="shop-title" v-else>
 				第{{ toChinese(index + 1) }}间美团店信息填写<span class="delete-shop" @click="deleteStore(index)">
 					删除
 				</span>
-			</div>
+			</view>
 			<!-- 美团店铺名称 -->
-			<div class="shop-item">
+			<view class="shop-item">
 				<span class="label required">美团店铺名称</span>
 				<span class="field-wrapper">
-					<van-field placeholder="请输入美团店铺名称" input-align="right" v-model="obj.shopName" />
+					<xls-field placeholder="请输入美团店铺名称" input-align="right" v-model="obj.shopName" />
 				</span>
-			</div>
-			<div class="red-tips">
+			</view>
+			<view class="red-tips">
 				提示: 查看店铺名称<span class="meituanStore" @click="nameStandard">命名规范</span>
-			</div>
+			</view>
 			<!-- 分店名 -->
-			<div class="shop-item">
+			<view class="shop-item">
 				<span class="label">分店名</span>
 				<span class="field-wrapper">
-					<van-field placeholder="请输入分店名称（非必填）" input-align="right" v-model="obj.anotherName" />
+					<xls-field placeholder="请输入分店名称（非必填）" input-align="right" v-model="obj.anotherName" />
 				</span>
-			</div>
-			<div class="red-tips">
+			</view>
+			<view class="red-tips">
 				提示: 此项为非必填项，查看分店<span class="meituanStore" @click="nameStandard('shop')">命名规范</span>
-			</div>
+			</view>
 			<!-- 投放地址 -->
-			<div class="shop-item">
+			<view class="shop-item">
 				<span class="label required">投放地址</span>
 				<span class="field-wrapper" @click="selectPlace(index, obj.placeId)">
-					<van-field placeholder="请选择投放地址" input-align="right" @focus="stopKeyborad"
+					<xls-field placeholder="请选择投放地址" input-align="right" @focus="stopKeyborad"
 						v-model="obj.placeName" />
-					<van-icon name="arrow" class="arrow-style" />
+					<u-icon name="arrow-right" size="36" class="arrow-style" />
 				</span>
-			</div>
-			<div class="red-tips">提示：投放地址与美团店铺绑定，请谨慎选择！</div>
+			</view>
+			<view class="red-tips">提示：投放地址与美团店铺绑定，请谨慎选择！</view>
 			<!-- 所在地区 -->
-			<div class="shop-item shop-style">
+			<view class="shop-item shop-style">
 				<span class="label required">所在地区</span>
 				<span class="field-wrapper">
-					<van-field placeholder="请选择省市区" input-align="right" @focus="stopKeyborad" @click="
+					<xls-field placeholder="请选择省市区" input-align="right" @focus="stopKeyborad" @click="
               (activeIndex = index),
                 (regionCode = obj.regionCode),
                 (addressPopup = true)
             " v-model="obj.region" />
-					<van-icon name="arrow" class="arrow-style" />
+					<u-icon name="arrow-right" size="36" class="arrow-style" />
 				</span>
-			</div>
-			<div class="shop-item">
+			</view>
+			<view class="shop-item">
 				<span class="label required">详细地址</span>
 				<span class="field-wrapper">
-					<van-field placeholder="请填写详细的具体地址" input-align="right" v-model="obj.address" />
+					<xls-field placeholder="请填写详细的具体地址" input-align="right" v-model="obj.address" />
 				</span>
-			</div>
-			<div class="red-tips">示例：广州市番禺区中二横路1号gogo新天地三楼</div>
+			</view>
+			<view class="red-tips">示例：广州市番禺区中二横路1号gogo新天地三楼</view>
 			<!-- 套餐 -->
-			<div class="shop-discount-group" v-show="obj.mealList.length">
-				<div class="discount-item" v-for="(meal, serial) in obj.mealList" :key="serial">
-					<div class="discount-title">
+			<view class="shop-discount-group" v-show="obj.mealList.length">
+				<view class="discount-item" v-for="(meal, serial) in obj.mealList" :key="serial">
+					<view class="discount-title">
 						<p class="label required">美团套餐{{ serial + 1 }}</p>
-						<div class="handle-btn">
+						<view class="handle-btn">
 							<p class="editDiscount" @click="editMeal(index, serial, meal)">
 								编辑
 							</p>
 							<p class="deleteDiscount" @click="deleteMeal(index, serial)">
 								删除
 							</p>
-						</div>
-					</div>
-					<div class="commodityPrice">
+						</view>
+					</view>
+					<view class="commodityPrice">
 						<span class="label">商品原价</span>
 						<span class="value">{{ meal.commodityPrice }}元{{ meal.token }}币</span>
-					</div>
-					<div class="commodityPrice">
+					</view>
+					<view class="commodityPrice">
 						<span class="label">美团价</span>
 						<span class="value">{{ meal.balance }}元</span>
-					</div>
-				</div>
-			</div>
+					</view>
+				</view>
+			</view>
 			<!-- 套餐类型 -->
-			<div class="shop-item mb10" v-show="obj.mealList.length < 2">
+			<view class="shop-item mb10" v-show="obj.mealList.length < 2">
 				<span class="label required">套餐类型</span>
 				<span class="field-wrapper">
-					<van-icon name="add-o" class="arrow-style add-o" />
+					<u-icon name="plus-circle" size="38" color="#5241ff" class="arrow-style add-o" />
 					<span class="add-text" @click="addMeal(index)">添加美团套餐</span>
 				</span>
-			</div>
+			</view>
 			<!-- 营业时间 -->
-			<div class="shop-item shop-style">
+			<view class="shop-item shop-style">
 				<span class="label required">营业时间</span>
 				<span class="field-wrapper">
 					<span class="time-wrapper" @click="selectTime(index, 'start', obj.startTime)">
-						<van-field placeholder="开始时间" @focus="stopKeyborad" v-model="obj.startTime" /></span>
+						<xls-field placeholder="开始时间" @focus="stopKeyborad" v-model="obj.startTime" /></span>
 					<span>至</span>
 					<span class="time-wrapper" @click="selectTime(index, 'end', obj.endTime)">
-						<van-field placeholder="结束时间" @focus="stopKeyborad" v-model="obj.endTime" /></span>
+						<xls-field placeholder="结束时间" @focus="stopKeyborad" v-model="obj.endTime" /></span>
 				</span>
-			</div>
+			</view>
 			<!-- 门头照 -->
-			<div class="shop-upload-img mb10">
-				<div class="upload-txt">
+			<view class="shop-upload-img mb10">
+				<view class="upload-txt">
 					上传门头照
 					<span class="text-over" @click="imgView(1)">查看示例</span>
-				</div>
-				<van-uploader v-model="obj.imgList" :before-read="beforeRead" :after-read="afterRead" :max-count="1"
+				</view>
+				<u-uploader v-model="obj.imgList" :before-read="beforeRead" :after-read="afterRead" :max-count="1"
 					@delete="storeList[0].doorHeadPhoto = ''" />
-			</div>
-			<div class="shop-upload-img mb10">
-				<div class="upload-txt">
+			</view>
+			<view class="shop-upload-img mb10">
+				<view class="upload-txt">
 					上传店铺照片
 					<span class="text-over" @click="imgView(2)">查看示例</span>
-				</div>
-				<van-uploader v-model="obj.imgLists" :before-read="beforeRead" :after-read="afterReads" :max-count="1"
+				</view>
+				<u-uploader v-model="obj.imgLists" :before-read="beforeRead" :after-read="afterReads" :max-count="1"
 					@delete="storeList[0].storePhoto = ''" />
-			</div>
-		</div>
+			</view>
+		</view>
 		<!-- 添加美团店 -->
-		<div class="add-shop-btn" v-if="0">
-			<van-icon name="add-o" class="arrow-style add-o" />
+		<view class="add-shop-btn" v-if="0">
+			<u-icon name="add-o" class="arrow-style add-o" />
 			<span class="add-text" @click="addStore">继续添加美团店铺</span>
-		</div>
+		</view>
 		<!-- 确定按钮 -->
-		<div class="confirm-btn-wrapper">
-			<div class="fixed-confirm-btn" @click="comfireMethod">提交审核</div>
-			<div class="text-style">
+		<view class="confirm-btn-wrapper">
+			<view class="fixed-confirm-btn" @click="comfireMethod">提交审核</view>
+			<view class="text-style">
 				提交审核即代表你同意<span style="color: #5241ff" @click="$refs.chant.merchantPopup = true">《商家合作协议》</span>
-			</div>
-		</div>
+			</view>
+		</view>
 		<!-- 省市区选择 -->
-		<van-popup v-model="addressPopup" round position="bottom">
-			<van-cascader title="请选择所在省市区" :options="addressOptionList" @close="addressPopup = false"
+		<u-popup :show="addressPopup" round position="bottom">
+			<u-cascader title="请选择所在省市区" :options="addressOptionList" @close="addressPopup = false"
 				@finish="finishAddress" active-color="#5241FF" :field-names="fieldName" :value="regionCode" />
-		</van-popup>
+		</u-popup>
 		<!-- 添加美团套餐 -->
-		<van-popup v-model="mealPopup" round :close-on-click-overlay="false">
-			<div class="meituan-meal-wrapper">
-				<div class="title-style">新增美团团购套餐</div>
-				<div class="main-wrapper">
-					<van-cell-group>
-						<van-field v-model="meal.commodityPrice" required type="number" label="商品原价/元"
+		<u-popup :show="mealPopup" round :close-on-click-overlay="false">
+			<view class="meituan-meal-wrapper">
+				<view class="title-style">新增美团团购套餐</view>
+				<view class="main-wrapper">
+					<u-cell-group>
+						<xls-field v-model="meal.commodityPrice" required type="number" label="商品原价/元"
 							input-align="right" placeholder="请输入商品原价" />
-						<van-field v-model="meal.balance" required type="number" input-align="right" label="美团价格/元"
+						<xls-field v-model="meal.balance" required type="number" input-align="right" label="美团价格/元"
 							placeholder="请输入美团价格" />
-						<van-cell title="兑币数量/个" required>
+						<u-cell title="兑币数量/个" required>
 							<template #default>
-								<van-stepper v-model="meal.token" input-width="50px" button-size="32px" />
+								<u-stepper v-model="meal.token" input-width="50px" button-size="32px" />
 							</template>
-						</van-cell>
-					</van-cell-group>
-				</div>
-				<div class="bottom-btn">
-					<div class="btn-style" @click="mealPopup = false">取消</div>
-					<div class="btn-style right-btn" @click="mealConfirm">确定</div>
-				</div>
-			</div>
-		</van-popup>
+						</u-cell>
+					</u-cell-group>
+				</view>
+				<view class="bottom-btn">
+					<view class="btn-style" @click="mealPopup = false">取消</view>
+					<view class="btn-style right-btn" @click="mealConfirm">确定</view>
+				</view>
+			</view>
+		</u-popup>
 		<!-- 选择时间 -->
-		<van-popup v-model="timePopup" round position="bottom">
-			<van-datetime-picker type="time" title="选择营业时间" @cancel="timePopup = false" @confirm="timerConfirm"
+		<u-popup :show="timePopup" round position="bottom">
+			<u-datetime-picker type="time" title="选择营业时间" @cancel="timePopup = false" @confirm="timerConfirm"
 				v-model="currentDate" />
-		</van-popup>
+		</u-popup>
 		<!-- 商家协议 -->
-		<MerchantAgreement ref="chant" />
-		<PlaceList @pitchonPlace="pitchonPlace" ref="placelist" :showAllCheck="false" :showRight="false" />
-	</div>
+		<!-- <MerchantAgreement ref="chant" /> -->
+		<!-- <PlaceList @pitchonPlace="pitchonPlace" ref="placelist" :showAllCheck="false" :showRight="false" /> -->
+	</view>
 </template>
 
 <script>
@@ -232,7 +232,6 @@
 				}, ],
 			};
 		},
-		async created() {},
 		methods: {
 			//收起输入键盘
 			stopKeyborad() {
@@ -476,7 +475,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.MeituanCAVerification {
 		width: 100%;
 		padding-bottom: 90px;

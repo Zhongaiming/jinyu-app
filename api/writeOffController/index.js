@@ -19,11 +19,10 @@ export default class writeOffController {
 		})
 	}
 	
-	
 	// 查询所有门店
 	static getDyShopInfo(data) {
 		return http.request({
-			url: '/order/api/v1/admin/order/dyMerchantShop/taskSubmit',
+			url: '/order/api/v1/admin/order/dyMerchantShop/list',
 			method: 'GET', 
 			data
 		})

@@ -1,5 +1,5 @@
 <template>
-	<u-popup :show="showPlace" mode="bottom" round="20">
+	<u-popup :show="showPlace" mode="bottom" round="20" @close="showPlace=false">
 		<view class="place-wrapper-style">
 			<view class="title-wrapper">
 				<view @click="showPlace = false">取消</view>

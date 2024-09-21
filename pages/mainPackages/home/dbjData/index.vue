@@ -22,11 +22,11 @@
 						{{ item.placeName }}
 					</view>
 				</view>
-				<data-details-vue :item="item"></data-details-vue>
+				<data-details-vue :item="item" @illustrateMethod="illustrateMethod"></data-details-vue>
 			</view>	
 		</view>
 		<xls-empty slot="empty" />
-		<data-illustrate-vue @illustrateMethod="illustrateMethod"></data-illustrate-vue>
+		<data-illustrate-vue ref="illustrate"></data-illustrate-vue>
 	</z-paging>
 </template>
 
@@ -99,8 +99,8 @@
 			getExcelUrl() {
 				this.$refs.screen.getExcelUrl();
 			},
-			illustrateMethod() {
-				
+			illustrateMethod(type) {
+				this.$refs.illustrate.showMethod(type)
 			},
 		},
 	};

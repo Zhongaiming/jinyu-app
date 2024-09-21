@@ -2,28 +2,22 @@
 	<view class="douyin-wrapper">
 		<xls-jy-navbar title="抖音核销"></xls-jy-navbar>
 		<!-- 顶部导航 -->
-		<view class="tab-wrapper">
-			<view class="tab" :class="{'active': tabIndex == item.id}" v-for="item in tabList" :key="item.id"
-				@click="tabIndex = item.id">
-				{{ item.text }}
-			</view>
-		</view>
-
+		<xls-tabs :options="tabList" v-model="tabIndex"></xls-tabs>
 		<!-- 门店管理 -->
 		<view v-show="tabIndex == 1">
 			<xls-search @confirm="stratesSearch" placeholder="搜索抖音门店名称" marLeft="-6.0em"></xls-search>
 			<view class="store-wrapper">
-				<xls-dropdown-menu active-color="#5241FF" style="flex: 1">
-					<xls-dropdown-item title="抖音商户" ref="place" name="1">
+				<xls-dropdown-menu active-color="#5241FF" style="flex: 1" ref="dropdown">
+					<xls-dropdown-item title="抖音商户" name="1">
 						<view class="consume-wrapper">
 							<view class="cell-container">
-								<u-checkbox-group v-model="storeCheckGroup">
+								<u-checkbox-group v-model="storeCheckGroup" placement="column">
 									<view class="cell-item" v-for="(item, index) in MerchantList" :key="index">
 										<view class="cell-title">
 											<span>{{ item.accountName }}</span>
 										</view>
-										<u-checkbox checked-color="#5241FF" :name="item.id" icon-size="20px"
-											@click="allCheckStore =storeCheckGroup.length == MerchantList.length">
+										<u-checkbox activeColor="#5241FF" :name="item.id" shape="circle" iconSize="32"
+											labelSize="36" size="38">
 										</u-checkbox>
 									</view>
 									<xls-bottom v-show="MerchantList.length" />
@@ -33,14 +27,13 @@
 
 							<view class="btn-content">
 								<u-checkbox-group v-model="allCheckStore">
-									<u-checkbox checked-color="#5241FF" icon-size="22px"
-										@click="$refs.storeCheckGroup.toggleAll(allCheckStore)">
+									<u-checkbox name="1" activeColor="#5241FF" shape="circle" iconSize="32" labelSize="36"
+										size="38">
 										<span>全部 ({{ storeCheckGroup.length }} /
 											{{ MerchantList.length }})</span>
 									</u-checkbox>
 								</u-checkbox-group>
-								<view class="btn"
-									@click="$refs.storeCheckGroup.toggleAll(false),(allCheckStore = false)">
+								<view class="btn" @click="reset('allCheckStore')">
 									重置
 								</view>
 								<view class="btn comfrim" @click="confirmBtn()">确定</view>
@@ -51,14 +44,13 @@
 
 				<view class="right-wrapper">
 					<view @click="storePopup = true">关联门店</view>
-					<view class="marginl20" @click="newTuanGou">新建团购套餐</view>
+					<view class="marginl20" @click="goTo('meal', {})">新建团购套餐</view>
 				</view>
 			</view>
 
 			<!-- 门店管理 -->
 			<view class="store-list-wrapper">
-				<view class="store-style" v-for="item in storeList" :key="item.id"
-					@click="clickMeal(item.poiName, item.id)">
+				<view class="store-style" v-for="item in storeList" :key="item.id" @click="goTo('mealDetail', item)">
 					<view class="name">{{ item.poiName }}</view>
 					<view class="address">
 						<span class="state" v-if="item.status == 0">停用</span>
@@ -101,9 +93,10 @@
 				</view>
 			</view>
 
-			<!-- <u-calendar v-model="showDate" type="range" @confirm="onConfirm" :max-range="31" allow-same-day
-				range-prompt="单次跨度不超31天" :min-date="minDate" :max-date="maxDate" :round="false" color="#5241FF"
-				:default-date="defaultDate" /> -->
+			<!-- 日历 -->
+			<xls-calendar :show="showDate" @close="() => { showDate = false }" @confirm="onConfirm"
+				:defaultDate="[startTime, endTime]">
+			</xls-calendar>
 
 			<view class="outSide">
 				<view class="data" @click="MerchantPopup = true">
@@ -203,10 +196,10 @@
 			<xls-empty v-show="!count.list.length"></xls-empty>
 		</view>
 		<!-- 关联门店 -->
-		<u-popup v-model="storePopup" position="bottom" round>
+		<u-popup :show="storePopup" mode="bottom" round="20" @close="storePopup = false">
 			<view class="field-hd">
 				<view class="cross field">
-					<u-icon name="cross" @click="storePopup = false" />
+					<u-icon name="close" @click="storePopup = false" size="40" />
 				</view>
 				<view class="title field">关联门店</view>
 				<view class="btn-confirm field" @click="addDYStore">确定</view>
@@ -224,13 +217,13 @@
 					</template>
 				</u-cell>
 			</u-cell-group>
-			<p class="tips-text">
-				门店编号请联系平台运营/客服获取
-				<span>集合号操作指引</span>
-			</p>
+			<view class="tips-text">
+				<!-- 门店编号请联系平台运营/客服获取
+				<span>集合号操作指引</span> -->
+			</view>
 		</u-popup>
 		<!-- 出币结果 -->
-		<u-popup v-model="coinPopup" position="bottom" round>
+		<u-popup :show="coinPopup" mode="bottom" round="20" @close="coinPopup = false">
 			<view class="field-hd">
 				<view class="title field">出币结果</view>
 			</view>
@@ -239,7 +232,7 @@
 					<u-cell v-for="(item, index) in coinList" :key="index" :title="item.text" clickable
 						@click="radio = item.id">
 						<template #right-icon>
-							<u-radio :name="item.id" checked-color="#5241ff" />
+							<u-radio :name="item.id" activeColor="#5241FF" iconSize="32" labelSize="36" size="38" />
 						</template>
 					</u-cell>
 				</u-cell-group>
@@ -250,19 +243,18 @@
 			</view>
 		</u-popup>
 		<!-- 抖音商户 -->
-		<u-popup v-model="MerchantPopup" position="bottom" round>
+		<u-popup :show="MerchantPopup" mode="bottom" round="20" @close="MerchantPopup = false">
 			<view class="merchat-popup-wrapper">
 				<view class="title">抖音商户</view>
 				<view class="consume-wrapper">
 					<view class="cell-container">
-						<u-checkbox-group v-model="storeCheckCountGroup" direction="horizontal"
-							ref="storeCheckCountGroup">
+						<u-checkbox-group v-model="storeCheckCountGroup"  placement="column">
 							<view class="cell-item" v-for="(item, index) in MerchantList" :key="index">
 								<view class="cell-title">
 									<span>{{ item.accountName }}</span>
 								</view>
-								<u-checkbox checked-color="#5241FF" :name="item.id" icon-size="20px"
-									@click="allCheckCount=storeCheckCountGroup.length == MerchantList.length">
+								<u-checkbox activeColor="#5241FF" :name="item.id" shape="circle" iconSize="32"
+									labelSize="36" size="38">
 								</u-checkbox>
 							</view>
 							<xls-bottom v-show="MerchantList.length" />
@@ -271,12 +263,14 @@
 					</view>
 
 					<view class="btn-content">
-						<u-checkbox v-model="allCheckCount" checked-color="#5241FF" icon-size="22px"
-							@click="$refs.storeCheckCountGroup.toggleAll(allCheckCount)">
-							<span>全部 ({{ storeCheckCountGroup.length }} /
-								{{ MerchantList.length }})</span>
-						</u-checkbox>
-						<view class="btn" @click="$refs.storeCheckCountGroup.toggleAll(false),(allCheckCount = false)">
+						<u-checkbox-group v-model="allCheckCount">
+							<u-checkbox name="1" activeColor="#5241FF" shape="circle" iconSize="32" labelSize="36"
+								size="38">
+							</u-checkbox>
+						</u-checkbox-group>
+						全部 ({{ storeCheckCountGroup.length }} /
+							{{ MerchantList.length }})
+						<view class="btn" @click="reset('allCheckCount')">
 							重置
 						</view>
 						<view class="btn comfrim" @click="confirmBtn()">确定</view>
@@ -300,40 +294,37 @@
 	export default {
 		data() {
 			return {
+				// tabs
 				tabIndex: 1,
 				tabList: [{
-						id: 1,
-						text: "门店管理"
+						key: 1,
+						value: "门店管理"
 					},
 					{
-						id: 2,
-						text: "核销统计"
+						key: 2,
+						value: "核销统计"
 					},
 					{
-						id: 3,
-						text: "核销记录"
+						key: 3,
+						value: "核销记录"
 					},
 				],
-
 				// 门店
 				allCheckStore: [],
-				allCheckCount: false,
+				storeCheckGroup: [],
+				MerchantList: [],
 				storeList: [],
 
-				storeCheckGroup: [],
+				// 统计 记录
+				allCheckCount: [],
 				storeCheckCountGroup: [],
 				storePopup: false,
-				MerchantList: [],
 				MerchantPopup: false,
 				// 时间
 				date: "",
 				showDate: false,
-				minDate: new Date(
-					new Date().getFullYear() - 1,
-					new Date().getMonth(),
-					new Date().getDate()
-				),
-				maxDate: new Date(getDateAll(0)),
+				startTime: getDateAll(0),
+				endTime: getDateAll(0),
 				// 商户
 				activeBtn: 3,
 				btnList: [{
@@ -396,7 +387,7 @@
 		},
 		onLoad() {
 			this.onChange(3);
-			// this.getDyShopInfo();
+			this.getDyShopInfo();
 			this.getDyAccountInfo();
 		},
 		methods: {
@@ -409,16 +400,27 @@
 			},
 			// 查询所有门店
 			async getDyShopInfo() {
+				let {
+					searchValue,
+					storeCheckGroup
+				} = this;
 				let res = await writeOffController.getDyShopInfo({
-					search: this.searchValue ? encodeURIComponent(this.searchValue) : null,
-					shopIds: this.storeCheckGroup.length ?
-						String(this.storeCheckGroup) : null,
+					search: searchValue ? encodeURIComponent(searchValue) : null,
+					shopIds: storeCheckGroup.length ? String(storeCheckGroup) : null
 				});
 				if (res.code == 200) {
 					this.storeList = res.data;
 				}
 			},
-			
+			// 抖音商户
+			async getDyAccountInfo() {
+				let res = await writeOffController.getDyAccountInfo({
+					search: null
+				});
+				if (res.code == 200) {
+					this.MerchantList = res.data;
+				}
+			},
 			/** 输入搜索 */
 			stratesSearch(search) {
 				this.searchValue = search ? search : null;
@@ -431,20 +433,45 @@
 					this.summaryDouyin();
 				}
 			},
-			//日期格式
-			formatDate(date) {
-				return `${date.getFullYear()}-${date.getMonth() + 1 < 10
-				? "0" + (date.getMonth() + 1)
-				: date.getMonth() + 1
-				}-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`;
+			// 重置
+			reset() {
+				this.storeCheckGroup = []
+				this.allCheckStore = []
+				
+				this.allCheckCount = []
+				this.storeCheckCountGroup = []
+			},
+			confirmBtn() {
+				if (this.tabIndex == 1) {
+					this.$refs.dropdown.close();
+					this.getDyShopInfo();
+				} else {
+					this.params.shopIds = this.storeCheckCountGroup.length ?
+						String(this.storeCheckCountGroup) :
+						null;
+					this.summaryDouyin();
+					this.Merchant = "已选(" + this.storeCheckCountGroup.length + ")个商户";
+					this.MerchantPopup = false;
+				}
+			},
+			// 套餐
+			goTo(route, item) {
+				const params = (({
+					poiName,
+					id
+				}) => ({
+					poiName,
+					id
+				}))(item);
+				this.$goTo(`/pages/subpackages/home/douyinWriteOff/children/${route}`, "navigateTo", params)
 			},
 			//选择日期
 			onConfirm(date) {
-				const [start, end] = date;
+				const [startTime, endTime] = date;
 				this.showDate = false;
+				this.startTime = startTime;
+				this.endTime = endTime;
 				this.activeBtn = null;
-				const startTime = this.formatDate(start);
-				const endTime = this.formatDate(end);
 				this.date = `${startTime} 至 ${endTime}`;
 				this.params = {
 					...this.params,
@@ -457,107 +484,77 @@
 			onChange(index) {
 				this.activeBtn = index;
 				let startTime, endTime, date;
+
+				const setDateRange = (start, end) => {
+					startTime = start;
+					endTime = end;
+					this.date = endTime + (index === 0 ? '\u2002昨天' : index === 1 ? '\u2002前天' : '');
+					this.defaultDate = [new Date(startTime), new Date(endTime)];
+				};
+
 				switch (index) {
 					case 0:
-						startTime = getDateAll(1);
-						endTime = getDateAll(1);
-						date = endTime + "\u2002昨天";
+						setDateRange(getDateAll(1), getDateAll(1)); // 昨天
 						break;
 					case 1:
-						startTime = getDateAll(2);
-						endTime = getDateAll(2);
-						date = endTime + "\u2002前天";
+						setDateRange(getDateAll(2), getDateAll(2)); // 前天
 						break;
 					case 2:
 						startTime = getTime(0);
 						endTime = getTime(-6);
-						date = `${startTime} 至 ${endTime}`;
+						this.date = `${startTime} 至 ${endTime}`;
 						break;
 					case 3:
 						startTime = moment().startOf("month").format("YYYY-MM-DD");
 						endTime = getDateAll(0);
-						date = `${startTime} 至 ${endTime}`;
+						this.date = `${startTime} 至 ${endTime}`;
 						break;
 					default:
 						startTime = moment().startOf("month").format("YYYY-MM-DD");
 						endTime = getDateAll(0);
-						date = `${startTime} 至 ${endTime}`;
+						this.date = `${startTime} 至 ${endTime}`;
 				}
-				this.date = date;
-				this.defaultDate = [new Date(startTime), new Date(endTime)];
+
+				// 更新 params
 				this.params = {
 					...this.params,
 					startTime,
 					endTime
 				};
+
 				this.summaryDouyin();
-			},
-			// 新建团购套餐
-			newTuanGou() {
-				this.$router.push("/Douyin/douyin_meal");
 			},
 			// 出币结果
 			coinMethod() {
-				this.coinPopup = false;
-				this.coinList.map((item) => {
-					if (item.id === this.params.status) {
-						this.coinResult = item.text;
-					}
-				});
-				this.summaryDouyin();
+				this.coinPopup = false
+				const {
+					text
+				} = this.coinList.find(item => item.id === this.params.status)
+				this.coinResult = text
+				this.summaryDouyin()
 			},
-			/**
-			 * @description:
-			 * @return {*}
-			 * @Date: 2024-01-18 17:15:13
-			 */
 			// 关联门店
 			async addDYStore() {
-				const poiId = this.poiId;
+				const poiId = this.poiId
 				if (poiId == "") {
-					return this.$toast("请输入门店编号");
+					return this.$toast("请输入门店编号")
 				}
+				this.$loading();
 				let res = await writeOffController.taskSubmit({
-					poiId
+					poiId,
+					type: 1, // 类型 1是集合号 2是私营
 				});
+				this.$hideLoading();
 				if (res.code == 200) {
-					this.storePopup = false;
-					this.$toast("添加成功~");
-					this.poiId = "";
+					this.storePopup = false
+					this.$toast("添加成功~")
+					this.poiId = ""
 				}
 			},
-			
-			
-			// 套餐详情
-			clickMeal(poiName, id) {
-				this.$router.push({
-					query: {
-						poiName,
-						id,
-					},
-					path: "/Douyin/dy_meal_detail",
-				});
-			},
-			// 抖音商户
-			async getDyAccountInfo() {
-				let res = await writeOffController.getDyAccountInfo();
-				if (res.data.code == 0) {
-					this.MerchantList = res.data.data;
-				}
-			},
-			confirmBtn() {
-				if (this.tabIndex == 1) {
-					this.$refs.place.toggle(false);
-					this.getDyShopInfo();
-				} else {
-					this.params.shopIds = this.storeCheckCountGroup.length ?
-						String(this.storeCheckCountGroup) :
-						null;
-					this.summaryDouyin();
-					this.Merchant = "已选(" + this.storeCheckCountGroup.length + ")个商户";
-					this.MerchantPopup = false;
-				}
-			},
+
+
+
+
 		},
 	};
 </script>
@@ -565,38 +562,6 @@
 <style lang="scss" scoped>
 	.douyin-wrapper {
 		width: 100%;
-
-		.tab-wrapper {
-			display: flex;
-			align-items: center;
-			background-color: #fff;
-			line-height: 44px;
-
-			// box-shadow: #ebedf0 0 4px 12px;
-			.tab {
-				font-size: 15px;
-				flex: 1;
-				text-align: center;
-				padding: 0 4px;
-				position: relative;
-			}
-
-			.active {
-				color: #5241ff;
-			}
-
-			.active::after {
-				position: absolute;
-				content: "";
-				bottom: 0;
-				left: 50%;
-				transform: translateX(-50%);
-				width: 60%;
-				height: 4px;
-				border-radius: 4px;
-				background-color: #5241ff;
-			}
-		}
 
 		.store-wrapper {
 			background: #f5f6f7;
@@ -721,7 +686,6 @@
 			align-items: center;
 			padding: 0 12px;
 			line-height: 60px;
-			border-bottom: 1px solid #eee;
 			box-sizing: border-box;
 
 			.cross {

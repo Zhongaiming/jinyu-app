@@ -226,12 +226,14 @@
 			    // 处理时间范围
 			    let date;
 			    switch (id) {
-			        case 0: // 今天
+			        case 0: // 昨天
+						date = [moment().subtract(1, "days").format("YYYY-MM-DD"), moment().subtract(1, "days").format("YYYY-MM-DD")];
+						break;
 			        case 4: // 自定义范围，默认为今天
 			            date = [today, today];
 			            break;
-			        case 1: // 昨天
-			            date = [moment().subtract(1, "days").format("YYYY-MM-DD"), today];
+			        case 1: // 前天
+			            date = [moment().subtract(2, "days").format("YYYY-MM-DD"), moment().subtract(2, "days").format("YYYY-MM-DD")];
 			            break;
 			        case 2: // 本周
 			            date = getRange("week", "week");

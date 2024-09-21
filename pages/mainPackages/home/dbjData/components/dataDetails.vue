@@ -2,9 +2,9 @@
 	<view class="block-row-box">
 		<view class="block-row">
 			<view class="block-cell">
-				<view class="cell-top">
+				<view class="cell-top" @click.stop="illustrate('income')">
 					在线收益
-					<u-icon name="question-circle" size="30" color="#c8cacb" class="icon" @click="illustrate('income')"/>
+					<u-icon name="question-circle" size="30" color="#c8cacb" class="icon" />
 				</view>
 				<view class="cell-bottom">{{ $formatAmount(item.onlineIncome) }}</view>
 			</view>
@@ -37,10 +37,10 @@
 			</view>
 		</view>
 		<view class="block-row">
-			<view class="block-cell">
+			<view class="block-cell" @click.stop="illustrate('number')">
 				<view class="cell-top">
 					取币总数
-					<u-icon name="question-circle" size="30" color="#c8cacb" class="icon" @click="illustrate('number')"/>
+					<u-icon name="question-circle" size="30" color="#c8cacb" class="icon" />
 				</view>
 				<view class="cell-bottom">{{ item.exchangeNumber }}</view>
 			</view>
@@ -109,5 +109,4 @@
 
 <style lang="scss" scoped>
 	@import '../index.scss';
-	
 </style>

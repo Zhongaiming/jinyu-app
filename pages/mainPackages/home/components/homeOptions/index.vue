@@ -202,7 +202,7 @@
 						{
 							id: 37,
 							title: '抖音核销',
-							imgUrl: `${this.$baseUrl}homeImages/threeList/meituan.png`,
+							imgUrl: `${this.$baseUrl}homeImages/threeList/douyin.png`,
 							route: '/pages/subpackages/home/douyinWriteOff/index',
 							permissions: 'app:meituan:index:read',
 							status: 0,

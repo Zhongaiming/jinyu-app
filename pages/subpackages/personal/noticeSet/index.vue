@@ -12,7 +12,9 @@
 			</view>
 			<view class="set-list" v-for="(set, dataIndex) in setInfolist" :key="dataIndex">
 				<view class="message-title">{{ set.classTitle }}</view>
-				<view class="receive-msg" v-for="(det, itemIndex) in set.summarizingList" :key="$getUniqueKey(dataIndex, itemIndex)">
+				<view class="receive-msg" v-for="(det, itemIndex) in set.summarizingList" 
+					:key="$getUniqueKey(dataIndex, itemIndex)" 
+					v-if="getModuleShow(det)">
 					<view class="main-txt">
 						{{ det.title }}
 						<view class="sm-text">
@@ -64,7 +66,15 @@
 		baseController
 	} from "@/api/index.js";
 	import { getInfo } from "@/common/auth";
+	import {
+		mapGetters
+	} from 'vuex';
 	export default {
+		computed: {
+			...mapGetters([
+				'deviceTypeIdList'
+			])
+		},
 		data() {
 			return {
 				setInventory: false,
@@ -165,6 +175,7 @@
 								inventory: 10,
 								inventType: "wwj",
 								switch: false,
+								deviceType: 1
 							},
 							{
 								id: 12,
@@ -172,6 +183,7 @@
 								inventory: 10,
 								inventType: "ndj",
 								switch: false,
+								deviceType: 2
 							},
 							{
 								id: 13,
@@ -179,6 +191,7 @@
 								inventory: 10,
 								inventType: "shj",
 								switch: true,
+								deviceType: 4
 							},
 							{
 								id: 15,
@@ -186,6 +199,7 @@
 								inventory: 10,
 								inventType: "dbj",
 								switch: true,
+								deviceType: 5
 							},
 							{
 								id: 16,
@@ -193,6 +207,7 @@
 								inventory: 10,
 								inventType: "yxl",
 								switch: true,
+								deviceType: 7
 							},
 						],
 					},
@@ -258,6 +273,7 @@
 		async onLoad() {
 			this.getMessagePushSet();
 			this.getWxSet();
+			this.$store.dispatch('config/getList');
 		},
 		methods: {
 			goTo() {
@@ -368,6 +384,14 @@
 				}
 
 				this.setMessagePush();
+			},
+			// 按类型显示
+			getModuleShow(item) {
+				if(!item.deviceType) {
+					return true
+				} else {
+					return this.deviceTypeIdList.includes(item.deviceType)
+				}
 			},
 		},
 	};

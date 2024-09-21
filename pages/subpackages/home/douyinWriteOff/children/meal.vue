@@ -47,8 +47,8 @@
 					<view class="coupon-skuid">抖音团购ID: {{ item.dyPurchaseId }}</view>
 				</view>
 				<view class="right">
-					<button @click="editMethod(item, index)">编辑</button>
-					<button @click="deleteMethod(index)">删除</button>
+					<view class="button" @click="editMethod(item, index)">编辑</view>
+					<view class="button" @click="deleteMethod(index)">删除</view>
 				</view>
 			</view>
 		</view>
@@ -83,22 +83,22 @@
 			</view>
 		</u-popup>
 		<!-- 选择场地 -->
-		<!-- <CustomList ref="placelist" @getPlaceId="getPlaceId" /> -->
+		<!-- 选择场地 -->
+		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
 		<!-- 选择门店 -->
-		<!-- <StoreList ref="storelist" @getStoreObj="getStoreObj" /> -->
+		<StoreList ref="storelist" @getStoreObj="getStoreObj" />
 	</view>
 </template>
 
 <script>
-	// import CustomList from "@/components/commonComps/customList.vue";
-	// import StoreList from "./storeList.vue";
-	// import api from "@/utils/meituan";
+	import StoreList from "../components/storeList.vue";
+	import {
+		writeOffController
+	} from "@/api/index.js"
 	export default {
-		name: "douyin_meal---",
-		// components: {
-		// 	CustomList,
-		// 	StoreList
-		// },
+		components: {
+			StoreList
+		},
 		data() {
 			return {
 				mealPopup: false,
@@ -125,12 +125,11 @@
 					type == 1 ?
 					"选择您账号上的门店进行绑定团购套餐核销" :
 					"选择适用场地进行核销，不在选择场地区间的无法核销";
-				this.$dialog.alert({
+				this.$modal(message,{
 					title: "温馨提示",
-					message,
-					width: 320,
-					confirmButtonText: "我知道了",
-					confirmButtonColor: "#5241ff",
+					confirmText: "我知道了",
+					confirmColor: "#5241ff",
+					showCancel: false
 				});
 			},
 			// 场地
@@ -160,7 +159,6 @@
 			},
 			editMethod(item, index) {
 				this.indexMeal = index;
-				// this.mealObj = Object.assign({}, item);
 				this.mealObj = {
 					...item
 				};
@@ -179,10 +177,10 @@
 			},
 			// 添加团购套餐
 			async addDySetMeal() {
-				let res = await api.addDySetMeal(this.params);
-				if (res.data.code == 0) {
+				let res = await writeOffController.addDySetMeal(this.params);
+				if (res.code == 200) {
 					this.$toast("添加成功~");
-					this.$router.back();
+					this.$goBack();
 				}
 			},
 		},
@@ -192,9 +190,7 @@
 <style lang="scss" scoped>
 	.meal-tuan-wrapper {
 		width: 100%;
-		height: 100vh;
-		display: flex;
-		flex-direction: column;
+		padding-bottom: 160rpx;
 
 		.top {
 			align-items: center;
@@ -288,16 +284,18 @@
 				align-items: center;
 				display: flex;
 
-				button {
+				.button {
 					border: 1px solid #ddd;
 					border-radius: 4px;
 					color: #666;
 					font-family: PingFangSC-Regular, PingFang SC;
 					font-size: 12.5px;
 					height: 25px;
+					line-height: 25px;
 					margin-left: 8px;
 					width: 45px;
 					background-color: #fff;
+					text-align: center;
 				}
 			}
 		}
@@ -361,6 +359,10 @@
 		.create {
 			padding: 0 12px 6px;
 			text-align: center;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
 
 			.tips {
 				color: #999;

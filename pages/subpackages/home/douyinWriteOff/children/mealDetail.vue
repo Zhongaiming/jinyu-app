@@ -65,18 +65,15 @@
 			</view>
 		</u-popup>
 		<!-- 选择场地 -->
-		<!-- <CustomList ref="placelist" @getPlaceId="getPlaceId" /> -->
+		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
 	</view>
 </template>
 
 <script>
-	// import api from "@/utils/meituan";
-	// import CustomList from "@/components/commonComps/customList.vue";
+	import {
+		writeOffController
+	} from "@/api/index.js"
 	export default {
-		name: "dy_meal_detail---",
-		components: {
-			CustomList
-		},
 		data() {
 			return {
 				params: {
@@ -96,24 +93,32 @@
 				mealList: [],
 			};
 		},
-		// created() {
-		// 	const {
-		// 		poiName,
-		// 		id
-		// 	} = this.$route.query;
-		// 	this.params = {
-		// 		poiName,
-		// 		id
-		// 	};
-		// 	this.getDyShopMealById();
-		// },
+		onLoad(option) {
+			if(option.params) {
+				const {
+					poiName,
+					id
+				} = JSON.parse(option.params);
+				this.params = {
+					poiName,
+					id
+				};
+				this.getDyShopMealById();
+			}
+		},
 		methods: {
 			stopKeyborad() {
-				document.activeElement.blur();
+				uni.hideKeyboard();
 			},
 			openPlace() {
-				this.$refs.placelist.defaultChecked(String(this.placeIdlist))
 				this.$refs.placelist.showPlacePopup()
+			},
+			// 场地
+			getPlaceId(place) {
+				this.placeNum = place[1].length ?
+					"已选(" + place[1].length + ")个场地" :
+					"全部场地";
+				this.placeIdlist = place[1].length ? place[1] : [];
 			},
 			/**
 			 * @description: 套餐
@@ -122,11 +127,11 @@
 			 */
 			// 查询门店的套餐
 			async getDyShopMealById() {
-				let res = await api.getDyShopMealById({
+				let res = await writeOffController.getDyShopMealById({
 					shopId: this.params.id,
 				});
-				if (res.data.code == 0) {
-					this.mealList = res.data.data;
+				if (res.code == 200) {
+					this.mealList = res.data;
 				}
 			},
 			changeSwitch(item) {
@@ -136,18 +141,15 @@
 				let {
 					id: setMealId
 				} = item
-				this.$dialog
-					.confirm({
+				this.$modal(`确定删除选择套餐吗？`,{
 						title: "温馨提示",
-						message: `确定删除选择套餐吗？`,
-						width: "280",
-						confirmButtonColor: "#5241ff"
+						confirmColor: "#5241ff"
 					})
 					.then(() => {
-						api.deleteDyShopMealById({
+						writeOffController.deleteDyShopMealById({
 							setMealId
 						}).then((res) => {
-							if (res.data.code == 0 || res.data.msg == "ok") {
+							if (res.code == 200) {
 								this.getDyShopMealById();
 								this.$toast("删除成功~");
 							}
@@ -161,16 +163,12 @@
 				this.placeNum = `已选( ${this.mealObj.placeId.length} )个场地`;
 				this.placeIdlist = this.mealObj.placeId
 			},
-			// 场地
-			getPlaceId(place) {
-				this.placeNum = `已选( ${place[1].length} )个场地`;
-				this.placeIdlist = place[1].length ? place[1] : [];
-			},
+			
 			comfrimMethod() {
 				if (!this.placeIdlist.length) {
 					return this.$toast("请选择场地~")
 				}
-				api.updateDySetMeal({
+				writeOffController.updateDySetMeal({
 					dyShopId: this.mealObj.dyShopId,
 					dySetMealList: [{
 						id: this.mealObj.id,
@@ -180,7 +178,7 @@
 					}],
 					placeIds: String(this.placeIdlist)
 				}).then((res) => {
-					if (res.data.code == 0 || res.data.msg == "ok") {
+					if (res.code == 200) {
 						this.getDyShopMealById();
 						this.$toast("编辑成功~");
 					}

@@ -1,7 +1,7 @@
 <template>
   <!-- 售货机-单选 -->
   <u-popup
-    v-model="shjCommodity"
+    :show="shjCommodity"
     position="bottom"
     :style="{ height: '60%' }"
     :close-on-click-overlay="false"
@@ -38,8 +38,8 @@
               class="list-main"
               :class="specialOption == item.id ? 'active-style' : ''"
             >
-              <img :src="item.commodityImg" alt="" v-if="item.commodityImg" />
-              <img src="@/assets/image/other/ztwl.png" alt="" v-else />
+              <xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" />
+              <xls-image src="@/assets/image/other/ztwl.png" alt="" v-else />
               <view class="text-wrapper">
                 <view class="name text-over">{{ item.commodityName }}</view>
                 <view>{{ item.referenceSellingPrice }}元</view>

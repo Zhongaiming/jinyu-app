@@ -129,7 +129,7 @@
 							{
 								id: 411,
 								title: '场地配置信息管理',
-								imgUrl: `${this.$baseUrl}appV4/my_img/place.png`,
+								imgUrl: `${this.$baseUrl}appV4/my_img/place-configuration.png`,
 								route: '/pages/mainPackages/personal/placeConfigure/index',
 								permissions: ['app:place:index'],
 								subheading: '',

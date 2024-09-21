@@ -13,12 +13,12 @@ const config = {
 
 if (process.env.NODE_ENV === 'development') {
 	// 开发环境
-	config.baseUrl = 'http://8.138.24.164:659'
-	config.proxyUrl = 'http://8.138.24.164:659'
+	// config.baseUrl = 'http://8.138.24.164:659'
+	// config.proxyUrl = 'http://8.138.24.164:659'
 	// config.baseUrl = 'https://apiv4.ztuwl.com'
 	// config.proxyUrl = 'https://apiv4.ztuwl.com'
-	// config.baseUrl = 'https://xls.redorange.top'
-	// config.proxyUrl = 'https://xls.redorange.top'
+	config.baseUrl = 'https://xls.redorange.top'
+	config.proxyUrl = 'https://xls.redorange.top'
 	// config.baseUrl = 'http://inxuz4.natappfree.cc'
 	// config.proxyUrl = 'http://inxuz4.natappfree.cc'
 	// config.baseUrl = 'http://192.168.0.114:8006' // 潮

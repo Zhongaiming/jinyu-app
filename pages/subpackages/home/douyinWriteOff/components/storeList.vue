@@ -1,5 +1,5 @@
 <template>
-	<u-popup :show="showPlace" mode="bottom">
+	<u-popup :show="showPlace" mode="bottom" @close="showPlace=false">
 		<view class="place-wrapper-style">
 			<view class="title-wrapper">
 				<view @click="showPlace = false">取消</view>
@@ -28,7 +28,9 @@
 </template>
 
 <script>
-	// import api from "@/utils/meituan";
+	import {
+		writeOffController
+	} from "@/api/index.js"
 	export default {
 		name: "customList",
 		data() {
@@ -39,16 +41,16 @@
 				placeId: null,
 			};
 		},
-		// mounted() {
-		// 	this.getPlace();
-		// },
+		mounted() {
+			this.getPlace();
+		},
 		methods: {
 			async getPlace() {
-				let res = await api.getDyShopInfo({
-					search: this.searchValue ? encodeURIComponent(this.searchValue) : null,
+				let res = await writeOffController.getDyShopInfo({
+					search: encodeURIComponent(this.searchValue)
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					this.placeList = res.data.data;
+				if (res.code == 200) {
+					this.placeList = res.data;
 				}
 			},
 			//普通打开
@@ -75,7 +77,8 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		height: 100%;
+		height: 60vh;
+		max-height: 1000rpx;
 		font-family: "Microsoft JhengHei", "Microsoft YaHei";
 		background: #fff;
 
