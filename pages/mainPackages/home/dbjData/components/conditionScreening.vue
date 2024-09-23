@@ -94,7 +94,11 @@
 			activeName: {
 				type: [String, Number],
 				default: ''
-			}
+			},
+			deviceNumber: {
+				type: [String, Number],
+				default: ''
+			},
 		},
 		data() {
 			return {
@@ -308,7 +312,7 @@
 						"DBJ_HISTORY" :
 						"DBJ_NEW", // DBJ_NEW_DAILY：详情  DBJ_NEW：不是详情
 					deviceNumber: this.text == "detail" ?
-						this.$route.query.deviceNumber :
+						this.deviceNumber :
 						this.text == "index" ?
 						this.searchValue :
 						null, //详情时 必填！！！！

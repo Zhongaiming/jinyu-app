@@ -4,7 +4,7 @@
 		<view class="classify-wrapper">
 			<view class="classify-switch-wrapper">
 				<span>商品分类开启</span>
-				<u-switch v-model="classifySwitch" size="24px" active-color="#5241FF" @change="handleUpdata" />
+				<u-switch v-model="classifySwitch" size="50" activeColor="#5241FF" @change="handleUpdata" />
 			</view>
 			<view class="classify-item-p" v-for="(item, index) in typeList" :key="item.id">
 				<view class="classify-item">
@@ -39,14 +39,15 @@
 		<view class="goods-classify-footer">
 			<view class="text-btn" @click="beforeAdd">添加商品分类</view>
 		</view>
+
 		<!-- 添加、编辑 -->
-		<u-popup v-model="classifyPopup" round>
+		<u-popup :show="classifyPopup" round="20" mode="center">
 			<view class="dialog-title">{{ dataMsg.id ? "编辑" : "添加" }}商品分类</view>
 			<view class="input-group">
 				<view class="title">分类名称</view>
-				<u-field v-model="dataMsg.name" placeholder="请输入分类名称" clearable class="input-style" />
+				<xls-field v-model="dataMsg.name" placeholder="请输入分类名称" clearable class="input-style" />
 				<view class="title">分类说明</view>
-				<u-field v-model="dataMsg.remark" placeholder="非必填项，字数控制在20个字符内" maxlength="20" clearable
+				<xls-field v-model="dataMsg.remark" placeholder="非必填项，字数控制在20个字符内" maxlength="20" clearable
 					class="input-style" />
 			</view>
 			<view class="handle-panel">
@@ -54,6 +55,7 @@
 				<view class="handle-button save-button" @click="confirmMethed">保存</view>
 			</view>
 		</u-popup>
+
 		<!-- <shj-commodity @getShjCommodity="getShjCommodity" ref="commodity" /> -->
 	</view>
 </template>
@@ -61,18 +63,11 @@
 <script>
 	import {
 		shjController
-	} from '@/api/index.js';
-	// import {
-	// 	addType
-	// } from "@/utils/api/commodity";
-	// import ShjCommodity from "./components/shjCommodity.vue";
+	} from "@/api/index.js";
 	export default {
-		name: "shj-classify",
-		// components: {
-		// 	ShjCommodity
-		// },
 		data() {
 			return {
+				deviceNumber: "",
 				classifySwitch: false,
 				classifyPopup: false,
 				dataMsg: {
@@ -90,23 +85,40 @@
 				business: {},
 			};
 		},
-		// async created() {
-		// 	if (this.$route.query.deviceNumber) {
-		// 		this.getList();
-		// 		this.getType();
-		// 	}
-		// },
+		async onLoad(option) {
+			if (option.params) {
+				const {
+					deviceNumber
+				} = JSON.parse(option.params)
+				this.deviceNumber = deviceNumber;
+				// this.getList();
+				// this.getType();
+			}
+		},
 		methods: {
 			//查询
 			async getType() {
-				let deviceNumber = this.$route.query.deviceNumber;
-				let res = await api.businessOne({
+				const {
+					deviceNumber
+				} = this
+				let res = await shjController.businessOne({
 					deviceNumber
 				});
-				if (res.data.code == 0) {
-					this.business = res.data.data;
+				if (res.code == 200) {
+					this.business = res.data;
 					this.classifySwitch =
 						this.business.commodityClassification == 1;
+				}
+			},
+			async getList() {
+				const {
+					deviceNumber
+				} = this
+				let res = await shjController.vendingMachineList({
+					deviceNumber
+				});
+				if (res.code == 200) {
+					this.typeList = res.data;
 				}
 			},
 			//修改开关
@@ -114,41 +126,32 @@
 				this.business.commodityClassification = this.classifySwitch ?
 					1 :
 					0;
-				let res = await api.updBusinessOne(this.business);
-				if (res.data.code == 0) {
+				let res = await shjController.updBusinessOne(this.business);
+				if (res.code == 200) {
 					this.$toast("操作成功~");
 					this.getType();
 				} else {
 					this.classifySwitch = !this.classifySwitch;
 				}
 			},
-			async getList() {
-				let deviceNumber = this.$route.query.deviceNumber;
-				let res = await api.vendingMachineList({
-					deviceNumber
-				});
-				if (res.data.code == 0) {
-					this.typeList = res.data.data;
-				}
-			},
+
 			handleDelete(id) {
-				this.$dialog
-					.confirm({
+				this.$modal("确定删除该分类吗？",{
 						title: "温馨提示",
-						message: "确定删除该分类吗？",
-						confirmButtonText: "删除",
-						confirmButtonColor: "#5241FF",
-						width: 280,
+						confirmText: "删除",
+						confirmColor: "#5241FF",
 					})
 					.then(() => {
-						let deviceNumber = this.$route.query.deviceNumber;
-						api
+						const {
+							deviceNumber
+						} = this
+						shjController
 							.delVendingMachineType({
 								commodityTypeId: id,
 								deviceNumber,
 							})
 							.then((res) => {
-								if (res.data.code == 0) {
+								if (res.code == 200) {
 									this.getList();
 									this.$toast("删除成功~");
 								}
@@ -177,8 +180,8 @@
 					return this.$toast("分类名称不能为空~");
 				}
 				if (this.dataMsg.id) {
-					api.updVendingMachineType(this.dataMsg).then((res) => {
-						if (res.data.code == 0) {
+					shjController.updVendingMachineType(this.dataMsg).then((res) => {
+						if (res.code == 200) {
 							this.getList();
 							this.classifyPopup = false;
 							this.$toast("编辑成功~");
@@ -186,7 +189,7 @@
 					});
 				} else {
 					addType(this.dataMsg).then((res) => {
-						if (res.data.code == 0) {
+						if (res.code == 200) {
 							this.getList();
 							this.classifyPopup = false;
 							this.$toast("添加成功~");
@@ -195,34 +198,36 @@
 				}
 			},
 			handleCommodity(item) {
-				this.railCom.commodityTypeId = item.id;
-				let arr = [];
+				this.railCom.commodityTypeId = item.id
+				let arr = []
 				if (item.typeList.length) {
 					item.typeList.forEach((element) => {
-						arr.push(element.commodityVendingMachineId);
+						arr.push(element.commodityVendingMachineId)
 						if (arr.length == item.typeList.length) {
-							this.$refs.commodity.showCommodity(arr);
+							this.$refs.commodity.showCommodity(arr)
 						}
 					});
 				} else {
-					this.$refs.commodity.showCommodity(arr);
+					this.$refs.commodity.showCommodity(arr)
 				}
 			},
 			async getShjCommodity(arr) {
-				this.railCom.vendingMachineIdList = arr;
-				let deviceNumber = this.$route.query.deviceNumber;
-				this.railCom.deviceNumber = deviceNumber;
-				let res = await api.bindItems(this.railCom);
-				if (res.data.code == 0) {
-					this.getList();
-					this.$toast("商品关联成功~");
+				const {
+					deviceNumber
+				} = this
+				this.railCom.deviceNumber = deviceNumber
+				this.railCom.vendingMachineIdList = arr
+				let res = await shjController.bindItems(this.railCom)
+				if (res.code == 200) {
+					this.getList()
+					this.$toast("商品关联成功~")
 				}
 			},
 		},
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.shj-classify {
 		position: absolute;
 		top: 0;

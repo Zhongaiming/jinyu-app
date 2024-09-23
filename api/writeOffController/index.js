@@ -64,8 +64,20 @@ export default class writeOffController {
 		return http.request({
 			url: '/order/api/v1/admin/order/dyMerchantShop/deleteDyShopMealById',
 			method: 'POST',
+			data,
+			custom: {
+				header: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			}
+		})
+	}
+	// 抖音核销
+	static writeOff(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/dyMerchantShop/writeOff',
+			method: 'POST',
 			data
 		})
 	}
-	
 }

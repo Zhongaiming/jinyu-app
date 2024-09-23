@@ -1,5 +1,5 @@
 <template>
-	<view class="xls-cell xls-field">
+	<view class="xls-cell xls-field" @click="clickMethod">
 		<view class="xls-cell__title xls-field__label" v-if="label">
 			<text>{{label}}</text>
 		</view>
@@ -150,6 +150,9 @@
 			},
 			trimStr(str) {
 				return str.replace(/^\s+|\s+$/g, '');
+			},
+			clickMethod() {
+				this.$emit('click')
 			}
 		}
 	}

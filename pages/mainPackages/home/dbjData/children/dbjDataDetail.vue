@@ -8,7 +8,8 @@
 
 		<xls-tabs :options="options" v-model="activeName" class="tab-style" @change="changeActiveName"></xls-tabs>
 
-		<ConditionScreening text="detail" @getParams="getParams" ref="screen" :activeName="activeName"/>
+		<ConditionScreening text="detail" @getParams="getParams" ref="screen" 
+			:activeName="activeName" :deviceNumber="paramsReceived.deviceNumber" />
 
 		<view class="list-content" v-show="activeName == 1">
 			<view class="list-block margin10" v-for="(item, dataIndex) in dataList" :key="dataIndex">

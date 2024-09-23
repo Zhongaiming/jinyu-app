@@ -3,6 +3,7 @@
 		<xls-jy-navbar title="抖音核销"></xls-jy-navbar>
 		<!-- 顶部导航 -->
 		<xls-tabs :options="tabList" v-model="tabIndex"></xls-tabs>
+		<button @click="hexiao()">核销</button>
 		<!-- 门店管理 -->
 		<view v-show="tabIndex == 1">
 			<xls-search @confirm="stratesSearch" placeholder="搜索抖音门店名称" marLeft="-6.0em"></xls-search>
@@ -27,8 +28,8 @@
 
 							<view class="btn-content">
 								<u-checkbox-group v-model="allCheckStore">
-									<u-checkbox name="1" activeColor="#5241FF" shape="circle" iconSize="32" labelSize="36"
-										size="38">
+									<u-checkbox name="1" activeColor="#5241FF" shape="circle" iconSize="32"
+										labelSize="36" size="38">
 										<span>全部 ({{ storeCheckGroup.length }} /
 											{{ MerchantList.length }})</span>
 									</u-checkbox>
@@ -194,6 +195,7 @@
 			</view>
 
 			<xls-empty v-show="!count.list.length"></xls-empty>
+			
 		</view>
 		<!-- 关联门店 -->
 		<u-popup :show="storePopup" mode="bottom" round="20" @close="storePopup = false">
@@ -248,7 +250,7 @@
 				<view class="title">抖音商户</view>
 				<view class="consume-wrapper">
 					<view class="cell-container">
-						<u-checkbox-group v-model="storeCheckCountGroup"  placement="column">
+						<u-checkbox-group v-model="storeCheckCountGroup" placement="column">
 							<view class="cell-item" v-for="(item, index) in MerchantList" :key="index">
 								<view class="cell-title">
 									<span>{{ item.accountName }}</span>
@@ -269,7 +271,7 @@
 							</u-checkbox>
 						</u-checkbox-group>
 						全部 ({{ storeCheckCountGroup.length }} /
-							{{ MerchantList.length }})
+						{{ MerchantList.length }})
 						<view class="btn" @click="reset('allCheckCount')">
 							重置
 						</view>
@@ -437,7 +439,7 @@
 			reset() {
 				this.storeCheckGroup = []
 				this.allCheckStore = []
-				
+
 				this.allCheckCount = []
 				this.storeCheckCountGroup = []
 			},
@@ -551,10 +553,17 @@
 					this.poiId = ""
 				}
 			},
-
-
-
-
+			// 核销
+			hexiao() {
+				writeOffController.writeOff({
+					"deviceNumber": "30003300",
+					"memberNumber": "5",
+					"placeId": 2376,
+					"receiptCode": "123456"
+				}).then(res => {
+					
+				})
+			}
 		},
 	};
 </script>

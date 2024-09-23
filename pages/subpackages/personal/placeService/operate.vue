@@ -182,7 +182,7 @@
 			},
 			//清除
 			clearEnter() {
-				this.$model("确定要清除输入吗？", {
+				this.$modal("确定要清除输入吗？", {
 						confirmButtonText: "删除",
 						confirmButtonColor: "#f73e3e",
 					})

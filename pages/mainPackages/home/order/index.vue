@@ -73,9 +73,8 @@
 					</view>
 
 					<view class="xls-order-style-price" @click="goTo(item, 'orderDetail')">
-						<image class="icon-image"
-							src="https://asset.leyaoyao.com/merchant-order-center/static/d0da3593648b2c25b3ca.png"
-							mode="widthFix"></image>
+						<xls-image class="order-icon-image" :src="`${$baseUrl}appV4/common/orderlist.png`"
+							mode="widthFix"></xls-image>
 						<view class="price-center">
 							{{ $formatAmount(item.shopPrice) }}元 {{ item.commodityName }}
 						</view>

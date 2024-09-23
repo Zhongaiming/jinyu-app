@@ -108,7 +108,10 @@
 			},
 
 			//普通打开
-			showPlacePopup() {
+			showPlacePopup(params) {
+				if(Array.isArray(params)) {
+					this.checkboxGroup = params
+				}
 				this.showPlace = !this.showPlace;
 			},
 

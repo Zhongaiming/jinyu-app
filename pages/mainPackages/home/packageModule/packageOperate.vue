@@ -97,6 +97,40 @@
 				</view>
 			</view>
 		</view>
+		<!-- 兑币机 核销开关 -->
+		<view class="gashapon" v-if="activeDeviceTypeId == 5">
+			<view class="recharge-management">
+				<view class="recharge-entry childrenDBJ">
+					<!-- <span class="text" @click="(gashaponNotice = !gashaponNotice), (noticeNum = 0)"> -->
+					<span class="text">
+						抖音核销
+						<!-- <image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" /> -->
+					</span>
+					<view class="switch-box">
+						<view class="switch">
+							<u-switch v-model="gasArguments.dyWriteOff" @change="setEggMsg"
+								active-color="#5241FF" size="50" />
+						</view>
+						<span>{{gasArguments.dyWriteOff ? '开' : '关'}}</span>
+					</view>
+				</view>
+				
+				<view class="recharge-entry childrenDBJ">
+					<!-- <span class="text" @click="(gashaponNotice = !gashaponNotice), (noticeNum = 0)"> -->
+					<span class="text">
+						美团核销
+						<!-- <image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" /> -->
+					</span>
+					<view class="switch-box">
+						<view class="switch">
+							<u-switch v-model="gasArguments.meituanWriteOff" @change="setEggMsg"
+								active-color="#5241FF" size="50" />
+						</view>
+						<span>{{gasArguments.meituanWriteOff ? '开' : '关'}}</span>
+					</view>
+				</view>
+			</view>
+		</view>
 		<!-- 兑币机 -->
 		<view class="mealSettting home-family" v-show="activeDeviceTypeId == 5">
 			<view>
@@ -202,6 +236,7 @@
 				<span style="margin-left: 6px">恢复默认设置</span>
 			</view>
 		</view>
+		
 		<!-- 扭蛋机-娃娃机-儿童类-游戏类-微抓机 -->
 		<view class="gashapon" v-show="[1, 2, 6, 7, 8].includes(activeDeviceTypeId)">
 			<view v-show="[2, 6, 7, 8].includes(activeDeviceTypeId)" v-hasPermi="['app:meal:index:ndjset']">
@@ -232,8 +267,8 @@
 					</view>
 					<view class="recharge-entry children">
 						<span class="text" @click="
-                (gashaponNoticeEnd = !gashaponNoticeEnd), (noticeNumTwo = 0)
-              ">充值引导绑定手机
+							(gashaponNoticeEnd = !gashaponNoticeEnd), (noticeNumTwo = 0)
+						  ">充值引导绑定手机
 							<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" />
 						</span>
 						<view class="switch-box">
@@ -246,8 +281,8 @@
 					</view>
 					<view class="recharge-entry children">
 						<span class="text" @click="
-                (gashaponNoticeEnd = !gashaponNoticeEnd), (noticeNumTwo = 1)
-              ">充值强制绑定手机
+							(gashaponNoticeEnd = !gashaponNoticeEnd), (noticeNumTwo = 1)
+						  ">充值强制绑定手机
 							<image mode="widthFix" :src="`${$baseUrl}appV4/setImage/tips.png`" alt="" class="image" />
 						</span>
 						<view class="switch-box">
@@ -290,19 +325,19 @@
 				</view>
 				<!-- 投币类型 -->
 				<view class="refund bg home-family" @click="
-            (gashaponMachine = !gashaponMachine),
-              (middleValue = gasArguments.insertCoinsType)
-          ">
+					(gashaponMachine = !gashaponMachine),
+					  (middleValue = gasArguments.insertCoinsType)
+				  ">
 					<view class="list-name">线下投币类型</view>
 					<view class="switch-box offline">
-						<view class="switch" v-html="
-                gasArguments.insertCoinsType ? '线下投游戏币' : '线下投硬币'
-              "></view>
+						<view class="switch">{{gasArguments.insertCoinsType?'线下投游戏币':'线下投硬币'}}</view>
 						<!-- 线下投币类型;(1.线下投游戏币，2.线下投硬币) -->
 						<u-icon name="arrow-right" size="32" color="#4c4c4c" />
 					</view>
 				</view>
 			</view>
+			
+			
 			<!-- 套餐 -->
 			<view class="batchSetting home-family">
 				<view class="content-header box-sizing" v-if="params.id">
@@ -834,7 +869,7 @@
 				//储值套餐
 				conversionType: 1,
 				// 类似 ndj 1-wwj 2-ndj 3-ylc 4-shj 5-dbj 6-etl 7-yxl 8-wzj
-				ndjSameList: [2, 3, 4, 6, 7, 8],
+				ndjSameList: [2, 3, 4, 6, 7, 8, 5],
 				// params
 				params: {},
 			};
@@ -966,6 +1001,10 @@
 						false; //库存不足限制交易;1.开，0.关（库存<购买数量时限制交易
 					this.gasArguments.insertCoinsType =
 						this.gasArguments.insertCoinsType == 1 ? true : false; //线下投币类型;(1.线下投游戏币，2.线下投硬币)
+					this.gasArguments.dyWriteOff =
+						this.gasArguments.dyWriteOff == 1 ? true : false; //抖音核销;(1.开，0.关)
+					this.gasArguments.meituanWriteOff =
+						this.gasArguments.meituanWriteOff == 1 ? true : false; //美团核销;(1.开，2.关)
 				}
 			}, 500),
 			//修改设备设置信息
@@ -983,6 +1022,8 @@
 						automaticRefund: this.gasArguments.automaticRefund ? 1 : 0,
 						understockAstrict: this.gasArguments.understockAstrict ? 1 : 0,
 						insertCoinsType: this.gasArguments.insertCoinsType ? 1 : 2,
+						dyWriteOff: this.gasArguments.dyWriteOff ? 1 : 0,
+						meituanWriteOff: this.gasArguments.meituanWriteOff ? 1 : 0,
 					});
 					if (res.code == 200) {
 						this.getEggSetMsg();
@@ -1967,6 +2008,10 @@
 
 		.children {
 			margin-left: 15px;
+			margin-top: 10px;
+		}
+		
+		.childrenDBJ {
 			margin-top: 10px;
 		}
 

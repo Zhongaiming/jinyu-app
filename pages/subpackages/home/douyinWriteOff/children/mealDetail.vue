@@ -12,18 +12,17 @@
 						<view class="coupon-skuid">创建时间: {{ item.createTime }}</view>
 					</view>
 					<view class="right">
-						<button @click="editMethod(item)">编辑</button>
-						<button @click="deleteMethod(item)">删除</button>
+						<view class="button" @click="editMethod(item)">编辑</view>
+						<view class="button" @click="deleteMethod(item)">删除</view>
 					</view>
 				</view>
 				<view class="card-content-wrap" v-if="item.placeName.length">
 					<view class="card_item_style" @click="changeSwitch(item)">
 						<view class="key_text">活动场地</view>
-						<view>{{ item.placeName.length }}个
+						<view class="card-item__right">{{ item.placeName.length }}个
 							<u-icon name="arrow-up" size="20px" color="#8d8d8d" v-show="item.switch" />
 							<u-icon name="arrow-down" size="20px" color="#8d8d8d" v-show="!item.switch" />
 						</view>
-
 					</view>
 					<view class="card_item_style" v-for="(text, index) in item.placeName" :key="`a${index}`"
 						v-show="item.switch">
@@ -111,7 +110,7 @@
 				uni.hideKeyboard();
 			},
 			openPlace() {
-				this.$refs.placelist.showPlacePopup()
+				this.$refs.placelist.showPlacePopup(this.placeIdlist)
 			},
 			// 场地
 			getPlaceId(place) {
@@ -160,8 +159,8 @@
 			editMethod(params) {
 				this.mealPopup = true
 				this.mealObj = Object.assign({}, params)
-				this.placeNum = `已选( ${this.mealObj.placeId.length} )个场地`;
-				this.placeIdlist = this.mealObj.placeId
+				this.placeNum = `已选( ${this.mealObj.placeIds.length} )个场地`;
+				this.placeIdlist = this.mealObj.placeIds
 			},
 			
 			comfrimMethod() {
@@ -218,16 +217,18 @@
 			align-items: center;
 			display: flex;
 
-			button {
+			.button {
 				border: 1px solid #ddd;
 				border-radius: 4px;
 				color: #666;
 				font-family: PingFangSC-Regular, PingFang SC;
 				font-size: 12.5px;
 				height: 25px;
+				line-height: 25px;
 				margin-left: 8px;
 				width: 45px;
 				background-color: #fff;
+				text-align: center;
 			}
 		}
 	}
@@ -244,6 +245,11 @@
 			justify-content: space-between;
 			min-height: 40px;
 			font-size: 14px;
+			
+			.card-item__right {
+				display: flex;
+				align-items: center;
+			}
 
 			.key_text {
 				padding-right: 12px;
