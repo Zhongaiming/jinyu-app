@@ -2,13 +2,13 @@
 	<view id="cargoWay">
 		<xls-jy-navbar title="货道管理" bgColor="#f5f6f7"></xls-jy-navbar>
 		<view class="top-notice-wrapper">
-			<u-icon name="bullhorn-o" size="18" color="#f7770f" />
+			<u-icon name="info-circle" size="36" color="#f7770f" />
 			<span>该设置将影响货道布局，请在厂家指导下操作！</span>
 		</view>
 		<view class="car-go-way">
 			<view class="left-wrapper-style">
 				<view class="tier-item-style" v-for="(item, index) in tierList" :key="index"
-					:class="activeTier == item.id ? 'ative-tier' : ''" @click="activeTier = item.id">
+					:class="{'ative-tier': activeTier == item.id}" @click="activeTier = item.id">
 					<span>{{ item.title }}</span>
 				</view>
 				<view class="reset-button">
@@ -47,16 +47,16 @@
 			<view class="text-btn" @click="$refs.batch.openModule(2)">批量设置</view>
 		</view>
 		<!--  货道重置 -->
-		<u-popup v-model="railPopup" round closeable>
+		<u-popup :show="railPopup" round="20" @close="railPopup=false">
 			<view class="rail-popup-wrapper">
 				<p class="title">货道重置</p>
 				<!-- <u-cell title="重置模式" style="text-align: left">
-          <template #right-icon>
-            <u-switch v-model="typeSwitch" size="24" />
-          </template>
-        </u-cell> -->
-				<u-field v-model="reset.row" type="digit" label="行" placeholder="请输入货道行数(1~20)" maxlength="2" />
-				<u-field v-model="reset.column" type="digit" label="列" placeholder="请输入货道列数(1~20)" maxlength="2" />
+				  <template #right-icon>
+					<u-switch v-model="typeSwitch" size="24" />
+				  </template>
+				</u-cell> -->
+				<xls-field v-model="reset.row" type="digit" label="行" placeholder="请输入货道行数(1~20)" maxlength="2" />
+				<xls-field v-model="reset.column" type="digit" label="列" placeholder="请输入货道列数(1~20)" maxlength="2" />
 				<view class="read-stock">
 					<view class="btn" @click="railPopup = false">取消</view>
 					<view class="btn confirm" @click="confirmMethed">确定</view>
@@ -64,7 +64,7 @@
 			</view>
 		</u-popup>
 		<!-- 货道编辑 -->
-		<u-popup v-hasPermi="['app:shj:rail:edit']" v-model="showEdit" position="bottom" :style="{ height: '50%' }">
+		<u-popup v-hasPermi="['app:shj:rail:edit']" :show="showEdit" mode="bottom" @close="showEdit=false">
 			<view class="edit-cargoroad">
 				<view class="popup-header">
 					<span @click="showEdit = false">取消</span>
@@ -91,9 +91,9 @@
 				</view>
 			</view>
 		</u-popup>
-		<batch-setting ref="batch" v-hasPermi="['app:shj:rail:edit']" />
+		<!-- <batch-setting ref="batch" v-hasPermi="['app:shj:rail:edit']" /> -->
 		<!-- 电机测试 -->
-		<u-popup v-model="testPopup" round closeable>
+		<u-popup :show="testPopup" round="20" @close="testPopup=false">
 			<view class="rail-popup-wrapper test-wrapper">
 				<p class="title">电机测试</p>
 				<u-cell title="出货数量" class="main-wrapper">
@@ -109,7 +109,7 @@
 			</view>
 		</u-popup>
 		<!-- 批量电机测试 -->
-		<u-popup v-model="railBatchPopup" round closeable>
+		<u-popup :show="railBatchPopup" round="20" @close="railBatchPopup=false">
 			<view class="rail-popup-wrapper test-wrapper">
 				<p class="title">批量电机测试</p>
 				<u-cell title="时间间隔" class="main-wrapper">
@@ -127,7 +127,7 @@
 			</view>
 		</u-popup>
 		<!-- 批量电机测试中 -->
-		<u-popup v-model="loadingPopup" round :close-on-click-overlay="false">
+		<u-popup :show="loadingPopup" round="20">
 			<view class="rail-popup-wrapper test-wrapper" style="background: #f5f6f7">
 				<p class="title">电机测试中</p>
 				<view class="device-text">
@@ -135,8 +135,8 @@
 					<view>
 						货道
 						{{
-              testRailList.length ? testRailList[railIndex].railNumber : "暂无"
-            }}
+						  testRailList.length ? testRailList[railIndex].railNumber : "暂无"
+						}}
 						正在测试...
 					</view>
 				</view>
@@ -151,7 +151,7 @@
 				</view>
 			</view>
 		</u-popup>
-		<u-popup v-model="finishPopup" round :close-on-click-overlay="false" closeable>
+		<u-popup :show="finishPopup" round="20">
 			<view class="rail-popup-wrapper test-wrapper">
 				<view class="finish-wrapper">
 					<view class="finish">
@@ -302,10 +302,13 @@
 				railIndex: 0,
 			};
 		},
-		created() {
-			if (this.$route.query.deviceNumber) {
-				this.deviceNumber = this.$route.query.deviceNumber;
-				this.getDetail();
+		onLoad(option) {
+			if (option.params) {
+				const {
+					deviceNumber
+				} = JSON.parse(option.params)
+				this.deviceNumber = deviceNumber;
+				// this.getDetail();
 			}
 		},
 		methods: {
@@ -324,12 +327,12 @@
 			},
 			//详情
 			async getDetail() {
-				let deviceNumber = this.$route.query.deviceNumber;
-				let res = await api.replenishmentDetails({
+				let deviceNumber = this.deviceNumber
+				let res = await shjController.replenishmentDetails({
 					deviceNumber,
 					railEnable: 1
-				});
-				if (res.data.code == 0) {
+				})
+				if (res.code == 200) {
 					this.railList = res.data.data.list;
 					if (!res.data.data.list.length) {
 						this.resetRail();
@@ -351,7 +354,6 @@
 			},
 			//层级
 			selectTier(tierIdList) {
-
 				this.tierList = [];
 				let tierAllList = this.tierAllList;
 				tierAllList.forEach((tier) => {
@@ -379,8 +381,8 @@
 			},
 			async confirmSet() {
 				this.railMsg.railEnable = this.railEnable ? 1 : 0;
-				let res = await api.updCargoLane(this.railMsg);
-				if (res.data.code == 0) {
+				let res = await shjController.updCargoLane(this.railMsg);
+				if (res.code == 200) {
 					this.$toast(`编辑成功~`);
 					this.railCenterObj.cargoLaneNumber = this.railMsg.cargoLaneNumber;
 					this.railCenterObj.railCapacity = this.railMsg.railCapacity;
@@ -399,8 +401,8 @@
 				this.railPopup = true;
 			},
 			async confirmMethed() {
-				let res = await api.rendingMachineReset(this.reset);
-				if (res.data.code == 0) {
+				let res = await shjController.rendingMachineReset(this.reset);
+				if (res.code == 200) {
 					this.railPopup = false;
 					this.getDetail();
 					this.$toast("重置成功~");
@@ -423,7 +425,7 @@
 				}
 			},
 			async confirmTest(type) {
-				let res = await api.motorTest(this.test);
+				let res = await shjController.motorTest(this.test);
 				if (res.data.code == 200) {
 					this.testPopup = false;
 					if (type == 1) return;
@@ -439,12 +441,12 @@
 			},
 			// 批量测试
 			async confirmBatchTest() {
-				this.railBatchPopup = false;
-				let deviceNumber = this.$route.query.deviceNumber;
-				let res = await api.replenishmentDetails({
+				this.railBatchPopup = false
+				let deviceNumber = this.deviceNumber
+				let res = await shjController.replenishmentDetails({
 					deviceNumber
 				});
-				if (res.data.code == 0) {
+				if (res.code == 200) {
 					this.testRailList = res.data.data.list;
 					if (!this.testRailList.length) {
 						return this.$toast("请先设置设备货道~");
@@ -482,18 +484,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
-	#cargoWay {
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 999;
-		height: 100vh;
-		width: 100%;
-		background: #efefef;
-		display: flex;
-		flex-direction: column;
-	}
+<style lang="scss" scoped>
 
 	.top-notice-wrapper {
 		line-height: 35px;

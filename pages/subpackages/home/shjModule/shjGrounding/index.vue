@@ -62,7 +62,7 @@
 		</view>
 		<show-type ref="type" v-hasPermi="['app:shj:grounding:edit']" />
 		<edit-rail ref="edit" v-hasPermi="['app:shj:grounding:edit']" />
-		<batch-setting ref="batch" v-hasPermi="['app:shj:grounding:edit']" />
+		<!-- <batch-setting ref="batch" v-hasPermi="['app:shj:grounding:edit']" /> -->
 	</view>
 </template>
 

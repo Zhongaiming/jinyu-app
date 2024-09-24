@@ -5,7 +5,7 @@
 			<!-- 层数 -->
 			<view class="left-wrapper-style">
 				<view class="tier-item-style text-over" v-for="(item, index) in tierList" :key="index"
-					:class="activeTier == item.id ? 'ative-tier' : ''" @click="activeTier = item.id">
+					:class="{'ative-tier':activeTier == item.id}" @click="activeTier = item.id">
 					<span>{{ item.title }}</span>
 				</view>
 			</view>
@@ -96,7 +96,7 @@
 			</view>
 		</view>
 		<!-- 补货 -->
-		<u-popup v-model="backCargo" round :close-on-click-overlay="false">
+		<u-popup :show="backCargo" round="20" @close="backCargo=false">
 			<view class="popupContent">
 				<view class="title">补货</view>
 				<view class="info">
@@ -125,7 +125,7 @@
 		<!-- 全选 -->
 		<view class="bottom-btn" v-show="!batchReplenish">
 			<view class="right">
-				<u-checkbox v-model="allCheck" checked-color="#5241FF" @change="allCheckRail"></u-checkbox>
+				<!-- <u-checkbox v-model="allCheck" checked-color="#5241FF" @change="allCheckRail"></u-checkbox> -->
 				<span style="margin-left: 10px">全选</span>
 			</view>
 			<view class="enter" @click="replentGoods(3, '')">确定补货</view>
@@ -247,52 +247,57 @@
 				},
 				buhuoMsg: {},
 				times: 2, //补货 批量补货
+				deviceNumber: "",
 			};
 		},
-		// created() {
-		//   if (this.$route.query.deviceNumber) {
-		//     this.deviceNumber = this.$route.query.deviceNumber;
-		//     this.getDetail();
-		//   }
-		// },
+		async onLoad(option) {
+			if (option.params) {
+				const {
+					deviceNumber
+				} = JSON.parse(option.params)
+				this.deviceNumber = deviceNumber
+				// this.getDetail();
+			}
+		},
 		methods: {
 			returnBack(railNumber) {
-				let rail = String(railNumber).length;
+				let rail = String(railNumber).length
 				if (rail >= 4) {
-					return String(railNumber).substring(0, 2) * 1 == this.activeTier;
+					return String(railNumber).substring(0, 2) * 1 == this.activeTier
 				} else {
-					return String(railNumber).substring(0, 1) * 1 == this.activeTier;
+					return String(railNumber).substring(0, 1) * 1 == this.activeTier
 				}
 			},
 			//详情
 			async getDetail(type) {
-				let deviceNumber = this.$route.query.deviceNumber;
-				let res = await api.replenishmentDetails({
+				const { deviceNumber } = this
+				let res = await shjController.replenishmentDetails({
 					deviceNumber
 				});
-				if (res.data.code == 0) {
+				if (res.code == 200) {
 					if (type == 1 || type == 2) {
-						this.$toast(`${type == 1 ? "清货" : "补货"}成功~`);
+						this.$toast(`${type == 1 ? "清货" : "补货"}成功~`)
 					}
-					this.allCheck = false;
-					this.batchReplenish = true;
-					this.checkboxGroup = [];
-					this.railList = res.data.data.list;
-					this.acountMsg.total = res.data.data.total;
-					this.acountMsg.stock = res.data.data.stock;
-					this.acountMsg.shortSupply = res.data.data.shortSupply;
-					this.acountMsg.railCount = res.data.data.railCount;
-					if (!res.data.data.list.length) return;
-					let tierIdList = [];
-					res.data.data.list.forEach((element) => {
+					this.allCheck = false
+					this.batchReplenish = true
+					this.checkboxGroup = []
+					const {list, total, stock, shortSupply, railCount} = res.data
+					this.railList = list
+					this.acountMsg.total = total
+					this.acountMsg.stock = stock
+					this.acountMsg.shortSupply = shortSupply
+					this.acountMsg.railCount = railCount
+					if (!list.length) return
+					let tierIdList = []
+					list.forEach((element) => {
 						let tier =
 							element.railNumber.substring(
 								0,
 								element.railNumber.length == 3 ? 1 : 2
 							) * 1; //层
-						tierIdList.push(tier);
-						if (tierIdList.length == res.data.data.list.length) {
-							this.selectTier(tierIdList);
+						tierIdList.push(tier)
+						if (tierIdList.length == list.length) {
+							this.selectTier(tierIdList)
 						}
 					});
 				}
@@ -300,41 +305,38 @@
 			//层级
 			selectTier(tierIdList) {
 				this.tierList = [];
-				let tierAllList = this.tierAllList;
+				let tierAllList = this.tierAllList
 				tierAllList.forEach((tier) => {
 					if (tierIdList.includes(tier.id)) {
-						this.tierList.push(tier);
+						this.tierList.push(tier)
 						tierAllList = tierAllList.filter((item) => {
-							return item.id != tier.id;
+							return item.id != tier.id
 						});
 					}
 				});
 				if (!this.activeTier) {
-					this.activeTier = this.tierList[0].id;
+					this.activeTier = this.tierList[0].id
 				}
 			},
 			//一键清货 或 一键补货
 			async clearGoods(type) {
-				this.$dialog
-					.confirm({
+				const message = `${
+					type == 1
+					  ? "是否一键清除售货机所有货道库存，请确认？"
+					  : "是否一键补满售货机所有货道库存，请确认？"
+				}`
+				this.$modal(message, {
 						title: `${type == 1 ? "清货" : "补货"}提示`,
-						width: "280px",
-						message: `${
-            type == 1
-              ? "是否一键清除售货机所有货道库存，请确认？"
-              : "是否一键补满售货机所有货道库存，请确认？"
-          }`,
-						confirmButtonColor: "#5241FF",
+						confirmColor: "#5241FF"
 					})
 					.then(() => {
-						api
-							.onekey({
+						shjController.onekey({
 								type: type, //type 1=清货 2= 补货
 								deviceNumber: this.deviceNumber,
 							})
 							.then((res) => {
-								if (res.data.code == 0) {
-									this.getDetail(type);
+								if (res.code == 200) {
+									this.getDetail(type)
 								}
 							});
 					})
@@ -342,12 +344,9 @@
 			},
 			//单个补满
 			railMaxCapacity() {
-				this.$dialog
-					.confirm({
+				this.$modal(`是否补满货道 ${this.buhuoMsg.railNumber} 的库存？`,{
 						title: `补货提示`,
-						width: "280px",
-						message: `是否补满货道 ${this.buhuoMsg.railNumber} 的库存？`,
-						confirmButtonColor: "#5241FF",
+						confirmColor: "#5241FF",
 					})
 					.then(() => {
 						let params = {
@@ -356,12 +355,12 @@
 							railRepertory: this.railMsg.railCapacity,
 							railCapacity: this.railMsg.railCapacity,
 						};
-						api.clearingOrReplenishment(params).then((res) => {
-							if (res.data.code == 0) {
-								this.buhuoMsg.railRepertory = this.railMsg.railCapacity;
-								this.buhuoMsg.railCapacity = this.railMsg.railCapacity;
-								this.$toast(`库存已补满~`);
-								this.backCargo = false;
+						shjController.clearingOrReplenishment(params).then((res) => {
+							if (res.code == 200) {
+								this.buhuoMsg.railRepertory = this.railMsg.railCapacity
+								this.buhuoMsg.railCapacity = this.railMsg.railCapacity
+								this.$toast(`库存已补满~`)
+								this.backCargo = false
 							}
 						});
 					})
@@ -369,49 +368,46 @@
 			},
 			//清货
 			clearRail(item) {
-				this.$dialog
-					.confirm({
+				this.$modal(`是否清空货道 ${item.railNumber} 的库存？`,{
 						title: `清货提示`,
-						width: "280px",
-						message: `是否清空货道 ${item.railNumber} 的库存？`,
-						confirmButtonColor: "#5241FF",
+						confirmColor: "#5241FF",
 					})
 					.then(() => {
 						let params = {
 							type: 1, //type 1=清货 2= 补货
 							railId: item.id,
 						};
-						api.clearingOrReplenishment(params).then((res) => {
-							if (res.data.code == 0) {
-								item.railRepertory = 0;
+						shjController.clearingOrReplenishment(params).then((res) => {
+							if (res.code == 200) {
+								item.railRepertory = 0
 								this.$toast({
 									message: `清货成功~`,
-								});
+								})
 							}
 						});
 					})
-					.catch(() => {});
+					.catch(() => {})
 			},
 			//补货
 			replentGoods(type, item) {
-				this.times = type;
+				this.times = type
 				if (this.times == 2) {
-					this.buhuoMsg = item;
+					this.buhuoMsg = item
 					//单个补货
-					this.railMsg.id = item.id;
-					this.railMsg.deviceNumber = `${item.deviceNumber}-${item.railNumber}`;
-					this.railMsg.railCapacity = item.railCapacity;
-					this.railMsg.railRepertory = item.railRepertory;
+					this.railMsg.id = item.id
+					this.railMsg.deviceNumber = `${item.deviceNumber}-${item.railNumber}`
+					this.railMsg.railCapacity = item.railCapacity
+					this.railMsg.railRepertory = item.railRepertory
 				} else {
 					//批量补货
 					if (!this.checkboxGroup.length) {
-						return this.$toast("请先选择补货货道~");
+						return this.$toast("请先选择补货货道~")
 					}
-					this.railMsg.deviceNumber = `已选${this.checkboxGroup.length}个货道`;
-					this.railMsg.railCapacity = "";
-					this.railMsg.railRepertory = "";
+					this.railMsg.deviceNumber = `已选${this.checkboxGroup.length}个货道`
+					this.railMsg.railCapacity = ""
+					this.railMsg.railRepertory = ""
 				}
-				this.backCargo = true;
+				this.backCargo = true
 			},
 			//补货 或者 批量补货
 			async railOperation(item, times) {
@@ -420,64 +416,55 @@
 					railId: item.id,
 				};
 				if (this.railMsg.railRepertory === "") {
-					return this.$toast("请输入库存");
+					return this.$toast("请输入库存")
 				}
 				if (this.railMsg.railCapacity === "") {
-					return this.$toast("请输入库存容量");
+					return this.$toast("请输入库存容量")
 				}
 				if (times == 2) {
-					params["railCapacity"] = this.railMsg.railCapacity;
-					params["railRepertory"] = this.railMsg.railRepertory;
+					params["railCapacity"] = this.railMsg.railCapacity
+					params["railRepertory"] = this.railMsg.railRepertory
 				} else if (times == 3) {
-					params["railCapacity"] = this.railMsg.railCapacity;
-					params["railRepertory"] = this.railMsg.railRepertory;
-					params.railId = String(this.checkboxGroup);
+					params["railCapacity"] = this.railMsg.railCapacity
+					params["railRepertory"] = this.railMsg.railRepertory
+					params.railId = String(this.checkboxGroup)
 				}
-				api.clearingOrReplenishment(params).then((res) => {
-					if (res.data.code == 0) {
-						this.backCargo = false;
+				shjController.clearingOrReplenishment(params).then((res) => {
+					if (res.code == 200) {
+						this.backCargo = false
 						if (times == 3) {
-							this.getDetail(2);
+							this.getDetail(2)
 						} else {
-							this.buhuoMsg.railRepertory = this.railMsg.railRepertory;
-							this.buhuoMsg.railCapacity = this.railMsg.railCapacity;
-							this.$toast(`补货成功~`);
+							this.buhuoMsg.railRepertory = this.railMsg.railRepertory
+							this.buhuoMsg.railCapacity = this.railMsg.railCapacity
+							this.$toast(`补货成功~`)
 						}
 					}
 				});
 			},
 			//批量设置
 			setBatch() {
-				this.allCheck = false;
-				this.checkboxGroup = [];
-				this.batchReplenish = !this.batchReplenish;
+				this.allCheck = false
+				this.checkboxGroup = []
+				this.batchReplenish = !this.batchReplenish
 			},
 			//全选
 			allCheckRail() {
 				if (this.allCheck) {
-					this.checkboxGroup = [];
+					this.checkboxGroup = []
 					this.railList.forEach((item) => {
-						this.checkboxGroup.push(item.id);
-					});
+						this.checkboxGroup.push(item.id)
+					})
 				} else {
-					this.checkboxGroup = [];
+					this.checkboxGroup = []
 				}
 			},
 		},
 	};
 </script>
 
-<style lang="less" scoped>
-	#replenishment {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100vh;
-		z-index: 999;
-		background: #fff;
-	}
-
+<style lang="scss" scoped>
+	
 	.btnCon {
 		margin: 0 2.5%;
 		padding: 10px 0;
@@ -489,10 +476,13 @@
 			border: 1px solid #d7d8d9;
 			border-radius: 5px;
 			color: #262626;
-			font-size: 14px;
-			height: 32px;
+			font-size: 13px;
+			height: 30px;
+			line-height: 30px;
+			box-sizing: border-box;
 			width: 30%;
 			white-space: nowrap;
+			padding: 0;
 		}
 
 		.activeBtn {

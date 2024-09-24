@@ -1,20 +1,20 @@
 <template>
-	<div class="page_mark_wrapper">
-		<jy-navbar title="营销工具"></jy-navbar>
-		<div class="tool_item_wrapper" v-for="item in toolList" :key="item.id" v-hasPermi="[`${item.permissions}`]">
-			<div class="title">{{ item.title }}</div>
-			<div class="block_wrapper">
-				<div class="tool_style" v-for="list in item.moduleList" :key="list.id" @click="nextPage(list)"
+	<view class="page_mark_wrapper">
+		<xls-jy-navbar title="营销工具" bgColor="#f5f6f7"></xls-jy-navbar>
+		<view class="tool_item_wrapper" v-for="item in toolList" :key="item.id" v-hasPermi="[`${item.permissions}`]">
+			<view class="title">{{ item.title }}</view>
+			<view class="block_wrapper">
+				<view class="tool_style" v-for="list in item.moduleList" :key="list.id" @click="nextPage(list)"
 					v-hasPermi="[`${list.permissions}`]">
-					<div class="icon_box">
-						<u-icon :name="list.icon" size="100" :color="list.color" />
-						<div class="animat-shake" v-if="list.shake">{{ list.shake }}</div>
-					</div>
-					<div class="tool_text text-over">{{ list.title }}</div>
-				</div>
-			</div>
-		</div>
-	</div>
+					<view class="icon_box">
+						<u-icon :name="list.icon" class="icon" :color="list.color" size="80" />
+						<view class="animat-shake" v-if="list.shake">{{ list.shake }}</view>
+					</view>
+					<view class="tool_text text-over">{{ list.title }}</view>
+				</view>
+			</view>
+		</view>
+	</view>
 </template>
 
 <script>
@@ -29,7 +29,7 @@
 						moduleList: [{
 								id: 4,
 								title: "闲时套餐",
-								icon: "tags",
+								icon: "clock-o",
 								color: "#5241ff",
 								shake: "",
 								path: "/marketing/leiList",
@@ -39,7 +39,7 @@
 							{
 								id: 5,
 								title: "拼团购币",
-								icon: "shopping-cart",
+								icon: "comment-circle-o",
 								color: "#5241ff",
 								shake: "",
 								path: "",
@@ -49,17 +49,17 @@
 							{
 								id: 8,
 								title: "新用户特惠",
-								icon: "account",
+								icon: "account-fill",
 								color: "#5241ff",
 								shake: "",
-								path: "/marketing/user",
+								path: "/pages/subpackages/home/marketingModule/newUser/indexList/index",
 								query: {},
 								permissions: "app:marketing:passenger:list",
 							},
 							{
 								id: 9,
 								title: "智慧营销",
-								icon: "gift",
+								icon: "smile-o",
 								color: "#5241ff",
 								shake: "增收",
 								path: "",
@@ -75,7 +75,7 @@
 						moduleList: [{
 								id: 10,
 								title: "升单宝",
-								icon: "man-add",
+								icon: "warning-o",
 								color: "#ff9500",
 								shake: "火爆",
 								path: "",
@@ -85,27 +85,27 @@
 							{
 								id: 12,
 								title: "随机立减",
-								icon: "rmb-circle",
+								icon: "rmb-circle-fill",
 								color: "#ff9500",
 								shake: "火爆",
-								path: "/marketing/random_list",
+								path: "/pages/subpackages/home/marketingModule/random/list/index",
 								query: {},
 								permissions: "app:marketing:coupon:list",
 							},
 							{
 								id: 14,
 								title: "支付立减劵",
-								icon: "coupon",
+								icon: "coupon-fill",
 								color: "#ff9500",
 								shake: "",
-								path: "/marketing/coupon_list",
+								path: "/pages/subpackages/home/marketingModule/coupon/list/index",
 								query: {},
 								permissions: "app:marketing:coupon:list",
 							},
 							{
 								id: 16,
 								title: "限时优惠",
-								icon: "hourglass",
+								icon: "certificate",
 								color: "#ff9500",
 								shake: "",
 								path: "/marketing/coupon_list",
@@ -121,7 +121,7 @@
 						moduleList: [{
 							id: 18,
 							title: "游戏币红包",
-							icon: "red-packet",
+							icon: "gold-coin-o",
 							color: "#f93b3b",
 							shake: "",
 							path: "",
@@ -137,10 +137,7 @@
 				if (!list.path) {
 					return this.$toast("火速开发中");
 				}
-				this.$router.push({
-					path: list.path,
-					query: list.query,
-				});
+				this.$goTo(list.path, "navigateTo", {... list.query});
 			},
 		},
 	};
@@ -150,11 +147,11 @@
 	.tool_item_wrapper {
 		margin-bottom: 10px;
 		background: #fff;
-		font-family: PingFangSC-Medium;
 
 		.title {
 			color: #1e2021;
 			font-size: 16px;
+			font-family: PingFangSC-Medium;
 			padding-top: 13px;
 			padding-left: 10px;
 			font-weight: 700;
@@ -186,6 +183,7 @@
 				.tool_text {
 					margin-top: 10px;
 					font-size: 14px;
+					font-weight: 700;
 					line-height: 15px;
 					width: 100%;
 				}

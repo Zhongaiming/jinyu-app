@@ -75,14 +75,15 @@
 							permissions: ['app:remoteboot:index'],
 							status: 0
 						},
-						// {
-						// 	id: 15,
-						// 	title: '营销工具',
-						// 	imgUrl: `${this.$baseUrl}homeImages/fristList/five.png`,
-						// 	route: '/pages/mainPackages/home/marketingModule/index',
-						// 	permissions: ['app:marketing:index'],
-						// 	status: 0
-						// }
+						{
+							id: 15,
+							title: '营销工具',
+							imgUrl: `${this.$baseUrl}homeImages/fristList/five.png`,
+							route: '/pages/subpackages/home/marketingModule/index',
+							permissions: ['app:marketing:index'],
+							status: 0,
+							deviceType: 4
+						}
 					]
 				}, 
 				{
@@ -265,7 +266,7 @@
 				}
 			},
 			getTypeShow(item) {
-				const filtrationList = [33, 35];
+				const filtrationList = [15, 33, 35];
 				if(!filtrationList.includes(item.id)) {
 					return true
 				} else {

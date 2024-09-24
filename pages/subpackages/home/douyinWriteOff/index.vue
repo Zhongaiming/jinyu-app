@@ -3,7 +3,7 @@
 		<xls-jy-navbar title="抖音核销"></xls-jy-navbar>
 		<!-- 顶部导航 -->
 		<xls-tabs :options="tabList" v-model="tabIndex"></xls-tabs>
-		<button @click="hexiao()">核销</button>
+		<!-- <button @click="hexiao()">核销</button> -->
 		<!-- 门店管理 -->
 		<view v-show="tabIndex == 1">
 			<xls-search @confirm="stratesSearch" placeholder="搜索抖音门店名称" marLeft="-6.0em"></xls-search>

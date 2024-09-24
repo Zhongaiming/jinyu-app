@@ -82,6 +82,43 @@ const subPackages = [
 				"path": "shjModule/shjBatchCopy/index",
 				"name": "批量设备选择"
 			},
+			// 营销工具模块
+			{
+				"path": "marketingModule/index",
+				"name": "营销工具"
+			},
+			{
+				"path": "marketingModule/newUser/indexList/index",
+				"name": "新用户特惠"
+			},
+			{
+				"path": "marketingModule/newUser/activityDetail/index",
+				"name": "新用户特惠详情"
+			},
+			{
+				"path": "marketingModule/newUser/userList/index",
+				"name": "新用户特惠参与详情"
+			},
+			{
+				"path": "marketingModule/coupon/list/index",
+				"name": "支付立减券"
+			},
+			{
+				"path": "marketingModule/coupon/add/index",
+				"name": "支付立减券操作"
+			},
+			{
+				"path": "marketingModule/coupon/rule/index",
+				"name": "支付立减券规则"
+			},
+			{
+				"path": "marketingModule/random/list/index",
+				"name": "随机立减券"
+			},
+			{
+				"path": "marketingModule/random/detail/index",
+				"name": "随机立减券详情"
+			},
 		]
 	},
 	{

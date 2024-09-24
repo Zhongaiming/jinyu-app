@@ -214,66 +214,6 @@ const pages = [{
 			"title": "远程启动记录"
 		}
 	},
-	// 营销工具
-	{
-		"path": "pages/mainPackages/home/marketingModule/index",
-		"name": "marketingModule",
-		"meta": {
-			"title": "营销工具"
-		}
-	},
-	{
-		"path": "pages/mainPackages/home/marketingModule/rule/index",
-		"name": "marketingModuleRule",
-		"meta": {
-			"title": "营销工具规则"
-		}
-	},
-	// 新用户
-	{
-		"path": "pages/mainPackages/home/marketingModule/newUser/index",
-		"name": "marketingModuleNewUser",
-		"meta": {
-			"title": "营销工具新用户"
-		}
-	},
-	{
-		"path": "pages/mainPackages/home/marketingModule/newUser/operate",
-		"name": "marketingModuleNewUserOperate",
-		"meta": {
-			"title": "营销工具新用户操作"
-		}
-	},
-	// 随机立减
-	{
-		"path": "pages/mainPackages/home/marketingModule/random/index",
-		"name": "marketingModuleRandom",
-		"meta": {
-			"title": "营销工具随机立减"
-		}
-	},
-	{
-		"path": "pages/mainPackages/home/marketingModule/random/operate",
-		"name": "marketingModuleRandomOperate",
-		"meta": {
-			"title": "营销工具随机立减操作"
-		}
-	},
-	// 立减券
-	{
-		"path": "pages/mainPackages/home/marketingModule/coupon/index",
-		"name": "marketingModuleCoupon",
-		"meta": {
-			"title": "营销工具立减券"
-		}
-	},
-	{
-		"path": "pages/mainPackages/home/marketingModule/coupon/operate",
-		"name": "marketingModuleCouponOperate",
-		"meta": {
-			"title": "营销工具立减券操作"
-		}
-	},
 	// 出货统计、出礼统计
 	{
 		"path": "pages/mainPackages/home/shipmentStatistics/index",
