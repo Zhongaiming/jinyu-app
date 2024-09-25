@@ -87,11 +87,11 @@
 		},
 		methods: {
 			str(str) {
-				return str.split(" ")[0];
+				return str.split(" ")[0]
 			},
 			paramsMethod(type, value) {
-				this.cell = value;
-				this.getList();
+				this.cell = value
+				this.$refs.paging.reload()
 			},
 			async queryList(pageNo, pageSize) {
 				let res = await marketingController.getCouponRandomList({
@@ -105,7 +105,7 @@
 					},
 				});
 				if (res.code == 200) {
-					this.$refs.paging.complete(res.data);
+					this.$refs.paging.complete(res.data)
 				}
 			},
 			addMethod(type, id, handle) {

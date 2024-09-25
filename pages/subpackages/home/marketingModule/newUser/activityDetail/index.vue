@@ -206,13 +206,17 @@
 			</view>
 		</view>
 		<!-- 设备类型 -->
-		<!-- <DeviceTypesingle ref="deviceType" :optionAll="false" @changDeviceType="changDeviceType" /> -->
-		<!-- <CustomList ref="placelist" @getPlaceId="getPlaceId" /> -->
+		<xls-device-type-radio ref="deviceType" :optionAll="false"
+			@changDeviceType="changDeviceType"></xls-device-type-radio>
+		<!-- 活动场地 -->
+		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
 		<!-- 时间选择器 -->
-		<u-popup :show="timePopup" mode="bottom" @close="timePopup=false">
-			<u-datetime-picker v-model="currentDate" type="date" :title="timeTitle" :min-date="minDate"
-				:max-date="maxDate" @cancel="timePopup = false" @confirm="confirmMethod" ref="picker" />
-		</u-popup>
+		<xls-datetime-picker :show="timePopup" v-model="currentDate" :title="timeTitle" 
+			@cancel="timePopup = false"
+			@close="timePopup = false"
+			@confirm="confirmTimeMethod"></xls-datetime-picker>
+			
+		
 		<!-- 套餐选择 -->
 		<u-popup :show="mealPopup" mode="bottom" @close="mealPopup=false">
 			<view class="meal-wrapper-popup">
@@ -251,13 +255,10 @@
 
 <script>
 	import moment from "moment";
-	// import DeviceTypesingle from "@/components/commonComps/deviceTypesingle.vue";
-	// import CustomList from "@/components/commonComps/customList.vue";
 	import {
 		marketingController
 	} from "@/api/index.js"
 	export default {
-		// components: { DeviceTypesingle, CustomList },
 		data() {
 			return {
 				activityType: 1,
@@ -288,13 +289,8 @@
 				timePopup: false,
 				timeType: "start",
 				timeTitle: "请选择开始时间",
-				minDate: new Date(),
-				maxDate: new Date(
-					new Date().getFullYear() + 1,
-					new Date().getMonth(),
-					new Date().getDate()
-				),
-				currentDate: new Date(),
+				currentDate: Number(new Date()),
+				
 				// 套餐选择
 				mealPopup: false,
 				mealType: 1, // 套餐类型
@@ -326,38 +322,20 @@
 				},
 				index: -1,
 				setList: [],
-				//
+				// ---
 				editState: false,
 			};
 		},
 		onLoad(option) {
-			if (this.$route.query.id) {
-				this.getDetail(this.$route.query.id);
-			} else if (this.$route.query.type) {
-				this.params.type = this.$route.query.type;
+			if (option.params) {
+				const params = JSON.parse(option.params)
+				this.params.type = params.type
+				if (params.id) {
+					this.getDetail(params.id)
+				}
 			}
 		},
 		methods: {
-			// 终止
-			termination() {
-				this.$modal("活动正在进行，确定要终止吗？",{
-						title: "温馨提示",
-						confirmText: "终止",
-						confirmColor: "#5241ff",
-					})
-					.then(() => {
-						this.params.state = 2;
-						marketingController.updateCoupon(this.params).then((des) => {
-							if (des.code == 200) {
-								this.$toast("终止成功");
-								if (this.$route.query.id) {
-									this.getDetail(this.$route.query.id);
-								}
-							}
-						});
-					})
-					.catch(() => {});
-			},
 			// 查详情
 			async getDetail(id) {
 				let res = await marketingController.getCouponById({
@@ -392,6 +370,26 @@
 					this.$refs.placelist.defaultChecked(this.params.placeIds);
 					this.params = Object.assign(this.params, result);
 				}
+			},
+			// 终止
+			termination() {
+				this.$modal("活动正在进行，确定要终止吗？",{
+						title: "温馨提示",
+						confirmText: "终止",
+						confirmColor: "#5241ff",
+					})
+					.then(() => {
+						this.params.state = 2;
+						marketingController.updateCoupon(this.params).then((des) => {
+							if (des.code == 200) {
+								this.$toast("终止成功");
+								if (this.$route.query.id) {
+									this.getDetail(this.$route.query.id);
+								}
+							}
+						});
+					})
+					.catch(() => {});
 			},
 			// 修改
 			edit() {
@@ -450,7 +448,7 @@
 
 				if (this.params.type == 2) {
 					// 享折扣
-					marketingController.addCoupon(this.params).then((des) => {
+					marketingController.addCoupon({dto: this.params}).then((des) => {
 						if (des.code == 200) {
 							this.$toast("添加成功");
 							this.$router.back();
@@ -483,30 +481,32 @@
 			},
 			pickerTime(type) {
 				if (type == "start") {
-					this.timeType = "start";
-					this.currentDate = new Date(this.params.startTime);
+					this.timeType = "start"
+					this.timeTitle = "请选择开始时间"
+					this.currentDate = new Date(this.params.startTime).getTime()
 				} else {
-					this.timeType = "end";
-					this.currentDate = new Date(this.params.endTime);
+					this.timeType = "end"
+					this.timeTitle = "请选择结束时间"
+					this.currentDate = new Date(this.params.endTime).getTime()
 				}
 				this.timePopup = true;
 			},
 			// 时间
 			confirmMethod(value) {
-				let date = moment(value).format("YYYY-MM-DD");
+				let date = moment(value).format("YYYY-MM-DD")
 				if (this.timeType == "start") {
-					this.params.startTime = date;
+					this.params.startTime = date
 				} else {
-					this.params.endTime = date;
+					this.params.endTime = date
 				}
-				this.timePopup = false;
+				this.timePopup = false
 			},
 			// 套餐
 			confirmMeal() {
 				this.params.packageName = this.mealList.filter(
 					(item) => item.id === this.mealType
 				)[0].text;
-				this.mealPopup = false;
+				this.mealPopup = false
 			},
 			// 自定义套餐
 			setMealMethod(type) {

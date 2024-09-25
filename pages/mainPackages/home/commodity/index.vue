@@ -8,7 +8,7 @@
 
 		<view class="commodity-list-wrapper">
 			<view class="outSides-center-wrapper" v-for="item in dataList" :key="item.commodityId">
-				<image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="left-img" mode="aspectFit" />
+				<image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="left-img" />
 				<image :src="`${$baseUrl}appV4/commodity/goods.png`" alt="" v-else class="left-img" />
 				<!-- <xls-image-uni :src="item.commodityImg" alt="" v-if="item.commodityImg" class="left-img"></xls-image-uni> -->
 				<view class="right-main-wrapper">

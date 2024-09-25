@@ -140,8 +140,8 @@
 			async queryList(pageNo, pageSize) {
 				let res = await marketingController.getReductionList({
 					dtoFilter: {
-						// type: this.tab, //活动类型，1：支付前发  ，2：支付后发
-						// state: this.cell, //活动状态，1：启用，2：停用，3：完成
+						type: this.tab, //活动类型，1：支付前发  ，2：支付后发
+						state: this.cell, //活动状态，1：启用，2：停用，3：完成
 					},
 					pageParam: {
 						pageNum: pageNo,

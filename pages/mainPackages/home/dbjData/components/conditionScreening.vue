@@ -60,8 +60,8 @@
 		<DownData ref="data" :historyUrl="historyUrl"/>
 		<DownEcexl ref="down" :indexUrl="indexUrl" />
 		<ExplainPage ref="explain" />
-		<!-- 兑币机场地 -->
-		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId" :deviceType="5" ></xls-place-checkbox>
+		<!-- 兑币机场地  :deviceType="5" -->
+		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
 		<xls-calendar :show="showDate" @close="() => { showDate = false }" 
 			@confirm="getCalender" :defaultDate="[startTime, endTime]">
 		</xls-calendar>
@@ -240,7 +240,7 @@
 			            date = [moment().subtract(2, "days").format("YYYY-MM-DD"), moment().subtract(2, "days").format("YYYY-MM-DD")];
 			            break;
 			        case 2: // 本周
-			            date = getRange("week", "week");
+			            date = getRange("week", "day");
 			            break;
 			        case 3: // 本月
 			            date = getRange("month", "day");

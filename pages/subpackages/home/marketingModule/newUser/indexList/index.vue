@@ -68,7 +68,7 @@
 					<view class="select_wrapper_popup" @click="activityType = 1"
 						:class="{'select_active':activityType == 1}">
 						<view class="left">
-							<u-icon name="passed" size="28" />
+							<u-icon name="checkmark-circle-fill" size="42" :color="activityType==1?'#5241ff':'#999'"/>
 						</view>
 						<view class="right">
 							<p class="title">新用户首单享优惠</p>
@@ -78,7 +78,7 @@
 					<view class="select_wrapper_popup" @click="activityType = 2"
 						:class="{'select_active':activityType == 2}">
 						<view class="left">
-							<u-icon name="passed" size="28" />
+							<u-icon name="checkmark-circle-fill" size="42" :color="activityType==2?'#5241ff':'#999'"/>
 						</view>
 						<view class="right">
 							<p class="title">新用户首单享折扣</p>
@@ -144,7 +144,7 @@
 					// type: this.select
 				});
 				if (res.code == 200) {
-					// this.list = res.data
+					this.list = res.data.dataList
 				}
 			},
 			goNextPage(id, type) {

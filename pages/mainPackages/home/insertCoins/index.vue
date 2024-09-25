@@ -46,7 +46,7 @@
 		<xls-empty slot="empty" />
 
 		<!-- 弹出层 -->
-		<u-popup :show="detailPopup" mode="bottom">
+		<u-popup :show="detailPopup" mode="bottom" @close="detailPopup = !detailPopup">
 			<view class="detail-content">
 				<view class="place-coin-wrapper">
 					<view class="main-text-box">

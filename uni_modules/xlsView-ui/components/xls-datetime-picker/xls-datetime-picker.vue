@@ -189,7 +189,6 @@
 				this.$emit('cancel')
 			},
 			close() {
-				console.log("close")
 				this.$emit('close')
 			},
 		}

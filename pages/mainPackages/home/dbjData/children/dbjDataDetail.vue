@@ -8,8 +8,8 @@
 
 		<xls-tabs :options="options" v-model="activeName" class="tab-style" @change="changeActiveName"></xls-tabs>
 
-		<ConditionScreening text="detail" @getParams="getParams" ref="screen" 
-			:activeName="activeName" :deviceNumber="paramsReceived.deviceNumber" />
+		<ConditionScreening text="detail" @getParams="getParams" ref="screen" :activeName="activeName"
+			:deviceNumber="paramsReceived.deviceNumber" />
 
 		<view class="list-content" v-show="activeName == 1">
 			<view class="list-block margin10" v-for="(item, dataIndex) in dataList" :key="dataIndex">
@@ -56,14 +56,13 @@
 		data() {
 			return {
 				// tabs
-				activeName: 1,
+				activeName: 2,
 				options: [{
-						key: 1,
-						value: "分日数据",
-					},
-					{
 						key: 2,
 						value: "取币明细",
+					}, {
+						key: 1,
+						value: "分日数据",
 					},
 				],
 				dataList: [],
@@ -115,6 +114,7 @@
 				this.$refs.detailPaging.reload();
 			},
 			queryList(pageNo, pageSize) {
+				this.$loading();
 				if (this.activeName == 1) {
 					deviceDataController.getDbjData({
 						ndjDataVo: {
@@ -123,6 +123,7 @@
 							...this.params
 						}
 					}).then(res => {
+						this.$hideLoading();
 						if (res.code == 200) {
 							this.$refs.detailPaging.complete(res.data.dataList);
 						}
@@ -135,6 +136,7 @@
 							...this.params
 						}
 					}).then(res => {
+						this.$hideLoading();
 						if (res.code == 200) {
 							this.$refs.detailPaging.complete(res.data.dataList);
 						}

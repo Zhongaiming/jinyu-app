@@ -464,7 +464,7 @@
 					params = {
 						id: this.coupon.id,
 						state: 2,
-						placeIds: null,
+						placeIds: '',
 					}
 				} else {
 					params = {

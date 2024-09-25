@@ -10,6 +10,31 @@ export default class marketingController {
 			data
 		})
 	}
+	// 活动详情
+	static getCouponById(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/couponReductionMember/view',
+			method: 'GET', 
+			data
+		})
+	}
+	// 活动添加
+	static addCoupon(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/couponReductionMember/add',
+			method: 'POST', 
+			data
+		})
+	}
+	// 活动修改
+	static updateCoupon(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/couponReductionMember/update',
+			method: 'POST', 
+			data
+		})
+	}
+	
 	
 	// 支付立减券
 	// 查询

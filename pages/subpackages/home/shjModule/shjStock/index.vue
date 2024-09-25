@@ -64,7 +64,7 @@
 			<view class="generated-records-btn" @click="createStock">生成备货单</view>
 		</view>
 		
-		<u-popup :show="stockPopup" round closeable v-hasPermi="['app:shj:stockUp:create']">
+		<u-popup :show="stockPopup" round="20" @close="stockPopup=!stockPopup" v-hasPermi="['app:shj:stockUp:create']">
 			<view class="stock-popup-wrapper">
 				<u-icon name="todo-list-o" size="80" color="#09bb07" />
 				<p class="title">提交成功</p>
