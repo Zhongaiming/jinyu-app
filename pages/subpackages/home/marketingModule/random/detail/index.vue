@@ -239,7 +239,7 @@
 		onLoad(option) {
 			if (option.params) {
 				const params = JSON.parse(option.params)
-				this.handle = params.handle
+				this.handleType = params.handle
 				Object.assign(this.coupon, params)
 				if (this.coupon.id) {
 					this.getClassById(this.coupon.id)
@@ -256,17 +256,17 @@
 					id
 				});
 				if (res.code == 200) {
-					this.coupon = Object.assign(this.coupon, res.data);
+					Object.assign(this.coupon, res.data)
 
 					if (res.data.couponPlaces != null) {
-						this.coupon.placeText = `已选${res.data.couponPlaces.length}个场地`;
+						this.coupon.placeText = `已选${res.data.couponPlaces.length}个场地`
 						let arr = res.data.couponPlaces.map((item) => {
-							return item.placeId;
-						});
+							return item.placeId
+						})
 						this.$nextTick(() => {
-							this.coupon.placeIds = String(arr);
-							this.$refs.placelist.checkboxGroup = arr;
-						});
+							this.coupon.placeIds = String(arr)
+							this.$refs.placelist.checkboxGroup = arr
+						})
 					}
 				}
 			},
@@ -284,23 +284,23 @@
 				this.timePopup = true
 			},
 			confirmTimeMethod(value) {
-				let date = moment(value).format("YYYY-MM-DD");
+				let date = moment(value).format("YYYY-MM-DD")
 				if (this.timeType == "start") {
-					this.coupon.startTime = date;
+					this.coupon.startTime = date
 				} else {
-					this.coupon.endTime = date;
+					this.coupon.endTime = date
 				}
-				this.timePopup = false;
+				this.timePopup = false
 			},
 			//按场地
 			getPlaceId(place) {
-				this.coupon.placeText = `已选${place[1].length}个场地`;
-				this.coupon.placeIds = String(place[1]);
+				this.coupon.placeText = `已选${place[1].length}个场地`
+				this.coupon.placeIds = String(place[1])
 			},
 			//设备类型
 			changDeviceType(coupon) {
-				this.coupon.deviceTypeName = coupon.typeName;
-				this.coupon.deviceType = coupon.deviceTypeId;
+				this.coupon.deviceTypeName = coupon.typeName
+				this.coupon.deviceType = coupon.deviceTypeId
 			},
 			rule() {
 				const route = "/pages/subpackages/home/marketingModule/coupon/rule/index"
@@ -322,16 +322,15 @@
 						confirmText: "终止",
 					})
 					.then(() => {
+						this.coupon.state = 2
 						marketingController.updateCouponRandom({
-								id: this.coupon.id,
-								state: 2, // 状态，1：投放，2：停止
-								placeIds: null, // 场地ids  根据逗号分隔
+								dto: this.coupon
 							})
 							.then((res) => {
 								if (res.code == 200) {
 									this.$toast("终止成功~");
-									if (this.$route.query.id) {
-										this.getClassById(this.$route.query.id);
+									if (this.coupon.id) {
+										this.getClassById(this.coupon.id);
 									}
 								}
 							})
@@ -345,9 +344,7 @@
 					return this.$toast("场地不能为空~");
 				}
 				marketingController.updateCouponRandom({
-						id: this.coupon.id,
-						state: null, // 状态，1：投放，2：停止
-						placeIds: this.coupon.placeIds, // 场地ids  根据逗号分隔
+						dto: this.coupon
 					})
 					.then((res) => {
 						if (res.code == 200) {

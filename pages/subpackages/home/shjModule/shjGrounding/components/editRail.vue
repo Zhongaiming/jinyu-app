@@ -23,8 +23,8 @@
 					</view>
 					<view class="edit-panel">
 						<span>现有库存</span>
-						<u-stepper v-model="railMsg.railRepertory" integer input-width="60px" button-size="32px"
-							min="0" />
+						<u-number-box v-model="railMsg.railRepertory" input-width="75px" button-size="40px" min="0"
+							iconStyle="fontSize: 17px" />
 					</view>
 					<view class="edit-panel">
 						<span>货道容量</span>
@@ -36,18 +36,16 @@
 				</view>
 			</view>
 		</u-popup>
-		<!-- <shj-commodity ref="commodity" @getShjCommodity="getShjCommodity" /> -->
+		<xls-commodity :commodityId="railMsg.commodityId" @confirm="getShjCommodity" ref="commodity"></xls-commodity>
 	</view>
 </template>
 
 <script>
-	// import ShjCommodity from "./shjCommodity.vue";
 	import {
 		shjController
 	} from "@/api/index.js";
 	export default {
 		name: "editRail",
-		// components: { ShjCommodity },
 		data() {
 			return {
 				railEdit: false,
@@ -78,10 +76,10 @@
 				this.$refs.commodity.showCommodity(railMsg.commodityId)
 			},
 			getShjCommodity(commodity) {
-				this.railMsg.commodityId = commodity.id;
-				this.railMsg.price = commodity.referenceSellingPrice;
-				this.commodityName = commodity.commodityName;
-				this.railEdit = true;
+				this.railMsg.commodityId = commodity.commodityId
+				this.railMsg.price = commodity.suggestRetailPrice
+				this.commodityName = commodity.commodityName
+				this.railEdit = true
 			},
 			async confirmSet() {
 				let res = await api.goodsOnTheShelf(this.railMsg);
@@ -99,6 +97,7 @@
 	.edit-cargoroad {
 		background: #fff;
 		width: 100%;
+		padding-bottom: 80px;
 
 		.popup-header {
 			align-items: center;

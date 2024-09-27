@@ -66,7 +66,7 @@
 					<view>{{ item.createTime }}</view>
 				</view>
 				<view class="num-info">
-					{{ item.amountTotal }}<span class="small">元</span>
+					{{ $formatAmount(item.amountTotal) }}<span class="small">元</span>
 				</view>
 			</view>
 		</view>

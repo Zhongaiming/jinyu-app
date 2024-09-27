@@ -96,7 +96,7 @@
 			return {
 				inputValue: '',
 				isButtonVisible: false,
-				historyList: ['小米', '晚上加班', '五点'],
+				historyList: [],
 				cancelAction: false,
 				dataList: [],
 			}
@@ -150,11 +150,13 @@
 				uni.navigateBack();
 			},
 			getList() {
+				this.$loading()
 				memberController.getList({
 					page: 1,
 					size: 50,
 					search: this.inputValue,
 				}).then(res => {
+					this.$hideLoading()
 					if (res.code === 200) {
 						this.dataList = res.data;
 					}

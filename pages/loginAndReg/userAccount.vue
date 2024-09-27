@@ -105,7 +105,7 @@
 	// 	addRoutes
 	// } from "@/addRoutes";
 	// import Cookies from "js-cookie";
-
+	import store from '@/store'
 	export default {
 		// name: "accountMana",
 		data() {
@@ -225,6 +225,7 @@
 					})
 					.then(() => {
 						this.$goTo("/", "reLaunch", {})
+						store.dispatch('config/clearConfig')
 					})
 					.catch(() => {});
 			},

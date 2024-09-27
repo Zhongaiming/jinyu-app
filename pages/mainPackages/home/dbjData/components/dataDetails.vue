@@ -21,7 +21,7 @@
 		<view class="block-row">
 			<view class="block-cell">
 				<view class="cell-top">现金收益</view>
-				<view class="cell-bottom">{{ item.cashIncome }}</view>
+				<view class="cell-bottom">{{ $formatAmount(item.cashIncome) }}</view>
 			</view>
 			<view class="block-cell">
 				<view class="cell-top">美团核销</view>

@@ -9,18 +9,14 @@
 		<!-- 商品分析 -->
 		<CommodityAnalyse ref="commodity" v-if="activeType == 2" />
 
-		<u-tabbar v-model="activeType" active-color="#5241FF" @change="changeType">
-			<u-tabbar-item :name="1">
-				<span>订单分析</span>
-				<template #icon="props">
-					<img :src="props.active ? device.active : device.inactive" />
-				</template>
+		<u-tabbar :value="activeType" active-color="#5241FF" @change="changeType">
+			<u-tabbar-item :name="1" text="订单分析">
+				<image slot="active-icon" :src="device.active" class="item__slot-icon" mode="heightFix" />
+				<image slot="inactive-icon" :src="device.inactive" class="item__slot-icon" mode="heightFix" />
 			</u-tabbar-item>
-			<u-tabbar-item :name="2">
-				<span>商品分析</span>
-				<template #icon="props">
-					<img :src="props.active ? shop.active : shop.inactive" />
-				</template>
+			<u-tabbar-item :name="2" text="商品分析">
+				<image slot="active-icon" :src="shop.active" class="item__slot-icon" mode="heightFix" />
+				<image slot="inactive-icon" :src="shop.inactive" class="item__slot-icon" mode="heightFix" />
 			</u-tabbar-item>
 		</u-tabbar>
 	</view>
@@ -47,28 +43,30 @@
 				title: "订单分析",
 				params: {},
 				device: {
-					// active: require("@/assets/common/order_active.png"),
-					// inactive: require("@/assets/common/order.png"),
+					active: this.$baseUrl + "appV4/common/order_active.png",
+					inactive: this.$baseUrl + "appV4/common/order.png",
 				},
 				shop: {
-					// active: require("@/assets/common/analyse_active.png"),
-					// inactive: require("@/assets/common/analyse.png"),
+					active: this.$baseUrl + "appV4/common/analyse_active.png",
+					inactive: this.$baseUrl + "appV4/common/analyse.png",
 				},
 			};
 		},
-		// created() {
-		// 	this.params = {
-		// 		startTime: getDateAll(0),
-		// 		endTime: getDateAll(0),
-		// 		placeId: [],
-		// 	};
-		// 	this.$nextTick(() => {
-		// 		this.$refs.Order.getOrder(this.params);
-		// 	});
-		// },
+		onLoad() {
+			this.params = {
+				startTime: getDateAll(0),
+				endTime: getDateAll(0),
+				placeId: [],
+			};
+			this.$nextTick(() => {
+				// this.$refs.Order.getOrder(this.params);
+			});
+		},
 		methods: {
 			//tabbar
-			changeType() {
+			changeType(name) {
+				if (name === this.activeType) return 
+				else this.activeType = name
 				this.title = this.activeType == 1 ? "订单分析" : "商品销售分析";
 				this.getEarndata();
 			},
@@ -77,9 +75,9 @@
 				this.params = params;
 				this.$nextTick(() => {
 					if (this.activeType == 1) {
-						this.$refs.Order.getOrder(params);
+						// this.$refs.Order.getOrder(params);
 					} else {
-						this.$refs.commodity.getAnalysis(params);
+						// this.$refs.commodity.getAnalysis(params);
 					}
 				});
 			},
@@ -87,8 +85,12 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.shj-analyse-wrapper {
 		width: 100%;
+	}
+	
+	.item__slot-icon {
+		height: 20px;
 	}
 </style>

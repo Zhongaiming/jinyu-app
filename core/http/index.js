@@ -1,5 +1,6 @@
 import Request from '@/js_sdk/luch-request_3.1.0/luch-request/index.js'
 import Vue from 'vue'
+import store from '@/store'
 
 import reqConfig from '@/core/config/reqConfig.js'
 import {
@@ -98,9 +99,9 @@ http.interceptors.response.use(response => {
 		Vue.prototype.$toast(message)
 	}
 	if (code === STATUS.TIMEOUT || (message === '用户登录已过期或尚未登录，请重新登录！' || message === '用户会话已失效，请重新登录！')) {
-		cache.clearCache()
+		// cache.clearCache()
+		store.dispatch('config/clearConfig')
 		setTimeout(() => {
-			console.log("token跳转222")
 			Vue.prototype.$goTo('/pages/loginAndReg/xlsLogin', 'reLaunch')
 		}, 1000)
 	}

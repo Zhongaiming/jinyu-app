@@ -21,7 +21,8 @@
 					<view>现有库存总量</view>
 				</view>
 			</view>
-			<view class="exhibition-mode" v-hasPermi="['app:shj:grounding:type']" @click="$refs.type.showType = true">
+			<view class="exhibition-mode" v-hasPermi="['app:shj:grounding:type']"
+				@click="$refs.type.showTypePopup = true">
 				<span class="mode-label">商品展示方式</span>
 				<span class="mode-value text-over">{{ showTypeText }}</span>
 			</view>
@@ -32,13 +33,13 @@
 					<span>货道-{{ item.deviceNumber + "-" + item.railNumber }}</span>
 					<span class="handle-right" v-hasPermi="['app:shj:grounding:edit']"
 						@click="$refs.edit.handleEdit(item)">
-						<u-icon name="edit" size="20" />
+						<u-icon name="edit-pen-fill" size="40" color="#5241ff" />
 						编辑
 					</span>
 				</view>
 				<view class="info-wrapper">
-					<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" />
-					<xls-image :src="`${$baseUrl}/image/other/ztwl.png`" alt="" v-else />
+					<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
+					<xls-image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" v-else class="image" />
 					<view class="goods-info">
 						<view class="goods-name">{{ item.commodityName || "暂无" }}</view>
 						<view class="info-content">
@@ -62,24 +63,26 @@
 		</view>
 		<show-type ref="type" v-hasPermi="['app:shj:grounding:edit']" />
 		<edit-rail ref="edit" v-hasPermi="['app:shj:grounding:edit']" />
-		<!-- <batch-setting ref="batch" v-hasPermi="['app:shj:grounding:edit']" /> -->
+		<batch-setting ref="batch" v-hasPermi="['app:shj:grounding:edit']" @getDetail="getDetail"
+			:parentRailList="railList" />
 	</view>
 </template>
 
 <script>
 	import {
-		shjController
-	} from "@/api/index.js";
-	import ShowType from "./components/showType.vue";
-	import EditRail from "./components/editRail.vue";
-	// import BatchSetting from "@/components/shj/batchSetting.vue";
+		shjController,
+		deviceController
+	} from "@/api/index.js"
+	import ShowType from "./components/showType.vue"
+	import EditRail from "./components/editRail.vue"
+	import BatchSetting from "../components/batchSetting.vue"
 
 	export default {
 		name: "shjGrounding",
 		components: {
 			ShowType,
 			EditRail,
-			// BatchSetting
+			BatchSetting
 		},
 		data() {
 			return {
@@ -103,26 +106,34 @@
 				} = JSON.parse(option.params)
 				this.deviceNumber = deviceNumber;
 				this.getDetail();
-				// this.$nextTick(() => {
-				// 	this.$refs.type.getSet(this.deviceNumber);
-				// });
+				this.$nextTick(() => {
+					// this.$refs.type.getSet(this.deviceNumber);
+				});
 			}
 		},
 		methods: {
 			//详情
 			async getDetail() {
-				const {deviceNumber} = this
+				const {
+					deviceNumber
+				} = this
 				let res = await shjController.replenishmentDetails({
 					deviceNumber
-				});
+				})
 				if (res.code == 200) {
-					const {list, total, stock, shortSupply, railCount} = res.data
-					this.railList = list;
-					this.allRailList = list;
-					this.acountMsg.total = total;
-					this.acountMsg.stock = stock;
-					this.acountMsg.shortSupply = shortSupply;
-					this.acountMsg.railCount = railCount;
+					const {
+						list,
+						total,
+						stock,
+						shortSupply,
+						railCount
+					} = res.data
+					this.railList = list
+					this.allRailList = list
+					this.acountMsg.total = total
+					this.acountMsg.stock = stock
+					this.acountMsg.shortSupply = shortSupply
+					this.acountMsg.railCount = railCount
 				}
 			},
 			stratesSearch(value) {
@@ -130,19 +141,15 @@
 					return (this.railList = this.allRailList);
 				}
 				this.railList = this.allRailList.filter((item) => {
-					return item.railNumber.indexOf(value) > -1;
-				});
+					return item.railNumber.indexOf(value) > -1
+				})
 			},
 		},
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.shj-grounding {
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 999;
 		background: #f5f6f7;
 		height: 100vh;
 		width: 100%;
@@ -226,11 +233,12 @@
 						margin-right: 28px;
 						font-size: 14px;
 						color: #5241ff;
+						display: flex;
+						align-items: center;
 					}
 				}
 
 				.info-wrapper {
-					box-shadow: 0 2px 8px 0 hsl(0deg, 0%, 84% / 50%);
 					display: flex;
 					flex-direction: row;
 					justify-content: space-between;
@@ -239,7 +247,7 @@
 					background: #fff;
 					border-radius: 5px;
 
-					img {
+					.image {
 						width: 108px;
 						height: 108px;
 						margin-right: 10px;

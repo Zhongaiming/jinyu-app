@@ -40,7 +40,8 @@
 		methods: {
 			//copy
 			copyMemberId(memberId) {
-				copyEvent(memberId);
+				copyEvent(memberId)
+				this.downloadData = !this.downloadData
 			},
 		},
 	};

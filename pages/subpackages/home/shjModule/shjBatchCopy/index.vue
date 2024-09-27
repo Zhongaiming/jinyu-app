@@ -180,7 +180,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.batchCopy-wrapper {
 		position: absolute;
 		top: 0;

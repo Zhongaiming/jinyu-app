@@ -371,7 +371,7 @@
 					id
 				});
 				if (res.code == 200) {
-					this.coupon = Object.assign(this.coupon, res.data)
+					Object.assign(this.coupon, res.data)
 					this.coupon.disposableChecked = res.data.disposableType == 2
 					this.coupon.deviceTypeName = res.data.typeName
 					this.coupon.startTime = res.data.startTime.split(" ")[0]
@@ -461,19 +461,20 @@
 					return this.$toast("场地不能为空~")
 				}
 				if (type == 1) {
-					params = {
-						id: this.coupon.id,
-						state: 2,
-						placeIds: '',
-					}
+					// params = {
+					// 	id: this.coupon.id,
+					// 	state: 2,
+					// 	placeIds: '',
+					// }
+					this.coupon.state = 2
 				} else {
-					params = {
-						id: this.coupon.id,
-						state: null,
-						placeIds: this.coupon.placeIds,
-					}
+					// params = {
+					// 	id: this.coupon.id,
+					// 	state: null,
+					// 	placeIds: this.coupon.placeIds,
+					// }
 				}
-				let res = await marketingController.updateReductionById({dto: params})
+				let res = await marketingController.updateReductionById({dto: this.coupon})
 				if (res.code == 200) {
 					this.$toast("修改成功~")
 					this.$goBack()

@@ -51,17 +51,18 @@
 				</view>
 				<!-- 货道 -->
 				<view class="content-panel-wrapper">
-					<u-checkbox-group v-model="checkboxGroup" direction="horizontal" ref="checkboxGroup"
-						v-if="railList.length">
+					<u-checkbox-group v-model="checkboxGroup" placement="column" v-if="railList.length">
 						<view v-for="(item, index) in railList" :key="index">
 							<view class="cargo-list" v-if="returnBack(item.railNumber) && item.railEnable == 1">
 								<view class="left">
-									<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" />
-									<xls-image :src="`${$baseUrl}/image/other/ztwl.png`" alt="" v-else />
+									<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
+									<xls-image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" class="image"
+										v-else />
 									<view v-show="!batchReplenish">
 										<view class="imgFa" v-show="!checkboxGroup.includes(item.id)"></view>
 										<view class="stateIcons">
-											<u-checkbox :name="item.id" checked-color="#5241FF"></u-checkbox>
+											<u-checkbox :name="item.id" activeColor="#5241FF" shape="circle"
+												iconSize="32" labelSize="36" size="38"></u-checkbox>
 										</view>
 									</view>
 								</view>
@@ -96,7 +97,7 @@
 			</view>
 		</view>
 		<!-- 补货 -->
-		<u-popup :show="backCargo" round="20" @close="backCargo=false">
+		<u-popup :show="backCargo" round="20" @close="backCargo=false" mode="center">
 			<view class="popupContent">
 				<view class="title">补货</view>
 				<view class="info">
@@ -125,7 +126,10 @@
 		<!-- 全选 -->
 		<view class="bottom-btn" v-show="!batchReplenish">
 			<view class="right">
-				<!-- <u-checkbox v-model="allCheck" checked-color="#5241FF" @change="allCheckRail"></u-checkbox> -->
+				<u-checkbox-group v-model="allCheckGroup" @change="allCheckRail">
+					<u-checkbox name="1" activeColor="#5241FF" shape="circle" iconSize="32" labelSize="36"
+						size="38"></u-checkbox>
+				</u-checkbox-group>
 				<span style="margin-left: 10px">全选</span>
 			</view>
 			<view class="enter" @click="replentGoods(3, '')">确定补货</view>
@@ -146,6 +150,7 @@
 				//批量开关
 				batchReplenish: true,
 				allCheck: false,
+				allCheckGroup: [],
 				checkboxGroup: [],
 				//层数
 				tierAllList: [{
@@ -256,7 +261,7 @@
 					deviceNumber
 				} = JSON.parse(option.params)
 				this.deviceNumber = deviceNumber
-				// this.getDetail();
+				this.getDetail()
 			}
 		},
 		methods: {
@@ -270,10 +275,12 @@
 			},
 			//详情
 			async getDetail(type) {
-				const { deviceNumber } = this
+				const {
+					deviceNumber
+				} = this
 				let res = await shjController.replenishmentDetails({
 					deviceNumber
-				});
+				})
 				if (res.code == 200) {
 					if (type == 1 || type == 2) {
 						this.$toast(`${type == 1 ? "清货" : "补货"}成功~`)
@@ -281,7 +288,13 @@
 					this.allCheck = false
 					this.batchReplenish = true
 					this.checkboxGroup = []
-					const {list, total, stock, shortSupply, railCount} = res.data
+					const {
+						list,
+						total,
+						stock,
+						shortSupply,
+						railCount
+					} = res.data
 					this.railList = list
 					this.acountMsg.total = total
 					this.acountMsg.stock = stock
@@ -304,7 +317,7 @@
 			},
 			//层级
 			selectTier(tierIdList) {
-				this.tierList = [];
+				this.tierList = []
 				let tierAllList = this.tierAllList
 				tierAllList.forEach((tier) => {
 					if (tierIdList.includes(tier.id)) {
@@ -313,7 +326,7 @@
 							return item.id != tier.id
 						});
 					}
-				});
+				})
 				if (!this.activeTier) {
 					this.activeTier = this.tierList[0].id
 				}
@@ -326,25 +339,23 @@
 					  : "是否一键补满售货机所有货道库存，请确认？"
 				}`
 				this.$modal(message, {
-						title: `${type == 1 ? "清货" : "补货"}提示`,
-						confirmColor: "#5241FF"
-					})
-					.then(() => {
-						shjController.onekey({
-								type: type, //type 1=清货 2= 补货
-								deviceNumber: this.deviceNumber,
-							})
-							.then((res) => {
-								if (res.code == 200) {
-									this.getDetail(type)
-								}
-							});
-					})
-					.catch(() => {});
+					title: `${type == 1 ? "清货" : "补货"}提示`,
+					confirmColor: "#5241FF"
+				}).then(() => {	
+					shjController.oneKeyShj({
+						type: type, //type 1=清货 2= 补货
+						deviceNumber: this.deviceNumber,
+					}).then((res) => {
+						if (res.code == 200) {
+							this.getDetail(type)
+						}
+					})		
+				}).catch(() => {});
 			},
 			//单个补满
 			railMaxCapacity() {
-				this.$modal(`是否补满货道 ${this.buhuoMsg.railNumber} 的库存？`,{
+				this.backCargo = false
+				this.$modal(`是否补满货道 ${this.buhuoMsg.railNumber} 的库存？`, {
 						title: `补货提示`,
 						confirmColor: "#5241FF",
 					})
@@ -357,8 +368,9 @@
 						};
 						shjController.clearingOrReplenishment(params).then((res) => {
 							if (res.code == 200) {
-								this.buhuoMsg.railRepertory = this.railMsg.railCapacity
-								this.buhuoMsg.railCapacity = this.railMsg.railCapacity
+								// this.buhuoMsg.railRepertory = this.railMsg.railCapacity
+								// this.buhuoMsg.railCapacity = this.railMsg.railCapacity
+								this.getDetail(2)
 								this.$toast(`库存已补满~`)
 								this.backCargo = false
 							}
@@ -368,7 +380,7 @@
 			},
 			//清货
 			clearRail(item) {
-				this.$modal(`是否清空货道 ${item.railNumber} 的库存？`,{
+				this.$modal(`是否清空货道 ${item.railNumber} 的库存？`, {
 						title: `清货提示`,
 						confirmColor: "#5241FF",
 					})
@@ -379,10 +391,9 @@
 						};
 						shjController.clearingOrReplenishment(params).then((res) => {
 							if (res.code == 200) {
-								item.railRepertory = 0
-								this.$toast({
-									message: `清货成功~`,
-								})
+								// item.railRepertory = 0
+								this.$toast(`清货成功~`)
+								this.getDetail(1)
 							}
 						});
 					})
@@ -435,9 +446,10 @@
 						if (times == 3) {
 							this.getDetail(2)
 						} else {
-							this.buhuoMsg.railRepertory = this.railMsg.railRepertory
-							this.buhuoMsg.railCapacity = this.railMsg.railCapacity
-							this.$toast(`补货成功~`)
+							// this.buhuoMsg.railRepertory = this.railMsg.railRepertory
+							// this.buhuoMsg.railCapacity = this.railMsg.railCapacity
+							// this.$toast(`补货成功~`)
+							this.getDetail(2)
 						}
 					}
 				});
@@ -449,14 +461,11 @@
 				this.batchReplenish = !this.batchReplenish
 			},
 			//全选
-			allCheckRail() {
-				if (this.allCheck) {
-					this.checkboxGroup = []
-					this.railList.forEach((item) => {
-						this.checkboxGroup.push(item.id)
-					})
+			allCheckRail(item) {
+				if (item.length) {
+					this.checkboxGroup = this.railList.map(item => item.id)
 				} else {
-					this.checkboxGroup = []
+					this.checkboxGroup = [];
 				}
 			},
 		},
@@ -464,7 +473,12 @@
 </script>
 
 <style lang="scss" scoped>
-	
+	#replenishment {
+		width: 100%;
+		height: 100vh;
+		background: #fff;
+	}
+
 	.btnCon {
 		margin: 0 2.5%;
 		padding: 10px 0;
@@ -473,7 +487,6 @@
 
 		button {
 			background: #fff;
-			border: 1px solid #d7d8d9;
 			border-radius: 5px;
 			color: #262626;
 			font-size: 13px;
@@ -545,8 +558,9 @@
 				position: relative;
 				height: 80px;
 				width: 80px;
+				overflow: hidden;
 
-				img {
+				.image {
 					width: 80px;
 					height: 80px;
 					border-radius: 6px;
@@ -610,11 +624,11 @@
 						display: flex;
 
 						.item-button {
-							border: 1px solid #d9d9d9;
 							border-radius: 4px;
 							color: #262626;
 							font-size: 13px;
 							height: 26px;
+							line-height: 26px;
 							width: 58px;
 							background: #fff;
 							margin-left: 8px;
@@ -674,6 +688,7 @@
 					box-sizing: border-box;
 					color: #262626;
 					line-height: 44px;
+					height: 44px;
 					padding: 0 8px;
 					width: 150px;
 				}

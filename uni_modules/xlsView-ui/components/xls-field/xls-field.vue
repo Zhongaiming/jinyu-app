@@ -7,7 +7,7 @@
 			<view class="xls-field__body">
 				<input :name="name" :value="val" :type="type" @focus="onFocus" @blur="onBlur" @input="onInput"
 					@confirm="onConfirm" :placeholder="placeholder" :placeholder-style="placeholderStyle"
-					:disabled="disabled || readonly" class="xls-field__control" />
+					:disabled="disabled || readonly" class="xls-field__control" :style="{'text-align': `${inputAlign}`}"/>
 			</view>
 		</view>
 		<slot name="extra"></slot>
@@ -75,6 +75,10 @@
 				type: Boolean,
 				default: false
 			},
+			inputAlign: {
+				type: String,
+				default: 'left'
+			}
 		},
 		watch: {
 			// #ifdef VUE3
@@ -164,7 +168,7 @@
 	    display: flex;
 	    box-sizing: border-box;
 	    width: 100%;
-	    padding: 20rpx 10rpx;
+	    padding: 20rpx 24rpx;
 	    overflow: hidden;
 	    color: #323233;
 	    font-size: 24rpx;
@@ -188,7 +192,7 @@
 	.xls-field__label {
 		font-weight: 700;
 		color: #333;
-		font-size: 24rpx;
+		font-size: 28rpx;
 	}
 	
 	.xls-cell__title {

@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<!-- 售货机 批量设置 -->
-		<u-popup v-model="batchSet" position="bottom">
+		<u-popup :show="batchSet" mode="bottom">
 			<view class="edit-cargoroad">
 				<view class="popup-header">
 					<span @click="batchSet = false">取消</span>
@@ -12,21 +12,21 @@
 				<view class="popup-content" v-if="optionType == 1">
 					<view class="menu-item" v-for="(item, index) in commodity" :key="index"
 						@click="commodityClick(item)">
-						<u-icon :name="item.name" size="30" :color="item.color" />
+						<u-icon :name="item.name" size="66" :color="item.color" />
 						<span>{{ item.title }}</span>
 					</view>
 				</view>
 				<!-- 货道管理 -->
 				<view class="popup-content" v-else>
 					<view class="menu-item" v-for="(item, index) in rail" :key="index" @click="railClick(item)">
-						<u-icon :name="item.name" size="30" :color="item.color" />
+						<u-icon :name="item.name" size="66" :color="item.color" />
 						<span>{{ item.title }}</span>
 					</view>
 				</view>
 			</view>
 		</u-popup>
 		<!-- 批量商品上架 -->
-		<batch-change ref="change" />
+		<batch-change ref="change" @setBatchSet="setBatchSet" @getDetail="getDetail"/>
 	</view>
 </template>
 
@@ -35,6 +35,13 @@
 	import local from "@/plugins/storage";
 	export default {
 		name: "batchSetting",
+		emits: ['stratTest', 'getDetail'],
+		props: {
+			parentRailList: {
+				type: Array,
+				default: () => []
+			}
+		},
 		components: {
 			BatchChange
 		},
@@ -45,19 +52,19 @@
 				commodity: [{
 						type: 1,
 						title: "批量修改商品",
-						name: "gift-o",
+						name: "gift",
 						color: "#0070ff"
 					},
 					{
 						type: 2,
 						title: "批量修改价格",
-						name: "gold-coin-o",
+						name: "rmb-circle",
 						color: "#ff8636",
 					},
 					{
 						type: 3,
 						title: "批量修改库存",
-						name: "logistics",
+						name: "info-circle",
 						color: "#8463f4"
 					},
 				],
@@ -65,19 +72,19 @@
 				rail: [{
 						type: 1,
 						title: "货道测试",
-						name: "gift-o",
+						name: "gift",
 						color: "#0070ff"
 					},
 					{
 						type: 2,
 						title: "货道容量设置",
-						name: "gold-coin-o",
+						name: "rmb-circle",
 						color: "#ff8636",
 					},
 					{
 						type: 3,
 						title: "货道状态设置",
-						name: "logistics",
+						name: "info-circle",
 						color: "#8463f4"
 					},
 				],
@@ -89,27 +96,31 @@
 		methods: {
 			//打开
 			openModule(type) {
-				this.optionType = type;
-				local.setSion("shjRailList", this.$parent.railList);
-				this.batchSet = true;
+				this.optionType = type
+				local.setSion("shjRailList", this.parentRailList)
+				this.batchSet = true
 			},
 			//商品上架
 			commodityClick(item) {
-				this.$refs.change.handleEdit(item);
+				this.$refs.change.handleEdit(item)
 			},
 			//货道管理
 			railClick(rail) {
 				if (rail.type == 1) {
-					// return this.$toast("火速开发中~");
-					this.batchSet = false;
-					this.$parent.stratTest();
+					// return this.$toast("火速开发中~")
+					this.batchSet = false
+					// this.$parent.stratTest()
+					this.$emit('stratTest')
 				} else {
-					this.$refs.change.handleRail(rail);
+					this.$refs.change.handleRail(rail)
 				}
 			},
 			getDetail() {
-				this.$parent.getDetail();
+				this.$emit('getDetail')
 			},
+			setBatchSet(result) {
+				this.batchSet = result
+			}
 		},
 	};
 </script>

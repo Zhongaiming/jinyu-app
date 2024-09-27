@@ -4,7 +4,7 @@
 		<u-popup :show="railEdit" mode="bottom">
 			<view class="edit-cargoroad">
 				<view class="popup-header">
-					<span @click="($parent.batchSet = true), (railEdit = false)">取消</span>
+					<span @click="cancel">取消</span>
 					<span class="popup-title">{{ title }}</span>
 					<span @click="confirmSet">保存</span>
 				</view>
@@ -18,7 +18,7 @@
 					</view>
 					<view class="edit-panel" @click="
 					  (railEdit = false),
-						$refs.commodity.showCommodity(railMsg.commodityId)
+						$refs.commodity.openMethod()
 					">
 						<span>商品选择</span>
 						<span class="product-name" :style="{color: commodityName == '请选择商品'?'#969799':'#5241FF' }">
@@ -35,8 +35,8 @@
 					</view>
 					<view class="edit-panel">
 						<span>现有库存</span>
-						<u-number-box v-model="railMsg.railRepertory" integer input-width="75px" button-size="40px" min="0"
-							iconStyle="fontSize: 17px" />
+						<u-number-box v-model="railMsg.railRepertory" integer input-width="75px" button-size="40px"
+							min="0" iconStyle="fontSize: 17px" />
 					</view>
 					<view class="edit-panel">
 						<span>货道容量</span>
@@ -71,8 +71,8 @@
 					</view>
 					<view class="edit-panel">
 						<span>现有库存</span>
-						<u-number-box v-model="railMsg.railRepertory" integer input-width="75px" button-size="40px" min="0"
-							iconStyle="fontSize: 17px" />
+						<u-number-box v-model="railMsg.railRepertory" integer input-width="75px" button-size="40px"
+							min="0" iconStyle="fontSize: 17px" />
 					</view>
 					<view class="edit-panel">
 						<span>货道容量</span>
@@ -112,8 +112,8 @@
 				</view>
 			</view>
 		</u-popup>
-		<!-- <shj-commodity ref="commodity" @getShjCommodity="getShjCommodity" /> -->
-		<shj-rails ref="shjRail" @getShjRail="getShjRail" />
+		<xls-commodity :commodityId="railMsg.commodityId" @confirm="getShjCommodity" ref="commodity"></xls-commodity>
+		<shj-rails ref="shjRail" @getShjRail="getShjRail" @setRailEdit="setRailEdit" />
 	</view>
 </template>
 
@@ -121,12 +121,11 @@
 	import {
 		shjController
 	} from '@/api/index.js';
-	// import ShjCommodity from "./shjCommodity.vue";
 	import ShjRails from "./shjRails.vue";
 	export default {
 		name: "batchChange",
+		emits: ['setBatchSet', 'getDetail'],
 		components: {
-			ShjCommodity,
 			ShjRails
 		},
 		data() {
@@ -167,44 +166,53 @@
 					railRepertory: null, //现有库存
 					railCapacity: null, //货道容量
 				};
-				this.$parent.batchSet = false;
+				this.$emit('setBatchSet', false)
 				this.railEdit = true;
+			},
+			// 取消
+			cancel() {
+				this.railEdit = false
+				this.$emit('setBatchSet', true)
+			},
+			setRailEdit(result) {
+				this.railEdit = result
 			},
 			//货道设置
 			handleRail(item) {
-				this.title = item.title;
-				this.railMsg.type = 0;
+				this.title = item.title
+				this.railMsg.type = 0
 				this.railSet = {
 					type: item.type, //1=货道测试 2=货道容量设置 3=货道状态设置
 					railIds: [],
 					railCapacity: null,
 					railEnable: 0, //货道是否启用,0未启用1启用
 				};
-				this.railEnable = false;
-				this.$parent.batchSet = false;
-				this.railEdit = true;
+				this.railEnable = false
+				this.$emit('setBatchSet', false)
+				this.railEdit = true
 			},
 			getShjRail(rail) {
-				this.railMsg.railIds = rail;
-				this.railSet.railIds = rail;
-				this.railEdit = true;
+				this.railMsg.railIds = rail
+				this.railSet.railIds = rail
+				this.railEdit = true
 			},
 			getShjCommodity(commodity) {
-				this.railMsg.commodityId = commodity.id;
-				this.railMsg.price = commodity.referenceSellingPrice;
-				this.commodityName = commodity.commodityName;
-				this.railEdit = true;
+				this.railMsg.commodityId = commodity.commodityId
+				this.railMsg.price = commodity.suggestRetailPrice
+				this.commodityName = commodity.commodityName
+				this.railEdit = true
 			},
+
 			async confirmSet() {
 				if (!this.railMsg.railIds.length || !this.railSet.railIds.length) {
 					return this.$toast("请选择设置的货道~");
 				}
 				if (this.railMsg.type) {
-					api.goodsOnTheShelfList(this.railMsg).then((res) => {
+					shjController.goodsOnTheShelfList(this.railMsg).then((res) => {
 						if (res.data.code == 0) {
-							this.$toast("修改成功~");
-							this.$parent.getDetail();
-							this.railEdit = false;
+							this.$toast("修改成功~")
+							this.$emit('getDetail')
+							this.railEdit = false
 						}
 					});
 				} else if (this.railSet.type) {
@@ -212,11 +220,11 @@
 						return this.$toast("请您输入货道容量~");
 					}
 					this.railSet.railEnable = this.railEnable ? 1 : 0;
-					api.updCargoLaneList(this.railSet).then((res) => {
+					shjController.updCargoLaneList(this.railSet).then((res) => {
 						if (res.data.code == 0) {
-							this.$toast("修改成功~");
-							this.$parent.getDetail();
-							this.railEdit = false;
+							this.$toast("修改成功~")
+							this.$emit('getDetail')
+							this.railEdit = false
 						}
 					});
 				}
@@ -229,6 +237,8 @@
 	.edit-cargoroad {
 		background: #fff;
 		width: 100%;
+		height: 60vh;
+		max-height: 1000rpx;
 
 		.popup-header {
 			align-items: center;

@@ -19,7 +19,7 @@
 		</view>
 		<view class="vending-card">
 			<view class="card-title">
-				订单趋势<u-icon name="question" size="18" color="#999" @click="tips" />
+				订单趋势<u-icon name="question-circle" size="36" color="#999" @click="tips" />
 			</view>
 			<view class="list-wrapper">
 				<view class="tab-list">
@@ -152,15 +152,15 @@
 			},
 			async getOrder(params = this.params) {
 				this.params = params;
-				let res = await api.orderAnalysis({
+				let res = await shjController.orderAnalysis({
 					startTime: params.startTime,
 					endTime: params.endTime,
 					state: this.state, //不传默认0  0：查询成功订单  !=0 查询退款订单
 					placeId: params.placeId.length ? String(params.placeId) : null,
-				});
-				if (res.data.code == 0) {
-					this.acountTop = res.data.data;
-					this.analysisVoList = res.data.data.analysisVoList;
+				})
+				if (res.code == 200) {
+					this.acountTop = res.data
+					this.analysisVoList = res.data.analysisVoList
 					this.lengthAll =
 						this.analysisVoList.length > 5 ? 5 : this.analysisVoList.length;
 				}
@@ -345,7 +345,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.order-analyse {
 		width: 100%;
 		padding-bottom: 60px;
@@ -368,6 +368,8 @@
 			font-size: 14px;
 			line-height: 24px;
 			margin-bottom: 5px;
+			display: flex;
+			align-items: center;
 		}
 
 		.list-wrapper {
@@ -390,7 +392,9 @@
 					flex: 1;
 					text-align: center;
 					line-height: 32px;
+					height: 32px;
 					padding: 0 10px;
+					font-size: 12px;
 				}
 
 				.cur {

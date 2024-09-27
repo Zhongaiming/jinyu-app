@@ -44,7 +44,7 @@
 				</xls-dropdown-menu>
 
 				<view class="right-wrapper">
-					<view @click="storePopup = true">关联门店</view>
+					<view @click="openShop">关联门店</view>
 					<view class="marginl20" @click="goTo('meal', {})">新建团购套餐</view>
 				</view>
 			</view>
@@ -209,7 +209,8 @@
 			<u-cell-group>
 				<u-cell title="关联类型">
 					<template #right-icon>
-						<u-button type="primary" size="small" color="#5241ff">集合号</u-button>
+						<!-- <u-button type="primary" size="small" color="#5241ff">集合号</u-button> -->
+						<xls-select v-model="type" ref="typeSelect" :value="type"></xls-select>
 					</template>
 				</u-cell>
 
@@ -385,6 +386,18 @@
 				count: {
 					list: [],
 				},
+				// 类型 1是联营号 2是独立号
+				type: 2,
+				typeList: [
+					{
+						id: 2,
+						name: "独立号",
+					},
+					{
+						id: 1,
+						name: "联营号",
+					},
+				]
 			};
 		},
 		onLoad() {
@@ -425,14 +438,14 @@
 			},
 			/** 输入搜索 */
 			stratesSearch(search) {
-				this.searchValue = search ? search : null;
+				this.searchValue = search ? search : null
 				if (this.tabIndex == 1) {
-					this.getDyShopInfo();
+					this.getDyShopInfo()
 				} else {
 					this.params.search = this.searchValue ?
 						encodeURIComponent(this.searchValue) :
-						null;
-					this.summaryDouyin();
+						null
+					this.summaryDouyin()
 				}
 			},
 			// 重置
@@ -544,7 +557,7 @@
 				this.$loading();
 				let res = await writeOffController.taskSubmit({
 					poiId,
-					type: 1, // 类型 1是集合号 2是私营
+					type: this.type, // 类型 1是联营号 2是独立号
 				});
 				this.$hideLoading();
 				if (res.code == 200) {
@@ -552,6 +565,12 @@
 					this.$toast("添加成功~")
 					this.poiId = ""
 				}
+			},
+			openShop() {
+				this.storePopup = !this.storePopup
+				setTimeout(() => {
+					this.$refs.typeSelect.initialData(this.typeList)
+				}, 200)
 			},
 			// 核销
 			hexiao() {
@@ -724,7 +743,7 @@
 
 		.tips-text {
 			color: #999;
-			padding: 0 12px 20px 12px;
+			padding: 0 12px 180px 12px;
 			font-size: 14px;
 
 			span {

@@ -140,7 +140,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.produce-analyse {
 		width: 100%;
 		padding-bottom: 60px;

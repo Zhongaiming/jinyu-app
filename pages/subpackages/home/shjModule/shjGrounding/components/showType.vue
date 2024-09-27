@@ -1,25 +1,26 @@
 <template>
-	<!-- shj 商品展示 -->
-	<u-popup :show="showType" mode="bottom" @close="showType=false">
-		<view class="show-type-title">
-			<span class="btn" @click="showType = false">取消</span>
-			<span class="center">请选择商品展示方式</span>
-			<span class="btn basic-color" @click="setSet">确定</span>
-		</view>
-		<u-radio-group v-model="setMsg.displayMode" placement="column">
-			<view class="item-style" v-for="(item, index) in operList" :key="index">
-				<view class="text-wrapper">{{ item.title }}</view>
-				<u-radio :name="item.id" activeColor="#5241FF" iconSize="32" size="38"></u-radio>
+	<view>
+		<u-popup :show="showTypePopup" mode="bottom" @close="showTypePopup=false">
+			<view class="show-type-title">
+				<span class="btn" @click="showTypePopup = false">取消</span>
+				<span class="center">请选择商品展示方式</span>
+				<span class="btn basic-color" @click="setSet">确定</span>
 			</view>
-		</u-radio-group>
-		<view class="item-style">
-			<view class="text-wrapper">展示商品详情</view>
-			<u-switch v-model="detailSwitch" activeColor="#5241FF" size="50" />
-		</view>
-		<view class="tip">
-			打开前请先在商品管理里添加商品详情哦！打开后C端购物页点击商品将会显示详情信息。
-		</view>
-	</u-popup>
+			<u-radio-group v-model="setMsg.displayMode" placement="column">
+				<view class="item-style" v-for="(item, index) in operList" :key="index">
+					<view class="text-wrapper">{{ item.title }}</view>
+					<u-radio :name="item.id" activeColor="#5241FF" iconSize="32" size="38"></u-radio>
+				</view>
+			</u-radio-group>
+			<view class="item-style">
+				<view class="text-wrapper">展示商品详情</view>
+				<u-switch v-model="detailSwitch" activeColor="#5241FF" size="50" />
+			</view>
+			<view class="tip">
+				打开前请先在商品管理里添加商品详情哦！打开后C端购物页点击商品将会显示详情信息。
+			</view>
+		</u-popup>
+	</view>
 </template>
 
 <script>
@@ -27,10 +28,10 @@
 		shjController
 	} from "@/api/index.js";
 	export default {
-		name: "showType",
+		name: "showTypePopup",
 		data() {
 			return {
-				showType: false,
+				showTypePopup: false,
 				operList: [{
 						id: 1,
 						title: "按商品排序展示"
@@ -77,7 +78,7 @@
 					this.$toast('设置成功~')
 					this.$parent.showTypeText =
 						this.operList[this.setMsg.displayMode - 1].title;
-					this.showType = false;
+					this.showTypePopup = false;
 				}
 			},
 		},
@@ -101,7 +102,7 @@
 			padding: 0 12px;
 		}
 	}
-	
+
 	.basic-color {
 		color: #5241FF;
 	}

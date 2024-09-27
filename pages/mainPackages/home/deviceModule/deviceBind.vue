@@ -109,8 +109,8 @@
 			goTo() {
 				// deviceController.updateFromPc({
 				// 	dto: {
-				// 		deviceNumber: "30003300",
-				// 		deviceType: 5
+				// 		deviceNumber: "30003299",
+				// 		deviceType: 1
 				// 	}
 				// })
 				// deviceController.restartDevice({

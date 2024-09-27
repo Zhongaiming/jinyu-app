@@ -46,7 +46,7 @@
 				<u-icon name="arrow-right" size="36" class="icon" v-if="!params.id" />
 			</view>
 			<!-- 首单折扣 -->
-			<view class="card_item_style" v-if="params.type == 2">
+			<view class="card_item_style" v-if="params.type == 2 || params.type == 0">
 				<view class="key_text" :class="{'required':!params.id}">
 					{{ !params.id ? "首单折扣(限正整数)" : "首单折扣价" }}
 				</view>
@@ -56,6 +56,7 @@
 				</view>
 				<view class="unit">折</view>
 			</view>
+
 			<view class="card_item_style" v-if="params.id">
 				<view class="key_text">参与用户数</view>
 				<view class="value-box">{{ params.couponMembers.length }}</view>
@@ -99,13 +100,13 @@
 				<view>(2)“新用户”指活动场地下，从未享受过首单优惠的用户。</view>
 			</view>
 
-			<view class="card_item_style" v-if="mealType == 1 && params.type == 1">
+			<view class="card_item_style" v-if="mealType == 1 && (params.type == 1||params.type == -1)">
 				<view class="key_text" :class="{'required':!params.id}">
 					首单价格
 				</view>
 				<view class="value-box">
 					<input type="text" v-model="meal.firstAmount" placeholder="请输入" v-if="!params.id" />
-					<span v-else>{{ meal.firstAmount }}</span>
+					<span v-else>{{ params.firstAmount }}</span>
 				</view>
 				<view class="unit">元</view>
 			</view>
@@ -161,18 +162,6 @@
 				<view class="unit">分钟</view>
 			</view>
 		</view>
-		<!-- 关注公众号 -->
-		<!-- <view class="card-content-wrap" v-if="mealType == 3 && !params.id">
-      <view class="card_item_style">
-        <view class="key_text">关注公众号</view>
-        <view class="value-box">
-          <u-switch v-model="checked" active-color="#5421ff" />
-        </view>
-      </view>
-      <view class="text-tip no-padding-top">
-        提示：开启后要检查下该账号有没有绑定公众号，用户关注公众号即可免费体验（用户获得免费体验后，当天有效）
-      </view>
-    </view> -->
 		<!-- 活动场地 -->
 		<view class="card-content-wrap" v-if="params.id">
 			<view class="card_item_style">
@@ -211,12 +200,8 @@
 		<!-- 活动场地 -->
 		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId"></xls-place-checkbox>
 		<!-- 时间选择器 -->
-		<xls-datetime-picker :show="timePopup" v-model="currentDate" :title="timeTitle" 
-			@cancel="timePopup = false"
-			@close="timePopup = false"
-			@confirm="confirmTimeMethod"></xls-datetime-picker>
-			
-		
+		<xls-datetime-picker :show="timePopup" v-model="currentDate" :title="timeTitle" @cancel="timePopup = false"
+			@close="timePopup = false" @confirm="confirmTimeMethod"></xls-datetime-picker>
 		<!-- 套餐选择 -->
 		<u-popup :show="mealPopup" mode="bottom" @close="mealPopup=false">
 			<view class="meal-wrapper-popup">
@@ -290,7 +275,7 @@
 				timeType: "start",
 				timeTitle: "请选择开始时间",
 				currentDate: Number(new Date()),
-				
+
 				// 套餐选择
 				mealPopup: false,
 				mealType: 1, // 套餐类型
@@ -342,49 +327,52 @@
 					id
 				});
 				if (res.code == 200) {
-					this.editState = false;
-					let result = res.data;
-					this.params.couponMembers = result.couponMembers;
-					result.startTime = result.startTime.split(" ")[0];
-					result.endTime = result.endTime.split(" ")[0];
-					this.params.experience = result.packageList.length ?
-						result.packageList[0].experience :
-						"";
-					this.mealType = result.packageList.length ?
-						result.packageList[0].type :
-						1;
+					this.editState = false
+					let result = res.data
+					Object.assign(this.params, result)
+					this.params.couponMembers = result.couponMembers
+					result.startTime = result.startTime.split(" ")[0]
+					result.endTime = result.endTime.split(" ")[0]
+					// this.params.experience = result.packageList.length ?
+					// 	result.packageList[0].experience :
+					// 	""
+					// this.mealType = result.packageList.length ?
+					// 	result.packageList[0].type :
+					// 	1
 					if (this.mealType == 2) {
-						result.packageName = "自定义新用户专享套餐";
+						result.packageName = "自定义新用户专享套餐"
 					} else if (this.mealType == 1) {
-						result.packageName = "任意套餐";
+						result.packageName = "任意套餐"
 					} else {
-						result.packageName = "免费体验套餐";
+						result.packageName = "免费体验套餐"
 					}
-					this.meal.firstAmount = result.packageList.length ?
-						result.packageList[0].firstAmount :
-						"";
-					let placeId = result.placeList.map((item) => item.id);
-					this.params.placeId = placeId;
-					this.params.placeText = `已选${placeId.length}个场地`;
-					this.params.placeIds = String(placeId);
-					this.$refs.placelist.defaultChecked(this.params.placeIds);
-					this.params = Object.assign(this.params, result);
+					// this.meal.firstAmount = result.packageList.length ?
+					// 	result.packageList[0].firstAmount :
+					// 	""
+					let placeId = result.placeList ? result.placeList.map((item) => item.id) : []
+					this.params.placeId = placeId
+					this.params.placeText = `已选${placeId.length}个场地`
+					this.params.placeIds = String(placeId)
+					this.$refs.placelist.defaultChecked(this.params.placeIds)
+
 				}
 			},
 			// 终止
 			termination() {
-				this.$modal("活动正在进行，确定要终止吗？",{
+				this.$modal("活动正在进行，确定要终止吗？", {
 						title: "温馨提示",
 						confirmText: "终止",
 						confirmColor: "#5241ff",
 					})
 					.then(() => {
 						this.params.state = 2;
-						marketingController.updateCoupon(this.params).then((des) => {
+						marketingController.updateCoupon({
+							dto: this.params
+						}).then((des) => {
 							if (des.code == 200) {
 								this.$toast("终止成功");
-								if (this.$route.query.id) {
-									this.getDetail(this.$route.query.id);
+								if (this.params.id) {
+									this.getDetail(this.params.id);
 								}
 							}
 						});
@@ -396,11 +384,13 @@
 				if (!this.params.placeId.length) {
 					return this.$toast("请选择场地");
 				}
-				marketingController.updateCoupon(this.params).then((des) => {
+				marketingController.updateCoupon({
+					dto: this.params
+				}).then((des) => {
 					if (des.code == 200) {
 						this.$toast("场地更新成功");
-						if (this.$route.query.id) {
-							this.getDetail(this.$route.query.id);
+						if (this.params.id) {
+							this.getDetail(this.params.id);
 						}
 					}
 				});
@@ -448,7 +438,10 @@
 
 				if (this.params.type == 2) {
 					// 享折扣
-					marketingController.addCoupon({dto: this.params}).then((des) => {
+					this.params.type = 1
+					marketingController.addCoupon({
+						dto: this.params
+					}).then((des) => {
 						if (des.code == 200) {
 							this.$toast("添加成功");
 							this.$router.back();
@@ -456,28 +449,38 @@
 					});
 					return;
 				}
+				this.params['firstAmount'] = this.meal.firstAmount
+				this.params.type = 2
+				marketingController.addCoupon({
+					dto: this.params
+				}).then((des) => {
+					if (des.code == 200) {
+						this.$toast("添加成功");
+						this.$router.back();
+					}
+				});
 
 				// 添加套餐，返回添加的数据
-				marketingController.addPackage(params)
-					.then((res) => {
-						if (res.code == 200) {
-							let arr = [];
-							res.data.forEach((item) => {
-								arr.push(item.id);
-							});
-							this.params.packageId = arr[0];
-							this.params.packageIds = String(arr);
-							this.params.association = this.checked ? 1 : 2;
-							// 活动添加
-							marketingController.addCoupon(this.params).then((des) => {
-								if (des.code == 200) {
-									this.$toast("添加成功");
-									this.$router.back();
-								}
-							});
-						}
-					})
-					.catch((err) => {});
+				// marketingController.addPackage(params)
+				// 	.then((res) => {
+				// 		if (res.code == 200) {
+				// 			let arr = [];
+				// 			res.data.forEach((item) => {
+				// 				arr.push(item.id);
+				// 			});
+				// 			this.params.packageId = arr[0];
+				// 			this.params.packageIds = String(arr);
+				// 			this.params.association = this.checked ? 1 : 2;
+				// 			// 活动添加
+				// 			marketingController.addCoupon(this.params).then((des) => {
+				// 				if (des.code == 200) {
+				// 					this.$toast("添加成功");
+				// 					this.$router.back();
+				// 				}
+				// 			});
+				// 		}
+				// 	})
+				// 	.catch((err) => {});
 			},
 			pickerTime(type) {
 				if (type == "start") {
@@ -569,7 +572,7 @@
 				uni.hideKeyboard()
 			},
 			questionTip() {
-				this.$modal("1、新用户将获得“全场首单权益”，仅限于活动下的场地\n2、适用于仅是未享受过权益的用户",{
+				this.$modal("1、新用户将获得“全场首单权益”，仅限于活动下的场地\n2、适用于仅是未享受过权益的用户", {
 					title: "套餐类型说明",
 					confirmText: "我知道了",
 					showCancel: false

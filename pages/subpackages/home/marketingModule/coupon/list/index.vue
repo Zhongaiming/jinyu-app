@@ -136,6 +136,13 @@
 				explainPopup: false,
 			};
 		},
+		onShow() {
+			this.$nextTick(() => {
+				if (this.$refs.paging) {
+					this.$refs.paging.refresh()
+				}
+			})
+		},
 		methods: {
 			async queryList(pageNo, pageSize) {
 				let res = await marketingController.getReductionList({
@@ -303,11 +310,7 @@
 		background: #fff;
 		padding: 10px;
 		display: flex;
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		right: 0;
-
+		
 		.left {
 			width: 100px;
 			display: flex;

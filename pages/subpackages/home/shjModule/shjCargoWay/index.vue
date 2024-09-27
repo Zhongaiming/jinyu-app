@@ -1,5 +1,5 @@
 <template>
-	<view id="cargoWay">
+	<view>
 		<xls-jy-navbar title="货道管理" bgColor="#f5f6f7"></xls-jy-navbar>
 		<view class="top-notice-wrapper">
 			<u-icon name="info-circle" size="36" color="#f7770f" />
@@ -8,7 +8,7 @@
 		<view class="car-go-way">
 			<view class="left-wrapper-style">
 				<view class="tier-item-style" v-for="(item, index) in tierList" :key="index"
-					:class="{'ative-tier': activeTier == item.id}" @click="activeTier = item.id">
+					:class="{'ative-tier':activeTier == item.id}" @click="activeTier = item.id">
 					<span>{{ item.title }}</span>
 				</view>
 				<view class="reset-button">
@@ -18,8 +18,8 @@
 			<view class="right-content-style">
 				<view v-for="(item, index) in railList" :key="index">
 					<view class="cargo-road-item" v-if="returnBack(item.railNumber)">
-						<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" />
-						<xls-image :src="`${$baseUrl}/image/other/ztwl.png`" alt="" v-else />
+						<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
+						<xls-image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" v-else class="image" />
 						<view class="cargo-road-info">
 							<view class="top-info">
 								<span>{{ item.deviceNumber + "-" + item.railNumber }}</span>
@@ -29,12 +29,12 @@
 								</view>
 							</view>
 							<view class="handle-panel">
-								<button v-hasPermi="['app:shj:rail:edit']" @click="handleUpdate(item)">
+								<view class="button" v-hasPermi="['app:shj:rail:edit']" @click="handleUpdate(item)">
 									编辑
-								</button>
-								<button v-hasPermi="['app:shj:rail:test']" @click="testDevice(item)">
+								</view>
+								<view class="button" v-hasPermi="['app:shj:rail:test']" @click="testDevice(item)">
 									测试电机
-								</button>
+								</view>
 							</view>
 						</view>
 					</view>
@@ -47,14 +47,9 @@
 			<view class="text-btn" @click="$refs.batch.openModule(2)">批量设置</view>
 		</view>
 		<!--  货道重置 -->
-		<u-popup :show="railPopup" round="20" @close="railPopup=false">
+		<u-popup :show="railPopup" round="20" @close="railPopup=false" mode="center">
 			<view class="rail-popup-wrapper">
 				<p class="title">货道重置</p>
-				<!-- <u-cell title="重置模式" style="text-align: left">
-				  <template #right-icon>
-					<u-switch v-model="typeSwitch" size="24" />
-				  </template>
-				</u-cell> -->
 				<xls-field v-model="reset.row" type="digit" label="行" placeholder="请输入货道行数(1~20)" maxlength="2" />
 				<xls-field v-model="reset.column" type="digit" label="列" placeholder="请输入货道列数(1~20)" maxlength="2" />
 				<view class="read-stock">
@@ -86,12 +81,13 @@
 					</view>
 					<view class="edit-panel">
 						<span>货道启用</span>
-						<u-switch v-model="railEnable" active-color="#5241FF" />
+						<u-switch v-model="railEnable" active-color="#5241FF" size="50"/>
 					</view>
 				</view>
 			</view>
 		</u-popup>
-		<!-- <batch-setting ref="batch" v-hasPermi="['app:shj:rail:edit']" /> -->
+		<batch-setting ref="batch" :parentRailList="railList" 
+			@getDetail="getDetail" @stratTest="stratTest" v-hasPermi="['app:shj:rail:edit']" />
 		<!-- 电机测试 -->
 		<u-popup :show="testPopup" round="20" @close="testPopup=false">
 			<view class="rail-popup-wrapper test-wrapper">
@@ -109,12 +105,13 @@
 			</view>
 		</u-popup>
 		<!-- 批量电机测试 -->
-		<u-popup :show="railBatchPopup" round="20" @close="railBatchPopup=false">
+		<u-popup :show="railBatchPopup" round="20" @close="railBatchPopup=false" mode="center">
 			<view class="rail-popup-wrapper test-wrapper">
 				<p class="title">批量电机测试</p>
 				<u-cell title="时间间隔" class="main-wrapper">
 					<template #right-icon>
-						<u-stepper v-model="testTimes" theme="round" button-size="22" disable-input :max="10" />
+						<u-number-box v-model="testTimes" input-width="75px" button-size="40px" min="0"
+							iconStyle="fontSize: 17px" max="10" />
 					</template>
 				</u-cell>
 				<view class="tips-text">时间间隔，单位秒，范围（1~10）</view>
@@ -127,7 +124,7 @@
 			</view>
 		</u-popup>
 		<!-- 批量电机测试中 -->
-		<u-popup :show="loadingPopup" round="20">
+		<u-popup :show="loadingPopup" round="20" mode="center">
 			<view class="rail-popup-wrapper test-wrapper" style="background: #f5f6f7">
 				<p class="title">电机测试中</p>
 				<view class="device-text">
@@ -151,7 +148,7 @@
 				</view>
 			</view>
 		</u-popup>
-		<u-popup :show="finishPopup" round="20">
+		<u-popup :show="finishPopup" round="20" mode="center">
 			<view class="rail-popup-wrapper test-wrapper">
 				<view class="finish-wrapper">
 					<view class="finish">
@@ -168,13 +165,13 @@
 	import {
 		shjController
 	} from '@/api/index.js';
-	// import BatchSetting from "@/components/shj/batchSetting.vue";
-	// import suan from "@/plugins/floastCalculate";
+	import BatchSetting from "../components/batchSetting.vue";
+	import suan from "@/plugins/floastCalculate";
 	export default {
 		name: "cargoWay",
-		// components: {
-		// 	BatchSetting
-		// },
+		components: {
+			BatchSetting
+		},
 		data() {
 			return {
 				showEdit: false,
@@ -308,10 +305,47 @@
 					deviceNumber
 				} = JSON.parse(option.params)
 				this.deviceNumber = deviceNumber;
-				// this.getDetail();
+				this.getDetail();
 			}
 		},
 		methods: {
+			//详情
+			async getDetail() {
+				let deviceNumber = this.deviceNumber
+				let res = await shjController.replenishmentDetails({
+					deviceNumber,
+					railEnable: 1
+				})
+				if (res.code == 200) {
+					this.railList = res.data.list;
+					if (!res.data.list.length) {
+						this.resetRail();
+						return;
+					}
+					let tierIdList = [];
+					res.data.list.forEach((element) => {
+						let tier =
+							element.railNumber.substring(
+								0,
+								element.railNumber.length == 3 ? 1 : 2
+							) * 1; //层
+						tierIdList.push(tier);
+						if (tierIdList.length == res.data.list.length) {
+							this.selectTier(tierIdList);
+						}
+					});
+				}
+			},
+			// 货道
+			resetRail() {
+				this.typeSwitch = false;
+				this.reset = {
+					deviceNumber: this.deviceNumber,
+					column: "",
+					row: "",
+				};
+				this.railPopup = true;
+			},
 			//除
 			divideMethod() {
 				return suan.divide(this.railIndex + 1, this.railLength).toFixed(4);
@@ -323,33 +357,6 @@
 					return String(railNumber).substring(0, 2) * 1 == this.activeTier;
 				} else {
 					return String(railNumber).substring(0, 1) * 1 == this.activeTier;
-				}
-			},
-			//详情
-			async getDetail() {
-				let deviceNumber = this.deviceNumber
-				let res = await shjController.replenishmentDetails({
-					deviceNumber,
-					railEnable: 1
-				})
-				if (res.code == 200) {
-					this.railList = res.data.data.list;
-					if (!res.data.data.list.length) {
-						this.resetRail();
-						return;
-					}
-					let tierIdList = [];
-					res.data.data.list.forEach((element) => {
-						let tier =
-							element.railNumber.substring(
-								0,
-								element.railNumber.length == 3 ? 1 : 2
-							) * 1; //层
-						tierIdList.push(tier);
-						if (tierIdList.length == res.data.data.list.length) {
-							this.selectTier(tierIdList);
-						}
-					});
 				}
 			},
 			//层级
@@ -390,16 +397,7 @@
 					this.showEdit = false;
 				}
 			},
-			// 货道
-			resetRail() {
-				this.typeSwitch = false;
-				this.reset = {
-					deviceNumber: this.deviceNumber,
-					column: "",
-					row: "",
-				};
-				this.railPopup = true;
-			},
+			
 			async confirmMethed() {
 				let res = await shjController.rendingMachineReset(this.reset);
 				if (res.code == 200) {
@@ -447,7 +445,7 @@
 					deviceNumber
 				});
 				if (res.code == 200) {
-					this.testRailList = res.data.data.list;
+					this.testRailList = res.data.list;
 					if (!this.testRailList.length) {
 						return this.$toast("请先设置设备货道~");
 					}
@@ -497,7 +495,6 @@
 	}
 
 	.car-go-way {
-		flex: 1;
 		display: flex;
 
 		.left-wrapper-style {
@@ -569,7 +566,7 @@
 				display: flex;
 				padding: 10px;
 
-				img {
+				.image {
 					height: 60px;
 					width: 60px;
 					margin-right: 10px;
@@ -621,13 +618,14 @@
 						display: flex;
 						justify-content: flex-end;
 
-						button {
+						.button {
 							border: 1px solid #d0d0d0;
 							border-radius: 3px;
 							color: #666;
 							background: #fff;
 							font-size: 14px;
 							height: 28px;
+							line-height: 28px;
 							margin-left: 10px;
 							padding: 0 10px;
 						}
@@ -659,6 +657,7 @@
 
 		.popup-content {
 			font-size: 15px;
+			padding-bottom: 70px;
 
 			.edit-panel {
 				align-items: center;

@@ -114,9 +114,13 @@ function divide(a, b) {
 }
 
 export default {
+	// 加
     add,
+	// 减
     subtract,
+	// 乘
     multiply,
+	// 除
     divide,
     addFloast,//方案二 更准确
     subFloast,

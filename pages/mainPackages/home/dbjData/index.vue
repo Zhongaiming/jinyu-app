@@ -5,7 +5,8 @@
 		<view class="list-header">
 			<view class="header-title">兑币机数据</view>
 			<view class="header-right">
-				<view @click="goTo('dbjHistory', {})">历史数据</view>
+				<!-- <view @click="goTo('dbjHistory', {})">历史数据</view> -->
+				<view @click="goTo('dbjHistory', {})">表格显示</view>
 				<view class="header-btn" @click="getExcelUrl" v-hasPermi="['app:dbj:index:export']">
 					想要导出数据
 					<u-icon name="question-circle" size="30" color="#5241ff" />
@@ -60,7 +61,7 @@
 		},
 		mounted() {
 			this.$nextTick(() => {
-				this.$refs.screen.quickTime(3);
+				this.$refs.screen.quickTime(4);
 			});
 		},
 		methods: {

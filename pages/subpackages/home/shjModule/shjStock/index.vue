@@ -1,69 +1,66 @@
 <template>
 	<z-paging ref="paging" v-model="commodityList" @query="queryList">
 		<xls-jy-navbar title="缺货备货" bgColor="#f5f6f7" slot="top"></xls-jy-navbar>
-		
+
 		<xls-search @confirm="stratesSearch" placeholder="输入设备编号或场地" marLeft="-6.5em"></xls-search>
-		
+
 		<view class="places-select-wrapper" @click="$refs.place.showPlacePopup(placeId)">
 			<view class="select-label">场地</view>
 			<view class="select-value">{{ placeName }}</view>
 			<u-icon name="arrow-right" size="36" color="#ccc" />
 		</view>
-		
+
 		<xls-place-radio ref="place" @getPlaceId="getPlaceId" deviceType="4" />
-		
+
 		<view class="main-content-wrapper">
 			<u-checkbox-group v-model="checkboxGroup" direction="horizontal" ref="checkboxGroup">
-				<u-list v-model="loading" :finished="onEarth" finished-text="没有更多了" @load="getCommodity"
-					v-show="commodityList.length" style="width: 100%">
-					<view class="li-item-wrapper" v-for="(item, index) in commodityList" :key="index"
-						v-show="item.railList.length">
-						<view class="title-style">{{ item.placeName }}</view>
-						<view class="device-message" v-for="(rail, index) in item.railList" :key="index">
-							<view class="item-top">
-								<view class="device-wrapper">
-									<u-checkbox :name="rail.deviceNumber" checked-color="#5241FF"
-										v-hasPermi="['app:shj:stockUp:create']"></u-checkbox>
-									<span class="name">售货机{{ rail.deviceNumber }}</span>
-									<span class="status-icon online" v-if="rail.onlineState">在线</span>
-									<span class="status-icon offline" v-else>离线</span>
-								</view>
-								<view class="lack-count" @click="goStockDetail(item.placeName, rail.deviceNumber)">
-									缺货({{ rail.shortSupply }}个)
-								</view>
+				<view class="li-item-wrapper" v-for="(item, index) in commodityList" :key="index"
+					v-show="item.railList.length">
+					<view class="title-style">{{ item.placeName }}</view>
+					<view class="device-message" v-for="(rail, index) in item.railList" :key="index">
+						<view class="item-top">
+							<view class="device-wrapper">
+								<u-checkbox :name="rail.deviceNumber" checked-color="#5241FF"
+									v-hasPermi="['app:shj:stockUp:create']"></u-checkbox>
+								<span class="name">售货机{{ rail.deviceNumber }}</span>
+								<span class="status-icon online" v-if="rail.onlineState">在线</span>
+								<span class="status-icon offline" v-else>离线</span>
 							</view>
-							<view class="data-list">
-								<view class="data-list_item">
-									<view class="item-value">{{ rail.railCount }}条</view>
-									<view class="item-label">货道总数</view>
-								</view>
-								<view class="data-list_item">
-									<view class="item-value">{{ rail.total }}个</view>
-									<view class="item-label">总库存</view>
-								</view>
-								<view class="data-list_item">
-									<view class="item-value">{{ rail.stock }}个</view>
-									<view class="item-label">现有库存</view>
-								</view>
+							<view class="lack-count" @click="goStockDetail(item.placeName, rail.deviceNumber)">
+								缺货({{ rail.shortSupply }}个)
+							</view>
+						</view>
+						<view class="data-list">
+							<view class="data-list_item">
+								<view class="item-value">{{ rail.railCount }}条</view>
+								<view class="item-label">货道总数</view>
+							</view>
+							<view class="data-list_item">
+								<view class="item-value">{{ rail.total }}个</view>
+								<view class="item-label">总库存</view>
+							</view>
+							<view class="data-list_item">
+								<view class="item-value">{{ rail.stock }}个</view>
+								<view class="item-label">现有库存</view>
 							</view>
 						</view>
 					</view>
-				</u-list>
+				</view>
 			</u-checkbox-group>
-			<xls-empty v-show="!commodityList.length" />
+			
 		</view>
-		
+		<xls-empty slot="empty" />	
 		<view class="footer-button-wrapper" v-hasPermi="['app:shj:stockUp:create']">
 			<view class="select-all">
 				<u-checkbox-group>
-					<u-checkbox v-model="allCheck" checked-color="#5241FF" shape="circle"
-						iconSize="32" labelSize="36" size="38"></u-checkbox>
+					<u-checkbox v-model="allCheck" checked-color="#5241FF" shape="circle" iconSize="32" labelSize="36"
+						size="38"></u-checkbox>
 				</u-checkbox-group>
 				<span class="all-text">全选</span>
 			</view>
 			<view class="generated-records-btn" @click="createStock">生成备货单</view>
 		</view>
-		
+
 		<u-popup :show="stockPopup" round="20" @close="stockPopup=!stockPopup" v-hasPermi="['app:shj:stockUp:create']">
 			<view class="stock-popup-wrapper">
 				<u-icon name="todo-list-o" size="80" color="#09bb07" />
@@ -74,7 +71,7 @@
 				</view>
 			</view>
 		</u-popup>
-		
+
 	</z-paging>
 </template>
 
@@ -91,9 +88,6 @@
 				checkboxGroup: [],
 				allCheck: false,
 				placeId: null,
-				loading: false,
-				onEarth: false,
-				page: 0,
 				commodityList: [],
 				//备货单
 				stockPopup: false,
@@ -129,9 +123,9 @@
 				// 	this.$refs.paging.complete(res.data.dataList);
 				// })
 			},
-			
-			
-			
+
+
+
 			async getCommodity() {
 				this.loading = true;
 				let res = await api.venueVendingMachine({
@@ -418,5 +412,4 @@
 			color: #5241ff;
 		}
 	}
-	
 </style>

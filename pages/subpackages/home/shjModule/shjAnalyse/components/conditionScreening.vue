@@ -22,8 +22,7 @@
 				</view>
 			</view>
 
-			<!-- <u-calendar v-model="showDate" type="range" @confirm="onConfirm" :max-range="31" allow-same-day
-				range-prompt="单次跨度不超31天" :min-date="minDate" :max-date="maxDate" :round="false" color="#5241FF" /> -->
+
 			<view class="outSide" v-hasPermi="['app:place:index']" @click="$refs.placelist.showPlacePopup()">
 				<view class="data">
 					<view>
@@ -36,7 +35,10 @@
 				</view>
 			</view>
 		</view>
-		<!-- <CustomList ref="placelist" @getPlaceId="getPlaceId" /> -->
+		<xls-place-checkbox ref="placelist" @getPlaceId="getPlaceId" :deviceType="4"></xls-place-checkbox>
+		<xls-calendar :show="showDate" @close="() => { showDate = false }" @confirm="getCalender"
+			:defaultDate="[startTime, endTime]">
+		</xls-calendar>
 	</view>
 </template>
 
@@ -44,31 +46,18 @@
 	import {
 		getTime,
 		getDateAll
-	} from "@/plugins/utilityClass";
-	// import CustomList from "@/components/shj/customShjList.vue";
-
+	} from "@/plugins/utilityClass"
+	import moment from "moment"
+	
 	export default {
 		name: "ConditionScreening",
-		// components: {
-		// 	CustomList
-		// },
 		data() {
 			return {
 				//选择日期
 				date: "",
 				showDate: false,
-				minDate: new Date(
-					new Date().getFullYear() - 1,
-					new Date().getMonth(),
-					new Date().getDate()
-				),
-				maxDate: new Date(getDateAll(0)),
-				//参数
 				startTime: getDateAll(0),
 				endTime: getDateAll(0),
-				placeNum: "全部场地",
-				placeId: [],
-				listType: 1,
 				//快捷时间
 				activeBtn: -1,
 				btnList: [{
@@ -83,35 +72,33 @@
 						id: 1,
 						title: "前天"
 					},
-					// { id: 2, title: "本周" },
+					{
+						id: 2,
+						title: "本周"
+					},
 					{
 						id: 3,
 						title: "本月"
 					},
 				],
+				// 场地
+				placeNum: "全部场地",
+				placeId: [],
+				listType: 1,
 			};
 		},
-		created() {
+		mounted() {
 			this.date = this.startTime + "\u2002今天";
 		},
 		methods: {
-			//日期格式
-			formatDate(date) {
-				return `${date.getFullYear()}-${
-        date.getMonth() + 1 < 10
-          ? "0" + (date.getMonth() + 1)
-          : date.getMonth() + 1
-      }-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`;
-			},
-
-			//选择日期
-			onConfirm(date) {
-				const [start, end] = date;
+			/** 确定日期 */
+			getCalender(date) {
+				const [startTime, endTime] = date;
 				this.showDate = false;
 				this.activeBtn = 999;
-				this.startTime = this.formatDate(start);
-				this.endTime = this.formatDate(end);
-				this.date = `${this.formatDate(start)} 至 ${this.formatDate(end)}`;
+				this.date = `${startTime} 至 ${endTime}`;
+				this.startTime = startTime;
+				this.endTime = endTime;
 				let info = {
 					startTime: this.startTime,
 					endTime: this.endTime,
@@ -120,78 +107,52 @@
 				this.$emit("getEarndata", info);
 			},
 
-			//快捷时间
-			onChange(index) {
-				this.activeBtn = index;
-				if (index == -1) {
-					let yesterday = getDateAll(0);
-					this.date = yesterday + "\u2002今天";
-					this.startTime = yesterday;
-					this.endTime = yesterday;
-					let info = {
-						startTime: this.startTime,
-						endTime: this.endTime,
-						placeId: this.placeId,
-					};
-					this.$emit("getEarndata", info);
+			/** 快捷时间 */
+			onChange(id) {
+				const getRange = (startDate, endDate) => [
+					moment().startOf(startDate).format("YYYY-MM-DD"),
+					moment().endOf(endDate).format("YYYY-MM-DD")
+				];
+
+				// 获取今天的日期
+				const today = moment().format("YYYY-MM-DD");
+
+				// 处理时间范围
+				let date;
+				switch (id) {
+					case 0: // 昨天
+						date = [moment().subtract(1, "days").format("YYYY-MM-DD"), moment().subtract(1, "days").format(
+							"YYYY-MM-DD")];
+						break;
+					case -1: // 自定义范围，默认为今天
+						date = [today, today];
+						break;
+					case 1: // 前天
+						date = [moment().subtract(2, "days").format("YYYY-MM-DD"), moment().subtract(2, "days").format(
+							"YYYY-MM-DD")];
+						break;
+					case 2: // 本周
+						date = getRange("week", "day");
+						break;
+					case 3: // 本月
+						date = getRange("month", "day");
+						break;
+					default:
+						date = [today, today];
+						break;
 				}
-				if (index == 0) {
-					let yesterday = getDateAll(1);
-					this.date = yesterday + "\u2002昨天";
-					this.startTime = yesterday;
-					this.endTime = yesterday;
-					let info = {
-						startTime: this.startTime,
-						endTime: this.endTime,
-						placeId: this.placeId,
-					};
-					this.$emit("getEarndata", info);
+				this.activeBtn = id
+				this.startTime = date[0]
+				this.endTime = date[1]
+				this.date = `${date[0]} 至 ${date[1]}`
+				let info = {
+					startTime: this.startTime,
+					endTime: this.endTime,
+					placeId: this.placeId,
 				}
-				if (index == 1) {
-					let beforeYesterday = getDateAll(2);
-					this.date = beforeYesterday + "\u2002前天";
-					this.startTime = beforeYesterday;
-					this.endTime = beforeYesterday;
-					let info = {
-						startTime: this.startTime,
-						endTime: this.endTime,
-						placeId: this.placeId,
-					};
-					this.$emit("getEarndata", info);
-				}
-				if (index == 2) {
-					//本周
-					this.date = `${getTime(0)} 至 ${getTime(-6)}`;
-					this.startTime = getTime(0);
-					this.endTime = getTime(-6);
-					let info = {
-						startTime: this.startTime,
-						endTime: this.endTime,
-						placeId: this.placeId,
-					};
-					this.$emit("getEarndata", info);
-				}
-				if (index == 3) {
-					//本月
-					let monStrat =
-						new Date().getFullYear() +
-						"-" +
-						(new Date().getMonth() + 1 < 10 ?
-							"0" + (new Date().getMonth() + 1) :
-							new Date().getMonth() + 1) +
-						"-" +
-						"01";
-					this.startTime = monStrat;
-					this.endTime = getDateAll(0);
-					this.date = monStrat + "至" + this.endTime;
-					let info = {
-						startTime: this.startTime,
-						endTime: this.endTime,
-						placeId: this.placeId,
-					};
-					this.$emit("getEarndata", info);
-				}
+				this.$emit("getEarndata", info)
 			},
+
 			//按场地
 			getPlaceId(place) {
 				this.placeNum = place[1].length ?
@@ -210,7 +171,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.condition-screening {
 		width: 100%;
 		background: #fff;
@@ -221,7 +182,7 @@
 
 			.outSide {
 				border-bottom: 1px solid #e5e5e5;
-				
+
 				.right-wrapper {
 					display: flex;
 					align-items: center;

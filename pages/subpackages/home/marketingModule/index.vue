@@ -7,7 +7,8 @@
 				<view class="tool_style" v-for="list in item.moduleList" :key="list.id" @click="nextPage(list)"
 					v-hasPermi="[`${list.permissions}`]">
 					<view class="icon_box">
-						<u-icon :name="list.icon" class="icon" :color="list.color" size="80" />
+						<xls-image :src="list.imgUrl" v-if="list.imgUrl" mode="heightFix"></xls-image>
+						<u-icon :name="list.icon" class="icon" :color="list.color" size="80" v-else/>
 						<view class="animat-shake" v-if="list.shake">{{ list.shake }}</view>
 					</view>
 					<view class="tool_text text-over">{{ list.title }}</view>
@@ -50,6 +51,7 @@
 								id: 8,
 								title: "新用户特惠",
 								icon: "account-fill",
+								imgUrl: `${this.$baseUrl}appV4/marketingModule/newUser.png`,
 								color: "#5241ff",
 								shake: "",
 								path: "/pages/subpackages/home/marketingModule/newUser/indexList/index",
@@ -86,8 +88,9 @@
 								id: 12,
 								title: "随机立减",
 								icon: "rmb-circle-fill",
+								imgUrl: `${this.$baseUrl}appV4/marketingModule/random.png`,
 								color: "#ff9500",
-								shake: "火爆",
+								shake: "",
 								path: "/pages/subpackages/home/marketingModule/random/list/index",
 								query: {},
 								permissions: "app:marketing:coupon:list",
@@ -96,8 +99,9 @@
 								id: 14,
 								title: "支付立减劵",
 								icon: "coupon-fill",
+								imgUrl: `${this.$baseUrl}appV4/marketingModule/couple.png`,
 								color: "#ff9500",
-								shake: "",
+								shake: "火爆",
 								path: "/pages/subpackages/home/marketingModule/coupon/list/index",
 								query: {},
 								permissions: "app:marketing:coupon:list",
@@ -106,6 +110,7 @@
 								id: 16,
 								title: "限时优惠",
 								icon: "certificate",
+								imgUrl: `${this.$baseUrl}appV4/marketingModule/limited.png`,
 								color: "#ff9500",
 								shake: "",
 								path: "/marketing/coupon_list",
@@ -122,6 +127,7 @@
 							id: 18,
 							title: "游戏币红包",
 							icon: "gold-coin-o",
+							imgUrl: `${this.$baseUrl}appV4/marketingModule/currency.png`,
 							color: "#f93b3b",
 							shake: "",
 							path: "",
@@ -137,7 +143,9 @@
 				if (!list.path) {
 					return this.$toast("火速开发中");
 				}
-				this.$goTo(list.path, "navigateTo", {... list.query});
+				this.$goTo(list.path, "navigateTo", {
+					...list.query
+				});
 			},
 		},
 	};
@@ -190,7 +198,7 @@
 
 				.animat-shake {
 					position: absolute;
-					right: 3px;
+					right: -7px;
 					top: -7px;
 					font-size: 11px;
 					line-height: 11px;

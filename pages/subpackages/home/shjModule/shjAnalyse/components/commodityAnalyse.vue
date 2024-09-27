@@ -5,19 +5,19 @@
 			<view class="goods-center">
 				<view class="goods-center-item" @click="tips">
 					<view class="name">
-						动销商品数 <u-icon name="question" size="20" color="#fff" />
+						动销商品数 <u-icon name="question-circle-fill" size="40" color="#fff" />
 					</view>
 					<view class="number">{{ acountObj.typeOfMovingPin }} 种</view>
 				</view>
 				<view class="goods-center-item item-style" @click="tips(1)">
 					<view class="name">
-						成交数量 <u-icon name="question" size="20" color="#fff" />
+						成交数量 <u-icon name="question-circle-fill" size="40" color="#fff" />
 					</view>
 					<view class="number">{{ acountObj.numberOfTransactions }} 件</view>
 				</view>
 				<view class="goods-center-item" @click="tips(2)">
 					<view class="name">
-						利润 <u-icon name="question" size="20" color="#fff" />
+						利润 <u-icon name="question-circle-fill" size="40" color="#fff" />
 					</view>
 					<view class="number">{{ acountObj.profit }} 元</view>
 				</view>
@@ -113,13 +113,11 @@
 				} else if (type == 2) {
 					message = "统计时间段内，总利润=∑（单个商品零售总额-单个商品成本）";
 				}
-				this.$dialog
-					.alert({
+				this.$modal(message,{
 						title: "说明",
-						message,
-						width: 280,
-						confirmButtonText: "我知道了",
-						confirmButtonColor: "#5241FF",
+						confirmText: "我知道了",
+						confirmColor: "#5241FF",
+						showCancel: false
 					})
 					.then(() => {});
 			},
@@ -142,16 +140,16 @@
 				if (this.moreList == 3) {
 					return this.$refs.produce.getProduce(params, commodityId);
 				}
-				let res = await api.salesAnalysis({
+				let res = await shjController.salesAnalysis({
 					startTime: params.startTime,
 					endTime: params.endTime,
 					size: 10000,
 					type: this.type, //默认1按出货数排序 2按成交笔数 3按成交金额
 					placeIds: params.placeId.length ? String(params.placeId) : null, //场地id  String类型
 				});
-				if (res.data.code == 0) {
-					this.acountObj = res.data.data;
-					this.commodityList = res.data.data.analysisVoList;
+				if (res.code == 200) {
+					this.acountObj = res.data
+					this.commodityList = res.data.analysisVoList;
 					this.lengthAll =
 						this.commodityList.length > 10 ? 10 : this.commodityList.length;
 				}
@@ -160,7 +158,7 @@
 	};
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.commodity-analyse {
 		width: 100%;
 		padding-bottom: 60px;
@@ -179,11 +177,17 @@
 				.goods-center-item {
 					flex: 1;
 					text-align: center;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
 
 					.name {
 						color: hsla(0, 0%, 100%, 0.7);
 						font-size: 13px;
 						margin-bottom: 10px;
+						display: flex;
+						align-items: center;
 					}
 
 					.number {

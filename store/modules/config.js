@@ -1,6 +1,13 @@
 import {
 	deviceController
-} from '@/api/index.js';
+} from '@/api/index.js'
+import {
+	removeToken,
+	removeInfo,
+	removePermissions,
+	removeLoginInfo
+}
+from "@/common/auth.js"
 
 const getDefaultState = () => {
 	return {
@@ -114,23 +121,35 @@ const actions = {
 					code
 				} = res;
 				if (code === 200) {
-					commit('SET_TYPE', data);
-					let dict = {};
-					let typeId = [];
+					commit('SET_TYPE', data)
+					let dict = {}
+					let typeId = []
 					data.forEach(item => {
-						dict[item.id] = item.typeName;
-						typeId.push(item.id);
+						dict[item.id] = item.typeName
+						typeId.push(item.id)
 					});
-					commit('SET_TYPE_ID', typeId);
-					commit('SET_DICT', dict);
-					resolve(res);
+					commit('SET_TYPE_ID', typeId)
+					commit('SET_DICT', dict)
+					resolve(res)
 				} else {
-					reject(new Error('Failed to fetch device types'));
+					reject(new Error('Failed to fetch device types'))
 				}
 			}).catch(error => {
-				reject(error);
+				reject(error)
 			});
 		});
+	},
+	clearConfig({
+		commit,
+		state
+	}, params) {
+		removeToken()
+		removeInfo()
+		removePermissions()
+		removeLoginInfo()
+		commit('SET_TYPE', [])
+		commit('SET_TYPE_ID', [])
+		commit('SET_DICT', {})
 	}
 };
 

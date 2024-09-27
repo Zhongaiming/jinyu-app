@@ -48,4 +48,72 @@ export default class shjController {
 			data
 		})
 	}
+	
+	/**
+	 * 货道重置
+	 * @param {Object} data
+	 */
+	static rendingMachineReset(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/rendingMachineReset',
+			method: 'POST',
+			data
+		})
+	}
+	/**
+	 * 编辑货道
+	 * @param {Object} data
+	 */
+	static updCargoLane(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/updCargoLane',
+			method: 'POST',
+			data
+		})
+	}
+	static updCargoLaneList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/updCargoLaneList',
+			method: 'POST',
+			data
+		})
+	}
+	/**
+	 * 测试电机
+	 * @param {Object} data
+	 */
+	static motorTest(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/motorTest',
+			method: 'POST',
+			data
+		})
+	}
+	
+	/**
+	 * 补货管理
+	 * @param {Object} data
+	 */
+	static clearingOrReplenishment(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/clearingOrReplenishment',
+			method: 'POST',
+			data
+		})
+	}
+	
+	static oneKeyShj(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/oneKey',
+			method: 'POST',
+			data
+		})
+	}
+	
+	/**
+	 * 参数设置
+	 * @param {Object} data
+	 */
+	
+	
 }

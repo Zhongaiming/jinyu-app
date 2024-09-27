@@ -106,10 +106,12 @@
 				copyEvent(memberId);
 			},
 			queryList(pageNo, pageSize) {
+				this.$loading()
 				memberController.getList({
 					page: pageNo,
 					size: pageSize,
 				}).then(res => {
+					this.$hideLoading()
 					if (res.code === 200) {
 						this.$refs.memberPaging.complete(res.data);
 					}

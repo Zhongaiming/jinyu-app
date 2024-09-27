@@ -85,6 +85,13 @@
 				dataList: [],
 			};
 		},
+		onShow() {
+			this.$nextTick(() => {
+				if (this.$refs.paging) {
+					this.$refs.paging.refresh()
+				}
+			})
+		},
 		methods: {
 			str(str) {
 				return str.split(" ")[0]
@@ -95,14 +102,7 @@
 			},
 			async queryList(pageNo, pageSize) {
 				let res = await marketingController.getCouponRandomList({
-					dtoFilter: {
-						// type: this.tab, //活动类型，1：支付前发  ，2：支付后发
-						// state: this.cell, //活动状态，1：启用，2：停用，3：完成
-					},
-					pageParam: {
-						pageNum: pageNo,
-						pageSize: pageSize
-					},
+					state: this.cell, //活动状态，1：启用，2：停用，3：完成
 				});
 				if (res.code == 200) {
 					this.$refs.paging.complete(res.data)

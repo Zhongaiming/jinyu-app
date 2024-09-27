@@ -1,42 +1,42 @@
 <template>
 	<!-- 设备货道 -->
-	<u-popup v-model="railCheck" position="bottom" :style="{ height: '60%' }"
-		@click-overlay="$parent.railEdit = true">
-		<div class="edit-cargoroad flex-wrapper">
-			<div class="popup-header">
-				<span @click="($parent.railEdit = true), (railCheck = false)">取消</span>
+	<u-popup :show="railCheck" mode="bottom" @close="cancel">
+		<view class="edit-cargoroad flex-wrapper">
+			<view class="popup-header">
+				<span @click="cancel">取消</span>
 				<span class="popup-title">货道选择</span>
 				<span @click="specialRail">确定</span>
-			</div>
-			<search-input @stratesSearch="stratesSearch" placeholder="请输入货道号"></search-input>
-			<div class="all-checkbox-box">
-				<div class="left-style">
-					<u-checkbox v-model="allCheck" checked-color="#5241FF"
-						@click="$refs.checkboxGroup.toggleAll(allCheck)"></u-checkbox>
+			</view>
+			<xls-search @confirm="stratesSearch" placeholder="请输入货道号"></xls-search>
+			<view class="all-checkbox-box">
+				<view class="left-style">
+					<u-checkbox-group v-model="allCheckGroup" @change="allGroupChange">
+						<u-checkbox name="1" activeColor="#5241FF" shape="circle" iconSize="32" labelSize="36"
+							size="38"></u-checkbox>
+					</u-checkbox-group>
 					<span>全选</span>
-				</div>
-				<div>
-					设备号： {{ allRailList.length ? allRailList[0].deviceNumber : "" }}
-				</div>
-			</div>
-			<u-checkbox-group v-model="checkboxGroup" direction="horizontal" ref="checkboxGroup" class="rail-wrapper"
-				v-show="railList.length">
-				<div class="item-style-wrapper" v-for="(item, index) in railList" :key="index">
-					<div class="item-style">
-						<img :src="item.commodityImg" alt="" v-if="item.commodityImg" />
-						<img src="@/assets/image/other/ztwl.png" alt="" v-else />
-						<div>{{ item.railNumber }}</div>
-						<div class="value text-over">{{ item.commodityName || "未设置" }}</div>
-						<div class="handle-list">
-							<u-checkbox :name="item.id" @click="allCheck = checkboxGroup.length == railList.length"
-								checked-color="#5241FF"></u-checkbox>
-						</div>
-					</div>
-				</div>
-				<on-earth />
+				</view>
+				<view>
+					设备号： {{allRailList.length?allRailList[0].deviceNumber:""}}
+				</view>
+			</view>
+			<u-checkbox-group v-model="checkboxGroup" class="rail-wrapper" v-if="railList.length">
+				<view class="item-style-wrapper" v-for="(item, index) in railList" :key="index">
+					<view class="item-style">
+						<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
+						<xls-image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" v-else class="image" />
+						<view>{{ item.railNumber }}</view>
+						<view class="value text-over">{{ item.commodityName || "未设置" }}</view>
+						<view class="handle-list">
+							<u-checkbox :name="item.id" activeColor="#5241FF" shape="circle" iconSize="32"
+								labelSize="36" size="38"></u-checkbox>
+						</view>
+					</view>
+				</view>
+				<xls-bottom></xls-bottom>
 			</u-checkbox-group>
-			<no-data v-show="!railList.length" />
-		</div>
+			<xls-empty v-if="!railList.length" />
+		</view>
 	</u-popup>
 </template>
 
@@ -44,6 +44,7 @@
 	import local from "@/plugins/storage";
 	export default {
 		name: "shjRails",
+		emits: ['setRailEdit'],
 		data() {
 			return {
 				//货道
@@ -51,6 +52,7 @@
 				railList: [],
 				railCheck: false,
 				allCheck: false,
+				allCheckGroup: [],
 				checkboxGroup: [],
 			};
 		},
@@ -77,6 +79,17 @@
 				this.$emit("getShjRail", this.checkboxGroup);
 				this.railCheck = false;
 			},
+			allGroupChange(item) {
+				if (item.length) {
+					this.checkboxGroup = this.railList.map(item => item.id)
+				} else {
+					this.checkboxGroup = [];
+				}
+			},
+			cancel() {
+				this.$emit('setRailEdit', true)
+				this.railCheck = false
+			}
 		},
 	};
 </script>
@@ -131,10 +144,9 @@
 			background: #f5f6f7;
 			display: flex;
 			flex-wrap: wrap;
-			align-items: start;
+			align-items: flex-start;
 			padding: 5px 12px;
 
-			// justify-content: space-between;
 			.item-style-wrapper {
 				width: 32%;
 				margin-right: 1.3%;
@@ -153,7 +165,7 @@
 				justify-content: center;
 				align-items: center;
 
-				img {
+				.image {
 					width: 50px;
 					height: 50px;
 					margin-bottom: 5px;
@@ -168,7 +180,7 @@
 				.handle-list {
 					position: absolute;
 					top: 6px;
-					right: -8px;
+					right: 0px;
 				}
 			}
 		}

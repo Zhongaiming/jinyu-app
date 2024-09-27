@@ -14,7 +14,7 @@
 				<view class="header">
 					<p class="title-wrap flex-wrap">
 						<span class="card-name">
-							{{item.type == 1 ?"首单享优惠":"首单享折扣"}}
+							{{item.type==-1?"首单享优惠":"首单享折扣"}}
 						</span>
 						<span class="card-status" v-if="item.state == 2">已终止</span>
 						<span class="card-status card-loading" v-else>投放中</span>
@@ -105,11 +105,11 @@
 						text: "全部活动"
 					},
 					{
-						id: 1,
+						id: -1, // 0 折扣 -1 优惠
 						text: "首单享优惠"
 					},
 					{
-						id: 2,
+						id: 0,
 						text: "首单享折扣"
 					},
 				], 
@@ -127,6 +127,9 @@
 		mounted() {
 			this.getList();
 		},
+		onShow() {
+			this.getList();
+		},
 		methods: {
 			dateString(string) {
 				if(typeof string != 'string') {
@@ -136,15 +139,10 @@
 			},
 			async getList() {
 				let res = await marketingController.getCouponList({
-					dtoFilter: {},
-					pageParam: {
-						pageNum: 1,
-						pageSize: 10
-					},
-					// type: this.select
+					type: this.select!=null ? this.select:''
 				});
 				if (res.code == 200) {
-					this.list = res.data.dataList
+					this.list = res.data
 				}
 			},
 			goNextPage(id, type) {
@@ -164,7 +162,7 @@
 		align-items: center;
 		background: #fff;
 		position: sticky;
-		top: 48px;
+		top: 44px;
 		z-index: 99;
 
 		.select {

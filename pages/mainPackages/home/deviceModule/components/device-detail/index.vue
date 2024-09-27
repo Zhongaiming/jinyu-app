@@ -10,6 +10,7 @@
 				<!-- 设备详情 -->
 				<view class="header-wrapper">
 					<view class="left-main-wrapper">
+						
 						<view class="one">
 							<view>
 								<span v-if="placeDeviceNum.dollNumber">{{ placeDeviceNum.dollNumber }}号机_</span>
@@ -32,6 +33,7 @@
 							{{ placeDeviceNum.region }}{{ placeDeviceNum.placeDetails }}【{{placeDeviceNum.placeName}}】
 						</view>
 					</view>
+					
 					<view class="record-wrapper" v-show="decideType == '售货机'" @click="
 					  (dollNumber = placeDeviceNum.dollNumber),
 						(showRemark = !showRemark),
@@ -50,6 +52,7 @@
 							</view>
 							<view class="name">生成二维码</view>
 						</view>
+						
 						<view @click="
 							(currency = placeDeviceNum.currency),
 							  (price = placeDeviceNum.price),
@@ -60,6 +63,19 @@
 								<image :src="`${$baseUrl}appV4/device/price.png`" alt="" mode="widthFix" />
 							</view>
 							<view class="name">单价</view>
+						</view>
+						
+						<view @click="
+							(currency = placeDeviceNum.currency),
+							  (price = placeDeviceNum.price),
+							  (railRepertory = giftInfo.railRepertory),
+							  (unitPrice = !unitPrice),
+							  (showDetail = !showDetail)
+						  " v-show="decideType == '兑币机'">
+							<view class="icons-wrapper">
+								<image :src="`${$baseUrl}appV4/earn_tabbar/label_active.png`" alt="" mode="widthFix" />
+							</view>
+							<view class="name">库存</view>
 						</view>
 
 						<view @click="
@@ -342,9 +358,14 @@
 		<u-popup :show="unitPrice" round="20" mode="center"
 			@close="() => {(unitPrice = !unitPrice), (showDetail = !showDetail)}">
 			<view class="unitPrice">
-				<view class="top-title">单价设置</view>
+				<view class="top-title">{{decideType == '兑币机'?'库存设置':'单价设置'}}</view>
 				<view class="info">
-					<view class="set-price-modal">
+					<view class="set-price-modal" v-if="decideType == '兑币机'">
+						<input placeholder="请输入" oninput="this.value=this.value.replace(/[^0-9]+/,'')" maxlength="4"
+							class="input" v-model="railRepertory" />
+						<span class="unit">币</span>
+					</view>
+					<view class="set-price-modal" v-else>
 						<input placeholder="请输入" oninput="this.value=this.value.replace(/[^0-9]+/,'')" maxlength="4"
 							class="input" v-model="currency" />
 						<span class="unit">币/次</span>
@@ -435,38 +456,15 @@
 </template>
 
 <script>
-	// import QrCanvas from "./qrCanvas.vue";
-	// import qrCanvasRailMini from "./qrCanvasRailMini.vue";
-	// import {
-	// 	deviceDetail,
-	// 	editRemark,
-	// 	updateMachineNumber,
-	// 	editCurrency,
-	// 	editState,
-	// 	editBinding,
-	// 	editBindingList,
-	// 	getDeviceCommodityInfo,
-	// 	getEggDeviceRailInfo,
-	// } from "@/utils/api/device";
-	// import {
-	// 	getRailCommodityList
-	// } from "@/utils/api/remoteBoot";
-	// import {
-	// 	getMachineNumber
-	// } from "@/utils/api/addDevice";
-	// import api from "@/utils/api/addDevice";
-	// import qs from "qs";
 	import {
 		deviceController
 	} from "@/api/index.js";
 	import QrCanvasRail from "../qr-canvas-rail/index.vue";
 	import cache from '@/common/cache.js';
-
+	
 	export default {
 		components: {
 			QrCanvasRail,
-			// QrCanvas,
-			// qrCanvasRailMini
 		},
 		data() {
 			return {
@@ -572,6 +570,7 @@
 				 * @Date: 2024-05-05 11:42:50
 				 */
 				longUntie: 0,
+				railRepertory: 0,
 			};
 		},
 		methods: {
@@ -941,6 +940,21 @@
 			},
 			//娃娃机修改单价
 			eidtPrice() {
+				if(this.decideType == '兑币机') {
+					const params = JSON.parse(JSON.stringify(this.giftInfo))
+					params.railRepertory = this.railRepertory
+					deviceController.editEggDeviceRailInfo(params)
+						.then((res) => {
+							if (res.code == 200) {
+								this.$toast("修改成功")
+								this.unitPrice = !this.unitPrice
+								this.showDetail = !this.showDetail
+								this.giftInfo.railRepertory = this.railRepertory
+							}
+						})
+						.catch((res) => {});
+					return
+				}
 				if (this.currency == "") {
 					return this.$toast("币数不能为空或者零~");
 				}
@@ -1011,18 +1025,19 @@
 						confirmColor: "#5241ff",
 					})
 					.then(() => {
-						let data = qs.stringify({
-							productKey: "a1eUldLZaNe",
+						let params = qs.stringify({
+							// productKey: "a1eUldLZaNe", // 新零售V3
+							productKey: "k050d40uQm4", // 新零售V4
 							imei: this.placeDeviceNum.uuid,
-						});
-						api
-							.restartDevice(data)
-							.then((res) => {
-								if (res.code == 200) {
-									this.$toast("重启成功~");
-								}
-							})
-							.catch(() => {});
+						})
+						deviceController.restartDevice({
+							imei: this.placeDeviceNum.uuid
+						}).then((res) => {
+							if (res.code == 200) {
+								this.$toast("重启成功~");
+							}
+						})
+						.catch(() => {})
 					})
 					.catch(() => {});
 			},

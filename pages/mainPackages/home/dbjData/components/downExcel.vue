@@ -44,7 +44,8 @@
 		},
 		methods: {
 			copyMemberId(memberId) {
-				copyEvent(memberId);
+				copyEvent(memberId)
+				this.downloadEcexl = !this.downloadEcexl
 			},
 		},
 	};

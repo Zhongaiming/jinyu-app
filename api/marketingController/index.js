@@ -5,15 +5,20 @@ export default class marketingController {
 	// 新用户特惠
 	static getCouponList(data) {
 		return http.request({
-			url: '/order/api/v1/admin/order/couponReductionMember/list',
+			url: '/order/api/v1/admin/order/coupon/getCouponList',
 			method: 'POST', 
-			data
+			data,
+			custom: {
+				header: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			}
 		})
 	}
 	// 活动详情
 	static getCouponById(data) {
 		return http.request({
-			url: '/order/api/v1/admin/order/couponReductionMember/view',
+			url: '/order/api/v1/admin/order/coupon/view',
 			method: 'GET', 
 			data
 		})
@@ -21,7 +26,7 @@ export default class marketingController {
 	// 活动添加
 	static addCoupon(data) {
 		return http.request({
-			url: '/order/api/v1/admin/order/couponReductionMember/add',
+			url: '/order/api/v1/admin/order/coupon/add',
 			method: 'POST', 
 			data
 		})
@@ -29,7 +34,7 @@ export default class marketingController {
 	// 活动修改
 	static updateCoupon(data) {
 		return http.request({
-			url: '/order/api/v1/admin/order/couponReductionMember/update',
+			url: '/order/api/v1/admin/order/coupon/update',
 			method: 'POST', 
 			data
 		})

@@ -230,7 +230,7 @@
 		<!-- 商品类型--单选 -->
 		<!-- <commodity-type ref="comType" @itemclick="itemclick" :allCheck="true" /> -->
 		
-		<xls-commodity :commodityId="eggDetail.commodityImg" @confirm="pitchCommodity" ref="commodity"></xls-commodity>
+		<xls-commodity :commodityId="eggDetail.commodityId" @confirm="pitchCommodity" ref="commodity"></xls-commodity>
 	</view>
 </template>
 
@@ -493,7 +493,6 @@
 			},
 			//选中商品
 			pitchCommodity(commodity) {
-				console.log(commodity)
 				this.eggDetail.commodityName = commodity.commodityName;
 				this.eggDetail.commodityId = commodity.commodityId;
 				this.eggDetail.commodityImg = commodity.commodityImg;

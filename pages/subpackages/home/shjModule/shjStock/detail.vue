@@ -6,7 +6,7 @@
 				<span>{{ placeName }}-售货机{{ deviceNumber }}</span>
 			</view>
 			<view class="tab-list">
-				<view class="tab-item" :class="activeType == item.id ? 'active' : ''" @click="activeType = item.id"
+				<view class="tab-item" :class="{'active':activeType == item.id}" @click="activeType = item.id"
 					v-for="(item, index) in activeTypeList" :key="index">
 					{{ item.title }}
 				</view>

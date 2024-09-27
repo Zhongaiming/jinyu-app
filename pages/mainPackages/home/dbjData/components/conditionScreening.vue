@@ -45,7 +45,7 @@
 				</xls-dropdown-menu>
 			</view>
 			<!-- 导出 -->
-			<view class="cond-item-content" v-if="text == 'history'">
+			<view class="cond-item-content" v-if="text == 'history'&&1==0">
 				<view class="Bleft-wrapper">
 					温馨提示
 					<u-icon name="info-circle" size="36" @click="$refs.explain.downExplain = true" />
@@ -272,33 +272,38 @@
 			        startTime: `${this.startTime} 00:00:00`,
 			        endTime: `${this.endTime} 23:59:59`,
 					pickerTime: this.pickerTime
-			    };
+			    }
 			
 			    // 处理特定类型的数据
-			    let data;
+			    let data
 			
 			    if (this.text === "index") {
 			        data = {
 			            ...baseData,
 			            placeId: this.placeId,
 			            search: this.searchValue,
-			        };
+			        }
 			    } else if (this.text === "detail") {
-			        data = baseData;
+			        data = baseData
 			        if (this.activeName !== 1) {
-			            data.result = this.payResult;
-			            data.exchangeType = this.payType;
+			            data.result = this.payResult
+			            data.exchangeType = this.payType
 			        }
 			    } else if (this.text === "history") {
-			        data = {
-			            startTime: this.startTime,
-			            endTime: this.endTime,
-			            placeIds: this.placeId.length ? String(this.placeId) : null,
-			        };
+			        // data = {
+			        //     startTime: this.startTime,
+			        //     endTime: this.endTime,
+			        //     placeIds: this.placeId.length ? String(this.placeId) : null,
+			        // }
+					data = {
+					    ...baseData,
+					    placeId: this.placeId,
+					    search: this.searchValue,
+					}
 			    }
 			
 			    // 触发事件
-			    this.$emit("getParams", data);
+			    this.$emit("getParams", data)
 			},
 			
 			/** 导出数据 */
