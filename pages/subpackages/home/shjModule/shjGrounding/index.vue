@@ -107,7 +107,7 @@
 				this.deviceNumber = deviceNumber;
 				this.getDetail();
 				this.$nextTick(() => {
-					// this.$refs.type.getSet(this.deviceNumber);
+					this.$refs.type.getSet(this.deviceNumber);
 				});
 			}
 		},

@@ -111,7 +111,7 @@ export default class deviceController {
 		})
 	}
 	
-	// 娃娃机设置单价
+	// 娃娃机设置单价/批量
 	static editCurrency(data) {
 		return http.request({
 			url: '/device/api/v1/admin/device/device/editCurrency',
@@ -270,6 +270,14 @@ export default class deviceController {
 			data
 		})
 	}
+	static editBindingList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/device/unbinding',
+			method: 'POST',
+			data
+		})
+	}
+	
 	// 转移设备
 	static moveDevice(data) {
 		return http.request({

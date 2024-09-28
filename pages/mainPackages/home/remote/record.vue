@@ -150,10 +150,12 @@
 					operatorId: this.operatorId,
 					deviceNumber: this.deviceNumber,
 				}).then(res => {
-					this.$refs.paging.complete(res.data.dataList);
-					this.allPoints = this.recordList.reduce((sum, item) => {
-					    return sum + (item.points || 0);
-					}, 0);
+					this.$refs.paging.complete(res.data.dataList)
+					setTimeout(() => {
+						this.allPoints = this.recordList.reduce((sum, item) => {
+						    return sum + (item.points || 0)
+						}, 0)
+					}, 200)
 				})
 			},
 			//操作人

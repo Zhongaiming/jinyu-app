@@ -111,26 +111,31 @@
 			</view>
 		</view>
 		<!-- 设备详情 -->
-		<device-detail ref="deviceDetailpopup" @updatedDevice="updatedDevice"></device-detail>
+		<device-detail ref="deviceDetailpopup" @updatedDevice="updatedDevice" @manyBind="manyBind"></device-detail>
 		<!-- 蛋仓详情 -->
 		<egg-set ref="setting" @updatedEgg="updatedEgg"></egg-set>
+		<!-- 批量 -->
+		<device-batch-set-vue ref="placePopup" @editBind="editBind"></device-batch-set-vue>
 	</view>
 </template>
 
 <script>
-	import signalOffline from "../signal-offline/index.vue";
-	import signalSvuetrength from "../signal-svuetrength/index.vue";
-	import deviceDetail from "../device-detail/index.vue";
-	import eggSet from "../egg-set/index.vue";
+	import signalOffline from "../signal-offline/index.vue"
+	import signalSvuetrength from "../signal-svuetrength/index.vue"
+	import deviceDetail from "../device-detail/index.vue"
+	import eggSet from "../egg-set/index.vue"
+	import deviceBatchSetVue from "../device-batch-set/device-batch-set.vue"
+	
 	import {
 		deviceController
-	} from "@/api/index.js";
+	} from "@/api/index.js"
 	export default {
 		components: {
 			signalOffline,
 			signalSvuetrength,
 			deviceDetail,
 			eggSet,
+			deviceBatchSetVue,
 		},
 		props: {
 			dataList: {
@@ -160,11 +165,6 @@
 			},
 			//设备详情
 			async getRailDetail(item, type) {
-				if (item.deviceSwitch) {
-					this.$set(item, "deviceSwitch", false);
-				} else {
-					this.$set(item, "deviceSwitch", true);
-				}
 				if (!item.deviceList || (item.deviceNum && !item.deviceList.length)) {
 					const screen = Object.fromEntries(
 						Object.entries(this.screen).filter(([key, value]) => value !== null && value !==
@@ -179,12 +179,24 @@
 						res.data = this.descListMethod(res.data);
 						this.$set(item, "deviceList", res.data);
 						if (type == "edit") {
-							// this.$refs.placePopup.callPlace(item);
+							this.$refs.placePopup.callPlace(item)
+						} else {
+							if (item.deviceSwitch) {
+								this.$set(item, "deviceSwitch", false);
+							} else {
+								this.$set(item, "deviceSwitch", true);
+							}
 						}
 					}
 				} else {
 					if (type == "edit") {
-						// this.$refs.placePopup.callPlace(item);
+						this.$refs.placePopup.callPlace(item)
+					} else {
+						if (item.deviceSwitch) {
+							this.$set(item, "deviceSwitch", false);
+						} else {
+							this.$set(item, "deviceSwitch", true);
+						}
 					}
 				}
 			},
@@ -270,6 +282,7 @@
 					const state = this.deviceMsg.state == 1 ? 0 : 1;
 					this.$set(this.deviceMsg, 'state', state);
 				} 
+				// 解绑
 				if (params === "unbundle") {
 					this.$emit('bingClearDevice', {
 						type: params,
@@ -277,7 +290,6 @@
 					})
 				}
 			},
-
 			//编辑蛋仓
 			showSetEgg(gash, dev) {
 				this.$refs.setting.changSet(
@@ -295,6 +307,17 @@
 			//更新蛋仓数据
 			updatedEgg(egg) {
 				Object.assign(this.editEggMsg, egg);
+			},
+			
+			// 批量解绑
+			editBind(device) {
+			  this.$refs.deviceDetailpopup.deviceNumber = device
+			  this.$refs.deviceDetailpopup.fromType = "来自批量"
+			  this.$refs.deviceDetailpopup.deviceState = true
+			},
+			// 取消批量解绑
+			manyBind() {
+			  this.$refs.placePopup.devicePopup = true
 			},
 		}
 	}

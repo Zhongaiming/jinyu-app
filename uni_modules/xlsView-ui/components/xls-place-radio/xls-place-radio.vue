@@ -1,6 +1,8 @@
 <template>
 	<!-- 场地-单选 -->
-	<u-popup :show="placePopup" mode="bottom">
+	<u-popup :show="placePopup" mode="bottom" @close="() => {
+		placePopup = !placePopup
+	}">
 		<view class="xls-place-list">
 			<view class="place-title">
 				<view class="left-back" @click="placePopup = !placePopup">返回</view>

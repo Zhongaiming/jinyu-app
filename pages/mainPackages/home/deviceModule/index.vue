@@ -3,8 +3,6 @@
 		<device-condition :count="count" @confirm="getScreen"></device-condition>
 		<device-list :dataList="dataList" :screen="screen" @bingClearDevice="bingClearDevice"></device-list>
 		<xls-empty slot="empty"></xls-empty>
-		<!-- 批量 -->
-		<!-- <place-popup ref="placePopup"></place-popup> -->
 		<!-- <Tabbar v-show="$route.meta.showDeviceTabbar" /> -->
 	</z-paging>
 </template>

@@ -56,7 +56,7 @@
 				default: "title"
 			},
 			Badge: {
-				type: Boolean,
+				type: [String, Number, Boolean],
 				default: false
 			}
 		},

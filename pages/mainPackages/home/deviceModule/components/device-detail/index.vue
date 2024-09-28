@@ -718,7 +718,7 @@
 				if (this.fromType == "来自本身") {
 					this.showDetail = !this.showDetail;
 				} else if (this.fromType == "来自批量") {
-					this.$parent.manyBind();
+					this.$emit('manyBind')
 				}
 			},
 			pickerUntieReason() {
@@ -732,9 +732,9 @@
 			},
 			//解绑设备
 			async comfirmBinding() {
-				let reason = this.pickerUntieReason();
+				let reason = this.pickerUntieReason()
 				if (!reason) {
-					return this.$toast("请您务必要告诉我们您解绑的原因~");
+					return this.$toast("请您务必要告诉我们您解绑的原因~")
 				}
 				if (this.fromType == "来自本身") {
 					deviceController.editBinding({
@@ -742,24 +742,22 @@
 						unbindingReason: reason,
 					}).then((res) => {
 						if (res.code == 200) {
-							this.deviceState = !this.deviceState;
-							this.$emit("updatedDevice", "unbundle");
-							this.$toast("解绑成功");
+							this.deviceState = !this.deviceState
+							this.$emit("updatedDevice", "unbundle")
+							this.$toast("解绑成功")
 						}
-					});
+					})
 				} else if (this.fromType == "来自批量") {
-					editBindingList({
-						deviceNumber: this.deviceNumber,
-						unbindingReason: reason,
+					deviceController.editBindingList({
+						deviceNumbers: this.deviceNumber,
+						unbindingReason: reason
 					}).then((res) => {
 						if (res.code == 200) {
-							this.deviceState = false;
-							this.$parent.page = 0;
-							this.$parent.onEarth = false;
-							this.$parent.getDevicelist();
-							this.$toast("解绑成功");
+							this.deviceState = !this.deviceState
+							this.$emit("updatedDevice", "unbundle")
+							this.$toast("批量解绑成功")
 						}
-					});
+					})
 				}
 			},
 			/**
@@ -882,31 +880,28 @@
 			},
 			//编辑备注
 			async remarkConfirm() {
-				if (this.dollNumber == "") {
-					this.$toast("机台编号不能为空~");
-				}
 				let res = await deviceController.editRemark({
 					deviceNumber: this.placeDeviceNum.deviceNumber,
 					remark: this.remark,
-				});
+				})
 				let doll = await deviceController.updateMachineNumber({
 					placeId: this.placeDeviceNum.placeId,
 					deviceNumber: this.placeDeviceNum.deviceNumber,
 					dollNumber: this.dollNumber,
-				});
+				})
 				if (res.code == 200 && doll.code == 200) {
 					let remark = {
 						remark: this.remark,
 						dollNumber: this.dollNumber
 					};
-					this.placeDeviceNum.remark = this.remark;
-					this.placeDeviceNum.dollNumber = this.dollNumber;
-					this.$emit("updatedDevice", remark);
+					this.placeDeviceNum.remark = this.remark
+					this.placeDeviceNum.dollNumber = this.dollNumber
+					this.$emit("updatedDevice", remark)
 					this.$nextTick(() => {
-						this.$toast("修改成功");
+						this.$toast("修改成功")
 					});
-					this.showDetail = !this.showDetail;
-					this.showRemark = !this.showRemark;
+					this.showDetail = !this.showDetail
+					this.showRemark = !this.showRemark
 				}
 			},
 			//shj 参数设置

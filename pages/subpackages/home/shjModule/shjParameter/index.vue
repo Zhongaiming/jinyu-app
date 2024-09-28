@@ -75,7 +75,7 @@
 			保存
 		</view>
 
-		<!-- <shjbusinType ref="typeList" @itemclick="itemclick" /> -->
+		<shjbusinType ref="typeList" @itemclick="itemclick" />
 	</view>
 </template>
 
@@ -83,11 +83,11 @@
 	import {
 		shjController
 	} from "@/api/index.js";
-	// import ShjbusinType from "./childrenComps/shjbusinType.vue";
-	// import storage from "@/plugins/storage";
+	import ShjbusinType from "./components/shjbusinType.vue";
+	import storage from "@/plugins/storage";
 	export default {
 		name: "shjParameter",
-		// components: { ShjbusinType },
+		components: { ShjbusinType },
 		data() {
 			return {
 				//自动退款开关
@@ -115,9 +115,9 @@
 				const {
 					deviceNumber
 				} = JSON.parse(option.params)
-				// storage.setSion("deviceNumber", this.$route.query.deviceNumber);
-				// this.deviceNumber = storage.getSion("deviceNumber");
-				// this.getType();
+				storage.setSion("deviceNumber", deviceNumber);
+				this.deviceNumber = storage.getSion("deviceNumber");
+				this.getType();
 			}
 		},
 		methods: {
@@ -127,8 +127,8 @@
 				let res = await shjController.businessOne({
 					deviceNumber
 				});
-				if (res.data.code == 0) {
-					this.business = res.data.data;
+				if (res.code == 200) {
+					this.business = res.data
 					this.automaticRefund = this.business.automaticRefund == 1;
 					this.shoppingCartMode = this.business.shoppingCartMode == 1;
 
@@ -150,7 +150,7 @@
 					1 :
 					0;
 				let res = await shjController.updBusinessOne(this.business);
-				if (res.data.code == 0) {
+				if (res.code == 200) {
 					this.$goBack();
 					this.$toast("修改成功");
 				}
@@ -171,31 +171,27 @@
 							title: "温馨提示",
 							confirmColor: "#5241FF",
 							showCancel: false
-						}).then(() => {});
+						}).then(() => {})
 					} else {
-						this.$router.push({
-							path: "/deviceManagement/parameterSetting",
-						});
+						this.$goTo("/pages/mainPackages/home/deviceModule/children/deviceParamSet")
 					}
 				} else {
 					return this.$modal("设备处于离线状态无法设置，请确保设备在线", {
 						title: "温馨提示",
 						confirmColor: "#5241FF",
 						showCancel: false
-					}).then(() => {});
+					}).then(() => {})
 				}
 			},
 
 			blurCeiling() {
 				if (this.business.purchaseCeiling * 1 < 1) {
-					this.$toast("请输入范围在1~20的整数");
-					this.business.purchaseCeiling = 1;
-					return;
+					this.$toast("请输入范围在1~20的整数")
+					this.business.purchaseCeiling = 1
 				}
 				if (this.business.purchaseCeiling * 1 > 20) {
-					this.$toast("请输入范围在1~20的整数");
-					this.business.purchaseCeiling = 20;
-					return;
+					this.$toast("请输入范围在1~20的整数")
+					this.business.purchaseCeiling = 20
 				}
 			},
 		},

@@ -16,10 +16,7 @@
 							{{railMsg.railIds.length?`已选择${railMsg.railIds.length}条货道`:"请选择货道"}}
 						</span>
 					</view>
-					<view class="edit-panel" @click="
-					  (railEdit = false),
-						$refs.commodity.openMethod()
-					">
+					<view class="edit-panel" @click="(railEdit = false),$refs.commodity.openMethod()">
 						<span>商品选择</span>
 						<span class="product-name" :style="{color: commodityName == '请选择商品'?'#969799':'#5241FF' }">
 							{{ commodityName }}

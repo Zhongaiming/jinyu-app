@@ -14,6 +14,54 @@ export default class shjController {
 	}
 	
 	/**
+	 * 商品上架
+	 * @param {Object} data
+	 */
+	static salesAirportDevice(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/salesAirportDevice',
+			method: 'GET',
+			data
+		})
+	}
+	static setDisplayMode(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/setDisplayMode',
+			method: 'POST',
+			data
+		})
+	}
+	static goodsOnTheShelf(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/goodsOnTheShelf',
+			method: 'POST',
+			data
+		})
+	}
+	static goodsOnTheShelfList(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/goodsOnTheShelfList',
+			method: 'POST',
+			data
+		})
+	}
+	/**
+	 * 商品分类
+	 * @param {Object} data
+	 */
+	/**
+	 * shj 批量复制 
+	 * @param {Object} data
+	 * */
+	static batchReplication(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/batchReplication',
+			method: 'POST',
+			data
+		})
+	}
+	
+	/**
 	 * 清货或者补货或者批量补货
 	 * @param {Object} data
 	 */
@@ -111,9 +159,42 @@ export default class shjController {
 	}
 	
 	/**
+	 * 下发shj补货
+	 * @param {Object} data
+	 */
+	static setShjRepertoryBatch(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/iot/setShjRepertoryBatch',
+			method: 'POST',
+			data
+		})
+	}
+	
+	/**
 	 * 参数设置
 	 * @param {Object} data
 	 */
+	static businessType(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/businessType/queryList',
+			method: 'GET',
+			data
+		})
+	}
+	static businessOne(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/business/businessOne',
+			method: 'GET',
+			data
+		})
+	}
+	static updBusinessOne(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/business/updBusinessOne',
+			method: 'POST',
+			data
+		})
+	}
 	
 	
 }

@@ -48,7 +48,7 @@
 			<view>点击信号值刷新</view>
 		</view>
 		<!-- 类型 -->
-		<u-popup :show="showType" mode="bottom">
+		<u-popup :show="showType" mode="bottom" @close="showType=false">
 			<view class="popup-wrapper">
 				<view class="search-top-wrapper">
 					<view class="title-wrapper">
@@ -77,7 +77,7 @@
 		</u-popup>
 		<xls-place-radio ref="placeList" @getPlaceId="pickerPlace" showAllCheck></xls-place-radio>
 		<!-- 疑问弹出层 -->
-		<u-popup :show="showQuestion" mode="center" round="20">
+		<u-popup :show="showQuestion" mode="center" round="20" @close="showQuestion=false">
 			<view class="popup">
 				<view class="titB"><span>离线说明</span></view>
 				<view class="contB">

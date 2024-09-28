@@ -58,7 +58,7 @@
 					</view>
 				</view>
 			</xls-dropdown-item>
-			<xls-dropdown-item name="2" title="交易类型" :Badge="screen.type&&true">
+			<xls-dropdown-item name="2" title="交易类型" :Badge="screen.type">
 				<view>
 					<view class="index_pullDownPad_vynxu">
 						<view class="tabs_warp_VABLU">
@@ -76,7 +76,7 @@
 					</view>
 				</view>
 			</xls-dropdown-item>
-			<xls-dropdown-item name="3" title="场地信息"  :Badge="screen.placeId&&true">
+			<xls-dropdown-item name="3" title="场地信息" :Badge="screen.placeId">
 				<view>
 					<view class="place-wrapper-style">
 						<xls-search placeholder="请输入场地名称" marLeft="-5.5em" @confirm="stratesSearch"></xls-search>
@@ -113,7 +113,7 @@
 					</view>
 				</view>
 			</xls-dropdown-item>
-			<xls-dropdown-item name="4" title="更多筛选" :Badge="(screen.deviceType&&true)||(screen.state&&true)">
+			<xls-dropdown-item name="4" title="更多筛选" :Badge="screen.deviceType||screen.state">
 				<view>
 					<view class="index_pullDownPad_vynxu">
 						<view class="more-item_header_Y38BZ">
@@ -149,9 +149,8 @@
 		</xls-dropdown-menu>
 		<xls-device-type-checkbox ref="deviceType" @getDeviceType="getDeviceType"></xls-device-type-checkbox>
 		<!-- calendar -->
-		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" 
-			@confirm="getCalender" :minDate="minDate" :defaultDate="[params.startTime, params.endTime]"
-		></xls-calendar>
+		<xls-calendar :show="pickerTime" @close="() => { pickerTime = false }" @confirm="getCalender" :minDate="minDate"
+			:defaultDate="[params.startTime, params.endTime]"></xls-calendar>
 	</view>
 </template>
 
@@ -166,7 +165,7 @@
 		props: {
 			screen: {
 				type: Object,
-				default: ()=>{}
+				default: () => {}
 			}
 		},
 		data() {
@@ -381,7 +380,7 @@
 				}
 				const endDate = new Date();
 				this.params.startTime = this.formatDate(startDate);
-				this.params.endTime = selectedId==2?this.formatDate(startDate):this.formatDate(endDate);
+				this.params.endTime = selectedId == 2 ? this.formatDate(startDate) : this.formatDate(endDate);
 				this.watch.startTime = "";
 				this.watch.endTime = "";
 			},

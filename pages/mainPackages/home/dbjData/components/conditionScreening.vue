@@ -38,9 +38,9 @@
 			<!-- 出币 -->
 			<view class="cond-item-content" v-if="text == 'detail' && activeName == 2">
 				<xls-dropdown-menu ref="dropdown">
-					<xls-dropdown-item title="出币类型" name="1-1" :options="coinList" v-model="payType" :custom="false" @change="get()">
+					<xls-dropdown-item title="出币类型" name="1-1" :options="coinList" v-model="payType" :Badge="payType" :custom="false" @change="get()">
 					</xls-dropdown-item>
-					<xls-dropdown-item title="出币结果" name="2-2" :options="resultList" v-model="payResult" :custom="false" @change="get()">
+					<xls-dropdown-item title="出币结果" name="2-2" :options="resultList" v-model="payResult" :Badge="payResult" :custom="false" @change="get()">
 					</xls-dropdown-item>
 				</xls-dropdown-menu>
 			</view>
@@ -168,7 +168,7 @@
 					},
 					{
 						value: 7,
-						text: "线下购买"
+						text: "现金购买"
 					},
 				],
 				/** 出币结果 */

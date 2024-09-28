@@ -1,7 +1,7 @@
 import Request from '@/js_sdk/luch-request_3.1.0/luch-request/index.js'
 import Vue from 'vue'
 import store from '@/store'
-
+import { seadAppear } from "@/api/deviceController/shjAppear.js"
 import reqConfig from '@/core/config/reqConfig.js'
 import {
 	getToken
@@ -74,6 +74,10 @@ http.interceptors.response.use(response => {
 		if (message) {
 			Vue.prototype.$toast(message)
 		}
+	}
+	if(code === 200) {
+		// 成功
+		seadAppear(response); // shj 设置上报设备
 	}
 	
 	if (loading) {

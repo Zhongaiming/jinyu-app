@@ -232,7 +232,7 @@
 						</view>
 					</view> -->
 				</view>
-				<view style="padding: 0 0 60px 0;"></view>
+				<view style="padding: 0 0 60px 0;" v-if="dataList.length === 1"></view>
 			</view>
 		</view>
 		<!-- 为空 -->
@@ -327,9 +327,12 @@
 		},
 		onLoad(option) {
 			if (option.params) {
-				let place = JSON.parse(option.params);
-				this.placeId = place.placeId;
-				this.placeName = place.placeName;
+				const {placeId, placeName} = JSON.parse(option.params)
+				this.placeId = String(placeId)
+				this.placeName = placeName
+				setTimeout(() => {
+					this.getParams()
+				}, 200)
 			}
 		},
 		methods: {
