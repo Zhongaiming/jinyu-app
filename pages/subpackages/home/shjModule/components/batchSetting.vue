@@ -1,7 +1,9 @@
 <template>
 	<view>
 		<!-- 售货机 批量设置 -->
-		<u-popup :show="batchSet" mode="bottom">
+		<u-popup :show="batchSet" mode="bottom" @close="() => {
+			batchSet = false
+		}">
 			<view class="edit-cargoroad">
 				<view class="popup-header">
 					<span @click="batchSet = false">取消</span>
@@ -107,9 +109,7 @@
 			//货道管理
 			railClick(rail) {
 				if (rail.type == 1) {
-					// return this.$toast("火速开发中~")
 					this.batchSet = false
-					// this.$parent.stratTest()
 					this.$emit('stratTest')
 				} else {
 					this.$refs.change.handleRail(rail)

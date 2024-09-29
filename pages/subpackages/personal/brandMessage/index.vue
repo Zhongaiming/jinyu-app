@@ -44,7 +44,7 @@
 			},
 			async getBusiness() {
 				let res = await api.getBusinessName();
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200 || res.data.msg == "ok") {
 					this.businessName = res.data.data.businessName ?
 						res.data.data.businessName :
 						"未设置";

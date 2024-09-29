@@ -510,7 +510,7 @@
 					commodityName: encodeURIComponent(this.searchCommodityName),
 					commodityTypeId: this.commodityTypeId,
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200 || res.data.msg == "ok") {
 					this.commodity = res.data.data.records;
 					this.onEarth = false;
 					if (res.data.data.records.length < 12) {

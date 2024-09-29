@@ -148,6 +148,15 @@ const subPackages = [
 				"path": "placeService/operate",
 				"name": "场地客服设置"
 			},
+			// 备货单
+			{
+				"path": "stockOrder/index",
+				"name": "备货单"
+			},
+			{
+				"path": "stockOrder/detail",
+				"name": "备货单详情"
+			},
 			// ===== 自带 =====
 			{
 				"path": "setting/index",

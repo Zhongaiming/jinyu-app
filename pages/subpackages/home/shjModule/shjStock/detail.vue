@@ -16,8 +16,8 @@
 			<view class="goods-item" v-for="(item, index) in acountList" :key="index"
 				v-show="activeType == 1 && item.shortSupply">
 				<view class="info-wrapper">
-					<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" />
-					<xls-image :src="`${$baseUrl}/image/other/ztwl.png`" alt="" v-else />
+					<image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image"/>
+					<image :src="`${$baseUrl}/image/other/ztwl.png`" alt="" v-else class="image"/>
 					<view class="goods-info">
 						<view class="info-head">
 							<span>{{ item.commodityName || "暂无" }}</span>
@@ -43,14 +43,13 @@
 					</view>
 				</view>
 			</view>
-			<view class="goods-item" v-for="item in railList" :key="item.id"
-				v-show="activeType == 2 && item.railRepertory != item.railCapacity">
+			<view class="goods-item" v-for="item in railList" :key="item.id" v-if="activeType == 2 && item.railRepertory != item.railCapacity">
 				<view class="aisle-text">
 					货道 {{ item.deviceNumber + "-" + item.railNumber }}
 				</view>
 				<view class="info-wrapper">
-					<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" />
-					<xls-image :src="`${$baseUrl}/image/other/ztwl.png`" alt="" v-else />
+					<image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image"/>
+					<image :src="`${$baseUrl}/image/other/ztwl.png`" alt="" v-else class="image"/>
 					<view class="goods-info">
 						<view class="info-head">
 							<view class="text-name-price">
@@ -78,8 +77,11 @@
 				</view>
 			</view>
 		</view>
+		
 		<!-- 补货 -->
-		<u-popup v-model="backCargo" round :close-on-click-overlay="false">
+		<u-popup :show="backCargo" round="20" mode="center" @close="() => {
+			backCargo = !backCargo
+		}">
 			<view class="popupContent">
 				<view class="title">补货</view>
 				<view class="info">
@@ -113,7 +115,7 @@
 	export default {
 		data() {
 			return {
-				placeName: "广州中土物联科技有限公司",
+				placeName: "场地信息",
 				deviceNumber: "",
 				activeType: 1,
 				activeTypeList: [{
@@ -139,40 +141,42 @@
 				buhuoMsg: {},
 			};
 		},
-		// created() {
-		// 	if (this.$route.query.placeName && this.$route.query.deviceNumber) {
-		// 		this.placeName = this.$route.query.placeName;
-		// 		this.deviceNumber = this.$route.query.deviceNumber;
-		// 		this.getDetail();
-		// 	}
-		// },
+		onLoad(option) {
+			if(option.params) {
+				const {placeName,deviceNumber} = JSON.parse(option.params)
+				this.placeName = placeName
+				this.deviceNumber = deviceNumber
+				this.getDetail()
+			}
+		},
 		methods: {
 			async getDetail() {
-				let deviceNumber = this.$route.query.deviceNumber;
-				let res = await api.replenishmentDetails({
+				let deviceNumber = this.deviceNumber
+				let res = await shjController.replenishmentDetails({
 					deviceNumber
 				});
-				if (res.data.code == 0) {
-					this.railList = res.data.data.list;
+				if (res.code == 200) {
+					this.railList = res.data.list;
 				}
-				let acount = await api.stockOutInventory({
+				let acount = await shjController.stockOutInventory({
 					deviceNumber
-				});
-				if (acount.data.code == 0) {
-					this.acountList = acount.data.data;
+				})
+				if (acount.code == 200) {
+					this.acountList = acount.data;
 				}
 			},
 
 			//补货
 			replentGoods(item) {
-				this.buhuoMsg = item;
+				this.buhuoMsg = item
 				//单个补货
-				this.railMsg.id = item.id;
-				this.railMsg.deviceNumber = `${item.deviceNumber}-${item.railNumber}`;
-				this.railMsg.railCapacity = item.railCapacity;
-				this.railMsg.railRepertory = item.railRepertory;
-				this.backCargo = true;
+				this.railMsg.id = item.id
+				this.railMsg.deviceNumber = `${item.deviceNumber}-${item.railNumber}`
+				this.railMsg.railCapacity = item.railCapacity
+				this.railMsg.railRepertory = item.railRepertory
+				this.backCargo = true
 			},
+			
 			//补货 或者 批量补货
 			async railOperation() {
 				let params = {
@@ -180,32 +184,28 @@
 					railId: this.railMsg.id,
 				};
 				if (this.railMsg.railRepertory === "") {
-					return this.$toast("请输入库存");
+					return this.$toast("请输入库存")
 				}
 				if (this.railMsg.railCapacity === "") {
-					return this.$toast("请输入库存容量");
+					return this.$toast("请输入库存容量")
 				}
 
-				params["railCapacity"] = this.railMsg.railCapacity;
-				params["railRepertory"] = this.railMsg.railRepertory;
+				params["railCapacity"] = this.railMsg.railCapacity
+				params["railRepertory"] = this.railMsg.railRepertory
 
-				api.clearingOrReplenishment(params).then((res) => {
-					if (res.data.code == 0) {
-						this.buhuoMsg.railRepertory = this.railMsg.railRepertory;
-						this.buhuoMsg.railCapacity = this.railMsg.railCapacity;
-						this.$toast(`补货成功~`);
-						this.backCargo = false;
+				shjController.clearingOrReplenishment(params).then((res) => {
+					if (res.code == 200) {
+						this.buhuoMsg.railRepertory = this.railMsg.railRepertory
+						this.buhuoMsg.railCapacity = this.railMsg.railCapacity
+						this.$toast(`补货成功~`)
+						this.backCargo = false
 					}
-				});
+				})
 			},
 			//单个补满
 			railMaxCapacity() {
-				this.$dialog
-					.confirm({
+				this.$modal( `是否补满货道 ${this.buhuoMsg.railNumber} 的库存？`,{
 						title: `补货提示`,
-						width: "280px",
-						message: `是否补满货道 ${this.buhuoMsg.railNumber} 的库存？`,
-						confirmButtonColor: "#5241FF",
 					})
 					.then(() => {
 						let params = {
@@ -214,14 +214,14 @@
 							railRepertory: this.railMsg.railCapacity,
 							railCapacity: this.railMsg.railCapacity,
 						};
-						api.clearingOrReplenishment(params).then((res) => {
-							if (res.data.code == 0) {
-								this.buhuoMsg.railRepertory = this.railMsg.railCapacity;
-								this.buhuoMsg.railCapacity = this.railMsg.railCapacity;
-								this.$toast(`库存已补满~`);
-								this.backCargo = false;
+						shjController.clearingOrReplenishment(params).then((res) => {
+							if (res.code == 200) {
+								this.buhuoMsg.railRepertory = this.railMsg.railCapacity
+								this.buhuoMsg.railCapacity = this.railMsg.railCapacity
+								this.$toast(`库存已补满~`)
+								this.backCargo = false
 							}
-						});
+						})
 					})
 					.catch(() => {});
 			},
@@ -284,7 +284,7 @@
 					flex-direction: row;
 					padding-top: 8px;
 
-					img {
+					.image {
 						width: 70px;
 						height: 76px;
 						border-radius: 5px;
@@ -317,6 +317,7 @@
 								color: #262626;
 								font-size: 13px;
 								height: 26px;
+								line-height: 26px;
 								width: 58px;
 								background: #fff;
 								margin-left: 8px;
@@ -387,6 +388,7 @@
 					font-family: PingFangSC-Regular, PingFang SC;
 					font-size: 16px;
 					line-height: 44px;
+					height: 44px;
 					text-align: left;
 				}
 
@@ -396,6 +398,7 @@
 					box-sizing: border-box;
 					color: #262626;
 					line-height: 44px;
+					height: 44px;
 					padding: 0 8px;
 					width: 150px;
 				}

@@ -171,18 +171,19 @@
 					// 		permissions: ['app:serviceCharge:index'],
 					// 		subheading: '',
 					// 	}, ]
-					// }, {
-					// 	id: 6,
-					// 	permissions: ['app:stockUp:index'],
-					// 	dataList: [{
-					// 		id: 61,
-					// 		title: '我的备货单',
-					// 		imgUrl: `${this.$baseUrl}appV4/my_img/pick.png`,
-					// 		route: '/myPickingList',
-					// 		permissions: ['app:serviceCharge:index'],
-					// 		subheading: '',
-					// 	}, ]
-					// },
+					// }, 
+					{
+						id: 6,
+						permissions: ['app:stockUp:index'],
+						dataList: [{
+							id: 61,
+							title: '我的备货单',
+							imgUrl: `${this.$baseUrl}appV4/my_img/pick.png`,
+							route: '/pages/subpackages/personal/stockOrder/index',
+							permissions: ['app:serviceCharge:index','app:system:replenishmentRecord'],
+							subheading: '',
+						}]
+					},
 				]
 			}
 		},

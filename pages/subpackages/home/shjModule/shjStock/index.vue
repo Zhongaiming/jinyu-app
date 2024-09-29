@@ -13,15 +13,14 @@
 		<xls-place-radio ref="place" @getPlaceId="getPlaceId" deviceType="4" />
 
 		<view class="main-content-wrapper">
-			<u-checkbox-group v-model="checkboxGroup" direction="horizontal" ref="checkboxGroup">
-				<view class="li-item-wrapper" v-for="(item, index) in commodityList" :key="index"
-					v-show="item.railList.length">
+			<u-checkbox-group v-model="checkboxGroup" placement="column">
+				<view class="li-item-wrapper" v-for="(item, index) in commodityList" :key="index">
 					<view class="title-style">{{ item.placeName }}</view>
 					<view class="device-message" v-for="(rail, index) in item.railList" :key="index">
 						<view class="item-top">
 							<view class="device-wrapper">
-								<u-checkbox :name="rail.deviceNumber" checked-color="#5241FF"
-									v-hasPermi="['app:shj:stockUp:create']"></u-checkbox>
+								<u-checkbox :name="rail.deviceNumber" activeColor="#5241FF" shape="circle" iconSize="32"
+									labelSize="36" size="38" v-hasPermi="['app:shj:stockUp:create']"></u-checkbox>
 								<span class="name">售货机{{ rail.deviceNumber }}</span>
 								<span class="status-icon online" v-if="rail.onlineState">在线</span>
 								<span class="status-icon offline" v-else>离线</span>
@@ -47,13 +46,14 @@
 					</view>
 				</view>
 			</u-checkbox-group>
-			
+
 		</view>
-		<xls-empty slot="empty" />	
-		<view class="footer-button-wrapper" v-hasPermi="['app:shj:stockUp:create']">
+		<xls-empty slot="empty" />
+
+		<view class="footer-button-wrapper" v-hasPermi="['app:shj:stockUp:create']" slot="bottom">
 			<view class="select-all">
-				<u-checkbox-group>
-					<u-checkbox v-model="allCheck" checked-color="#5241FF" shape="circle" iconSize="32" labelSize="36"
+				<u-checkbox-group v-model="allCheckGroup" @change="allGroupChange">
+					<u-checkbox name="1" activeColor="#5241FF" shape="circle" iconSize="32" labelSize="36"
 						size="38"></u-checkbox>
 				</u-checkbox-group>
 				<span class="all-text">全选</span>
@@ -61,12 +61,12 @@
 			<view class="generated-records-btn" @click="createStock">生成备货单</view>
 		</view>
 
-		<u-popup :show="stockPopup" round="20" @close="stockPopup=!stockPopup" v-hasPermi="['app:shj:stockUp:create']">
+		<u-popup :show="stockPopup" mode="center" round="20" @close="stockPopup=!stockPopup" v-hasPermi="['app:shj:stockUp:create']">
 			<view class="stock-popup-wrapper">
 				<u-icon name="todo-list-o" size="80" color="#09bb07" />
 				<p class="title">提交成功</p>
 				<p class="main">详情到我的备货单中查询、转发</p>
-				<view class="read-stock" @click="$router.push('/myPickingList')">
+				<view class="read-stock" @click="goTo">
 					查看备货单
 				</view>
 			</view>
@@ -78,7 +78,7 @@
 <script>
 	import {
 		shjController
-	} from '@/api/index.js';
+	} from '@/api/index.js'
 
 	export default {
 		data() {
@@ -86,131 +86,98 @@
 				searchValue: "",
 				placeName: "全部场地",
 				checkboxGroup: [],
-				allCheck: false,
+				allCheckGroup: [],
 				placeId: null,
-				commodityList: [],
 				//备货单
 				stockPopup: false,
+				commodityList: [],
 			};
 		},
 		methods: {
+			queryList(pageNo, pageSize) {
+				shjController.venueVendingMachine({
+					page: pageNo,
+					size: pageSize,
+					...(this.searchValue && {
+						search: encodeURIComponent(this.searchValue)
+					}),
+					...(this.placeId && {
+						placeId: this.placeId
+					}),
+				}).then(res => {
+					res.data = res.data.filter(item => item.railList.length)
+					this.$refs.paging.complete(res.data)
+				})
+			},
+			goTo() {
+				this.$toast('敬请期待！')
+			},
+			allGroupChange(item) {
+				if (item.length) {
+					let railList = this.commodityList.reduce((before, item) => {
+						return [...before, ...item.railList]
+					}, [])
+					this.checkboxGroup = railList.map(item => item.deviceNumber)
+				} else {
+					this.checkboxGroup = []
+				}
+			},
 			getPlaceId(place) {
 				if (place == -1) {
-					this.placeId = null;
-					this.placeName = "全部场地";
+					this.placeId = null
+					this.placeName = "全部场地"
 				} else {
-					this.placeId = place.id;
-					this.placeName = place.placeName;
+					this.placeId = place.id
+					this.placeName = place.placeName
 				}
-				this.stratesSearch("");
+				this.$refs.paging.reload()
 			},
 			stratesSearch(search) {
-				this.searchValue = search;
-				this.page = 0;
-				this.onEarth = false;
-				this.getCommodity();
+				this.searchValue = search
+				this.$refs.paging.reload()
 			},
-			queryList(pageNo, pageSize) {
-				// commodityController.getCommodity({
-				// 	commodityDtoFilter: {
-				// 		commodityName: this.searchValue
-				// 	},
-				// 	pageParam: {
-				// 		pageNum: pageNo,
-				// 		pageSize: pageSize
-				// 	}
-				// }).then(res => {
-				// 	this.$refs.paging.complete(res.data.dataList);
-				// })
-			},
-
-
-
-			async getCommodity() {
-				this.loading = true;
-				let res = await api.venueVendingMachine({
-					page: ++this.page,
-					size: 20,
-					search: this.searchValue ? encodeURIComponent(this.searchValue) : null,
-					placeId: this.placeId,
-				});
-				this.loading = false;
-				if (res.data.code == 0 || res.data.msg == "ok") {
-					if (res.data.data != null) {
-						if (res.data.data.length < 20) {
-							this.onEarth = true;
-						} else {
-							this.onEarth = false;
-						}
-						res.data.data.map((place) => {
-							place.railList = place.railList.filter((rails) => {
-								return rails.shortSupply * 1 > 0;
-							});
-						});
-						if (this.page > 1) {
-							this.commodityList = [...this.commodityList, ...res.data.data];
-						} else {
-							this.commodityList = res.data.data;
-						}
-						this.commodityList.map((place) => {
-							place["railIds"] = [];
-							place.railList.map((rail) => {
-								place.railIds.push(rail.deviceNumber);
-							});
-						});
-					}
-				}
-			},
-
 			goStockDetail(placeName, deviceNumber) {
-				this.$router.push({
-					path: "/shjStock/stockDetail",
-					query: {
-						placeName,
-						deviceNumber
-					},
-				});
+				this.$goTo("/pages/subpackages/home/shjModule/shjStock/detail", "navigateTo", {
+					placeName,
+					deviceNumber
+				})
 			},
 			// 生成备货单
 			createStock() {
 				if (!this.checkboxGroup.length) {
-					return this.$toast("请选择设备~");
+					return this.$toast("请选择设备~")
 				}
-				this.$dialog
-					.confirm({
-						title: "温馨提示",
-						message: "确定生成备货单？",
-						width: 280,
-					})
-					.then(() => {
-						let placeTotal = 0;
-						let allList = JSON.parse(JSON.stringify(this.commodityList));
-						this.checkboxGroup.map((item) => {
-							allList.map((place) => {
-								if (place.railIds.includes(item)) {
-									placeTotal += 1;
-									allList = allList.filter((arr) => {
-										return arr.placeId != place.placeId;
-									});
-								}
-							});
-						});
-						api
-							.addStockOut({
-								deviceNumber: this.checkboxGroup,
-								choiceTotal: this.checkboxGroup.length,
-								placeTotal,
-							})
-							.then((res) => {
-								if (res.data.code == 0) {
-									this.stockPopup = true;
-								}
-							});
-					})
-					.catch(() => {});
+				this.$modal("确定生成备货单？",{
+						title: "温馨提示"
+					}).then(() => {
+						console.log(this.checkboxGroup)
+						let placeTotal = 1
+						let allList = JSON.parse(JSON.stringify(this.commodityList))
+						
+						// this.checkboxGroup.forEach((item) => {
+						// 	allList.forEach((place) => {
+						// 		if (place.railIds.includes(item)) {
+						// 			placeTotal += 1
+						// 			allList = allList.filter(arr => arr.placeId != place.placeId)
+						// 		}
+						// 	})
+						// })
+						console.log(this.checkboxGroup, placeTotal)
+
+						shjController.addStockOut({
+							deviceNumber: this.checkboxGroup,
+							choiceTotal: this.checkboxGroup.length,
+							placeTotal,
+						}).then((res) => {
+							if (res.code == 200) {
+								this.stockPopup = true
+							}
+						})
+						
+					}).catch(() => {})
 			},
 		},
-	};
+	}
 </script>
 
 <style lang="scss" scoped>
@@ -236,7 +203,7 @@
 
 	.main-content-wrapper {
 		margin-top: 8px;
-		padding: 0 12px 70px;
+		padding: 0 12px 0px;
 
 		.li-item-wrapper {
 			margin-top: 6px;
@@ -354,10 +321,7 @@
 		display: flex;
 		height: 50px;
 		justify-content: space-between;
-		left: 0;
 		padding: 0 0 0 10px;
-		position: fixed;
-		right: 0;
 		width: 100%;
 		box-sizing: border-box;
 

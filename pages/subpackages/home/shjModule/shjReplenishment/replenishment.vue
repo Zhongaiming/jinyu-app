@@ -55,8 +55,8 @@
 						<view v-for="(item, index) in railList" :key="index">
 							<view class="cargo-list" v-if="returnBack(item.railNumber) && item.railEnable == 1">
 								<view class="left">
-									<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
-									<xls-image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" class="image"
+									<image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
+									<image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" class="image"
 										v-else />
 									<view v-show="!batchReplenish">
 										<view class="imgFa" v-show="!checkboxGroup.includes(item.id)"></view>

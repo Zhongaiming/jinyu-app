@@ -126,7 +126,7 @@
 			//获取
 			async getUser() {
 				let res = await api.getBingUser();
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200 || res.data.msg == "ok") {
 					let nowUser = {
 						id: null,
 						nickName: local.get("userName"),
@@ -150,7 +150,7 @@
 					username: this.userInfo.username,
 					password: md5(this.userInfo.password),
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200 || res.data.msg == "ok") {
 					this.addUser = false;
 					this.getUser();
 					this.userInfo = {
@@ -172,7 +172,7 @@
 						api.delUser({
 							id
 						}).then((res) => {
-							if (res.data.code == 0 || res.data.msg == "ok") {
+							if (res.code == 200 || res.data.msg == "ok") {
 								this.getUser();
 								this.$toast("删除成功~");
 							}
@@ -190,7 +190,7 @@
 					password: password,
 				});
 				let res = await api.loginXls(data);
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200 || res.data.msg == "ok") {
 					local.set("userName", res.data.data.nickName);
 					local.set("useMerName", res.data.data.username);
 					local.set("userPhone", res.data.data.username);

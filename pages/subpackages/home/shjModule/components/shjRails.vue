@@ -23,8 +23,8 @@
 			<u-checkbox-group v-model="checkboxGroup" class="rail-wrapper" v-if="railList.length">
 				<view class="item-style-wrapper" v-for="(item, index) in railList" :key="index">
 					<view class="item-style">
-						<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
-						<xls-image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" v-else class="image" />
+						<image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
+						<image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" v-else class="image" />
 						<view>{{ item.railNumber }}</view>
 						<view class="value text-over">{{ item.commodityName || "未设置" }}</view>
 						<view class="handle-list">
@@ -58,11 +58,12 @@
 		},
 		methods: {
 			openRailModule() {
-				this.railList = local.getSion("shjRailList") || [];
-				this.allRailList = local.getSion("shjRailList") || [];
-				this.checkboxGroup = [];
-				this.allCheck = false;
-				this.railCheck = true;
+				this.railList = local.getSion("shjRailList") || []
+				this.allRailList = local.getSion("shjRailList") || []
+				this.checkboxGroup = []
+				this.allCheckGroup = []
+				this.allCheck = false
+				this.railCheck = true
 			},
 			stratesSearch(value) {
 				if (!value) {
@@ -98,6 +99,10 @@
 	.edit-cargoroad {
 		background: #fff;
 		width: 100%;
+		height: 60vh;
+		max-height: 1000rpx;
+		display: flex;
+		flex-direction: column;
 
 		.popup-header {
 			align-items: center;
@@ -106,6 +111,7 @@
 			display: flex;
 			font-size: 16px;
 			height: 45px;
+			line-height: 45px;
 			justify-content: space-between;
 			padding: 0 10px;
 

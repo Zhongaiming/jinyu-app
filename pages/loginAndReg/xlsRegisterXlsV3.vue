@@ -287,7 +287,7 @@
 					let res = await getSendNote({
 						phone: that.loginInfo.username,
 					});
-					if (res.data.code == 0 || res.data.msg == "ok") {
+					if (res.code == 200 || res.data.msg == "ok") {
 						this.$toast("短信发送成功");
 					} else {
 						return;
@@ -406,7 +406,7 @@
 						code: this.ranCodeNumber,
 					},
 				});
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200 || res.data.msg == "ok") {
 					this.$toast("注册成功~");
 					this.$router.replace("/login");
 				} else if (res.data.msg) {

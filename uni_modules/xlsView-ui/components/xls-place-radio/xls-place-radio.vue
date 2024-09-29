@@ -19,7 +19,7 @@
 				<view class="place-item" v-for="(place, index) in dataList" :key="index" @click="pickerPlace(place)"
 					v-show="searchShow(place)">
 					<view class="place-main">
-						<span :style="placeActive == place.placeId ? { color: '#5241FF' } : ''">
+						<span :style="placeActive == place.placeId||placeActive == place.id ? { color: '#5241FF' } : ''">
 							{{index+1}}_{{place.placeNumber}}{{ place.placeName }}
 						</span>
 						<span class="device-num" v-if="showDeviceNum">{{ place.deviceNum }}台</span>
@@ -69,7 +69,7 @@
 			};
 		},
 		async created() {
-			this.getList();
+			this.getList()
 		},
 		methods: {
 			async getList() {
@@ -106,9 +106,9 @@
 			},
 			showPlacePopup(placeId = -1) {
 				if (placeId) {
-					this.placeActive = placeId;
+					this.placeActive = placeId
 				}
-				this.placePopup = !this.placePopup;
+				this.placePopup = !this.placePopup
 			},
 			pickerPlace(place) {
 				if (place == -1) {

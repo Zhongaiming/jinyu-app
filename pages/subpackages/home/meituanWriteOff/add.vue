@@ -467,7 +467,7 @@
 						.mealList), //美团套餐（Json形式的数组字符串 token币数，balance美团价格，commodityPrice商品价格）
 				});
 				this.clearing();
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200 || res.data.msg == "ok") {
 					this.$toast("店铺审核中，请您耐心等待~");
 				}
 			},

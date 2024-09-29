@@ -81,15 +81,15 @@
 					</view>
 					<view class="edit-panel">
 						<span>货道启用</span>
-						<u-switch v-model="railEnable" active-color="#5241FF" size="50"/>
+						<u-switch v-model="railEnable" active-color="#5241FF" size="50" />
 					</view>
 				</view>
 			</view>
 		</u-popup>
-		<batch-setting ref="batch" :parentRailList="railList" 
-			@getDetail="getDetail" @stratTest="stratTest" v-hasPermi="['app:shj:rail:edit']" />
 		<!-- 电机测试 -->
-		<u-popup :show="testPopup" round="20" @close="testPopup=false">
+		<u-popup :show="testPopup" round="20" @close="() => {
+			testPopup=false
+		}">
 			<view class="rail-popup-wrapper test-wrapper">
 				<p class="title">电机测试</p>
 				<u-cell title="出货数量" class="main-wrapper">
@@ -144,20 +144,28 @@
 					</view>
 				</view>
 				<view class="button-wrapper">
-					<u-button type="danger" size="small" @click="stopTest">停止测试</u-button>
+					<u-button text="停止测试" color="#5421ff" size="normal" @click="stopTest"></u-button>
 				</view>
 			</view>
 		</u-popup>
-		<u-popup :show="finishPopup" round="20" mode="center">
+
+		<u-popup :show="finishPopup" round="20" mode="center" closeable @close="() => {
+			finishPopup = false
+		}">
 			<view class="rail-popup-wrapper test-wrapper">
 				<view class="finish-wrapper">
-					<view class="finish">
+					<view class="finish" @click="() => {
+						finishPopup = false
+					}">
 						<view>测试</view>
 						<view>完成</view>
 					</view>
 				</view>
 			</view>
 		</u-popup>
+		<!-- 批量货道编辑 -->
+		<batch-setting ref="batch" :parentRailList="railList" @getDetail="getDetail" @stratTest="stratTest"
+			v-hasPermi="['app:shj:rail:edit']" />
 	</view>
 </template>
 
@@ -397,7 +405,7 @@
 					this.showEdit = false;
 				}
 			},
-			
+
 			async confirmMethed() {
 				let res = await shjController.rendingMachineReset(this.reset);
 				if (res.code == 200) {
@@ -424,10 +432,10 @@
 			},
 			async confirmTest(type) {
 				let res = await shjController.motorTest(this.test);
-				if (res.data.code == 200) {
+				if (res.code == 200) {
 					this.testPopup = false;
 					if (type == 1) return;
-					this.$toast.success("发送成功~");
+					this.$toast("发送成功~");
 				}
 			},
 			// 开始
@@ -443,7 +451,7 @@
 				let deviceNumber = this.deviceNumber
 				let res = await shjController.replenishmentDetails({
 					deviceNumber
-				});
+				})
 				if (res.code == 200) {
 					this.testRailList = res.data.list;
 					if (!this.testRailList.length) {
@@ -483,7 +491,6 @@
 </script>
 
 <style lang="scss" scoped>
-
 	.top-notice-wrapper {
 		line-height: 35px;
 		color: #333;
@@ -705,6 +712,7 @@
 		padding-top: 20px;
 		font-size: 16px;
 		text-align: center;
+		overflow: hidden;
 
 		.title {
 			margin-bottom: 12px;
@@ -778,10 +786,9 @@
 		}
 
 		.button-wrapper {
-			display: flex;
-			justify-content: flex-end;
+			width: 150px;
+			margin: 20px auto;
 			padding-bottom: 20px;
-			padding-right: 20px;
 		}
 
 		.device-text {

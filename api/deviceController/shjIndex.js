@@ -12,21 +12,20 @@ export default class shjController {
 			data
 		})
 	}
-	
 	/**
 	 * 商品上架
 	 * @param {Object} data
 	 */
 	static salesAirportDevice(data) {
 		return http.request({
-			url: '/device/api/v1/admin/device/deviceRail/salesAirportDevice',
+			url: '/device/api/v1/admin/device/device/queryDisplayMode',
 			method: 'GET',
 			data
 		})
 	}
 	static setDisplayMode(data) {
 		return http.request({
-			url: '/device/api/v1/admin/device/deviceRail/setDisplayMode',
+			url: '/device/api/v1/admin/device/device/setDisplayMode',
 			method: 'POST',
 			data
 		})
@@ -49,13 +48,60 @@ export default class shjController {
 	 * 商品分类
 	 * @param {Object} data
 	 */
+	// 商品分类设置查询
+	static vendingMachineList(data) {
+		return http.request({
+			url: '/order/api/v1/admin/commodity/commodityType/vendingMachineList',
+			method: 'GET',
+			data
+		})
+	}
+	// 设备货道所有商品
+	static railCommodity(data) {
+		return http.request({
+			url: '/order/api/v1/admin/commodity/commodityType/railCommodity',
+			method: 'GET',
+			data
+		})
+	}
+	static updVendingMachineType(data) {
+		return http.request({
+			url: '/order/api/v1/admin/commodity/commodityType/updVendingMachineType',
+			method: 'POST',
+			data
+		})
+	}
+	static addVendingMachineType(data) {
+		return http.request({
+			url: '/order/api/v1/admin/commodity/commodityType/add',
+			method: 'POST',
+			data
+		})
+	}
+	static delVendingMachineType(data) {
+		return http.request({
+			url: '/order/api/v1/admin/commodity/commodityType/delVendingMachineType',
+			method: 'POST',
+			data
+		})
+	}
+	static bindItems(data) {
+		return http.request({
+			url: '/order/api/v1/admin/commodity/commodityType/bindItems',
+			method: 'POST',
+			data
+		})
+	}
+	
+	
+	
 	/**
 	 * shj 批量复制 
 	 * @param {Object} data
 	 * */
 	static batchReplication(data) {
 		return http.request({
-			url: '/device/api/v1/admin/device/deviceRail/batchReplication',
+			url: '/device/api/v1/admin/device/device/batchReplication',
 			method: 'POST',
 			data
 		})
@@ -132,7 +178,7 @@ export default class shjController {
 	 */
 	static motorTest(data) {
 		return http.request({
-			url: '/device/api/v1/admin/device/deviceRail/motorTest',
+			url: '/device/api/v1/admin/device/device/motorTest',
 			method: 'POST',
 			data
 		})
@@ -196,5 +242,53 @@ export default class shjController {
 		})
 	}
 	
+	
+	// 缺货备货
+	static venueVendingMachine(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/place/venueVendingMachine',
+			method: 'GET',
+			data
+		})
+	}
+	static stockOutInventory(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceRail/stockOutInventory',
+			method: 'GET',
+			data
+		})
+	}
+	static addStockOut(data) {
+		return http.request({
+			url: '/order/api/v1/admin/stockOut/addStockOut',
+			method: 'POST',
+			data
+		})
+	}
+	// 缺货详情
+	static getStockOut(data) {
+		return http.request({
+			url: '/order/api/v1/admin/stockOut/queryStockOutDetailed',
+			method: 'GET',
+			data
+		})
+	}
+	
+	// 我的备货单
+	static getMyStock(data) {
+		return http.request({
+			url: '/order/api/v1/admin/stockOut/queryStockOut',
+			method: 'GET',
+			data
+		})
+	}
+	// 我的备货单详情
+	static getStockDetail(data) {
+		return http.request({
+			url: '/order/api/v1/admin/stockOut/stockListDetails',
+			method: 'GET',
+			data
+		})
+	}
 	
 }

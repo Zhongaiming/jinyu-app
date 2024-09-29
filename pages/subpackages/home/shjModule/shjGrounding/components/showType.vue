@@ -58,12 +58,15 @@
 			async getSet(deviceNumber) {
 				let res = await shjController.salesAirportDevice({
 					deviceNumber
-				});
+				})
 				if (res.code == 200) {
-					this.setMsg.displayMode = res.data.displayMode ? res.data.displayMode : 0;
-					this.detailSwitch = res.data.detailSwitch == 1;
-					this.$parent.showTypeText = this.setMsg.displayMode ?
-						this.operList[this.setMsg.displayMode - 1].title : '未设置';
+					const {displayMode,detailSwitch,deviceNumber} = res.data
+					this.setMsg.deviceNumber = deviceNumber
+					this.setMsg.displayMode = displayMode ? displayMode : 0
+					this.detailSwitch = detailSwitch == 1
+					const value = this.setMsg.displayMode ?
+						this.operList[this.setMsg.displayMode - 1].title : '未设置'
+					this.$emit('setShowTypeText', value)
 				}
 			},
 			//设置
@@ -71,13 +74,13 @@
 				if (!this.setMsg.displayMode) {
 					return this.$toast('请您先选择展示方式~');
 				}
-				this.setMsg.deviceNumber = this.$parent.deviceNumber;
-				this.setMsg.detailSwitch = this.detailSwitch ? 1 : 0;
-				let res = await shjController.setDisplayMode(this.setMsg);
+				this.setMsg.detailSwitch = this.detailSwitch ? 1 : 0
+				let res = await shjController.setDisplayMode(this.setMsg)
 				if (res.code == 200) {
 					this.$toast('设置成功~')
-					this.$parent.showTypeText =
-						this.operList[this.setMsg.displayMode - 1].title;
+					const showTypeText =
+						this.operList[this.setMsg.displayMode - 1].title
+					this.$emit('setShowTypeText', showTypeText)
 					this.showTypePopup = false;
 				}
 			},

@@ -68,12 +68,12 @@
 					price: item.price, //价格
 					railRepertory: item.railRepertory, //现有库存
 					railCapacity: item.railCapacity, //货道容量
-				};
+				}
 				this.railEdit = true;
 			},
 			pickerCommodity() {
 				this.railEdit = false
-				this.$refs.commodity.showCommodity(railMsg.commodityId)
+				this.$refs.commodity.openMethod()
 			},
 			getShjCommodity(commodity) {
 				this.railMsg.commodityId = commodity.commodityId
@@ -82,11 +82,11 @@
 				this.railEdit = true
 			},
 			async confirmSet() {
-				let res = await api.goodsOnTheShelf(this.railMsg);
-				if (res.data.code == 0) {
-					this.$parent.getDetail();
-					this.$toast("修改成功~");
-					this.railEdit = false;
+				let res = await shjController.goodsOnTheShelf(this.railMsg);
+				if (res.code == 200) {
+					this.$emit('getDetail')
+					this.$toast("修改成功~")
+					this.railEdit = false
 				}
 			},
 		},

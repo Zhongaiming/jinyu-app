@@ -1,7 +1,9 @@
 <template>
 	<view>
 		<!-- 货道编辑 -->
-		<u-popup :show="railEdit" mode="bottom">
+		<u-popup :show="railEdit" mode="bottom" @close="() => {
+			cancel()
+		}">
 			<view class="edit-cargoroad">
 				<view class="popup-header">
 					<span @click="cancel">取消</span>
@@ -79,12 +81,13 @@
 						</view>
 					</view>
 				</view>
-				<!-- 货道管理 -->
+				
+				<!-- 容量 -->
 				<view class="popup-content" v-else-if="railSet.type == 2">
 					<view class="edit-panel" @click="(railEdit = false), $refs.shjRail.openRailModule()">
 						<span>货道选择</span>
-						<span class="product-name" :style="{color:railMsg.railIds.length?'#5241FF':'#969799'}">
-							{{railMsg.railIds.length?`已选择${railMsg.railIds.length}条货道`:"请选择货道"}}
+						<span class="product-name" :style="{color:railSet.railIds.length?'#5241FF':'#969799'}">
+							{{railSet.railIds.length?`已选择${railSet.railIds.length}条货道`:"请选择货道"}}
 						</span>
 					</view>
 					<view class="edit-panel">
@@ -95,11 +98,12 @@
 						</view>
 					</view>
 				</view>
+				<!-- 状态 -->
 				<view class="popup-content" v-else-if="railSet.type == 3">
 					<view class="edit-panel" @click="(railEdit = false), $refs.shjRail.openRailModule()">
 						<span>货道选择</span>
-						<span class="product-name" :style="{color:railMsg.railIds.length?'#5241FF':'#969799'}">
-							{{railMsg.railIds.length?`已选择${railMsg.railIds.length}条货道`:"请选择货道"}}
+						<span class="product-name" :style="{color:railSet.railIds.length?'#5241FF':'#969799'}">
+							{{railSet.railIds.length?`已选择${railSet.railIds.length}条货道`:"请选择货道"}}
 						</span>
 					</view>
 					<view class="edit-panel">
@@ -146,15 +150,15 @@
 					railCapacity: null,
 					railEnable: 0, //货道是否启用,0未启用1启用
 				},
-				railEnable: false,
+				railEnable: true,
 			};
 		},
 		methods: {
 			//商品上架
 			handleEdit(item) {
-				this.title = item.title;
-				this.railSet.type = 0;
-				this.commodityName = "请选择商品";
+				this.title = item.title
+				this.railSet.type = 0
+				this.commodityName = "请选择商品"
 				this.railMsg = {
 					type: item.type,
 					railIds: [],
@@ -164,7 +168,7 @@
 					railCapacity: null, //货道容量
 				};
 				this.$emit('setBatchSet', false)
-				this.railEdit = true;
+				this.railEdit = true
 			},
 			// 取消
 			cancel() {
@@ -183,8 +187,8 @@
 					railIds: [],
 					railCapacity: null,
 					railEnable: 0, //货道是否启用,0未启用1启用
-				};
-				this.railEnable = false
+				}
+				this.railEnable = true
 				this.$emit('setBatchSet', false)
 				this.railEdit = true
 			},
@@ -206,19 +210,19 @@
 				}
 				if (this.railMsg.type) {
 					shjController.goodsOnTheShelfList(this.railMsg).then((res) => {
-						if (res.data.code == 0) {
+						if (res.code == 200) {
 							this.$toast("修改成功~")
 							this.$emit('getDetail')
 							this.railEdit = false
 						}
-					});
+					})
 				} else if (this.railSet.type) {
 					if (this.railSet.type == 2 && this.railSet.railCapacity == "") {
-						return this.$toast("请您输入货道容量~");
+						return this.$toast("请您输入货道容量~")
 					}
-					this.railSet.railEnable = this.railEnable ? 1 : 0;
+					this.railSet.railEnable = this.railEnable ? 1 : 0
 					shjController.updCargoLaneList(this.railSet).then((res) => {
-						if (res.data.code == 0) {
+						if (res.code == 200) {
 							this.$toast("修改成功~")
 							this.$emit('getDetail')
 							this.railEdit = false

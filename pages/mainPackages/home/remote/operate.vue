@@ -378,7 +378,7 @@
 							deviceNumber: this.enterValue
 						})
 						.then((res) => {
-							if (res.data.code == 0 || res.data.msg == "ok") {
+							if (res.code == 200 || res.data.msg == "ok") {
 								this.railList = res.data.data.list;
 							}
 						});

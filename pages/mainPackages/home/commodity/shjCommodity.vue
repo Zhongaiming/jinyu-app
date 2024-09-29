@@ -203,7 +203,7 @@
 						encodeURIComponent(this.searchCommodity) : null,
 				});
 				this.loading = false;
-				if (res.data.code == 0 || res.data.msg == "ok") {
+				if (res.code == 200 || res.data.msg == "ok") {
 					if (res.data.data != null) {
 						if (res.data.data.records.length < 10) {
 							this.onEarth = true;
@@ -243,7 +243,7 @@
 								id
 							})
 							.then((res) => {
-								if (res.data.code == 0) {
+								if (res.code == 200) {
 									this.$toast("删除成功");
 									this.dataList = this.dataList.filter((item) => {
 										return item.id != id;

@@ -23,7 +23,7 @@
 					</view>
 					<view class="radio-style" @click="checkPlaceItem(place.placeId)">
 						<u-icon name="checkmark-circle-fill" size="46" color="#5241FF"
-							v-if="checkboxGroup.includes(place.placeId)" />
+							v-if="checkboxGroup.includes(place.placeId||place.id)" />
 						<u-icon name="checkmark-circle" size="46" color="#CECFD2" v-else />
 					</view>
 				</view>

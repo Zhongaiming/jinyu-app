@@ -69,7 +69,7 @@
 					commodityVendingMachineId: commodityId,
 					placeIds: params.placeId.length ? String(params.placeId) : null, //场地id  String类型
 				});
-				if (res.data.code == 0) {
+				if (res.code == 200) {
 					this.analysisVoLists = res.data.data.analysisVoList;
 					this.acountObj = res.data.data;
 				}

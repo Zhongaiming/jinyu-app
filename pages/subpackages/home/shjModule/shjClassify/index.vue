@@ -14,20 +14,20 @@
 					</view>
 					<view class="handle-button-panel">
 						<span class="edit-classify" @click="beforeEdit(item)">
-							<u-icon name="edit" size="18" />编辑
+							<u-icon name="edit-pen" size="36" color="#5241FF" />编辑
 						</span>
 						<span class="edit-classify" @click="handleCommodity(item)">
-							<u-icon name="expand-o" size="18" />关联商品
+							<u-icon name="setting" size="36" color="#5241FF" />关联商品
 						</span>
 						<span class="edit-classify" @click="handleDelete(item.id)">
-							<u-icon name="clear" color="#D8D8D8" size="20" />
+							<u-icon name="trash" color="#D8D8D8" size="36" />
 						</span>
 					</view>
 				</view>
 				<view class="img-flex-list">
 					<view class="img-flex-box" v-for="(rail, index) in item.typeList" :key="index">
-						<xls-image :src="rail.commodityImg" alt="" class="goods-img" v-if="rail.commodityImg" />
-						<xls-image :src="`${$baseUrl}/img/goods.png`" alt="" class="goods-img" v-else />
+						<image :src="rail.commodityImg" alt="" class="goods-img" v-if="rail.commodityImg" />
+						<image :src="`${$baseUrl}/img/goods.png`" alt="" class="goods-img" v-else />
 						<span>{{rail.commodityVendingMachineName}}</span>
 					</view>
 					<view class="null-text-c" v-show="!item.typeList.length">
@@ -56,15 +56,17 @@
 			</view>
 		</u-popup>
 
-		<!-- <shj-commodity @getShjCommodity="getShjCommodity" ref="commodity" /> -->
+		<shj-commodity :deviceNumber="deviceNumber" @getShjCommodity="getShjCommodity" ref="commodity" />
 	</view>
 </template>
 
 <script>
 	import {
 		shjController
-	} from "@/api/index.js";
+	} from "@/api/index.js"
+	import shjCommodity from "./components/shjCommodity.vue"
 	export default {
+		components: {shjCommodity},
 		data() {
 			return {
 				deviceNumber: "",
@@ -90,9 +92,9 @@
 				const {
 					deviceNumber
 				} = JSON.parse(option.params)
-				this.deviceNumber = deviceNumber;
-				// this.getList();
-				// this.getType();
+				this.deviceNumber = deviceNumber
+				this.getList()
+				this.getType()
 			}
 		},
 		methods: {
@@ -105,9 +107,9 @@
 					deviceNumber
 				});
 				if (res.code == 200) {
-					this.business = res.data;
+					this.business = res.data
 					this.classifySwitch =
-						this.business.commodityClassification == 1;
+						this.business.commodityClassification == 1
 				}
 			},
 			async getList() {
@@ -116,22 +118,22 @@
 				} = this
 				let res = await shjController.vendingMachineList({
 					deviceNumber
-				});
+				})
 				if (res.code == 200) {
-					this.typeList = res.data;
+					this.typeList = res.data
 				}
 			},
 			//修改开关
 			async handleUpdata() {
 				this.business.commodityClassification = this.classifySwitch ?
 					1 :
-					0;
-				let res = await shjController.updBusinessOne(this.business);
+					0
+				let res = await shjController.updBusinessOne(this.business)
 				if (res.code == 200) {
-					this.$toast("操作成功~");
-					this.getType();
+					this.$toast("操作成功~")
+					this.getType()
 				} else {
-					this.classifySwitch = !this.classifySwitch;
+					this.classifySwitch = !this.classifySwitch
 				}
 			},
 
@@ -152,8 +154,8 @@
 							})
 							.then((res) => {
 								if (res.code == 200) {
-									this.getList();
-									this.$toast("删除成功~");
+									this.getList()
+									this.$toast("删除成功~")
 								}
 							});
 					})
@@ -165,34 +167,34 @@
 					remark: null,
 					createType: 6,
 				};
-				this.classifyPopup = true;
+				this.classifyPopup = true
 			},
 			beforeEdit(item) {
 				this.dataMsg = {
 					id: item.id,
 					name: item.name,
 					remark: item.remark,
-				};
-				this.classifyPopup = true;
+				}
+				this.classifyPopup = true
 			},
 			confirmMethed() {
 				if (!this.dataMsg.name) {
-					return this.$toast("分类名称不能为空~");
+					return this.$toast("分类名称不能为空~")
 				}
 				if (this.dataMsg.id) {
 					shjController.updVendingMachineType(this.dataMsg).then((res) => {
 						if (res.code == 200) {
-							this.getList();
-							this.classifyPopup = false;
-							this.$toast("编辑成功~");
+							this.getList()
+							this.classifyPopup = false
+							this.$toast("编辑成功~")
 						}
 					});
 				} else {
-					addType(this.dataMsg).then((res) => {
+					shjController.addVendingMachineType({commodityTypeDto: this.dataMsg}).then((res) => {
 						if (res.code == 200) {
-							this.getList();
-							this.classifyPopup = false;
-							this.$toast("添加成功~");
+							this.getList()
+							this.classifyPopup = false
+							this.$toast("添加成功~")
 						}
 					});
 				}
@@ -211,12 +213,12 @@
 					this.$refs.commodity.showCommodity(arr)
 				}
 			},
-			async getShjCommodity(arr) {
+			async getShjCommodity(commodityIdList) {
 				const {
 					deviceNumber
 				} = this
 				this.railCom.deviceNumber = deviceNumber
-				this.railCom.vendingMachineIdList = arr
+				this.railCom.vendingMachineIdList = commodityIdList
 				let res = await shjController.bindItems(this.railCom)
 				if (res.code == 200) {
 					this.getList()
@@ -358,7 +360,7 @@
 		}
 
 		.input-group {
-			width: 280px;
+			width: 310px;
 			padding: 0 15px;
 			font-size: 15px;
 

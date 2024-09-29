@@ -38,8 +38,8 @@
 					</span>
 				</view>
 				<view class="info-wrapper">
-					<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
-					<xls-image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" v-else class="image" />
+					<image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
+					<image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" v-else class="image" />
 					<view class="goods-info">
 						<view class="goods-name">{{ item.commodityName || "暂无" }}</view>
 						<view class="info-content">
@@ -61,8 +61,8 @@
 		<view class="container-footer" v-hasPermi="['app:shj:grounding:edit']" v-if="railList.length">
 			<view class="text-btn" @click="$refs.batch.openModule(1)">批量设置</view>
 		</view>
-		<show-type ref="type" v-hasPermi="['app:shj:grounding:edit']" />
-		<edit-rail ref="edit" v-hasPermi="['app:shj:grounding:edit']" />
+		<show-type ref="type" @setShowTypeText="setShowTypeText" v-hasPermi="['app:shj:grounding:edit']" />
+		<edit-rail ref="edit" v-hasPermi="['app:shj:grounding:edit']" @getDetail="getDetail" />
 		<batch-setting ref="batch" v-hasPermi="['app:shj:grounding:edit']" @getDetail="getDetail"
 			:parentRailList="railList" />
 	</view>
@@ -97,7 +97,7 @@
 					railCount: 0,
 				},
 				showTypeText: "未设置",
-			};
+			}
 		},
 		async onLoad(option) {
 			if (option.params) {
@@ -143,6 +143,9 @@
 				this.railList = this.allRailList.filter((item) => {
 					return item.railNumber.indexOf(value) > -1
 				})
+			},
+			setShowTypeText(value) {
+				this.showTypeText = value
 			},
 		},
 	};

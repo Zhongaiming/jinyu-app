@@ -782,7 +782,7 @@ export default {
         deviceType: this.screenCondition.deviceTypeId,
         state: this.screenCondition.state, //状态 -1退单 1交易完成
       });
-      if (res.data.code == 0 || res.data.msg == "ok") {
+      if (res.code == 200 || res.data.msg == "ok") {
         if (res.data.data != null) {
           if (res.data.data.length < 50) {
             this.onEarth = true;
@@ -986,7 +986,7 @@ export default {
         delete params.operationBalance;
       }
       let res = await welfare(params);
-      if (res.data.msg == "ok" || res.data.code == 0) {
+      if (res.data.msg == "ok" || res.code == 200) {
         this.$toast("派发成功~");
         if (this.welfareForm.operationCurrency != null) {
           this.userMsg.currency =
