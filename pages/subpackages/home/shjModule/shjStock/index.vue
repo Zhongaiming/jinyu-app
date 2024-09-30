@@ -63,7 +63,7 @@
 
 		<u-popup :show="stockPopup" mode="center" round="20" @close="stockPopup=!stockPopup" v-hasPermi="['app:shj:stockUp:create']">
 			<view class="stock-popup-wrapper">
-				<u-icon name="todo-list-o" size="80" color="#09bb07" />
+				<u-icon name="file-text" size="100" color="#09bb07" />
 				<p class="title">提交成功</p>
 				<p class="main">详情到我的备货单中查询、转发</p>
 				<view class="read-stock" @click="goTo">
@@ -110,7 +110,7 @@
 				})
 			},
 			goTo() {
-				this.$toast('敬请期待！')
+				this.$goTo("/pages/subpackages/personal/stockOrder/index")
 			},
 			allGroupChange(item) {
 				if (item.length) {
@@ -353,7 +353,9 @@
 	.stock-popup-wrapper {
 		width: 280px;
 		padding: 20px 0 0px 0;
-		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 		color: #333;
 		font-size: 18px;
 
@@ -372,8 +374,11 @@
 
 		.read-stock {
 			border-top: 1px solid #e5e5e5;
+			width: 100%;
 			line-height: 50px;
+			height: 50px;
 			color: #5241ff;
+			text-align: center;
 		}
 	}
 </style>

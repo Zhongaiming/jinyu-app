@@ -195,15 +195,16 @@
 
 				shjController.clearingOrReplenishment(params).then((res) => {
 					if (res.code == 200) {
-						this.buhuoMsg.railRepertory = this.railMsg.railRepertory
-						this.buhuoMsg.railCapacity = this.railMsg.railCapacity
+						this.getDetail()
 						this.$toast(`补货成功~`)
 						this.backCargo = false
 					}
 				})
 			},
+			
 			//单个补满
 			railMaxCapacity() {
+				this.backCargo = false
 				this.$modal( `是否补满货道 ${this.buhuoMsg.railNumber} 的库存？`,{
 						title: `补货提示`,
 					})
@@ -216,8 +217,7 @@
 						};
 						shjController.clearingOrReplenishment(params).then((res) => {
 							if (res.code == 200) {
-								this.buhuoMsg.railRepertory = this.railMsg.railCapacity
-								this.buhuoMsg.railCapacity = this.railMsg.railCapacity
+								this.getDetail()
 								this.$toast(`库存已补满~`)
 								this.backCargo = false
 							}

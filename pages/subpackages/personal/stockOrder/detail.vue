@@ -1,6 +1,6 @@
 <template>
 	<view class="pickDetail">
-		<nav-bar>备货单详情</nav-bar>
+		<xls-jy-navbar title="备货单详情" bgColor="#f5f6f7"></xls-jy-navbar>
 		<view class="page-container">
 			<view class="date-wrapper" v-show="state == 1" @click="$refs.place.showPlacePopup(placeId)">
 				<p class="select-label">场地</p>
@@ -10,16 +10,17 @@
 			<xls-place-radio ref="place" @getPlaceId="getPlaceId" deviceType="4" />
 			
 			<view class="top-notify" v-show="state == 0">
-				<van-icon name="volume" size="20" class="icon" />
+				<u-icon name="volume" size="40" class="icon" />
 				建议实际备货时多准备20%的商品以供调配
 			</view>
+			
 			<view class="top-tab">
-				<ul class="tab-list">
-					<li class="tab-item" v-for="(item, index) in stateList" :key="index" @click="changeState(item.id)"
+				<view class="tab-list">
+					<view class="tab-item" v-for="(item, index) in stateList" :key="index" @click="changeState(item.id)"
 						:class="{'active':state == item.id}">
 						{{ item.title }}
-					</li>
-				</ul>
+					</view>
+				</view>
 			</view>
 			<view class="page-content">
 				<view class="goods-item" v-for="(item, index) in detailList" :key="index">
@@ -76,21 +77,19 @@
 						</view>
 					</view>
 				</view>
-				<on-earth v-if="detailList.length" />
-				<no-data v-else></no-data>
+				<xls-bottom v-if="detailList.length" />
+				<xls-empty v-else></xls-empty>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	// import ShjPlace from "@/components/commonComps/shjPlace.vue";
-	// import api from "@/utils/shjApi";
+	import {
+		shjController
+	} from '@/api/index.js'
 	export default {
 		name: "pickDetail",
-		components: {
-			ShjPlace
-		},
 		data() {
 			return {
 				state: 0,
@@ -106,28 +105,31 @@
 				placeName: "全部场地",
 				placeId: null,
 				detailList: [],
+				stockNo: ''
 			};
 		},
-		created() {
-			this.getDetail();
+		onLoad(option) {
+			if(option.params) {
+				const {stockNo} = JSON.parse(option.params)
+				this.stockNo = stockNo
+				this.getDetail()
+			}
 		},
 		methods: {
 			async getDetail() {
-				let stockNo = this.$route.query.stockNo;
-				let res = await api.getStockDetail({
-					stockNo: stockNo,
+				let res = await shjController.getStockDetail({
+					stockNo: this.stockNo,
 					state: 0, //0 备货详情 1 补货详情 默认0 传null
 					placeId: this.placeId,
 				});
-				if (res.data.code == 0) {
-					this.detailList = res.data.data;
+				if (res.code == 200) {
+					this.detailList = res.data
 				}
 			},
 			changeState(id) {
-				this.state = id;
-				this.getDetail();
+				this.state = id
+				this.getDetail()
 			},
-			
 			getPlaceId(place) {
 				if (place == -1) {
 					this.placeId = null

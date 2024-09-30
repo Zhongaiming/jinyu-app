@@ -76,12 +76,13 @@
 						placeId: this.placeId
 					}),
 				}).then(res => {
-					this.$refs.paging.complete(res.data.dataList)
+					res.data = res.data.filter(item => item.railList.length)
+					this.$refs.paging.complete(res.data)
 				})
 			},
 			stratesSearch(search) {
 				this.searchValue = search
-				this.getCommodity()
+				this.$refs.paging.reload()
 			},
 			goReplenishment(deviceNumber) {
 				this.$goTo("/pages/subpackages/home/shjModule/shjReplenishment/replenishment", "navigateTo", {
@@ -125,7 +126,7 @@
 
 	.main-content-wrapper {
 		margin-top: 8px;
-		padding: 0 12px 30px;
+		padding: 0 12px 0px;
 
 		.li-item-wrapper {
 			margin-top: 6px;

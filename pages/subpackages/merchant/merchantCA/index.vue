@@ -83,6 +83,7 @@
 						blicUrla: "", //营业执照照片
 					},
 				},
+				merchantSubmitting: false,
 			}
 		},
 		created() {
@@ -156,6 +157,10 @@
 				}, 500)
 			},
 			async hlbEntryApply() {
+				if(this.merchantSubmitting) {
+					return
+				}
+				this.merchantSubmitting = true
 				var dateInfo = this.merchant;
 				const orgNum = dateInfo.merchantType === 'PERSON' ? dateInfo.legalPersonId : dateInfo.businessLicense;
 				const idCardStartDate = dateInfo.idCardStartDate.replace(/-/g, "");
@@ -246,10 +251,12 @@
 					this.$loading();
 					merchantController.hlbEntryApply(newDate).then(res => {
 						this.$hideLoading();
+						this.merchantSubmitting = false
 						if (res.code == 200) {
 							this.current = 4;
 						}
 					}).catch(() =>{
+						this.merchantSubmitting = false
 						this.$hideLoading();
 					})
 				})

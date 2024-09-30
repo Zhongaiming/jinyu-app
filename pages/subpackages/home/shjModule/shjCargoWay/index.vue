@@ -18,8 +18,8 @@
 			<view class="right-content-style">
 				<view v-for="(item, index) in railList" :key="index">
 					<view class="cargo-road-item" v-if="returnBack(item.railNumber)">
-						<xls-image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
-						<xls-image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" v-else class="image" />
+						<image :src="item.commodityImg" alt="" v-if="item.commodityImg" class="image" />
+						<image :src="`${$baseUrl}appV4/image/other/ztwl.png`" alt="" v-else class="image" />
 						<view class="cargo-road-info">
 							<view class="top-info">
 								<span>{{ item.deviceNumber + "-" + item.railNumber }}</span>
