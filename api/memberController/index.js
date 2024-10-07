@@ -58,4 +58,57 @@ export default class memberController {
 			data
 		})
 	}
+	
+	/** 
+	 * 会员
+	 * @param {type}  
+	 * @return {type}
+	 */
+	static getMemberById(data) {
+		return http.request({
+			url: '/member/api/v1/admin/member/member/memberById',
+			method: 'GET',
+			data
+		})
+	}
+	static getCoinFlowingList(data) {
+		return http.request({
+			url: '/member/api/v1/admin/member/coinFlowing/getCoinFlowingList',
+			method: 'GET',
+			data
+		})
+	}
+	static getBalanceDetails(data) {
+		return http.request({
+			url: '/member/api/v1/admin/member/coinFlowing/getBalanceDetails',
+			method: 'GET',
+			data
+		})
+	}
+	static getMemberOrderForm(data) {
+		return http.request({
+			url: '/member/api/v1/admin/member/member/getMemberOrderForm',
+			method: 'GET',
+			data
+		})
+	}
+	// 修改余额余币
+	static updateMoney(data) {
+		return http.request({
+			url: '/member/api/v1/admin/member/coinFlowing/updateMoney',
+			method: 'POST',
+			data
+		})
+	}
+	// 派发福利
+	static welfare(data) {
+		return http.request({
+			url: '/member/api/v1/admin/member/coinFlowing/welfare',
+			method: 'POST',
+			data
+		})
+	}
+	
+	
+	
 }

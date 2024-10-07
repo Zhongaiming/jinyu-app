@@ -96,7 +96,7 @@
 
 			},
 			goMemberDetail(item) {
-				return
+				// return
 				this.$goTo('/pages/subpackages/home/member/detail', 'navigateTo', {
 					item
 				})

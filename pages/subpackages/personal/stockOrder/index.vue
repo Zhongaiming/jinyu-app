@@ -40,6 +40,7 @@
 		</view>
 		<!-- 生成二维码 -->
 		<view class="bottom-wrapper">
+			
 			<view class="btn-wrapper" @click="showPickQs = !showPickQs">
 				生成备货二维码
 			</view>
