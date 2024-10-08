@@ -8,14 +8,15 @@
 import suan from './floastCalculate';
 var i = 0.92;
 
+
 export const compress = (file, size = 2, imgWidth = 512) => {
 	return new Promise(async (resolve, reject) => {
 		i = 0.92;
 		const uploadTypes = ['jpg', 'png', 'jpeg'];
 		const filetype = file.name.replace(/.+\./, '');
 		if (uploadTypes.indexOf(filetype.toLowerCase()) === -1) {
-			// Toast('仅支持jpg, png, jpeg格式的图片');
-			return
+			// Toast('仅支持jpg, png, jpeg格式的图片')
+			return;
 		}
 		let image = new Image();
 		image.src = await getBase64(file);
@@ -25,15 +26,10 @@ export const compress = (file, size = 2, imgWidth = 512) => {
 		//     duration: 0
 		// })
 		image.onload = () => {
-			blobUrlToFile(file.url, file.name, (file) => {
-			  console.log('File:', file);
-			  compressUpload(image, file, imgWidth, size).then(res => {
-			  	resolve(res);
-			  	// Toast.clear();
-			  })
-			});
-			
-			
+			compressUpload(image, file, imgWidth, size).then(res => {
+				resolve(res);
+				// Toast.clear();
+			})
 		}
 		image.onerror = () => {
 			reject(new Error("Failed to read file"));
@@ -140,7 +136,7 @@ function getBase64Size(base64) {
 }
 
 //file 转 base64
-function getBase64ByFile(file) {
+function getBase64(file) {
 	return new Promise(function(resolve, reject) {
 		let reader = new FileReader();
 		let imgResult = "";
@@ -155,41 +151,4 @@ function getBase64ByFile(file) {
 			resolve(imgResult);
 		}
 	})
-}
-
-// blob url 转 base64
-function getBase64(file) {
-	return new Promise(function(resolve, reject) {
-		blobUrlToBase64(file.url, (base64String) => {
-		  console.log('Base64 String:', base64String);
-		  resolve(base64String);
-		});
-	})
-}
-
-// 将 Blob URL 转换为 Base64 编码的函数
-function blobUrlToBase64(blobUrl, callback) {
-  fetch(blobUrl)
-    .then(response => response.blob()) // 获取 Blob 对象
-    .then(blob => {
-      const reader = new FileReader(); // 使用 FileReader 读取 Blob 对象
-      reader.onloadend = () => {
-        const base64String = reader.result.replace(/^data:.+;base64,/, ''); // 提取 Base64 编码
-        callback(base64String);
-      };
-      reader.readAsDataURL(blob); // 读取 Blob 对象为 Data URL
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-// 将 Blob URL 转换为 File 对象的函数
-function blobUrlToFile(blobUrl, fileName, callback) {
-  fetch(blobUrl)
-    .then(response => response.blob()) // 获取 Blob 对象
-    .then(blob => {
-      // 创建 File 对象
-      const file = new File([blob], fileName, { type: blob.type });
-      callback(file);
-    })
-    .catch(error => console.error('Error:', error));
 }

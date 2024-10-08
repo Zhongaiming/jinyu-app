@@ -64,6 +64,8 @@ import axios from 'axios'
 import {
 	UploadRent
 } from './axiosReq.js'
+import { compress } from "@/plugins/imageZip";
+
 export function uploadFilePromise(file) {
 	return new Promise((resolve, reject) => {
 		const blobUrl = file.url
@@ -76,92 +78,25 @@ export function uploadFilePromise(file) {
 				const file = new File([blob], fileName, {
 					type: blob.type
 				});
+				compress(file, 3.5, 2048).then(res => {
 				
-				// const token = getToken();
-				// axios({
-				// 	url: 'http://8.138.24.164:659/upms/api/v1/common/upload/downloadOSS',
-				// 	method: 'GET',
-				// 	headers: {
-				// 		"Authorization": token,
-				// 		// "Content-Type": "application/json;charset=UTF-8",
-				// 		// 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-				// 	},
-				// 	params: {
-				// 		filePath:''
-				// 	}
-				// }).then(res => {
-				// 	console.log("filePath", res)
-				// 	// if (res.data.code === 200) {
-				// 	// 	resolve(res.data)
-				// 	// }
-				// })
-				// return
-				// blobToBase64(blob).then(res =>{
-				// 	console.log("blobresres", res)
-				// 	const token = getToken();
-				// 	axios({
-				// 		url: reqConfig.proxyUrl + '/upms/api/v1/common/upload/uploadByBase64',
-				// 		method: 'POST',
-				// 		headers: {
-				// 			"Authorization": token,
-				// 			// "Content-Type": "application/json;charset=UTF-8",
-				// 			// 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-				// 		},
-				// 		data: {
-				// 			uploadDataDto: {
-				// 				fileName: fileName,
-				// 				originalFilename: fileName,
-				// 				str: res
-				// 			}
-				// 		}
-				// 	}).then(res => {
-				// 		if (res.data.code === 200) {
-				// 			resolve(res.data)
-				// 		}
-				// 	})
-				// })
-
-				let formdata = new FormData();
-				formdata.append('uploadFile', file)
-				formdata.append('asImage', true)
-				const token = getToken();
-				axios({
-					url: reqConfig.proxyUrl + '/upms/api/v1/common/upload/upload',
-					method: 'post',
-					headers: {
-						"Authorization": token,
-					},
-					data: formdata
-				}).then(res => {
-					if (res.data.code === 200) {
-						resolve(res.data)
-					}
+					let formdata = new FormData();
+					formdata.append('uploadFile', res)
+					formdata.append('asImage', true)
+					const token = getToken();
+					axios({
+						url: reqConfig.proxyUrl + '/upms/api/v1/common/upload/upload',
+						method: 'post',
+						headers: {
+							"Authorization": token,
+						},
+						data: formdata
+					}).then(res => {
+						if (res.data.code === 200) {
+							resolve(res.data)
+						}
+					})
 				})
-
-
-			// 你可以使用 File 对象， 例如上传到服务器或保存到本地
-			// 	uni.uploadFile({
-			// 		url: reqConfig.proxyUrl + '/upms/api/v1/common/upload/upload',
-			// 		header: {
-			// 			"Authorization": getToken(),
-			// 		},
-			// 		file: file,
-			// 		name: "uploadFile",
-			// 		formData: {
-			// 			asImage: true
-			// 		},
-			// 		success: (res) => {
-			// 			if (res.statusCode === 200) {
-			// 				const result = JSON.parse(res.data)
-			// 				if (result.code === 200) {
-			// 					resolve(result)
-			// 				}
-			// 			}
-			// 		},
-			// 		fail: (err) => {
-			// 			console.log("失败", err)
-			// 		}
-			// 	});
 			
 			})
 			.catch(error => console.error('Error:', error));

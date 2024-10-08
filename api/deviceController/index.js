@@ -408,4 +408,12 @@ export default class deviceController {
 	        data,
 	    })
 	}
+	// 解绑判断
+	static agentUnbind(data) {
+	    return http.request({
+	        url: '/merchant/api/v1/agentInfo/agentUnbind',
+	        method: 'GET',
+	        data,
+	    })
+	}
 }

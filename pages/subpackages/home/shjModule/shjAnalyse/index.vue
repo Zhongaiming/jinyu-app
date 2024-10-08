@@ -59,7 +59,7 @@
 				placeId: [],
 			};
 			this.$nextTick(() => {
-				// this.$refs.Order.getOrder(this.params);
+				this.$refs.Order.getOrder(this.params);
 			});
 		},
 		methods: {
@@ -75,9 +75,9 @@
 				this.params = params;
 				this.$nextTick(() => {
 					if (this.activeType == 1) {
-						// this.$refs.Order.getOrder(params);
+						this.$refs.Order.getOrder(params);
 					} else {
-						// this.$refs.commodity.getAnalysis(params);
+						this.$refs.commodity.getAnalysis(params);
 					}
 				});
 			},

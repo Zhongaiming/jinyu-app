@@ -96,10 +96,12 @@
 
 			},
 			goMemberDetail(item) {
-				// return
-				this.$goTo('/pages/subpackages/home/member/detail', 'navigateTo', {
-					item
-				})
+				if(process.env.NODE_ENV === 'development') {
+					// return
+					this.$goTo('/pages/subpackages/home/member/detail', 'navigateTo', {
+						item
+					})
+				}
 			},
 			//copy-会员ID
 			copyMemberId(memberId) {

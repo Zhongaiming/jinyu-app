@@ -23,7 +23,7 @@
 			</view>
 
 
-			<view class="outSide" v-hasPermi="['app:place:index']" @click="$refs.placelist.showPlacePopup()">
+			<view class="outSide" v-hasPermi="['app:place:index']" @click="$refs.placelist.showPlacePopup(placeId)">
 				<view class="data">
 					<view>
 						<span>场地</span>

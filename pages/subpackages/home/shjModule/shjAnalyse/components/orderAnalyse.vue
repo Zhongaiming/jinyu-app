@@ -156,7 +156,7 @@
 					startTime: params.startTime,
 					endTime: params.endTime,
 					state: this.state, //不传默认0  0：查询成功订单  !=0 查询退款订单
-					placeId: params.placeId.length ? String(params.placeId) : null,
+					...(params.placeId.length&&{placeId:String(params.placeId)})
 				})
 				if (res.code == 200) {
 					this.acountTop = res.data
@@ -165,8 +165,8 @@
 						this.analysisVoList.length > 5 ? 5 : this.analysisVoList.length;
 				}
 				this.drawLine(
-					res.data.data.paymentQuantity, //成交笔数
-					res.data.data.refundQuantity //退款笔数
+					res.data.data.paymentQuantity||0, //成交笔数
+					res.data.data.refundQuantity||0 //退款笔数
 				);
 				this.drawList();
 			},

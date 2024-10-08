@@ -617,12 +617,12 @@
 				// 	this.shippingSpace = "";
 				// }
 
-				// let res = await api.agentUnbind({
-				// 	deviceNumber: this.deviceNumber
-				// });
-				// if (res.code == 200) {
-				// 	this.longUntie = res.data;
-				// }
+				let res = await deviceController.agentUnbind({
+					deviceNumber: this.deviceNumber
+				})
+				if (res.code == 200) {
+					this.longUntie = res.data
+				}
 			},
 			goTo(route) {
 				if (route == 'commoditySetWwj') {

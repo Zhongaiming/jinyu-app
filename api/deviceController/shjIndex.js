@@ -242,7 +242,6 @@ export default class shjController {
 		})
 	}
 	
-	
 	// 缺货备货
 	static venueVendingMachine(data) {
 		return http.request({
@@ -290,5 +289,40 @@ export default class shjController {
 			data
 		})
 	}
+	
+	// 数据分析
+	//单品分析
+	static singleProductAnalysis(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/vendingMachine/singleProductAnalysis',
+			method: 'GET',
+			data
+		})
+	}
+	//商品销售分析
+	static salesAnalysis(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/vendingMachine/salesAnalysis',
+			method: 'GET',
+			data
+		})
+	}
+	//订单分析
+	static orderAnalysis(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/orderAnalysis',
+			method: 'GET',
+			data
+		})
+	}
+	//详情
+	static SHJRailDetails(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/vendingMachine/SHJRailDetails',
+			method: 'GET',
+			data
+		})
+	}
+	
 	
 }

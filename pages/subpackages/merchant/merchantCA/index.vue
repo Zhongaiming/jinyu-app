@@ -251,12 +251,12 @@
 					this.$loading();
 					merchantController.hlbEntryApply(newDate).then(res => {
 						this.$hideLoading();
-						this.merchantSubmitting = false
+						this.merchantSubmitting = false;
 						if (res.code == 200) {
 							this.current = 4;
 						}
 					}).catch(() =>{
-						this.merchantSubmitting = false
+						this.merchantSubmitting = false;
 						this.$hideLoading();
 					})
 				})

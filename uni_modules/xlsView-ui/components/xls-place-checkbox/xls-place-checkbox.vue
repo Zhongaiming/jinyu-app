@@ -90,7 +90,7 @@
 				this.checkboxGroup = [];
 				if (this.allCheck) {
 					this.placeList.forEach((place) => {
-						this.checkboxGroup.push(place.placeId);
+						this.checkboxGroup.push(place.placeId??place.id);
 					});
 				}
 			},
