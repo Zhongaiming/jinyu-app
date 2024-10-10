@@ -1,5 +1,5 @@
 <template>
-	<z-paging ref="detailPaging" v-model="dataList" @query="queryList">
+	<z-paging ref="detailPaging" v-model="dataList" @query="queryList" auto-show-back-to-top back-to-top-img="/static/back.png">
 		<xls-jy-navbar title="兑币机数据详情" bgColor="#f5f6f7"></xls-jy-navbar>
 		<view class="header-wrapper">
 			<view class="main-title">兑币机 {{ paramsReceived.deviceNumber }}</view>
@@ -11,7 +11,7 @@
 		<ConditionScreening text="detail" @getParams="getParams" ref="screen" :activeName="activeName"
 			:deviceNumber="paramsReceived.deviceNumber" />
 
-		<view class="list-content" v-show="activeName == 1">
+		<view class="list-content" v-if="activeName == 1">
 			<view class="list-block margin10" v-for="(item, dataIndex) in dataList" :key="dataIndex">
 				<view class="block-title">
 					<view class="main-title">{{ item.exchangeDate }}</view>
@@ -20,7 +20,7 @@
 			</view>
 		</view>
 
-		<view class="list-wrapper" v-show="activeName == 2">
+		<view class="list-wrapper" v-else>
 			<view class="list-block" v-for="(item, index) in dataList" :key="index">
 				<view class="block-left">
 					<view class="type-name">{{ exchangeTypeDict[item.exchangeType] }}</view>
@@ -63,6 +63,9 @@
 					}, {
 						key: 1,
 						value: "分日数据",
+					}, {
+						key: 3,
+						value: "现金购买",
 					},
 				],
 				dataList: [],
@@ -75,7 +78,7 @@
 					4: "美团核销",
 					5: "口碑核销",
 					6: "抖音核销",
-					7: "线下购买",
+					7: "现金购买",
 					undefined: "其他类型"
 				},
 				exchangeResultDict: {
@@ -111,6 +114,9 @@
 				}
 				Object.assign(this.params, obj);
 				Object.assign(this.params, data);
+				if(this.activeName == 3) {
+					this.params.exchangeType = 7
+				}
 				this.$refs.detailPaging.reload();
 			},
 			queryList(pageNo, pageSize) {

@@ -125,7 +125,8 @@
 		methods: {
 			tips() {
 				let message =
-					"统计时间段内，成交单量 = 支付成功单量 + 部分成功单量;\n退款单量 = 全部退款单量 + 部分退款单量;";
+					"统计时间段内，成交单量 = 支付成功单量;\n退款单量 = 全部退款单量 + 部分退款单量;";
+					// + 部分成功单量
 				this.$modal(message, {
 						title: "说明",
 						confirmText: "我知道了",
@@ -165,8 +166,8 @@
 						this.analysisVoList.length > 5 ? 5 : this.analysisVoList.length;
 				}
 				this.drawLine(
-					res.data.data.paymentQuantity||0, //成交笔数
-					res.data.data.refundQuantity||0 //退款笔数
+					res.data.paymentQuantity||0, //成交笔数
+					res.data.refundQuantity||0 //退款笔数
 				);
 				this.drawList();
 			},
@@ -452,6 +453,7 @@
 				align-items: center;
 				margin-bottom: 6px;
 				font-weight: 700;
+				font-size: 14px;
 
 				.span {
 					width: 10px;

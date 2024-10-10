@@ -4,8 +4,6 @@ export default class orderController {
 	// 获取订单列表
 	static getOrderList(data) {
 		return http.request({
-			// url: '/order/api/v1/admin/order/orderForm/list',
-			// method: 'POST',
 			url: '/order/api/v1/admin/order/orderForm/getOrderFormInfoList',
 			method: 'GET',
 			data
@@ -212,6 +210,24 @@ export default class orderController {
 		return http.request({
 			url: '/pay/api/v1/admin/pay/merchant/getCommonDetailBill',
 			method: 'POST',
+			data
+		})
+	}
+	
+	
+	// 售货机订单详情
+	static getShjOrderDetail(data) {
+		return http.request({
+			url: '/merchant/api/v1/admin/merchant/vendingMachine/detailed',
+			method: 'GET',
+			data
+		})
+	}
+	// 云上飞查询状态
+	static getTransactionStatus(data) {
+		return http.request({
+			url: '/order/api/v1/admin/order/orderForm/transactionStatus',
+			method: 'GET',
 			data
 		})
 	}

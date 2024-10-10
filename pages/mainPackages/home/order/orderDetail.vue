@@ -198,6 +198,27 @@
 					复制
 				</view>
 			</view>
+			
+			<view class="record-detail-list" v-if="order.deviceType === 4">
+				<view class="title">
+					交易状态
+				</view>
+				<view class="value" @click="getStateByOrder(order.orderNo)">
+					<view style="text-decoration: underline;">
+						{{stateDict[order.state]}}
+					</view>
+				</view>
+			</view>
+			<view class="record-detail-list" v-if="order.deviceType === 4">
+				<view class="title">
+					交易详情
+				</view>
+				<view class="value" @click="getShjOrderDetail">
+					<view style="text-decoration: underline;">
+						售货机
+					</view>
+				</view>
+			</view>
 		</view>
 
 		<view class="xls-box-style">
@@ -277,6 +298,7 @@
 		</view>
 		
 		<!-- <xls-member-welfare /> -->
+		<xlsShjOrderDetailVue ref="shjOrder" />
 	</view>
 </template>
 
@@ -289,7 +311,9 @@
 		mapState
 	} from 'vuex';
 	import suan from "@/plugins/floastCalculate.js";
+	import xlsShjOrderDetailVue from './components/xls-shj-order-detail.vue';
 	export default {
+		components: {xlsShjOrderDetailVue},
 		data() {
 			return {
 				order: {},
@@ -329,6 +353,7 @@
 					}
 				})
 			},
+			
 			goTo(route) {
 				if (route === 'remote') {
 					this.$goTo("/pages/mainPackages/home/remote/operate", "navigateTo", {
@@ -369,6 +394,21 @@
 				const result = suan.addFloast((deviceCommission ?? 0), (agentServiceCharge ?? 0));
 				return suan.addFloast(result, (deviceServiceCharge ?? 0));
 			},
+			
+			// 查询云上分状态
+			async getStateByOrder(orderNo) {
+			  let res = await orderController.getTransactionStatus({ orderNo })
+			  if (res.code == 200) {
+				this.$modal(res.data, {
+				  title: "查询结果",
+				  confirmText: "我知道了",
+				  showCancel: false
+				})
+			  }
+			},
+			getShjOrderDetail() {
+				this.$refs.shjOrder.getShjList(this.order)
+			}
 		}
 	}
 </script>
@@ -536,6 +576,10 @@
 			padding-left: 20rpx;
 			position: relative;
 			color: #5241ff;
+		}
+		
+		.copy:active {
+			transform: scale(0.8);
 		}
 
 		.copy::before {

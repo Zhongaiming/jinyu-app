@@ -63,15 +63,15 @@
 				return text;
 			},
 			async getProduce(params, commodityId) {
-				let res = await api.singleProductAnalysis({
+				let res = await shjController.singleProductAnalysis({
 					startTime: params.startTime,
 					endTime: params.endTime,
 					commodityVendingMachineId: commodityId,
 					placeIds: params.placeId.length ? String(params.placeId) : null, //场地id  String类型
 				});
 				if (res.code == 200) {
-					this.analysisVoLists = res.data.data.analysisVoList;
-					this.acountObj = res.data.data;
+					this.analysisVoLists = res.data.analysisVoList;
+					this.acountObj = res.data;
 				}
 				this.drawList();
 			},

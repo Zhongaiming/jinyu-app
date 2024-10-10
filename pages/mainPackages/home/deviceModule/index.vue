@@ -1,14 +1,15 @@
 <template>
-	<z-paging ref="paging" v-model="dataList" @query="queryList">
+	<z-paging ref="paging" v-model="dataList" @query="queryList" :refresher-enabled="false">
 		<device-condition :count="count" @confirm="getScreen"></device-condition>
 		<device-list :dataList="dataList" :screen="screen" @bingClearDevice="bingClearDevice"></device-list>
 		<xls-empty slot="empty"></xls-empty>
-		<!-- <Tabbar v-show="$route.meta.showDeviceTabbar" /> -->
+		<!-- <xls-tabbar-vue slot="bottom"></xls-tabbar-vue> -->
 	</z-paging>
 </template>
 
 <script>
 	import deviceCondition from "./components/device-condition/index.vue";
+	import xlsTabbarVue from "./components/xls-tabbar/xls-tabbar.vue";
 	import deviceList from "./components/device-list/index.vue";
 	import {
 		deviceController
@@ -17,6 +18,7 @@
 		components: {
 			deviceCondition,
 			deviceList,
+			xlsTabbarVue
 		},
 		data() {
 			return {

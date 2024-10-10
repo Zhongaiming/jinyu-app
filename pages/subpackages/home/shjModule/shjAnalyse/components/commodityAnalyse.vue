@@ -33,7 +33,7 @@
 				</view>
 				<view class="ranking-btn-block">
 					<view class="ranking-btn" v-for="(item, index) in typeList" :key="index"
-						:class="type == item.id ? 'actived' : ''" @click="changeType(item.id)">
+						:class="{'actived':type == item.id}" @click="changeType(item.id)">
 						{{ item.title }}
 					</view>
 				</view>
@@ -42,7 +42,7 @@
 				<view class="goods-list-item" v-for="(item, index) in commodityList" :key="index">
 					<view class="item-left">{{ index + 1 }}</view>
 					<view class="item-right">
-						<img :src="item.commodityImg" alt="" class="item-image" />
+						<image :src="item.commodityImg" alt="" class="item-image" />
 						<view class="item-right-des">
 							<view class="item-top">
 								<span class="item-name">{{item.commodityName}}</span>
@@ -130,7 +130,7 @@
 			produceCell(commodityId) {
 				this.moreList = 3;
 				this.commodityId = commodityId;
-				this.$parent.title = "单品分析";
+				this.$emit('setTitle', "单品分析")
 				this.getAnalysis(this.params, this.commodityId);
 			},
 			//商品列表

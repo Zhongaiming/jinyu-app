@@ -90,7 +90,7 @@
 		position: sticky;
 		padding: 0 2.5%;
 		top: 0;
-		z-index: 9999;
+		z-index: 999;
 
 		.sides {
 			color: #5241ff;

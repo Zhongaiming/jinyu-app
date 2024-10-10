@@ -36,7 +36,7 @@ export function seadAppear(res) {
 		} else if (res.config.url == '/device/api/v1/admin/device/deviceRail/updCargoLane') {
 			params = {
 				railId: [String(data.id)], // 货道
-				sellingPrice: data.price, // 货道价格
+				sellingPrice: data.price*1, // 货道价格
 				railGoodsCapacity: data.railCapacity, //货道容量
 				railGoodsNum: null, //货道库存
 				cargoLaneNumber: data.cargoLaneNumber ? data.cargoLaneNumber : null, //货道名字
@@ -52,7 +52,7 @@ export function seadAppear(res) {
 		} else {
 			params = {
 				railId: data.railIds ? data.railIds : data.railId ? [data.railId] : null, // 货道
-				sellingPrice: data.price, // 货道价格
+				sellingPrice: data.price*1, // 货道价格
 				railGoodsCapacity: data.railCapacity, //货道容量
 				railGoodsNum: data.railRepertory, //货道库存
 				cargoLaneNumber: data.cargoLaneNumber ? data.cargoLaneNumber : null, //货道名字

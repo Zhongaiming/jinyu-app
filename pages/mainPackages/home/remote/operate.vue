@@ -34,7 +34,7 @@
 						<input type="text" v-model="upperScore" placeholder="请选择货道" />
 					</view>
 					<view class="icon">
-						<u-icon name="arrow" size="18" color="#d1d1d1" />
+						<u-icon name="arrow-right" size="36" color="#d1d1d1" />
 					</view>
 				</view>
 			</view>
@@ -43,8 +43,10 @@
 				<span class="label">启动设定</span>
 				<u-radio-group v-model="startType">
 					<view class="radio">
-						<u-radio checked-color="#5241FF" name="1">游戏启动</u-radio>
-						<u-radio checked-color="#5241FF" name="2">商品出货</u-radio>
+						<u-radio shape="circle" activeColor="#5241FF" iconSize="32" labelSize="36" size="38"
+							name="1">游戏启动</u-radio>
+						<u-radio shape="circle" activeColor="#5241FF" iconSize="32" labelSize="36" size="38"
+							name="2">商品出货</u-radio>
 					</view>
 				</u-radio-group>
 			</view>
@@ -74,7 +76,7 @@
 				<view class="label">上分数量</view>
 				<view class="grid-panel">
 					<view class="grid-btns">
-						<span class="btn" :class="scoreActiveValue == index ? 'active' : ''"
+						<span class="btn" :class="{'active':scoreActiveValue == index}"
 							@click="clickMethod(score, index)" v-for="(score, index) in upperScoreList" :key="index">
 							{{ score.text }}
 						</span>
@@ -102,7 +104,7 @@
 			<view class="popup-content">
 				<view class="device-header-style">
 					<view class="titleP">选择设备</view>
-					
+
 					<view class="outSide">
 						<view class="mainB">
 							<view class="title-txt">{{deviceOrplace?'选择场地':'选择设备'}}</view>
@@ -159,25 +161,10 @@
 </template>
 
 <script>
-	// import {
-	// 	getDeviceTypePlaceList,
-	// 	getDeviceListByPlaceDeviceType,
-	// 	getRailCommodityList,
-	// } from "@/utils/api/remoteBoot";
-	// import {
-	// 	addPoints,
-	// 	addVendingPoints,
-	// 	addEggPoints,
-	// } from "@/utils/api/remoteBoot";
-	// import {
-	// 	deviceDetail,
-	// 	getEggDeviceRailInfo,
-	// 	getRailInfo,
-	// } from "@/utils/api/device";
-	// import api from "@/utils/shjApi";
 	import PlaceList from "./components/place-list-rato.vue";
 	import {
-		deviceController
+		deviceController,
+		shjController
 	} from '@/api/index.js';
 	export default {
 		components: {
@@ -373,16 +360,14 @@
 				}
 				this.railCommodity = !this.railCommodity;
 				if (this.deviceTypeId == 4) {
-					api
-						.replenishmentDetails({
-							deviceNumber: this.enterValue
-						})
-						.then((res) => {
-							if (res.code == 200 || res.data.msg == "ok") {
-								this.railList = res.data.data.list;
-							}
-						});
-					return;
+					shjController.replenishmentDetails({
+						deviceNumber: this.enterValue
+					}).then((res) => {
+						if (res.code == 200) {
+							this.railList = res.data.list;
+						}
+					})
+					return
 				}
 				let res = await deviceController.getRailCommodityList({
 					deviceNumber: this.enterValue,
@@ -460,17 +445,17 @@
 			//售货机
 			async shjStart() {
 				if (!this.pickDeviceDetail.deviceNumber) {
-					this.$toast("请选择设备~");
-					this.$hideLoading();
-					return "badRequest";
+					this.$toast("请选择设备~")
+					this.$hideLoading()
+					return "badRequest"
 				}
 				//设备详情
 				let res = await deviceController.deviceDetail({
 					deviceNumber: this.pickDeviceDetail.deviceNumber,
 				});
-				let device = res.data.data;
+				let device = res.data
 				if (device.uuid) {
-					this.uuid = device.uuid;
+					this.uuid = device.uuid
 				}
 				let info = this.pickDeviceDetail;
 				let vending = await deviceController.addVendingPoints({
@@ -480,10 +465,10 @@
 					shippingSpace: info.shippingSpace,
 					startType: this.startType,
 					points: 1,
-				});
-				this.$hideLoading();
+				})
+				this.$hideLoading()
 				if (vending.code == 200) {
-					this.$toast("上分成功");
+					this.$toast("上分成功")
 				}
 			},
 			//扭蛋机
@@ -922,7 +907,7 @@
 		height: 60vh;
 		position: relative;
 		overflow-y: auto;
-		
+
 		.device-header-style {
 			position: sticky;
 			top: 0;

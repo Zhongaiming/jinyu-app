@@ -31,6 +31,7 @@
 	.xls-empty {
 		width: 100%;
 		background: #00000000;
+		padding-bottom: 40rpx;
 
 		.image-wrapper {
 			width: 100%;

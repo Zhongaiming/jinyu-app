@@ -102,7 +102,7 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		z-index: 99999;
+		z-index: 999;
 
 		.detail {
 			height: 406rpx;

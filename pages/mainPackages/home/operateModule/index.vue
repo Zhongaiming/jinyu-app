@@ -1,5 +1,5 @@
 <template>
-	<z-paging ref="operatePaging" v-model="dataList" @query="queryList" @scroll="scrollXls">
+	<z-paging ref="operatePaging" v-model="dataList" @query="queryList" @scroll="scrollXls" auto-show-back-to-top back-to-top-img="/static/back.png">
 		<view slot="top" :style="{'height':!changeToptitle?'380rpx':''}" class="header-style">
 			<jy-navbar title="场地收益统计" bgColor="#f5f6f7"></jy-navbar>
 			<view class="arrows-bottom text-over" :class="{'hidden-header': !changeToptitle}">

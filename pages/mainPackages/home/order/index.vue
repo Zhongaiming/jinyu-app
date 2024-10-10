@@ -1,5 +1,6 @@
 <template>
-	<z-paging ref="orderPaging" v-model="dataList" @query="queryList">
+	<z-paging ref="orderPaging" v-model="dataList" @query="queryList" auto-show-back-to-top
+		back-to-top-img="/static/back.png">
 		<view slot="top">
 			<xls-order-screen-vue @getCondition="getCondition" :screen="params"></xls-order-screen-vue>
 		</view>
@@ -21,8 +22,8 @@
 
 				<view class="xls-order-style">
 					<view class="xls-order-style-header">
-						<xls-image class="icon-image" :src="`${$baseUrl}appV4/common/${item.payType==0?'wechat':'pay'}.png`"
-							mode="widthFix">
+						<xls-image class="icon-image"
+							:src="`${$baseUrl}appV4/common/${item.payType==0?'wechat':'pay'}.png`" mode="widthFix">
 						</xls-image>
 						<view class="right-wrapper">
 							<view class="device-style">

@@ -7,7 +7,7 @@
 		<!-- 订单分析 -->
 		<OrderAnalyse ref="Order" v-if="activeType == 1" />
 		<!-- 商品分析 -->
-		<CommodityAnalyse ref="commodity" v-if="activeType == 2" />
+		<CommodityAnalyse ref="commodity" v-if="activeType == 2" @setTitle="setTitle"/>
 
 		<u-tabbar :value="activeType" active-color="#5241FF" @change="changeType">
 			<u-tabbar-item :name="1" text="订单分析">
@@ -81,6 +81,10 @@
 					}
 				});
 			},
+			// 
+			setTitle(value) {
+				this.title = value
+			}
 		},
 	};
 </script>

@@ -266,7 +266,7 @@
 				}
 			},
 			getTypeShow(item) {
-				const filtrationList = [15, 33, 35];
+				const filtrationList = [15, 33, 35, 36, 37];
 				if(!filtrationList.includes(item.id)) {
 					return true
 				} else {

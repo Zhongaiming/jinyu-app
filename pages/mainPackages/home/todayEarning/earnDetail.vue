@@ -9,11 +9,15 @@
 				</view>
 			</view>
 
-			<view class="xls-td-status-label" v-show="tabActive == 1">
+			<view class="xls-td-status-label" v-if="tabActive == 1">
 				<view class="status-item" v-for="state in statusList" :key="state.id"
 					:class="{'active-status':stateActive == state.id}" @click="changeStateValue(state.id)">
 					{{ state.name }}
 				</view>
+			</view>
+
+			<view class="xls-td-status-date" v-if="tabActive == 3">
+				<xls-date-vue @getParams="getParams"></xls-date-vue>
 			</view>
 		</view>
 
@@ -25,7 +29,7 @@
 					<p class="top" v-else>线上余额</p>
 					<p class="middle">{{ item.createTime }}</p>
 				</view>
-				
+
 				<view class="num-info">
 					{{ $formatAmount(item.amount) }}<span class="small">元</span><br />
 					<!-- <span class="has-refund back" v-show="item.state == -1">有退款</span>
@@ -81,8 +85,16 @@
 	} from "@/api/index.js";
 	import {
 		mapState
-	} from "vuex";
+	} from "vuex"
+	import xlsDateVue from "./components/xls-date.vue";
+	import {
+		getDateAll
+	} from "@/plugins/utilityClass"
+	
 	export default {
+		components: {
+			xlsDateVue
+		},
 		data() {
 			return {
 				dataList: [],
@@ -116,6 +128,8 @@
 					},
 				],
 				stateActive: null,
+				startTime: getDateAll(0),
+				endTime: getDateAll(0)
 			}
 		},
 		computed: {
@@ -134,6 +148,8 @@
 				orderController[`${API}`]({
 					page: pageNo,
 					size: pageSize,
+					startTime: this.startTime,
+					endTime: this.endTime,
 					...(this.stateActive && {
 						state: this.stateActive
 					})
@@ -155,7 +171,13 @@
 				this.$goTo('/pages/mainPackages/home/order/orderDetail', 'navigateTo', {
 					orderId: params.orderNo
 				})
-			}
+			},
+			getParams(params) {
+				const {startTime, endTime} = params
+				this.startTime = startTime
+				this.endTime = endTime
+				this.$refs.todayPaging.reload()
+			},
 		}
 	}
 </script>
@@ -290,7 +312,7 @@
 			padding-bottom: 35rpx;
 			line-height: 1.1;
 			border-top: 2rpx dashed #ddd;
-			
+
 			.redColor {
 				color: #f5222d;
 			}

@@ -147,6 +147,9 @@
 			},
 			//已注册机台编号
 			wwjByPlace() {
+				if(!this.bingDeviceInfo.placeId) {
+					return
+				}
 				if (
 					this.deviceInfo.typeName == "娃娃机" ||
 					this.deviceInfo.typeName == "儿童类"
@@ -230,7 +233,7 @@
 			bottom: 0;
 			right: 0;
 			background-color: #efeff4;
-			z-index: 9999;
+			z-index: 999;
 
 			.btn {
 				padding-top: 22rpx;

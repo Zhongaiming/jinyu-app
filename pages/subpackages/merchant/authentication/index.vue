@@ -23,8 +23,8 @@
 		<view class="stay-attestation">
 			<!-- 实名认证 -->
 			<view v-for="(data,dataIndex) in dataList" :key="dataIndex">
-				<view class="screenshot-contanier" v-for="(item,itemIndex) in data.authInfoList" :key="$getUniqueKey(dataIndex, itemIndex)"
-					v-show="item.authorizeStatus == activeItem">
+				<view class="screenshot-contanier" v-for="(item,itemIndex) in data.authInfoList"
+					:key="$getUniqueKey(dataIndex, itemIndex)" v-show="item.authorizeStatus == activeItem">
 					<view class="logo-index">
 						<image :src="`${$baseUrl}appV4/authentications/svg/${item.url}`" alt="" class="image"
 							mode="heightFix" />
@@ -75,11 +75,9 @@
 					</view>
 				</view>
 			</view>
-			<view class="xls-link-style" @click="goTo('xxx', 1)">
-				常见问题
-			</view>
+			<xls-data-nul v-if="getDataNull"></xls-data-nul>
 			<!-- 温馨提示 -->
-			<view class="tip-message">
+			<view class="tip-message" v-if="activeItem == 2&&!getDataNull">
 				<view class="tip-message-inner">
 					<view class="title">温馨提示</view>
 					<ul class="content">
@@ -93,8 +91,10 @@
 					</ul>
 				</view>
 			</view>
+			<view class="xls-link-style" @click="goTo('xxx', 1)">
+				常见问题
+			</view>
 			<xls-new-hand></xls-new-hand>
-			<!-- <xls-data-nul></xls-data-nul> -->
 		</view>
 	</view>
 </template>
@@ -118,6 +118,7 @@
 			return {
 				activeItem: 2,
 				dataList: [],
+				authorizeStatusList: [],
 			}
 		},
 		created() {
@@ -126,6 +127,10 @@
 		computed: {
 			getKey(index) {
 				return `main${index}`;
+			},
+			getDataNull() {
+				return (this.authorizeStatusList.length == 0 && this.activeItem == 2) || (this.authorizeStatusList
+					.length == this.dataList[0].length && this.activeItem == 1)
 			},
 		},
 		methods: {
@@ -153,11 +158,14 @@
 						} else {
 							item['url'] = 'pay-icon.png';
 						}
+						if (item.authorizeStatus === 2) {
+							this.authorizeStatusList.push(item)
+						}
 					})
 					this.dataList = res.data
 				})
 			},
-			
+
 		}
 	}
 </script>
