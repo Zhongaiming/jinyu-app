@@ -157,10 +157,10 @@ export function enableBoundaryChecking(flag = true) {
 
 
 export default {
-  times,
-  plus,
-  minus,
-  divide,
+  times,//乘
+  plus,//加
+  minus,//减
+  divide,//除
   round,
   enableBoundaryChecking,
 };

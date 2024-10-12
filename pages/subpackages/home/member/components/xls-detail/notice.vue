@@ -68,7 +68,7 @@
 
 <style lang="scss" scoped>
 	.noticeTips {
-		width: 240px;
+		width: 280px;
 		padding: 20px;
 
 		.member-title {

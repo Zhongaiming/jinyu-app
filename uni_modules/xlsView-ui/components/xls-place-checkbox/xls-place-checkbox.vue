@@ -21,7 +21,7 @@
 						<span class="serial-number">{{ index + 1 }}_</span>
 						<span>{{ place.placeName }}</span>
 					</view>
-					<view class="radio-style" @click="checkPlaceItem(place.placeId)">
+					<view class="radio-style" @click="checkPlaceItem(place.placeId||place.id)">
 						<u-icon name="checkmark-circle-fill" size="46" color="#5241FF"
 							v-if="checkboxGroup.includes(place.placeId||place.id)" />
 						<u-icon name="checkmark-circle" size="46" color="#CECFD2" v-else />

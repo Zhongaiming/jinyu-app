@@ -3,7 +3,7 @@
 		<device-condition :count="count" @confirm="getScreen"></device-condition>
 		<device-list :dataList="dataList" :screen="screen" @bingClearDevice="bingClearDevice"></device-list>
 		<xls-empty slot="empty"></xls-empty>
-		<!-- <xls-tabbar-vue slot="bottom"></xls-tabbar-vue> -->
+		<xls-tabbar-vue slot="bottom"></xls-tabbar-vue>
 	</z-paging>
 </template>
 

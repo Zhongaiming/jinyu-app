@@ -53,7 +53,7 @@
 			<!-- common -->
 			<view class="step-btn-wrapper" v-if="![5,4].includes(deviceTypeId)">
 				<view class="child" v-if="!showStep">
-					<view class="childCaption" v-html="deviceTypeId == 2 ? '扭蛋个数' : '上分数量'"></view>
+					<view class="childCaption">{{deviceTypeId==2?'扭蛋个数':'上分数量'}}</view>
 					<view class="childItem">-</view>
 				</view>
 				<view class="childShow" v-if="showStep">
@@ -83,7 +83,11 @@
 						<input type="text" v-model="dbjValue" class="btn grid-input"
 							@click="clickMethod({ text: '自定义', score: '' }, 6)"
 							:class="{'disabled':scoreActiveValue != 6}" @input="valueStep = dbjValue" maxlength="3"
-							placeholder="请输入" ref="dbjInput" />
+							:placeholder="focusSwitch?'':'请输入'" ref="dbjInput" @focus="() => {
+								focusSwitch = true
+							}" @blur="() => {
+								focusSwitch = false
+							}" />
 					</view>
 					<!-- <p class="tips">仅能选择纸钞面额</p> -->
 				</view>
@@ -172,6 +176,7 @@
 		},
 		data() {
 			return {
+				focusSwitch: false,
 				//设备输入
 				enterValue: "",
 				valueStep: 1,
@@ -278,11 +283,6 @@
 			clickMethod(score, index) {
 				this.scoreActiveValue = index;
 				this.valueStep = score.score;
-				if (score.text == "自定义") {
-					this.$nextTick(() => {
-						this.$refs.dbjInput.focus();
-					});
-				}
 			},
 
 			async getTypePlace() {
@@ -751,7 +751,6 @@
 		display: flex;
 		padding: 10px;
 		background: #fff;
-		border-top: 1px solid #ddd;
 		font-size: 15px;
 
 		.label {

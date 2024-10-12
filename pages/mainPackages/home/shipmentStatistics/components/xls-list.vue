@@ -32,7 +32,7 @@
 								{{ device.typeName }}{{ device.deviceNumber }}
 								<span style="font-size: 14px"
 									v-show="device.deviceOutPresentNum >= 0">(出礼{{ device.deviceOutPresentNum }}个)</span>
-								<span v-show="device.moveState == 0" class="moveState">已转移</span>
+								<span v-if="device.moveState == 0" class="moveState">已转移</span>
 							</view>
 							<view class="sub-info" v-show="device.remark">
 								备注：{{ device.remark }}
@@ -382,6 +382,7 @@
 	  height: 60vh;
 	  max-height: 1000rpx;
 	  position: relative;
+	  overflow-y: auto;
 	  
 	  .shj-title {
 	    line-height: 44px;

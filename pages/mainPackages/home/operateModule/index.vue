@@ -188,7 +188,7 @@
 								<view class="info-row">
 									<span class="field">在线支付</span>
 									<span class="value">
-										<span class="num">出币{{ item.onlinePayInsertCoins }}个,</span>
+										<!-- <span class="num">出币{{ item.onlinePayInsertCoins }}个,</span> -->
 										{{ $formatAmount(item.onlinePayIncome)}}<span class="unit">元</span></span>
 								</view>
 								<view class="info-row">

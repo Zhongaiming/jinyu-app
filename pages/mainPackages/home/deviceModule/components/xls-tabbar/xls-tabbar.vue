@@ -8,6 +8,9 @@
 </template>
 
 <script>
+	import {
+		deviceController
+	} from "@/api/index.js";
 	export default {
 		name: "xls-tabbar",
 		props: {
@@ -35,12 +38,15 @@
 								"appV4/device_tabbar/fault_active.png",
 							inactive: 'https://xls-ui-file.oss-cn-hangzhou.aliyuncs.com/appui/' +
 								"appV4/device_tabbar/fault.png",
-							route: '/pages/mainPackages/home/deviceModule/index',
+							route: '/pages/mainPackages/home/deviceModule/deviceFault',
 							badge: 0
 						}
 					]
 				}
 			}
+		},
+		mounted() {
+			this.getFaultTotal()
 		},
 		methods: {
 			changeType(name) {
@@ -49,6 +55,13 @@
 					route
 				} = this.list.find(item => item.name === name)
 				this.$goTo(route)
+			},
+			getFaultTotal() {
+				deviceController.getUntreatedTotal().then(res => {
+					if(res.code == 200) {
+						this.list[1].badge = res.data
+					}
+				})
 			},
 		}
 	}

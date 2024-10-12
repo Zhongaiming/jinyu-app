@@ -2,20 +2,10 @@
 	<z-paging ref="memberPaging" v-model="dataList" @query="queryList">
 		<xls-jy-navbar title="用户详情" bgColor="#5241ff" titleStyle="color: #fff" slot="top"></xls-jy-navbar>
 
-		<header-vue></header-vue>
-		
-		<view class="record-btn" @click="showRecord = !showRecord" v-show="!showRecord">
-			<span>会员消费记录
-				<!-- <van-icon name="arrow-up" size="18" color="#999"/> -->
-			</span>
-		</view>
+		<header-vue :userMsg="userMsg" :orderDetail="orderDetail"></header-vue>
+
 		<!-- 会员消费记录 -->
-		<view class="record-container-hidden" :class="{'main-record':showRecord}">
-			<view class="record-btn" @click="showRecord = !showRecord">
-				<span>会员消费记录
-					<!-- <van-icon name="arrow-down" size="18" color="#999" -->
-					/></span>
-			</view>
+		<view class="record-container-hidden main-record">
 			<view class="record-container">
 				<view class="tab-wrapper">
 					<view class="tab tab1" :class="{'active-tab':payType}" @click="cutType('pay')">
@@ -25,449 +15,11 @@
 						余额余币明细
 					</view>
 				</view>
-				<!-- 支付订单 -->
-				<view class="payment-record-container" v-if="payType">
-					<view class="payment-record-wrapper">
-						<!-- 搜索 -->
-						<view class="search-con">
-							<view class="left">
-								<!-- <van-dropdown-menu active-color="#5241FF">
-                    <van-dropdown-item
-                      v-model="value1"
-                      :options="option1"
-                      @change="beOndutyState"
-                    />
-                  </van-dropdown-menu> -->
-							</view>
-							<image :src="`${$baseUrl}appV4/img/icons/search.png`" alt="" style="padding-right: 10px"
-								@click="orderSearch" />
-							<input type="text" :placeholder="'输入' + typeName" v-model="searchValue"
-								@keyup.13="orderSearch" @blur="orderSearch" />
-						</view>
-						<!-- 条件筛选 -->
-						<view class="fliter-condition">
-							<!-- <van-dropdown-menu active-color="#5241FF">
-                  <van-dropdown-item title="场地名称" ref="itemPlace">
-                    <view class="consume-place">
-                      <search-input
-                        placeholder="请输入场地名称"
-                        marLeft="-5.5em"
-                        @stratesSearch="stratesSearch"
-                      ></search-input>
-                      <view class="cell-container">
-                        <view class="cell-item">
-                          <view class="cell-title"><span>全部</span></view>
-                          <van-checkbox
-                            v-model="allCheck"
-                            icon-size="20px"
-                            checked-color="#5241FF"
-                            @click="$refs.placeCheckGroup.toggleAll(allCheck)"
-                            style="margin: 0"
-                          >
-                          </van-checkbox>
-                        </view>
-                        <van-checkbox-group
-                          v-model="placeCheckGroup"
-                          direction="horizontal"
-                          ref="placeCheckGroup"
-                        >
-                          <view
-                            class="cell-item"
-                            v-for="(item, index) in placeList"
-                            :key="index"
-                          >
-                            <view class="cell-title">
-                              <span>{{ item.placeName }}</span>
-                            </view>
-                            <van-checkbox
-                              :name="item.placeId"
-                              icon-size="18px"
-                              style="margin: 0"
-                              checked-color="#5241FF"
-                              @click="
-                                allCheck =
-                                  placeCheckGroup.length == placeList.length
-                              "
-                            ></van-checkbox>
-                          </view>
-                          <on-earth />
-                        </van-checkbox-group>
-                      </view>
-                      <view class="btn-content">
-                        <view
-                          class="btn"
-                          @click="
-                            $refs.placeCheckGroup.toggleAll(false),
-                              (allCheck = false)
-                          "
-                        >
-                          重置
-                        </view>
-                        <view class="btn comfrim" @click="confirmBtn('place')">
-                          确定<span style="margin-left: 6px"
-                            >(
-                            {{ placeCheckGroup.length }}
-                            )</span
-                          >
-                        </view>
-                      </view>
-                    </view>
-                  </van-dropdown-item>
-                  <van-dropdown-item title="设备类型" ref="itemDevice">
-                    <view class="consume-place">
-                      <view class="cell-container">
-                        <van-radio-group v-model="screenCondition.deviceTypeId">
-                          <view
-                            class="cell-item"
-                            v-for="(item, index) in deviceType"
-                            :key="index"
-                            style="padding: 0"
-                          >
-                            <view class="cell-title">
-                              <van-cell
-                                :title="item.name"
-                                style="padding-left: 0"
-                              />
-                            </view>
-                            <van-radio
-                              checked-color="#5241FF"
-                              :name="item.id"
-                            ></van-radio>
-                          </view>
-                        </van-radio-group>
-                      </view>
-                      <view class="btn-content">
-                        <view
-                          class="btn"
-                          @click="screenCondition.deviceTypeId = ''"
-                        >
-                          重置
-                        </view>
-                        <view class="btn comfrim" @click="confirmBtn">确定</view>
-                      </view>
-                    </view>
-                  </van-dropdown-item>
-                  <van-dropdown-item title="交易类型" ref="itemType">
-                    <view class="consume-place">
-                      <view class="cell-container-no">
-                        <van-cell
-                          v-for="(item, index) in payTypeList"
-                          :key="index"
-                          :title="item.name"
-                          :value="screenCondition.payType == item.id ? '✔' : ''"
-                          @click="screenCondition.payType = item.id"
-                        />
-                      </view>
-                      <view class="btn-content">
-                        <view class="btn" @click="screenCondition.payType = ''">
-                          重置
-                        </view>
-                        <view class="btn comfrim" @click="confirmBtn">确定</view>
-                      </view>
-                    </view>
-                  </van-dropdown-item>
-                  <van-dropdown-item title="交易状态" ref="itemState">
-                    <view class="consume-place">
-                      <view class="cell-container-no">
-                        <van-cell
-                          v-for="(item, index) in stateList"
-                          :key="index"
-                          :title="item.name"
-                          :value="screenCondition.state == item.id ? '✔' : ''"
-                          @click="screenCondition.state = item.id"
-                        />
-                      </view>
-                      <view class="btn-content">
-                        <view class="btn" @click="screenCondition.state = ''">
-                          重置
-                        </view>
-                        <view class="btn comfrim" @click="confirmBtn">确定</view>
-                      </view>
-                    </view>
-                  </van-dropdown-item>
-                </van-dropdown-menu> -->
-						</view>
-						<view class="dateSelector-container">
-							<view class="item" v-for="(item, index) in fastTimer" :key="index"
-								:class="{'active-btn':activeFastimer == item.id}" @click="pickerTime(item.id)">
-								{{ item.timer }}
-							</view>
-						</view>
-					</view>
-				</view>
-				<!-- 余额余币 -->
-				<view class="payment-record-container record-module-wrapper" v-else>
-					<view class="payment-record-wrapper">
-						<view class="fliter-condition">
-							<!-- <van-dropdown-menu active-color="#5241FF" v-if="0">
-                  <van-dropdown-item title="场地名称" ref="itemPlace">
-                    <view class="consume-place">
-                      <search-input
-                        placeholder="请输入场地名称"
-                        marLeft="-5.5em"
-                        @stratesSearch="stratesSearch"
-                      ></search-input>
-                      <view class="cell-container">
-                        <view class="cell-item">
-                          <view class="cell-title"><span>全部</span></view>
-                          <van-checkbox
-                            v-model="allCheck"
-                            icon-size="20px"
-                            @click="$refs.placeCheckGroup.toggleAll(allCheck)"
-                            style="margin: 0"
-                            checked-color="#5241FF"
-                          >
-                          </van-checkbox>
-                        </view>
-                        <van-checkbox-group
-                          v-model="placeCheckGroup"
-                          direction="horizontal"
-                          ref="placeCheckGroup"
-                        >
-                          <view
-                            class="cell-item"
-                            v-for="(item, index) in placeList"
-                            :key="index"
-                          >
-                            <view class="cell-title">
-                              <span>{{ item.placeName }}</span>
-                            </view>
-                            <van-checkbox
-                              :name="item.placeId"
-                              icon-size="18px"
-                              style="margin: 0"
-                              checked-color="#5241FF"
-                              @click="
-                                allCheck =
-                                  placeCheckGroup.length == placeList.length
-                              "
-                            ></van-checkbox>
-                          </view>
-                          <on-earth />
-                        </van-checkbox-group>
-                      </view>
-                      <view class="btn-content">
-                        <view
-                          class="btn"
-                          @click="
-                            $refs.placeCheckGroup.toggleAll(false),
-                              (allCheck = false)
-                          "
-                        >
-                          重置
-                        </view>
-                        <view class="btn comfrim" @click="confirmBtn('place')">
-                          确定<span style="margin-left: 6px"
-                            >(
-                            {{ placeCheckGroup.length }}
-                            )</span
-                          >
-                        </view>
-                      </view>
-                    </view>
-                  </van-dropdown-item>
-                  <van-dropdown-item title="设备类型" ref="itemDevice">
-                    <view class="consume-place">
-                      <view class="cell-container">
-                        <van-radio-group v-model="screenCondition.deviceTypeId">
-                          <view
-                            class="cell-item"
-                            v-for="(item, index) in deviceType"
-                            :key="index"
-                            style="padding: 0"
-                          >
-                            <view class="cell-title">
-                              <van-cell
-                                :title="item.name"
-                                style="padding-left: 0"
-                              />
-                            </view>
-                            <van-radio
-                              checked-color="#5241FF"
-                              :name="item.id"
-                            ></van-radio>
-                          </view>
-                        </van-radio-group>
-                      </view>
-                      <view class="btn-content">
-                        <view
-                          class="btn"
-                          @click="screenCondition.deviceTypeId = ''"
-                        >
-                          重置
-                        </view>
-                        <view class="btn comfrim" @click="confirmBtn">确定</view>
-                      </view>
-                    </view>
-                  </van-dropdown-item>
-                </van-dropdown-menu> -->
-						</view>
-						<view class="dateSelector-container">
-							<view class="item" v-for="(item, index) in fastTimer" :key="index"
-								:class="{'active-btn':activeFastimer == item.id}" @click="pickerTime(item.id)">
-								{{ item.timer }}
-							</view>
-						</view>
-					</view>
-				</view>
 			</view>
-			<!-- 订单列表 -->
-			<view class="cell-container-list" @scroll="scrollRecord">
-				<view class="order-item" v-for="(item, index) in memberList" :key="index" @click="
-              payType
-                ? $router.push({
-                    name: 'orderDetail',
-                    query: { detail: JSON.stringify(item) },
-                  })
-                : ''
-            ">
-					<view class="text-main">
-						<view class="top-list">
-							<view class="left">
-								<span v-show="payType">{{
-                    item.type == 1
-                      ? "充值订单"
-                      : item.type == 2
-                      ? "设备启动"
-                      : item.type == 3
-                      ? "余币购买"
-                      : item.type == 4
-                      ? "余额购买"
-                      : "其他类型"
-                  }}</span>
-								<span v-show="!payType">{{
-                    item.operationType == 1
-                      ? "设备启动"
-                      : item.operationType == 2
-                      ? "启动失败退回"
-                      : item.operationType == 3
-                      ? "商家操作"
-                      : item.operationType == 4
-                      ? "会员充值"
-                      : "活动"
-                  }}</span>
-							</view>
-							<view class="right" v-show="payType">
-								<span class="error" v-if="item.refundState">
-									{{
-                      item.refundState == -1
-                        ? "异常"
-                        : item.refundState == 0
-                        ? "失败"
-                        : item.refundState == 1
-                        ? "退款成功"
-                        : item.refundState == 2
-                        ? "退款中"
-                        : "(其他)"
-                    }}
-									{{
-                      item.refundType == 0
-                        ? "(出货失败退款)"
-                        : item.refundType == 1
-                        ? "(部分退款)"
-                        : item.refundType == 2
-                        ? "(人工退款)"
-                        : item.refundType == 3
-                        ? "(通讯失败退款)"
-                        : "(其他)"
-                    }}
-								</span>
-								<span class="success" v-else>{{
-                    item.state == 0 ? "待支付" : "交易成功"
-                  }}</span>
-							</view>
-							<view class="right" v-show="!payType">
-								{{
-                    item.operationDataType == 1
-                      ? "余额"
-                      : item.operationDataType == 2
-                      ? "余币"
-                      : "积分"
-                  }}
-							</view>
-						</view>
-						<view class="info-list">
-							<view class="left">
-								<span class="item" v-show="payType"
-									v-html="item.payType == 0 ? '微信付款' : '支付宝付款'"></span>
-								<span class="item">{{ item.createTime }}</span>
-							</view>
-							<view class="right">
-								<span class="price" v-if="payType">{{ item.amountTotal }}元</span>
-								<span class="price" v-show="!payType && item.operationCurrency != null"
-									:style="{color:item.operationCurrency<0?'red':''}">
-									{{
-                      item.operationCurrency > 0
-                        ? "+" + item.operationCurrency
-                        : item.operationCurrency
-                    }}
-								</span>
-								<span class="price" v-show="!payType && item.operationBalance != null"
-									:style=" {color:item.operationBalance<0?'red':''}">
-									{{
-                      item.operationBalance > 0
-                        ? "+" + item.operationBalance
-                        : item.operationBalance
-                    }}
-								</span>
-								{{
-                    item.operationDataType == 1
-                      ? "元"
-                      : item.operationDataType == 2
-                      ? "币"
-                      : ""
-                  }}
-							</view>
-						</view>
-						<view class="info-list" v-show="item.deviceNumber">
-							<span class="store-name">
-								{{
-                    item.placeName ? item.placeName : item.transactionPlaceName
-                  }}-<span>
-									{{
-                      item.deviceTypeName ? item.deviceTypeName : item.typeName
-                    }}</span>
-								<span>{{ item.deviceNumber }}-{{
-                      item.railSpace
-                        ? item.railSpace
-                        : item.shippingSpace || "1"
-                    }}-{{ item.railNumber }}</span>
-							</span>
-						</view>
-						<view class="info-list" v-show="item.operationRemark">
-							<span class="store-name">
-								备注：{{ item.operationRemark }}
-							</span>
-						</view>
-					</view>
-					<!-- <van-icon
-              name="arrow"
-              size="16"
-              color="#969799"
-              style="padding: 3px 0 0 6px"
-              v-show="payType"
-            /> -->
-				</view>
-				<on-earth v-if="
-              (payType && memberList.length) ||
-              (onEarth && !payType && memberList.length)
-            " />
-				<!-- <no-data v-if="!memberList.length" /> -->
-			</view>
+			
+			
 		</view>
-		<!-- 时间选择器 -->
-		<!-- <van-calendar
-        v-model="showDate"
-        type="range"
-        @confirm="onConfirm"
-        :max-range="180"
-        allow-same-day
-        range-prompt="只能查询半年的数据"
-        :min-date="minDate"
-        :max-date="maxDate"
-        :round="false"
-        color="#5241FF"
-      /> -->
+		
 	</z-paging>
 </template>
 
@@ -476,12 +28,14 @@
 		memberController
 	} from '@/api/index.js';
 	import headerVue from './components/xls-detail/header.vue';
-	// import { getPlaceDeviceList } from "@/utils/api/place"
-	// import { getDateAll } from "@/plugins/utilityClass"
-	// import storage from "@/plugins/storage"
+	import xlsMemberOrderList from './components/xls-member-order-list/index.vue';
+	import { getDateAll } from "@/plugins/utilityClass";
+	import storage from "@/plugins/storage"
 
 	export default {
-		components: { headerVue },
+		components: {
+			headerVue
+		},
 		data() {
 			return {
 				dataList: [],
@@ -619,71 +173,44 @@
 				pageCoin: 0,
 			};
 		},
-		// async created() {
-		//   this.getPlaceList();
-		//   let member = storage.getSion("member");
-		//   this.userMsg = member;
-		//   //会员订单
-		//   this.getMemberList();
-		//   //会员详情
-		//   let res = await getMemberById({
-		//     memberNumber: this.userMsg.memberNumber,
-		//     memberOpenid: this.userMsg.memberOpenid,
-		//   })
-		//   if (res.data.data) {
-		//     this.orderDetail = res.data.data;
-		//   }
-		// },
+		onLoad(option) {
+			if (option.params) {
+				const member = JSON.parse(option.params)
+				this.userMsg = member
+				this.getMemberDetail()
+			}
+		},
 		methods: {
-			
-			queryList() {
-
+			async getMemberDetail() {
+				let res = await memberController.getMemberById({
+					memberNumber: this.userMsg.memberId,
+					memberOpenid: this.userMsg.memberOpenid,
+				})
+				if (res.code == 200) {
+					this.orderDetail = res.data
+				}
 			},
 			//会员订单列表
-			// scrollRecord(event) {
-			// 	var scrollTop = event.target.scrollTop;
-			// 	var scrollHeight = event.target.scrollHeight;
-			// 	var clientHeight = event.target.clientHeight;
-			// 	if (
-			// 		scrollTop + clientHeight + 50 >= scrollHeight &&
-			// 		!this.onEarth &&
-			// 		!this.payType
-			// 	) {
-			// 		this.getCoinList();
-			// 	}
-			// },
-			// getMemberList: debounceFun(async function() {
-			// 	let res = await getMemberOrderForm({
-			// 		memberOpenid: this.userMsg.memberOpenid,
-			// 		startTime: this.screenCondition.startTime,
-			// 		endTime: this.screenCondition.endTime,
-			// 		placeId: this.screenCondition.placeIds,
-			// 		deviceType: this.screenCondition.deviceTypeId,
-			// 		state: this.screenCondition.state, //状态 -1退单 1交易完成
-			// 	});
-			// 	if (res.code == 200 || res.data.msg == "ok") {
-			// 		if (res.data.data != null) {
-			// 			if (res.data.data.length < 50) {
-			// 				this.onEarth = true;
-			// 			} else {
-			// 				this.onEarth = false;
-			// 			}
-			// 			if (this.page > 1) {
-			// 				this.memberList = [...this.memberList, ...res.data.data];
-			// 			} else {
-			// 				this.memberList = res.data.data;
-			// 			}
-			// 		}
-			// 	}
-			// }, 500),
+			queryList(pageNo, pageSize) {
+				memberController.getMemberOrderForm({
+					memberOpenid: this.userMsg.memberOpenid,
+					startTime: this.screenCondition.startTime,
+					endTime: this.screenCondition.endTime,
+					placeId: this.screenCondition.placeIds,
+					deviceType: this.screenCondition.deviceTypeId,
+					state: this.screenCondition.state, //状态 -1退单 1交易完成
+				}).then(res => {
+					if(res.code == 200) {
+						this.$refs.memberPaging.complete(res.data)
+					}
+				})
+			},
+			
 			//确定
 			confirmBtn(params) {
 				if (params == "place") {
-					this.screenCondition.placeIds = this.allCheck ?
-						"" :
-						this.placeCheckGroup.length ?
-						String(this.placeCheckGroup) :
-						"";
+					this.screenCondition.placeIds = this.allCheck ?"" :
+						this.placeCheckGroup.length ?String(this.placeCheckGroup) :"";
 				}
 
 				this.$refs.itemPlace.toggle(false);
@@ -816,14 +343,7 @@
 			// 		}
 			// 	}
 			// }, 500),
-			//日期格式
-			formatDate(date) {
-				return `${date.getFullYear()}-${
-        date.getMonth() + 1 < 10
-          ? "0" + (date.getMonth() + 1)
-          : date.getMonth() + 1
-      }-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`;
-			},
+			
 			//选择日期
 			onConfirm(date) {
 				const [start, end] = date;

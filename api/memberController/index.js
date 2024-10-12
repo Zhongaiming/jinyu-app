@@ -108,4 +108,5 @@ export default class memberController {
 			data
 		})
 	}
+	
 }

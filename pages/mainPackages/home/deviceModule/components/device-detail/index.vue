@@ -10,7 +10,7 @@
 				<!-- 设备详情 -->
 				<view class="header-wrapper">
 					<view class="left-main-wrapper">
-						
+
 						<view class="one">
 							<view>
 								<span v-if="placeDeviceNum.dollNumber">{{ placeDeviceNum.dollNumber }}号机_</span>
@@ -33,7 +33,7 @@
 							{{ placeDeviceNum.region }}{{ placeDeviceNum.placeDetails }}【{{placeDeviceNum.placeName}}】
 						</view>
 					</view>
-					
+
 					<view class="record-wrapper" v-show="decideType == '售货机'" @click="
 					  (dollNumber = placeDeviceNum.dollNumber),
 						(showRemark = !showRemark),
@@ -52,7 +52,7 @@
 							</view>
 							<view class="name">生成二维码</view>
 						</view>
-						
+
 						<view @click="
 							(currency = placeDeviceNum.currency),
 							  (price = placeDeviceNum.price),
@@ -64,7 +64,7 @@
 							</view>
 							<view class="name">单价</view>
 						</view>
-						
+
 						<view @click="
 							(currency = placeDeviceNum.currency),
 							  (price = placeDeviceNum.price),
@@ -461,7 +461,7 @@
 	} from "@/api/index.js";
 	import QrCanvasRail from "../qr-canvas-rail/index.vue";
 	import cache from '@/common/cache.js';
-	
+
 	export default {
 		components: {
 			QrCanvasRail,
@@ -621,7 +621,9 @@
 					deviceNumber: this.deviceNumber
 				})
 				if (res.code == 200) {
-					this.longUntie = res.data
+					if (process.env.NODE_ENV !== 'development') {
+						this.longUntie = res.data
+					}
 				}
 			},
 			goTo(route) {
@@ -935,7 +937,7 @@
 			},
 			//娃娃机修改单价
 			eidtPrice() {
-				if(this.decideType == '兑币机') {
+				if (this.decideType == '兑币机') {
 					const params = JSON.parse(JSON.stringify(this.giftInfo))
 					params.railRepertory = this.railRepertory
 					deviceController.editEggDeviceRailInfo(params)
@@ -1026,13 +1028,13 @@
 							imei: this.placeDeviceNum.uuid,
 						})
 						deviceController.restartDevice({
-							imei: this.placeDeviceNum.uuid
-						}).then((res) => {
-							if (res.code == 200) {
-								this.$toast("重启成功~");
-							}
-						})
-						.catch(() => {})
+								imei: this.placeDeviceNum.uuid
+							}).then((res) => {
+								if (res.code == 200) {
+									this.$toast("重启成功~");
+								}
+							})
+							.catch(() => {})
 					})
 					.catch(() => {});
 			},

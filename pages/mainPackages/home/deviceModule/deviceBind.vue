@@ -102,15 +102,17 @@
 				commercialNumber,
 				userType
 			} = getInfo();
-			this.showOperatetype = 'ZTWL_20240816162905521' === commercialNumber && userType == 4;
+			const list = ['ZTWL_20241011160655014', 'ZTWL_20240816162905521'];
+			const userTypeList = [1, 4]
+			this.showOperatetype = list.includes(commercialNumber) && userTypeList.includes(userType);
 			this.getTypeList();
 		},
 		methods: {
 			goTo() {
 				// deviceController.updateFromPc({
 				// 	dto: {
-				// 		deviceNumber: "30003298",
-				// 		deviceType: 1
+				// 		deviceNumber: "30003300",
+				// 		deviceType: 4
 				// 	}
 				// })
 				// deviceController.restartDevice({

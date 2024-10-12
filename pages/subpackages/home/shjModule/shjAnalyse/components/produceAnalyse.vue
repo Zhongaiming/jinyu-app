@@ -7,7 +7,7 @@
 			<view class="card-wrapper">
 				<view class="summary_info">
 					<span class="info-item">成交数: {{ acountObj.total }} 笔</span><span class="info-item">成交金额:
-						{{ acountObj.amountTotal }} 元</span><span class="info-item">利润: {{ acountObj.profit }} 元</span>
+						{{ $formatAmount(acountObj.amountTotal) }} 元</span><span class="info-item">利润: {{ $formatAmount(acountObj.profit) }} 元</span>
 				</view>
 				<view class="order-list">
 					<li class="order-item list-head">
@@ -22,8 +22,8 @@
 						</span>
 						<span class="col">{{ item.total }}</span>
 						<span class="col">{{ item.totalShipments }}个</span>
-						<span class="col col-big">{{ item.amountTotal }}</span>
-						<span class="col">{{ item.profit }}</span>
+						<span class="col col-big">{{ $formatAmount(item.amountTotal) }}</span>
+						<span class="col">{{ $formatAmount(item.profit) }}</span>
 					</li>
 					<xls-bottom v-if="analysisVoLists.length" />
 					<xls-empty v-else />
@@ -83,7 +83,7 @@
 				this.analysisVoLists.map((item) => {
 					xData.push(this.hourChange(item.data || item.orderHour));
 					lineO.push(item.total);
-					lineT.push(item.amountTotal);
+					lineT.push(this.$formatAmount(item.amountTotal));
 					lineTh.push(item.totalShipments);
 				});
 				// 为charts选定父容器并初始化charts画布

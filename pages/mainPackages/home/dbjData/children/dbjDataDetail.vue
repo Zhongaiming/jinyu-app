@@ -1,5 +1,6 @@
 <template>
-	<z-paging ref="detailPaging" v-model="dataList" @query="queryList" auto-show-back-to-top back-to-top-img="/static/back.png">
+	<z-paging ref="detailPaging" v-model="dataList" @query="queryList" auto-show-back-to-top
+		back-to-top-img="/static/back.png">
 		<xls-jy-navbar title="兑币机数据详情" bgColor="#f5f6f7"></xls-jy-navbar>
 		<view class="header-wrapper">
 			<view class="main-title">兑币机 {{ paramsReceived.deviceNumber }}</view>
@@ -20,7 +21,7 @@
 			</view>
 		</view>
 
-		<view class="list-wrapper" v-else>
+		<view class="list-wrapper" v-else-if="activeName == 2">
 			<view class="list-block" v-for="(item, index) in dataList" :key="index">
 				<view class="block-left">
 					<view class="type-name">{{ exchangeTypeDict[item.exchangeType] }}</view>
@@ -34,6 +35,26 @@
 				</view>
 			</view>
 		</view>
+
+		<view class="list-wrapper" v-else>
+			<view class="entry-hd" v-for="(item, index) in dataList" :key="index">
+				<view class="title-info cash-wrapper">
+					<view class="place-text">
+						{{ item.placeName }}
+						<span v-show="item.deviceNumber">_{{ item.deviceNumber }}</span>
+						<span v-show="item.deviceNumber">-{{ "1" }}</span>
+						<span v-show="item.railNumber">-{{ item.railNumber || "1" }}</span>
+					</view>
+					<view>{{ item.createTime }}</view>
+				</view>
+				<view class="num-info">
+					{{ $formatAmount(item.amountTotal) }}<span class="small">元</span>
+				</view>
+			</view>
+		</view>
+
+
+
 		<data-illustrate-vue ref="illustrate" text="detail"></data-illustrate-vue>
 		<xls-empty slot="empty" />
 	</z-paging>
@@ -44,7 +65,8 @@
 	import dataDetailsVue from "../components/dataDetails.vue";
 	import dataIllustrateVue from "../components/dataIllustrate.vue";
 	import {
-		deviceDataController
+		deviceDataController,
+		orderController
 	} from "@/api/index.js";
 	export default {
 		name: "dbjDetail",
@@ -58,16 +80,15 @@
 				// tabs
 				activeName: 2,
 				options: [{
-						key: 2,
-						value: "取币明细",
-					}, {
-						key: 1,
-						value: "分日数据",
-					}, {
-						key: 3,
-						value: "现金购买",
-					},
-				],
+					key: 2,
+					value: "取币明细",
+				}, {
+					key: 1,
+					value: "分日数据",
+				}, {
+					key: 3,
+					value: "现金明细",
+				}, ],
 				dataList: [],
 				params: {},
 				paramsReceived: {},
@@ -114,7 +135,7 @@
 				}
 				Object.assign(this.params, obj);
 				Object.assign(this.params, data);
-				if(this.activeName == 3) {
+				if (this.activeName == 3) {
 					this.params.exchangeType = 7
 				}
 				this.$refs.detailPaging.reload();
@@ -134,13 +155,24 @@
 							this.$refs.detailPaging.complete(res.data.dataList);
 						}
 					})
-				} else {
+				} else if (this.activeName == 2) {
 					deviceDataController.getDbjInfo({
 						dataVo: {
 							page: pageNo,
 							size: pageSize,
 							...this.params
 						}
+					}).then(res => {
+						this.$hideLoading();
+						if (res.code == 200) {
+							this.$refs.detailPaging.complete(res.data.dataList);
+						}
+					})
+				} else {
+					orderController.getTodayCashOrderList({
+						page: pageNo,
+						size: pageSize,
+						...this.params
 					}).then(res => {
 						this.$hideLoading();
 						if (res.code == 200) {
@@ -218,6 +250,44 @@
 					font-size: 12px;
 					margin-top: 2px;
 				}
+			}
+		}
+	}
+	
+	.entry-hd {
+		padding: 32rpx 20rpx 25rpx;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background-color: #fff;
+		margin-bottom: 20rpx;
+		border-radius: 10rpx;
+	
+		.title-info {
+			.top {
+				font-size: 34rpx;
+				color: #000;
+				font-weight: 700;
+			}
+	
+			font-size: 24rpx;
+			color: rgba(0, 0, 0, 0.7);
+			width: 280rpx;
+	
+			.middle {
+				margin-top: 5rpx;
+				color: #666;
+			}
+		}
+	
+		.cash-wrapper {
+			flex: 1;
+	
+			.place-text {
+				font-size: 28rpx;
+				font-weight: 600;
+				margin-bottom: 16rpx;
 			}
 		}
 	}

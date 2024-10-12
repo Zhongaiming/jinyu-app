@@ -39,9 +39,7 @@
 					<view class="refund-content_prefix">￥</view>
 					<input v-model="refundAmount" placeholder="输入退款金额" type="number" class="refund-content_input_qV_cV">
 				</view>
-				<view class="refund-content_btn_ZFgj" @click="() => {
-					refundAmount = order.amountTotal/100
-				}">全额退</view>
+				<view class="refund-content_btn_ZFgj" @click="clickRefund">全额退</view>
 			</view>
 			<view class="order_line"></view>
 			<view class="refund-content_tips_b1qpJ" v-if="0">
@@ -82,6 +80,7 @@
 	import {
 		orderController
 	} from '@/api/index.js';
+	import digit from '@/utils/digit.js';
 	export default {
 		data() {
 			return {
@@ -123,6 +122,9 @@
 			}
 		},
 		methods: {
+			clickRefund() {
+				this.refundAmount = digit.divide(this.order.amountTotal, 100)
+			},
 			getView(id) {
 				orderController.getOrderView({
 					id
@@ -131,19 +133,23 @@
 						if (res.data.rails) {
 							res.data.rails = JSON.parse(res.data.rails)
 						}
-						this.order = res.data;
+						this.order = res.data
 					}
 				})
 			},
 			confirmMethod() {
-				if(!this.refundAmount) {
-					return this.$toast("请先输入退款金额");
+				if (!digit.times(this.refundAmount, 1)) {
+					return this.$toast("请先输入退款金额")
 				}
-				if (this.refundAmount * 100 > this.order.amountTotal * 100) {
+				const regex = /^\d{1,11}(\.\d{1,2})?$/;
+				if (!regex.test(digit.times(this.refundAmount, 1))) {
+					return this.$toast("无效的金额输入，请重新输入!");
+				}
+				if (digit.times(this.refundAmount, 100) > digit.times(this.order.amountTotal, 100)) {
 					return this.$toast("退款金额不能超过实付金额！！")
 				}
-				if (this.refundAmount == this.order.amountTotal) {
-					return this.allRefund();
+				if (digit.times(this.refundAmount, 100) == digit.times(this.order.amountTotal, 100)) {
+					return this.allRefund()
 				}
 				this.$modal(`确定要退款 ¥${this.refundAmount} 吗？`, {
 					title: "退款提示"
@@ -152,13 +158,13 @@
 					orderController.amountRefund({
 						amountRefundDto: {
 							orderNo: this.order.orderNo,
-							refundAmount: this.refundAmount * 100,
+							refundAmount: digit.times(this.refundAmount, 100),
 							refundReason: reason,
 						}
 					}).then(res => {
 						if (res.code == 200) {
-							this.$toast("退款成功！");
-							this.$goBack();
+							this.$toast("退款成功！")
+							this.$goBack()
 						}
 					})
 
@@ -173,7 +179,7 @@
 					orderController.allRefund({
 						amountRefundDto: {
 							orderNo: this.order.orderNo,
-							refundAmount: this.order.amountTotal * 100,
+							refundAmount: digit.times(this.order.amountTotal, 100),
 							refundReason: reason,
 						}
 					}).then(res => {

@@ -1,25 +1,27 @@
 <template>
 	<view class="order-analyse">
 		<view class="vending-card" style="padding-top: 0">
-			<view class="card-title">订单占比</view>
+			<view class="card-title">
+				订单占比<u-icon name="question-circle" size="36" color="#999" @click="tips('proportion')" />
+			</view>
 			<!-- 扇图 -->
 			<view class="percent-echarts-wrapper">
 				<view class="percent-echarts" id="percent"></view>
 				<view class="acount-wrapper">
 					<view class="item-style item-center">
-						<span class="span bg-span"></span>
-						<span>退款订单金额： {{ acountTop.amountRefund }} 元</span>
+						<span class="span"></span>
+						<span>成交订单金额： {{ $formatAmount(acountTop.amountTotal) }} 元</span>
 					</view>
 					<view class="item-style item-center">
-						<span class="span"></span>
-						<span>成交订单金额： {{ acountTop.amountTotal }} 元</span>
+						<span class="span bg-span"></span>
+						<span>退款订单金额： {{ $formatAmount(acountTop.amountRefund) }} 元</span>
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="vending-card">
 			<view class="card-title">
-				订单趋势<u-icon name="question-circle" size="36" color="#999" @click="tips" />
+				订单趋势<u-icon name="question-circle" size="36" color="#999" @click="tips('trend')" />
 			</view>
 			<view class="list-wrapper">
 				<view class="tab-list">
@@ -34,28 +36,23 @@
 				<view class="acount-wrapper">
 					<view class="item-style" v-show="state == 0">
 						<span class="span"></span>
-						<span>总订单金额： {{ acountTop.amountTotal }} 元</span>
-						<!-- <span>总订单金额： {{ acountObj.paymentQuantity }} 元</span> -->
+						<span>总订单金额： {{ $formatAmount(acountTop.amountTotal) }} 元</span>
 					</view>
 					<view class="item-style" v-show="state == 0">
 						<span class="span bg-span"></span>
 						<span>总订单笔数： {{ acountTop.paymentQuantity }} 笔</span>
-						<!-- <span>总订单笔数： {{ acountObj.refundQuantity }} 笔</span> -->
 					</view>
 					<view class="item-style" v-show="state == 0">
 						<span class="span bl-span"></span>
-						<span>总利润： {{ acountTop.summaryProfit }} 元</span>
-						<!-- <span>总利润： {{ acountObj.summaryProfit }} 元</span> -->
+						<span>总利润： {{ $formatAmount(acountTop.summaryProfit) }} 元</span>
 					</view>
 					<view class="item-style" v-show="state == 1">
 						<span class="span"></span>
-						<span>总退款金额： {{ acountTop.amountRefund }} 元</span>
-						<!-- <span>总退款金额： {{ acountObj.paymentQuantity }} 元</span> -->
+						<span>总退款金额： {{ $formatAmount(acountTop.amountRefund) }} 元</span>
 					</view>
 					<view class="item-style" v-show="state == 1">
 						<span class="span bg-span"></span>
 						<span>总退订单总数： {{ acountTop.refundQuantity }} 笔</span>
-						<!-- <span>总退订单总数： {{ acountObj.refundQuantity }} 笔</span> -->
 					</view>
 				</view>
 				<view class="order-list">
@@ -71,11 +68,11 @@
 					<li class="order-item" v-for="(item, index) in analysisVoList.slice(0, lengthAll)" :key="index">
 						<span class="col">{{ hourChange(item.orderHour) }} </span>
 						<span class="col" v-show="state == 0">{{ item.total }}笔</span>
-						<span class="col" v-show="state == 0">{{ item.amountTotal }}</span>
-						<span class="col" v-show="state == 0">{{ item.unitPricePerCustomer || "0" }}</span>
-						<span class="col" v-show="state == 0">{{ item.profit }}</span>
+						<span class="col" v-show="state == 0">{{ $formatAmount(item.amountTotal) }}</span>
+						<span class="col" v-show="state == 0">{{ $formatAmount(item.unitPricePerCustomer) }}</span>
+						<span class="col" v-show="state == 0">{{ $formatAmount(item.profit) }}</span>
 						<span class="col" v-show="state == 1">{{ item.periodRefund || item.refundQuantity || 0 }}</span>
-						<span class="col" v-show="state == 1">{{ item.amountRefund }}</span>
+						<span class="col" v-show="state == 1">{{ $formatAmount(item.amountRefund) }}</span>
 					</li>
 					<view class="load-more" v-if="lengthAll == 5 && analysisVoList.length > 5"
 						@click="lengthAll = analysisVoList.length">
@@ -123,11 +120,12 @@
 			};
 		},
 		methods: {
-			tips() {
-				let message =
-					"统计时间段内，成交单量 = 支付成功单量;\n退款单量 = 全部退款单量 + 部分退款单量;";
-					// + 部分成功单量
-				this.$modal(message, {
+			tips(type) {
+				const message = {
+					trend: "成交订单 = 所有订单\n退款订单 = 全额退款订单 + 部分退款订单\n利润 = 收入 - 成本（商品）",
+					proportion: "成交订单 = 成功订单 + 退款订单\n退款订单 = 全额退款订单 + 部分退款订单"
+				}
+				this.$modal(message[type], {
 						title: "说明",
 						confirmText: "我知道了",
 						confirmColor: "#5241FF",
@@ -260,11 +258,11 @@
 							this.acountObj.summaryProfit,
 							item.profit * 1
 						);
-						lineO.push(item.amountTotal);
+						lineO.push(this.$formatAmount(item.amountTotal));
 						lineT.push(item.total);
-						lineTh.push(item.profit);
+						lineTh.push(this.$formatAmount(item.profit));
 					} else {
-						lineO.push(item.amountRefund);
+						lineO.push(this.$formatAmount(item.amountRefund));
 						lineT.push(item.periodRefund || item.refundQuantity || 0);
 						this.acountObj.refundQuantity = suan.add(
 							this.acountObj.refundQuantity,

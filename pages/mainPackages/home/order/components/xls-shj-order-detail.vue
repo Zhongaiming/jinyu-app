@@ -25,7 +25,7 @@
 				<span>货道</span>
 				<span>单价</span>
 				<span v-if="orderDetailCon.state == 1 || shjType == 2">购买/出礼</span>
-				<span v-if="orderDetailCon.state == 1 || shjType == 2">实付金额</span>
+				<span v-if="orderDetailCon.state == 1 || shjType == 2">合计</span>
 				<span v-if="orderDetailCon.state != 1 && shjType == 1">退款/出礼</span>
 				<span v-if="orderDetailCon.state != 1 && shjType == 1">退款金额</span>
 			</view>

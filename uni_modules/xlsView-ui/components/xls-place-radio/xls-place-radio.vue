@@ -19,7 +19,8 @@
 				<view class="place-item" v-for="(place, index) in dataList" :key="index" @click="pickerPlace(place)"
 					v-show="searchShow(place)">
 					<view class="place-main">
-						<span :style="placeActive == place.placeId||placeActive == place.id ? { color: '#5241FF' } : ''">
+						<span
+							:style="{ color: placeActive == place.placeId||placeActive == place.id ? '#5241FF': '' } ">
 							{{index+1}}_{{place.placeNumber}}{{ place.placeName }}
 						</span>
 						<span class="device-num" v-if="showDeviceNum">{{ place.deviceNum }}台</span>
@@ -73,14 +74,14 @@
 		},
 		methods: {
 			async getList() {
-				if(this.deviceType) {
+				if (this.deviceType) {
 					placeController.getPlaceListByDeviceType({
 						deviceType: this.deviceType
 					}).then(res => {
 						if (res.code == 200) {
 							this.dataList = res.data;
-							if(this.defaultPicker) {
-								const defaultPlace = this.dataList.length?this.dataList[0]:{};
+							if (this.defaultPicker) {
+								const defaultPlace = this.dataList.length ? this.dataList[0] : {};
 								this.$emit("getPlaceId", defaultPlace);
 							}
 						}
@@ -89,8 +90,8 @@
 					placeController.getPlaceDeviceList().then(res => {
 						if (res.code == 200) {
 							this.dataList = res.data;
-							if(this.defaultPicker) {
-								const defaultPlace = this.dataList.length?this.dataList[0]:{};
+							if (this.defaultPicker) {
+								const defaultPlace = this.dataList.length ? this.dataList[0] : {};
 								this.$emit("getPlaceId", defaultPlace);
 							}
 						}
@@ -114,7 +115,7 @@
 				if (place == -1) {
 					this.placeActive = -1;
 				} else {
-					this.placeActive = place.placeId;
+					this.placeActive = place.placeId||place.id;
 				}
 				this.placePopup = !this.placePopup;
 				this.$emit("getPlaceId", place);

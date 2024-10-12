@@ -1,5 +1,5 @@
 <template>
-	<z-paging ref="todayPaging" v-model="dataList" @query="queryList">
+	<z-paging ref="todayPaging" v-model="dataList" @query="queryList" auto-show-back-to-top back-to-top-img="/static/back.png">
 		<view slot="top">
 			<view class="xls-td-tab-content">
 				<view class="tab-item" v-for="tab in tabList" :key="tab.id" @click="changeTabValue(tab.id)">
@@ -65,7 +65,7 @@
 						{{ item.placeName }}
 						<span v-show="item.deviceNumber">_{{ item.deviceNumber }}</span>
 						<span v-show="item.deviceNumber">-{{ "1" }}</span>
-						<span v-show="item.railNumber">-{{ item.railNumbe || "1" }}</span>
+						<span v-show="item.railNumber">-{{ item.railNumber || "1" }}</span>
 					</view>
 					<view>{{ item.createTime }}</view>
 				</view>

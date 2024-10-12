@@ -214,7 +214,6 @@ export default class orderController {
 		})
 	}
 	
-	
 	// 售货机订单详情
 	static getShjOrderDetail(data) {
 		return http.request({

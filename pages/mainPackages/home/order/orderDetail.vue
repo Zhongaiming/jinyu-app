@@ -211,11 +211,11 @@
 			</view>
 			<view class="record-detail-list" v-if="order.deviceType === 4">
 				<view class="title">
-					交易详情
+					出货详情
 				</view>
 				<view class="value" @click="getShjOrderDetail">
 					<view style="text-decoration: underline;">
-						售货机
+						点击显示
 					</view>
 				</view>
 			</view>

@@ -416,4 +416,30 @@ export default class deviceController {
 	        data,
 	    })
 	}
+	
+	/**
+	 * 设备故障
+	 */
+	static getUntreatedTotal(data) {
+	    return http.request({
+	        url: '/device/api/v1/admin/device/deviceErrLog/getUntreatedTotal',
+	        method: 'GET',
+	        data,
+	    })
+	}
+	static getFaultList(data) {
+	    return http.request({
+	        url: '/device/api/v1/admin/device/deviceErrLog/getFaultList',
+	        method: 'GET',
+	        data,
+	    })
+	}
+	static dealWithFault(data) {
+		return http.request({
+			url: '/device/api/v1/admin/device/deviceErrLog/dealWithFault',
+			method: 'POST',
+			data
+		})
+	}
+	
 }

@@ -4,7 +4,7 @@
 			<view class="info-container">
 				<view class="info-content">
 					<view class="avatar">
-						<xls-image :src="userMsg.url" alt="" class="header" />
+						<image :src="userMsg.url" alt="" class="header" />
 					</view>
 					<view class="info">
 						<view class="nickname">
@@ -25,7 +25,7 @@
 				<view class="total-container">
 					<view class="total-list">
 						<view class="number">
-							<view>{{ userMsg.totalPay }}</view>
+							<view>{{ $formatAmount(userMsg.totalPay) }}</view>
 						</view>
 						<view class="name">
 							<view class="text">累计支付(元)</view>
@@ -33,7 +33,7 @@
 					</view>
 					<view class="total-list" @click="goTo('accountDetail', 'balance')">
 						<view class="number">
-							<view>{{ userMsg.balance }}</view>
+							<view>{{ $formatAmount(userMsg.balance) }}</view>
 						</view>
 						<view class="name">
 							<view class="text">余额(元)</view>
