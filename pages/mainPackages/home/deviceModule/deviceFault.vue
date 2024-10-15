@@ -80,7 +80,7 @@
 						search: encodeURIComponent(this.searchValue)
 					})
 				}).then(res => {
-					this.$refs.paging.complete(res.data.dataList);
+					this.$refs.paging.complete(res.data);
 				})
 			},
 			changeActiveName() {
@@ -107,6 +107,7 @@
 							this.$toast("处理成功")
 							this.$refs.paging.reload()
 							this.$refs.tabbar.getFaultTotal()
+							this.allCheckGroup = []
 						}
 					}).catch(() => {})
 				}).catch(() => {})
@@ -123,6 +124,7 @@
 						if (res.code == 200) {
 							this.$toast("删除成功")
 							this.$refs.paging.reload()
+							this.allCheckGroup = []
 						}
 					});
 				}).catch(() => {});

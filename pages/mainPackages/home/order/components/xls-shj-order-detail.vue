@@ -25,7 +25,7 @@
 				<span>货道</span>
 				<span>单价</span>
 				<span v-if="orderDetailCon.state == 1 || shjType == 2">购买/出礼</span>
-				<span v-if="orderDetailCon.state == 1 || shjType == 2">合计</span>
+				<!-- <span v-if="orderDetailCon.state == 1 || shjType == 2">合计</span> -->
 				<span v-if="orderDetailCon.state != 1 && shjType == 1">退款/出礼</span>
 				<span v-if="orderDetailCon.state != 1 && shjType == 1">退款金额</span>
 			</view>
@@ -33,13 +33,13 @@
 				<li class="row" v-for="(item, index) in shjDetailList" :key="index">
 					<span>{{ item.commodityName }}</span>
 					<span>{{ item.serialNumber }}</span>
-					<span>{{ item.payPrice }}</span>
+					<span>{{ $formatAmount(item.payPrice) }}</span>
 					<span v-if="orderDetailCon.state == 1 || shjType == 2">{{
 	                item.payCount + "/" + item.outPresentCount
 	              }}</span>
-					<span v-if="orderDetailCon.state == 1 || shjType == 2">{{
-	                item.paySumPrice
-	              }}</span>
+					<!-- <span v-if="orderDetailCon.state == 1 || shjType == 2">{{
+	                $formatAmount(item.paySumPrice)
+	              }}</span> -->
 					<span v-if="orderDetailCon.state != 1 && shjType == 1">{{
 	                viewFloastMethod(item.refundSumPrice || 0, item.payPrice || 0) +
 	                "/" +
@@ -69,7 +69,9 @@
 		},
 		methods: {
 			getShjList(order) {
-				const {orderNo} = order
+				const {
+					orderNo
+				} = order
 				Object.assign(this.orderDetailCon, order)
 				orderController.getShjOrderDetail({
 					orderNo,

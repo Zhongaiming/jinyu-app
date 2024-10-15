@@ -104,7 +104,8 @@
 					</view>
 
 					<view class="xls-order-style-refund-reason" v-if="item.hasOwnProperty('amountCoupon')">
-						<text class="text">{{amountCouponTypeDict[item.amountCouponType]}}{{item.amountCoupon}}</text>
+						<!-- {{amountCouponTypeDict[item.amountCouponType]}} -->
+						<text class="text">活动：{{item.couponName}}，优惠：¥{{$formatAmount(item.amountCoupon)}}</text>
 					</view>
 
 					<view class="xls-order-style-button">

@@ -7,7 +7,7 @@
 			<view class="card-wrapper">
 				<view class="summary_info">
 					<span class="info-item">成交数: {{ acountObj.total }} 笔</span><span class="info-item">成交金额:
-						{{ $formatAmount(acountObj.amountTotal) }} 元</span><span class="info-item">利润: {{ $formatAmount(acountObj.profit) }} 元</span>
+						{{ $formatAmount(acountObj.amountTotal) }} 元</span><span class="info-item">利润: {{ acountObj.profit }} 元</span>
 				</view>
 				<view class="order-list">
 					<li class="order-item list-head">
@@ -23,7 +23,7 @@
 						<span class="col">{{ item.total }}</span>
 						<span class="col">{{ item.totalShipments }}个</span>
 						<span class="col col-big">{{ $formatAmount(item.amountTotal) }}</span>
-						<span class="col">{{ $formatAmount(item.profit) }}</span>
+						<span class="col">{{ item.profit }}</span>
 					</li>
 					<xls-bottom v-if="analysisVoLists.length" />
 					<xls-empty v-else />

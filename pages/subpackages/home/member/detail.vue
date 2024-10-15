@@ -39,6 +39,10 @@
 		data() {
 			return {
 				dataList: [],
+				payTypeList: [
+					{id: 1,text: "支付订单"},
+					{id: 2,text: "余额余币明细"},
+				],
 				payType: true,
 				//搜索
 				value1: 0,
@@ -100,8 +104,8 @@
 					placeIds: "",
 					deviceTypeId: "",
 					state: "",
-					// startTime: getDateAll(0),
-					// endTime: getDateAll(0),
+					startTime: getDateAll(0),
+					endTime: getDateAll(0),
 					payType: "",
 				},
 				deviceType: [{
@@ -193,6 +197,8 @@
 			//会员订单列表
 			queryList(pageNo, pageSize) {
 				memberController.getMemberOrderForm({
+					page: pageNo,
+					size: pageSize,
 					memberOpenid: this.userMsg.memberOpenid,
 					startTime: this.screenCondition.startTime,
 					endTime: this.screenCondition.endTime,

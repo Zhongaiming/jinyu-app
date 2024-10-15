@@ -14,7 +14,7 @@
 						<span class="product-name">{{ commodityName }}</span>
 					</view>
 					<view class="edit-panel">
-						<span>商品售卖价格12</span>
+						<span>商品售卖价格</span>
 						<view class="input-wrapper">
 							<xls-field placeholder="请输入商品售卖价格" v-model="railMsg.price" type="number"
 								input-align="right" />

@@ -19,10 +19,10 @@
 				</view>
 				<view class="price-right">
 					<view class="backColor">
-						¥{{ $formatAmount(order.amount) }}
+						¥{{ $formatAmount(order.amountTotal) }}
 					</view>
 					<view class="redColor">
-						实付：¥{{ $formatAmount(order.amountTotal) }}
+						实付：¥{{ $formatAmount(order.amount) }}
 					</view>
 				</view>
 			</view>
@@ -31,7 +31,7 @@
 			<view class="refund-content-title">
 				退款金额
 				<view class="refund-content-titleTips">
-					（不超过{{ $formatAmount(order.amountTotal) }}元）
+					（不超过{{ $formatAmount(order.amount) }}元）
 				</view>
 			</view>
 			<view class="refund-content">
@@ -123,7 +123,7 @@
 		},
 		methods: {
 			clickRefund() {
-				this.refundAmount = digit.divide(this.order.amountTotal, 100)
+				this.refundAmount = digit.divide(this.order.amount, 100)
 			},
 			getView(id) {
 				orderController.getOrderView({
@@ -145,10 +145,10 @@
 				if (!regex.test(digit.times(this.refundAmount, 1))) {
 					return this.$toast("无效的金额输入，请重新输入!");
 				}
-				if (digit.times(this.refundAmount, 100) > digit.times(this.order.amountTotal, 100)) {
+				if (digit.times(this.refundAmount, 100) > digit.times(this.order.amount, 100)) {
 					return this.$toast("退款金额不能超过实付金额！！")
 				}
-				if (digit.times(this.refundAmount, 100) == digit.times(this.order.amountTotal, 100)) {
+				if (digit.times(this.refundAmount, 100) == digit.times(this.order.amount, 100)) {
 					return this.allRefund()
 				}
 				this.$modal(`确定要退款 ¥${this.refundAmount} 吗？`, {
@@ -179,7 +179,7 @@
 					orderController.allRefund({
 						amountRefundDto: {
 							orderNo: this.order.orderNo,
-							refundAmount: digit.times(this.order.amountTotal, 100),
+							refundAmount: digit.times(this.order.amount, 100),
 							refundReason: reason,
 						}
 					}).then(res => {

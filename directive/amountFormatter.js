@@ -1,3 +1,4 @@
+import digit from '@/utils/digit.js';
 export default {
 	install(Vue) {
 		Vue.prototype.$formatAmount = function(value) {
@@ -13,7 +14,7 @@ export default {
 			if (typeof value !== 'number' || isNaN(value)) {
 				return '0.00';
 			}
-			return (value / 100).toFixed(2);
+			return digit.divide(value, 100).toFixed(2);
 		};
 	}
 };

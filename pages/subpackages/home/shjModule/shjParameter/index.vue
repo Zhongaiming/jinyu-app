@@ -84,7 +84,8 @@
 		shjController
 	} from "@/api/index.js";
 	import ShjbusinType from "./components/shjbusinType.vue";
-	import storage from "@/plugins/storage";
+	import cache from '@/common/cache.js';
+	
 	export default {
 		name: "shjParameter",
 		components: { ShjbusinType },
@@ -115,8 +116,8 @@
 				const {
 					deviceNumber
 				} = JSON.parse(option.params)
-				storage.setSion("deviceNumber", deviceNumber);
-				this.deviceNumber = storage.getSion("deviceNumber");
+				cache.setCache("deviceNumber", deviceNumber);
+				this.deviceNumber = cache.getCache("deviceNumber");
 				this.getType();
 			}
 		},
@@ -164,7 +165,7 @@
 
 			//自定义设置
 			async paramsSetting() {
-				let parameter = storage.getSion("deviceLogin");
+				let parameter = cache.getCache("deviceLogin");
 				if (parameter.onlineState) {
 					if (!parameter.loginId) {
 						return this.$modal("设备上报信息不全，请尝试断电重启设备！", {

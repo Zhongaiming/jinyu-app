@@ -8,7 +8,7 @@
 			<view class="card_item_style" v-if="params.id">
 				<view class="key_text">优惠类型</view>
 				<view class="value-box">
-					{{ params.type == 1 ? "首单享优惠" : "首单享折扣" }}
+					{{ typeDict[params.type] }}
 				</view>
 			</view>
 			<view class="card_item_style" @click="$refs.deviceType.showDeviceTypelist()">
@@ -106,7 +106,7 @@
 				</view>
 				<view class="value-box">
 					<input type="text" v-model="meal.firstAmount" placeholder="请输入" v-if="!params.id" />
-					<span v-else>{{ params.firstAmount }}</span>
+					<span v-else>{{ $formatAmount(params.firstAmount) }}</span>
 				</view>
 				<view class="unit">元</view>
 			</view>
@@ -242,7 +242,9 @@
 	import moment from "moment";
 	import {
 		marketingController
-	} from "@/api/index.js"
+	} from "@/api/index.js";
+	import digit from "@/plugins/floastCalculate.js";
+	
 	export default {
 		data() {
 			return {
@@ -309,11 +311,16 @@
 				setList: [],
 				// ---
 				editState: false,
+				typeDict: {
+					'-1': "首单享优惠",
+					0: "首单享折扣"
+				}
 			};
 		},
 		onLoad(option) {
 			if (option.params) {
 				const params = JSON.parse(option.params)
+				//1 -1优惠 2 0折扣
 				this.params.type = params.type
 				if (params.id) {
 					this.getDetail(params.id)
@@ -333,12 +340,6 @@
 					this.params.couponMembers = result.couponMembers
 					result.startTime = result.startTime.split(" ")[0]
 					result.endTime = result.endTime.split(" ")[0]
-					// this.params.experience = result.packageList.length ?
-					// 	result.packageList[0].experience :
-					// 	""
-					// this.mealType = result.packageList.length ?
-					// 	result.packageList[0].type :
-					// 	1
 					if (this.mealType == 2) {
 						result.packageName = "自定义新用户专享套餐"
 					} else if (this.mealType == 1) {
@@ -346,15 +347,11 @@
 					} else {
 						result.packageName = "免费体验套餐"
 					}
-					// this.meal.firstAmount = result.packageList.length ?
-					// 	result.packageList[0].firstAmount :
-					// 	""
 					let placeId = result.placeList ? result.placeList.map((item) => item.id) : []
 					this.params.placeId = placeId
 					this.params.placeText = `已选${placeId.length}个场地`
 					this.params.placeIds = String(placeId)
 					this.$refs.placelist.defaultChecked(this.params.placeIds)
-
 				}
 			},
 			// 终止
@@ -407,11 +404,8 @@
 				if (!this.params.firstDiscount && this.params.type == 2) {
 					return this.$toast("请输入折扣~");
 				}
-				if (
-					(0 == this.params.firstDiscount * 1 ||
-						10 < this.params.firstDiscount * 1) &&
-					this.params.type == 2
-				) {
+				if ((0 == this.params.firstDiscount * 1 || 10 < this.params.firstDiscount * 1) && this.params.type ==
+					2) {
 					return this.$toast("折扣输入范围为0到10~");
 				}
 				// 优惠价格必须大于0
@@ -424,63 +418,42 @@
 						packageName: "任意套餐",
 						type: 1,
 						firstAmount: this.meal.firstAmount,
-					}, ];
+					}]
 				} else if (this.mealType == 2) {
-					params = this.setList;
+					params = this.setList
 				} else if (this.mealType == 3) {
 					params = [{
 						packageName: this.meal.packageName,
 						type: 3,
 						experience: this.meal.experience,
 						time: this.meal.time,
-					}, ];
+					}]
 				}
 
+				// 享折扣
+				// 1 -1优惠  2 0折扣
 				if (this.params.type == 2) {
-					// 享折扣
 					this.params.type = 1
 					marketingController.addCoupon({
 						dto: this.params
-					}).then((des) => {
-						if (des.code == 200) {
-							this.$toast("添加成功");
-							this.$router.back();
+					}).then(res => {
+						if (res.code == 200) {
+							this.$toast("添加成功")
+							this.$router.back()
 						}
-					});
-					return;
+					})
+					return
 				}
-				this.params['firstAmount'] = this.meal.firstAmount
+				this.params['firstAmount'] = digit.times(this.meal.firstAmount, 100) 
 				this.params.type = 2
 				marketingController.addCoupon({
 					dto: this.params
-				}).then((des) => {
-					if (des.code == 200) {
-						this.$toast("添加成功");
-						this.$router.back();
+				}).then(res => {
+					if (res.code == 200) {
+						this.$toast("添加成功")
+						this.$router.back()
 					}
-				});
-
-				// 添加套餐，返回添加的数据
-				// marketingController.addPackage(params)
-				// 	.then((res) => {
-				// 		if (res.code == 200) {
-				// 			let arr = [];
-				// 			res.data.forEach((item) => {
-				// 				arr.push(item.id);
-				// 			});
-				// 			this.params.packageId = arr[0];
-				// 			this.params.packageIds = String(arr);
-				// 			this.params.association = this.checked ? 1 : 2;
-				// 			// 活动添加
-				// 			marketingController.addCoupon(this.params).then((des) => {
-				// 				if (des.code == 200) {
-				// 					this.$toast("添加成功");
-				// 					this.$router.back();
-				// 				}
-				// 			});
-				// 		}
-				// 	})
-				// 	.catch((err) => {});
+				})
 			},
 			pickerTime(type) {
 				if (type == "start") {

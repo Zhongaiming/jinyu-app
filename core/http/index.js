@@ -84,6 +84,9 @@ http.interceptors.response.use(response => {
 		console.log('Jinglail lmei ')
 		uni.hideLoading()
 	}
+	if(response.config.url === "/device/api/v1/admin/device/deviceRail/replenishmentDetails" && response.data.code === 200) {
+		sortByRailNumber(response.data.data.list)
+	}
 	return response.data
 }, error => {
 	console.log('错误拦截', error)
@@ -113,6 +116,12 @@ http.interceptors.response.use(response => {
 	return Promise.resolve(error.data)
 })
 
+
+function sortByRailNumber(arr) {
+	return arr.sort((a, b) => {
+		return parseInt(a.railNumber) - parseInt(b.railNumber)
+	})
+}
 
 function getVersion() {
 	let version_number;

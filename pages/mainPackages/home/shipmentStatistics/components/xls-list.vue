@@ -375,82 +375,105 @@
 			}
 		}
 	}
-	
+
+	.moveState {
+		padding: 2px 5px;
+		display: inline-block;
+		border-radius: 4px;
+		background: #ff4343;
+		font-size: 13px;
+		color: #fff;
+		margin: 0 10px;
+	}
+
 	/** 售货机详情 */
 	.shj-detail-wrapper {
-	  width: 100%;
-	  height: 60vh;
-	  max-height: 1000rpx;
-	  position: relative;
-	  overflow-y: auto;
-	  
-	  .shj-title {
-	    line-height: 44px;
-	    text-align: center;
-	    font-size: 16px;
-	    font-weight: 700;
-	    position: sticky;
-	    top: 0;
-	    background: #fff;
-	    border-bottom: 1px solid #e5e5e5;
-	  }
-	  .shj-entry {
-	    margin: 5px 10px 15px 10px;
-	    border: 1px solid #e5e5e5;
-	    border-radius: 4px;
-	    .header {
-	      margin: 0 10px;
-	      padding: 6px 0;
-	      .device-rail {
-	        color: #000;
-	        font-size: 15px;
-	      }
-	    }
-	    .detail-box {
-	      margin: 0 10px 5px;
-	      border-top: 1px solid #e5e5e5;
-	      border-bottom: 1px solid #e5e5e5;
-	      display: flex;
-	      flex-wrap: wrap;
-	      padding: 10px 0;
-	      .info-item {
-	        padding: 0 4px;
-	        text-align: center;
-	        width: 25%;
-	        box-sizing: border-box;
-	        .field-stat {
-	          font-size: 12px;
-	          color: rgba(0, 0, 0, 0.6);
-	        }
-	        .value-price {
-	          padding-top: 2px;
-	          font-size: 14px;
-	        }
-	        .value-color {
-	          color: #ff4343;
-	        }
-	      }
-	      .info-item:not(:last-child) {
-	        border-right: 1px solid #e5e5e5;
-	      }
-	    }
-	    .time-wrapper {
-	      font-size: 12px;
-	      color: #666;
-	      margin: 0 10px;
-	      display: flex;
-	      align-items: center;
-	      margin-bottom: 5px;
-	      .key {
-	        width: 62px;
-	      }
-	      .value {
-	        flex: 1;
-	      }
-	    }
-	    .margin0 {
-	      margin: 0;
-	    }
-	  }
+		width: 100%;
+		height: 60vh;
+		max-height: 1000rpx;
+		position: relative;
+		overflow-y: auto;
+
+		.shj-title {
+			line-height: 44px;
+			text-align: center;
+			font-size: 16px;
+			font-weight: 700;
+			position: sticky;
+			top: 0;
+			background: #fff;
+			border-bottom: 1px solid #e5e5e5;
+		}
+
+		.shj-entry {
+			margin: 5px 10px 15px 10px;
+			border: 1px solid #e5e5e5;
+			border-radius: 4px;
+
+			.header {
+				margin: 0 10px;
+				padding: 6px 0;
+
+				.device-rail {
+					color: #000;
+					font-size: 15px;
+				}
+			}
+
+			.detail-box {
+				margin: 0 10px 5px;
+				border-top: 1px solid #e5e5e5;
+				border-bottom: 1px solid #e5e5e5;
+				display: flex;
+				flex-wrap: wrap;
+				padding: 10px 0;
+
+				.info-item {
+					padding: 0 4px;
+					text-align: center;
+					width: 25%;
+					box-sizing: border-box;
+
+					.field-stat {
+						font-size: 12px;
+						color: rgba(0, 0, 0, 0.6);
+					}
+
+					.value-price {
+						padding-top: 2px;
+						font-size: 14px;
+					}
+
+					.value-color {
+						color: #ff4343;
+					}
+				}
+
+				.info-item:not(:last-child) {
+					border-right: 1px solid #e5e5e5;
+				}
+			}
+
+			.time-wrapper {
+				font-size: 12px;
+				color: #666;
+				margin: 0 10px;
+				display: flex;
+				align-items: center;
+				margin-bottom: 5px;
+
+				.key {
+					width: 62px;
+				}
+
+				.value {
+					flex: 1;
+				}
+			}
+
+			.margin0 {
+				margin: 0;
+			}
+		}
 	}
 </style>

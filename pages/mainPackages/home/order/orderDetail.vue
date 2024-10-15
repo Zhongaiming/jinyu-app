@@ -4,7 +4,7 @@
 		<view class="xls-box-style" @click="goTo('refundDetail')">
 			<view class="device-style">
 				<text v-if="order.amountRefund && order.refundState == 1">已退 ¥{{$formatAmount(order.amountRefund)}}</text>
-				<text v-else> ¥{{$formatAmount(order.amountTotal)}}</text>
+				<text v-else> ¥{{$formatAmount(order.amount)}}</text>
 				<text class="state arrow" :style="[{color: stateColorDict[order.state]}]">
 					{{stateDict[order.state]}}
 				</text>
@@ -50,10 +50,10 @@
 				</view>
 				<view class="price-right">
 					<view class="backColor">
-						¥{{ $formatAmount(order.amount) }}
+						¥{{ $formatAmount(order.amountTotal) }}
 					</view>
 					<view class="redColor">
-						实付：¥{{ $formatAmount(order.amountTotal) }}
+						实付：¥{{ $formatAmount(order.amount) }}
 					</view>
 				</view>
 			</view>
@@ -67,11 +67,11 @@
 						<u-icon name="arrow-left-double" color="#c6c6c6" size="36" class="uicon" v-else></u-icon>
 					</view>
 					<text>付款：</text>
-					<text class="text">¥{{ $formatAmount(order.amount) }}</text>
+					<text class="text">¥{{ $formatAmount(order.amountTotal) }}</text>
 				</view>
 				<view class="list" v-if="double">
 					<text>实付款：</text>
-					<text class="text">¥{{ $formatAmount(order.amountTotal) }}</text>
+					<text class="text">¥{{ $formatAmount(order.amount) }}</text>
 				</view>
 				<view class="list" v-if="double && getPrice(order)">
 					<text>服务费：</text>
@@ -106,7 +106,7 @@
 				</view>
 				<view class="value">
 					<view class="">
-						-{{ order.amountCoupon }}元({{ order.couponName|| "优惠券" }})
+						-{{ $formatAmount(order.amountCoupon) }}元({{ order.couponName|| "优惠券" }})
 					</view>
 				</view>
 			</view>

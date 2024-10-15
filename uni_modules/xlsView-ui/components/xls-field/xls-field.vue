@@ -115,21 +115,21 @@
 				let value = event.detail.value;
 				if (this.trim) value = this.trimStr(value);
 				this.val = value;
-				const currentVal = Number(value)
-				if ((this.modelModifiers.number || this.number || this.type === 'digit' || this.type === 'number') && !
-					isNaN(currentVal) && Number.isSafeInteger(currentVal)) {
-					let eVal = this.type === 'digit' ? value : currentVal
-					if (typeof eVal === 'number') {
-						const min = Number(this.min)
-						const max = Number(this.max)
-						if (typeof min === 'number' && currentVal < min) {
-							eVal = min
-						} else if (typeof max === 'number' && max < currentVal) {
-							eVal = max
-						}
-					}
-					value = isNaN(eVal) ? value : eVal
-				}
+				// const currentVal = Number(value)
+				// if ((this.modelModifiers.number || this.number || this.type === 'digit' || this.type === 'number') && !
+				// 	isNaN(currentVal) && Number.isSafeInteger(currentVal)) {
+				// 	let eVal = this.type === 'digit' ? value : currentVal
+				// 	if (typeof eVal === 'number') {
+				// 		const min = Number(this.min)
+				// 		const max = Number(this.max)
+				// 		if (typeof min === 'number' && currentVal < min) {
+				// 			eVal = min
+				// 		} else if (typeof max === 'number' && max < currentVal) {
+				// 			eVal = max
+				// 		}
+				// 	}
+				// 	value = isNaN(eVal) ? value : eVal
+				// }
 				this.$nextTick(() => {
 					//当输入框为空时，输入框显示不赋值为0
 					event.detail.value !== '' && (this.val = String(value));

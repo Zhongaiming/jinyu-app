@@ -270,12 +270,10 @@
 				{{coupon.state == 1 ? "投放中" : coupon.state == 2 ? "已终止" : "已停用"}}
 			</view>
 		</view>
-
+		
 		<!-- 时间选择器 -->
-		<xls-datetime-picker :show="timePopup" v-model="currentDate" :title="timeTitle" 
-			@cancel="timePopup = false"
-			@close="timePopup = false"
-			@confirm="confirmTimeMethod"></xls-datetime-picker>
+		<xls-datetime-picker :show="timePopup" v-model="currentDate" :title="timeTitle" @cancel="timePopup = false"
+			@close="timePopup = false" @confirm="confirmTimeMethod"></xls-datetime-picker>
 		<!-- 设备类型 -->
 		<xls-device-type-radio ref="deviceType" :optionAll="false"
 			@changDeviceType="changDeviceType"></xls-device-type-radio>
@@ -286,17 +284,18 @@
 			<view class="content-popup" v-if="linkMessage">
 				<view class="title">领券链接</view>
 				<view class="content">
-					{{ `https://mv3.ztuwl.com/g/?key=30000028-1-1&reductionId=${coupon.id}` }}
+					{{ `https://mv3.ztuwl.com/g/?key=31000001-1-1&reductionId=${coupon.id}` }}
 				</view>
 				<view class="btn" @click="
-				  copyMemberId(`https://mv3.ztuwl.com/g/?key=30000028-1-1&reductionId=${coupon.id}`)
+				  copyMemberId(`https://mv3.ztuwl.com/g/?key=31000001-1-1&reductionId=${coupon.id}`)
 				  ">
 					复制链接
 				</view>
 			</view>
 			<view class="content-popup" v-else>
-				<create-qs imgWidth="145"
-					:qsData="`https://mv3.ztuwl.com/g/?key=30000028-1-1&reductionId=${coupon.id}`" />
+				<xls-qr-code v-if="linkQsPopup"
+					:qsUrl="`https://mv3.ztuwl.com/g/?key=31000001-1-1&reductionId=${coupon.id}`">
+				</xls-qr-code>
 				<view class="tips">长按可保存到手机</view>
 				<view class="tips-panel">
 					<p>温馨提示</p>
@@ -343,6 +342,7 @@
 					placeIds: "", //场地 ，String类型 用逗号分割
 					placeText: "",
 					state: 1,
+					couponPlaceType: 2, // 2支付立减券
 				},
 				// 时间
 				timePopup: false,
@@ -447,7 +447,9 @@
 			},
 
 			async confirmMethod() {
-				let res = await marketingController.addReduction({dto: this.coupon})
+				let res = await marketingController.addReduction({
+					dto: this.coupon
+				})
 				if (res.code == 200) {
 					this.$toast("添加成功~")
 					this.$goBack()
@@ -474,7 +476,9 @@
 					// 	placeIds: this.coupon.placeIds,
 					// }
 				}
-				let res = await marketingController.updateReductionById({dto: this.coupon})
+				let res = await marketingController.updateReductionById({
+					dto: this.coupon
+				})
 				if (res.code == 200) {
 					this.$toast("修改成功~")
 					this.$goBack()
