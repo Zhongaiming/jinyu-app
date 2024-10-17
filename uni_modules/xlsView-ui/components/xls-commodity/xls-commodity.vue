@@ -84,11 +84,13 @@
 			
 			//前往添加商品
 			goToAdd() {
+				this.$goTo("/pages/mainPackages/home/commodity/operate");
+				return
 				this.$modal("确认要前往添加商品版块吗？这可能会导致您当前输入丢失。", {
 						confirmText: "前往",
 					})
 					.then(() => {
-						this.$goTo("/pages/mainPackages/home/commodity/operate");
+						
 					})
 					.catch(() => {});
 			},

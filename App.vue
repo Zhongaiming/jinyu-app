@@ -187,9 +187,8 @@
 	uni-image {
 		pointer-events: auto;
 	}
-
 	// #endif
-
+	
 	@import '@/uni_modules/uview-ui/index.scss';
 	@import './static/styles/index.scss';
 </style>

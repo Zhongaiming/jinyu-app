@@ -1,7 +1,7 @@
 <template>
 	<!-- 订单列表 -->
 	<view class="cell-container-list">
-		<view class="order-item" v-for="(item, index) in memberList" :key="index" @click="goTo(item)">
+		<view class="order-item" v-for="(item, index) in dataList" :key="index" @click="goTo(item)">
 			<view class="text-main">
 				<view class="top-list">
 					<view class="left">
@@ -27,12 +27,13 @@
 						<span class="item">{{ item.createTime }}</span>
 					</view>
 					<view class="right">
-						<span class="price" v-if="payType">{{ item.amountTotal }}元</span>
+						<span class="price" v-if="payType">{{ $formatAmount(item.amountTotal) }}元</span>
 						<span class="price" v-if="!payType && item.operationCurrency != null"
 							:style="{color:item.operationCurrency<0?'red':''}">
 							{{item.operationCurrency > 0? "+" + item.operationCurrency: item.operationCurrency}}
 						</span>
-						<span class="price" v-if="!payType && item.operationBalance != null" :style=" {color:item.operationBalance<0?'red':''}">
+						<span class="price" v-if="!payType && item.operationBalance != null"
+							:style=" {color:item.operationBalance<0?'red':''}">
 							{{item.operationBalance > 0? "+" + item.operationBalance: item.operationBalance}}
 						</span>
 						{{ operationDataTypeUnitDict[item.operationDataType] }}
@@ -55,8 +56,7 @@
 			</view>
 			<u-icon name="arrow-right" size="32" color="#969799" style="padding: 3px 0 0 6px" v-if="payType" />
 		</view>
-		<xls-bottom v-if="(payType && memberList.length)||(onEarth && !payType && memberList.length)" />
-		<xls-empty v-if="!memberList.length" />
+
 	</view>
 </template>
 
@@ -64,7 +64,7 @@
 	export default {
 		name: 'xlsMemberOrderList',
 		props: {
-			memberList: {
+			dataList: {
 				type: Array,
 				default: () => []
 			},
@@ -136,5 +136,5 @@
 </script>
 
 <style lang="scss" scoped>
-
+	@import "../../detail.scss";
 </style>

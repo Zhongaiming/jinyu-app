@@ -162,17 +162,6 @@
 					startTime: getDateAll(0),
 					endTime: getDateAll(0),
 				},
-				payTypeDict: {
-					0: 'wechat',
-					1: 'pay',
-				},
-				type: {
-					1: '充值余币',
-					2: '设备启动',
-					3: '余币购买',
-					4: '余额购买',
-					5: '充值余额',
-				},
 			}
 		},
 		onLoad(option) {

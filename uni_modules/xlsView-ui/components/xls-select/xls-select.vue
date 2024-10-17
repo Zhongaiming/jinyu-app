@@ -13,7 +13,7 @@
 				</scroll-view>
 				<text v-else>{{select}}</text>
 			</slot>
-			<text v-if="!multiple && !select " class="placeholder">{{placeHolder}}</text>
+			<text v-if="!multiple && !select" class="placeholder">{{placeHolder}}</text>
 			<text v-if="multiple && !selects.length " class="placeholder">{{placeHolder}}</text>
 		</view>
 		<view class="icon">
@@ -55,9 +55,10 @@
 					</view>
 				</view>
 				<view class="empty" v-else>
-					<view class="empty-content">
+					<view class="empty-content" @click="goTo">
 						<text class="empty-icon iconfont icon-kongshuju"></text>
 						<view class="empty-text">暂无数据</view>
+						<u-button color="#5241ff" size="mini" v-if="route" class="empty-btn">去添加</u-button>
 					</view>
 				</view>
 			</scroll-view>
@@ -129,6 +130,10 @@
 						value: "id"
 					}
 				}
+			},
+			route: {
+				type: String,
+				default: ''
 			}
 		},
 		// #ifdef VUE3
@@ -148,36 +153,36 @@
 		watch: {
 			// #ifdef VUE2
 			value:
-			// #endif
-			// #ifdef VUE3
-			modelValue:
-			// #endif  
-			{
-				handler(v) {
-					if (this.multiple) {
-						this.selects = []
-						v.forEach(val => {
-							this.list.forEach(e => {
-								if (e.value === val) {
-									this.selects.push({
-										label: e.label,
-										value: e.value
-									})
-								}
+				// #endif
+				// #ifdef VUE3
+				modelValue:
+				// #endif  
+				{
+					handler(v) {
+						if (this.multiple) {
+							this.selects = []
+							v.forEach(val => {
+								this.list.forEach(e => {
+									if (e.value === val) {
+										this.selects.push({
+											label: e.label,
+											value: e.value
+										})
+									}
+								})
 							})
-						})
-						this.selectValues = v
-					} else {
-						const item = this.list.find(e => e.value === v)
-						if (item) {
-							this.select = item.label
+							this.selectValues = v
 						} else {
-							this.select = ""
+							const item = this.list.find(e => e.value === v)
+							if (item) {
+								this.select = item.label
+							} else {
+								this.select = ""
+							}
 						}
-					}
+					},
+					immediate: true
 				},
-				immediate: true
-			},
 		},
 		// mounted() {
 		// 	this.initialData();
@@ -193,7 +198,7 @@
 					}
 				})
 				this.filterList = [...this.list]
-				
+
 				if (this.multiple) {
 					this.selects = []
 					this.value.forEach(val => {
@@ -267,6 +272,13 @@
 			handlerSearch() {
 				this.filterList = this.list.filter(v => v.label.indexOf(this.searchKey) > -1)
 			},
+			//空数据跳转
+			goTo() {
+				if (!this.route) {
+					return
+				}
+				this.$goTo(this.route)
+			}
 		}
 	}
 </script>
@@ -410,6 +422,10 @@
 						.empty-text {
 							padding-top: 30rpx;
 							font-size: 24rpx;
+						}
+
+						.empty-btn {
+							margin-top: 24rpx;
 						}
 					}
 				}

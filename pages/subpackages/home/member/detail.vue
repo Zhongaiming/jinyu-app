@@ -5,21 +5,23 @@
 		<header-vue :userMsg="userMsg" :orderDetail="orderDetail"></header-vue>
 
 		<!-- 会员消费记录 -->
-		<view class="record-container-hidden main-record">
+		<view class="main-record">
 			<view class="record-container">
 				<view class="tab-wrapper">
 					<view class="tab tab1" :class="{'active-tab':payType}" @click="cutType('pay')">
 						支付订单
 					</view>
-					<view class="tab tab2" :class="{'active-tab':!payType}" @click="cutType('coin')">
+					<view class="tab tab0" :class="{'active-tab':!payType}" @click="cutType('coin')">
 						余额余币明细
 					</view>
 				</view>
 			</view>
-			
-			
+			<xls-detail-condition></xls-detail-condition>
+			<xls-member-order-list :dataList="dataList" :payType="payType"></xls-member-order-list>
+
 		</view>
-		
+		<xls-empty slot="empty" />
+
 	</z-paging>
 </template>
 
@@ -29,20 +31,24 @@
 	} from '@/api/index.js';
 	import headerVue from './components/xls-detail/header.vue';
 	import xlsMemberOrderList from './components/xls-member-order-list/index.vue';
-	import { getDateAll } from "@/plugins/utilityClass";
-	import storage from "@/plugins/storage"
+	import xlsDetailCondition from './components/xls-detail-condition/index.vue';
+	import {
+		getDateAll
+	} from "@/plugins/utilityClass";
+	import storage from "@/plugins/storage";
+	import {
+		getInfo
+	} from "@/common/auth.js";
 
 	export default {
 		components: {
-			headerVue
+			headerVue,
+			xlsMemberOrderList,
+			xlsDetailCondition
 		},
 		data() {
 			return {
 				dataList: [],
-				payTypeList: [
-					{id: 1,text: "支付订单"},
-					{id: 2,text: "余额余币明细"},
-				],
 				payType: true,
 				//搜索
 				value1: 0,
@@ -104,7 +110,7 @@
 					placeIds: "",
 					deviceTypeId: "",
 					state: "",
-					startTime: getDateAll(0),
+					startTime: getDateAll(10),
 					endTime: getDateAll(0),
 					payType: "",
 				},
@@ -196,27 +202,56 @@
 			},
 			//会员订单列表
 			queryList(pageNo, pageSize) {
-				memberController.getMemberOrderForm({
-					page: pageNo,
-					size: pageSize,
-					memberOpenid: this.userMsg.memberOpenid,
-					startTime: this.screenCondition.startTime,
-					endTime: this.screenCondition.endTime,
-					placeId: this.screenCondition.placeIds,
-					deviceType: this.screenCondition.deviceTypeId,
-					state: this.screenCondition.state, //状态 -1退单 1交易完成
-				}).then(res => {
-					if(res.code == 200) {
-						this.$refs.memberPaging.complete(res.data)
-					}
-				})
+				if (this.payType) {
+					memberController.getMemberOrderForm({
+						page: pageNo,
+						size: pageSize,
+						memberOpenid: this.userMsg.memberOpenid,
+						startTime: this.screenCondition.startTime,
+						endTime: this.screenCondition.endTime,
+						placeId: this.screenCondition.placeIds,
+						deviceType: this.screenCondition.deviceTypeId,
+						state: this.screenCondition.state, //状态 -1退单 1交易完成
+					}).then(res => {
+						if (res.code == 200) {
+							this.$refs.memberPaging.complete(res.data)
+						}
+					})
+				} else {
+					const {
+						commercialNumber,
+						userType
+					} = getInfo()
+					memberController.getCoinFlowingList({
+						page: pageNo,
+						size: pageSize,
+						commercialNumber: commercialNumber,
+						memberNumber: this.userMsg.memberNumber, //用户编码
+						placeId: this.screenCondition.placeIds ?
+							this.screenCondition.placeIds : null,
+						deviceType: this.screenCondition.deviceTypeId ?
+							this.screenCondition.deviceTypeId : null,
+						startTime: this.screenCondition.startTime ?
+							this.screenCondition.startTime + " " + "00:00:00" : null,
+						endTime: this.screenCondition.endTime ?
+							this.screenCondition.endTime + " " + "23:59:59" : null,
+					}).then(res => {
+						if (res.code == 200) {
+							this.$refs.memberPaging.complete(res.data)
+						}
+					})
+				}
 			},
-			
+			cutType(params) {
+				this.payType = params == "pay"
+				this.$refs.memberPaging.reload()
+			},
+
 			//确定
 			confirmBtn(params) {
 				if (params == "place") {
-					this.screenCondition.placeIds = this.allCheck ?"" :
-						this.placeCheckGroup.length ?String(this.placeCheckGroup) :"";
+					this.screenCondition.placeIds = this.allCheck ? "" :
+						this.placeCheckGroup.length ? String(this.placeCheckGroup) : "";
 				}
 
 				this.$refs.itemPlace.toggle(false);
@@ -258,18 +293,7 @@
 			},
 			//会员消费记录支付订单
 			orderSearch() {},
-			cutType(type) {
-				this.memberList = [];
-				if (type == "pay") {
-					this.payType = true;
-					this.getMemberList();
-				} else {
-					this.payType = false;
-					this.pageCoin = 0;
-					this.onEarth = false;
-					this.getCoinList();
-				}
-			},
+
 			//时间
 			pickerTime(id) {
 				this.activeFastimer = id;
@@ -349,7 +373,7 @@
 			// 		}
 			// 	}
 			// }, 500),
-			
+
 			//选择日期
 			onConfirm(date) {
 				const [start, end] = date;

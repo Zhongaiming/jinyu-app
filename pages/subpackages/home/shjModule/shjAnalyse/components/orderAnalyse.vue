@@ -44,7 +44,11 @@
 					</view>
 					<view class="item-style" v-show="state == 0">
 						<span class="span bl-span"></span>
-						<span>总利润： {{ acountTop.summaryProfit }} 元</span>
+						<span>客单价： {{ $formatAmount(acountTop.averagePrice) }} 元</span>
+					</view>
+					<view class="item-style" v-show="state == 0">
+						<span class="span bl-span"></span>
+						<span>总利润： {{ $formatAmount(acountTop.summaryProfit) }} 元</span>
 					</view>
 					<view class="item-style" v-show="state == 1">
 						<span class="span"></span>
@@ -70,7 +74,7 @@
 						<span class="col" v-show="state == 0">{{ item.total }}笔</span>
 						<span class="col" v-show="state == 0">{{ $formatAmount(item.amountTotal) }}</span>
 						<span class="col" v-show="state == 0">{{ $formatAmount(item.unitPricePerCustomer) }}</span>
-						<span class="col" v-show="state == 0">{{ item.profit }}</span>
+						<span class="col" v-show="state == 0">{{ $formatAmount(item.profit) }}</span>
 						<span class="col" v-show="state == 1">{{ item.periodRefund || item.refundQuantity || 0 }}</span>
 						<span class="col" v-show="state == 1">{{ $formatAmount(item.amountRefund) }}</span>
 					</li>

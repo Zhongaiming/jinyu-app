@@ -463,18 +463,8 @@
 					return this.$toast("场地不能为空~")
 				}
 				if (type == 1) {
-					// params = {
-					// 	id: this.coupon.id,
-					// 	state: 2,
-					// 	placeIds: '',
-					// }
 					this.coupon.state = 2
 				} else {
-					// params = {
-					// 	id: this.coupon.id,
-					// 	state: null,
-					// 	placeIds: this.coupon.placeIds,
-					// }
 				}
 				let res = await marketingController.updateReductionById({
 					dto: this.coupon

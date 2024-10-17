@@ -19,7 +19,7 @@
 					<view class="name">
 						利润 <u-icon name="question-circle-fill" size="40" color="#fff" />
 					</view>
-					<view class="number">{{ acountObj.profit }} 元</view>
+					<view class="number">{{ $formatAmount(acountObj.profit) }} 元</view>
 				</view>
 			</view>
 		</view>
@@ -53,7 +53,7 @@
 								<span class="bottem-des">成交 {{ item.strikeABargain }} 笔</span>
 								<span class="bottem-des">出货 {{ item.shipment }} 个</span>
 								<span class="bottem-des">成交 {{ $formatAmount(item.amount) }} 元</span>
-								<span class="bottem-des">利润 {{ item.commodityProfit }} 元</span>
+								<span class="bottem-des">利润 {{ $formatAmount(item.commodityProfit) }} 元</span>
 							</view>
 						</view>
 					</view>

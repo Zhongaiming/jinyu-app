@@ -105,7 +105,7 @@
 						placeId: this.placeId
 					}),
 				}).then(res => {
-					res.data = res.data.filter(item => item.railList.length)
+					// res.data = res.data.filter(item => item.railList.length)
 					this.$refs.paging.complete(res.data)
 				})
 			},

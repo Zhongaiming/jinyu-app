@@ -114,12 +114,12 @@
 							<view class="field-stat">支付总额</view>
 							<view class="value-price">{{ item.paySumPrice || "0.00" }}元</view>
 						</view>
-						<view class="info-item">
+						<!-- <view class="info-item">
 							<view class="field-stat">退款总额</view>
 							<view class="value-price value-color">
 								{{ item.refundSumPrice || "0.00" }}
 							</view>
-						</view>
+						</view> -->
 						<view class="info-item">
 							<view class="field-stat">购买数量</view>
 							<view class="value-price">{{ item.payCount || "0" }}个</view>
@@ -431,7 +431,8 @@
 				.info-item {
 					padding: 0 4px;
 					text-align: center;
-					width: 25%;
+					// width: 25%;
+					flex: 1;
 					box-sizing: border-box;
 
 					.field-stat {

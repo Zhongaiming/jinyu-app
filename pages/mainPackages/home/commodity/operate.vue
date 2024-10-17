@@ -16,7 +16,7 @@
 							:placeholderStyle="placeholderStyle" :prefixIconStyle="prefixIconStyle"></u--input>
 					</u-form-item>
 					<u-form-item label="商品类型" prop="commodityTypeId" borderBottom required>
-						<xls-select v-model="commodity.commodityTypeId" ref="typeSelect"
+						<xls-select v-model="commodity.commodityTypeId" ref="typeSelect" route="/pages/mainPackages/personal/commodityType/index"
 							:value="commodity.commodityTypeId"></xls-select>
 					</u-form-item>
 					<u-form-item label="商品成本价" prop="costPrice" borderBottom required>
