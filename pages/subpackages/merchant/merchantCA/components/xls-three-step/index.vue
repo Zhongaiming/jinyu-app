@@ -214,7 +214,8 @@
 					value,
 					values
 				} = params
-				this.result.regionCode = value[2].addressCode * 1;
+				this.result.regionCode = value[2].addressCode;
+				// this.result.regionCode = value[2].addressCode * 1;
 				this.result.commercialAddress = value
 					.map((option) => option.addressNames)
 					.join(" ");

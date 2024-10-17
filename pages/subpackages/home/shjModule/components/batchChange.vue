@@ -35,7 +35,7 @@
 					<view class="edit-panel">
 						<span>现有库存</span>
 						<u-number-box v-model="railMsg.railRepertory" integer input-width="75px" button-size="40px"
-							min="0" iconStyle="fontSize: 17px" />
+							min="0" :max="railMsg.railCapacity" iconStyle="fontSize: 17px" />
 					</view>
 					<view class="edit-panel">
 						<span>货道容量</span>
@@ -138,8 +138,8 @@
 					railIds: [],
 					commodityId: null,
 					price: null, //价格
-					railRepertory: null, //现有库存
-					railCapacity: null, //货道容量
+					railRepertory: 1, //现有库存
+					railCapacity: 10, //货道容量
 				},
 				commodityName: "",
 				title: "",
@@ -164,8 +164,8 @@
 					railIds: [],
 					commodityId: null,
 					price: null, //价格
-					railRepertory: null, //现有库存
-					railCapacity: null, //货道容量
+					railRepertory: 1, //现有库存
+					railCapacity: 10, //货道容量
 				};
 				this.$emit('setBatchSet', false)
 				this.railEdit = true

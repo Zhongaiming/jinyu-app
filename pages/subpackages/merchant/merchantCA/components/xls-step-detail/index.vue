@@ -319,7 +319,7 @@
 					value,
 					values
 				} = params
-				this.first.regionCode = value[2].addressCode * 1;
+				this.first.regionCode = value[2].addressCode;
 				this.first.commercialAddress = value
 					.map((option) => option.addressNames)
 					.join(" ");

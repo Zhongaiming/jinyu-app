@@ -1,9 +1,7 @@
 <template>
 	<z-paging ref="memberPaging" v-model="dataList" @query="queryList">
 		<xls-jy-navbar title="用户详情" bgColor="#5241ff" titleStyle="color: #fff" slot="top"></xls-jy-navbar>
-
 		<header-vue :userMsg="userMsg" :orderDetail="orderDetail"></header-vue>
-
 		<!-- 会员消费记录 -->
 		<view class="main-record">
 			<view class="record-container">
@@ -18,10 +16,8 @@
 			</view>
 			<xls-detail-condition></xls-detail-condition>
 			<xls-member-order-list :dataList="dataList" :payType="payType"></xls-member-order-list>
-
 		</view>
 		<xls-empty slot="empty" />
-
 	</z-paging>
 </template>
 

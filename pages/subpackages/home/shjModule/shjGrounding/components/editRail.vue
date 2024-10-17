@@ -24,7 +24,7 @@
 					<view class="edit-panel">
 						<span>现有库存</span>
 						<u-number-box v-model="railMsg.railRepertory" input-width="75px" button-size="40px" min="0"
-							iconStyle="fontSize: 17px" />
+							iconStyle="fontSize: 17px" :max="railMsg.railCapacity"/>
 					</view>
 					<view class="edit-panel">
 						<span>货道容量</span>

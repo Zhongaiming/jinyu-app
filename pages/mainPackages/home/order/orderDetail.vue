@@ -288,7 +288,7 @@
 
 		<view class="fixed-box">
 			<view class="fixed-box-wrapper">
-				<view class="button" @click="goTo('orderRefund')" v-if="!order.amountRefund">
+				<view class="button" @click="goTo('orderRefund')" v-if="refuseJudge(order)">
 					退款
 				</view>
 				<view class="button" @click="goTo('remote')">
@@ -310,6 +310,9 @@
 		mapGetters,
 		mapState
 	} from 'vuex';
+	import {
+		getDateAll
+	} from "@/plugins/utilityClass";
 	import suan from "@/plugins/floastCalculate.js";
 	import xlsShjOrderDetailVue from './components/xls-shj-order-detail.vue';
 	export default {
@@ -408,7 +411,15 @@
 			},
 			getShjOrderDetail() {
 				this.$refs.shjOrder.getShjList(this.order)
-			}
+			},
+			
+			refuseJudge(item) {
+				// 已支付 1
+				// 没有退款 
+				// 当天
+				const pickerDate = item.createTime.split(" ")[0];
+				return item.state === 1 && !item.amountRefund && pickerDate === getDateAll(0)       
+			},
 		}
 	}
 </script>

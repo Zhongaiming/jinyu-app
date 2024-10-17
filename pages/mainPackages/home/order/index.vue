@@ -118,7 +118,7 @@
 						<view class="button" @click="goTo(item, 'remote')">
 							远程启动
 						</view>
-						<view class="button" @click="goTo(item, 'orderRefund')" v-if="!item.amountRefund">
+						<view class="button" @click="goTo(item, 'orderRefund')" v-if="refuseJudge(item)">
 							退款
 						</view>
 					</view>
@@ -227,6 +227,13 @@
 				document.execCommand("Copy");
 				document.body.removeChild(textarea);
 				this.$toast("复制成功");
+			},
+			refuseJudge(item) {
+				// 已支付 1
+				// 没有退款 
+				// 当天
+				const pickerDate = item.createTime.split(" ")[0];
+				return item.state===1&&!item.amountRefund&&pickerDate===getDateAll(0);      
 			},
 		}
 	}
